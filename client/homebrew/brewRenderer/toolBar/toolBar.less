@@ -1,6 +1,38 @@
 @import (less) './client/icons/customIcons.less';
 @import (less) 'shared/naturalcrit/styles/core.less';
 
+#preview-toolbar-dot {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: auto;
+	min-height: 30px;
+	background: #0003;
+	color: #ccc;
+	border-radius: 3px;
+	overflow: hidden;
+	align-items: center;
+	display: flex;
+
+	.menu-section {
+		gap: 0 5px;
+		align-items: center;
+	}
+
+	.menu-item {
+		display: inline-grid;
+		width            : auto;
+		aspect-ratio: 1 / 1;
+		grid-template-columns: 1fr;
+		gap: 0;
+		.name, .caret {
+			.screen-reader-only();
+		}
+		&:hover { background-color : #0004; }
+		&:focus {outline : none; border  : 1px solid #D3D3D3;}
+	}
+}
+
 #preview-toolbar {
 	--menubar-shadow : 0 0px 4px -1px black;
 	z-index          : 1;
@@ -25,6 +57,10 @@
 		gap: 0 5px;
 		flex-wrap: wrap;
 		justify-content: flex-start;
+	}
+
+	#preview-toggles, [aria-label='Pages'] {
+		margin-right: auto;
 	}
 
 	.menu-item {
@@ -106,7 +142,6 @@
 		gap              : 5px;
 		padding          : 15px;
 		margin-top       : 10px;
-		font-size        : 0.8em;
 		color            : #CCCCCC;
 		background-color : var(--box-color);
 		border-radius    : 5px;
@@ -133,7 +168,16 @@
 		}
 		input {
 			height : unset;
-			&[type='range'] { padding : 0; }
+			color        : #D3D3D3;
+			accent-color : #D3D3D3;
+			&[type='range'] { 
+	  
+				&::-webkit-slider-thumb, &::-moz-range-thumb { 
+					width            : 2px;
+					height           : 2px;
+					cursor           : ew-resize;
+					outline          : none;
+				} }
 		}
 		&::before {
 			position       : absolute;
@@ -163,8 +207,7 @@
 
 
 	&.hidden {
-		flex-wrap        : nowrap;
-		width            : 92px;
+		display: none;
 		overflow         : hidden;
 		background-color : unset;
 		opacity          : 0.7;
@@ -178,17 +221,12 @@
 }
 
 .toggleButton {
-	position  : absolute;
-	left      : 0;
-	z-index   : 5;
+	align-self: flex-start;
 	display   : flex;
 	align-items: center;
 	width     : 32px;
 	min-width : unset;
 	height    : 100%;
 
-	button i {
-		filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
 
-	}
 }

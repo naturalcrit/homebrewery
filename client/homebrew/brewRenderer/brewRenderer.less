@@ -10,17 +10,13 @@
 
 	.toolBar {
 		grid-area: toolbar;
-		height: 30px;
+		min-height: 30px;
+		height: auto;
 	}
 
 	.headerNav {
 		grid-area: panel;
 		width: 250px;
-		&.hidden {
-			grid-area: unset;
-			width: 0;
-			padding: 0;
-		}
 	}
 
 	iframe {
@@ -29,6 +25,33 @@
 		min-height: 0;
 		height: 100%;
 	}
+	&:has(#preview-toolbar-dot) {
+		grid-template-rows: 0 auto;
+		// .toolBar.hidden {
+		// 	display: none;
+		// }
+	}
+	&:has(.headerNav.hidden) {
+		grid-template-columns: auto 0;
+		// .headerNav.hidden {
+		// 	display: none;
+		// }
+	}
+
+	// &:has(.toolBar.hidden) {
+	// 	grid-template-areas: "preview panel"
+	// 		"preview panel";
+	// 	.toolBar.hidden {
+	// 		display: none;
+	// 	}
+	// }
+	// &:has(.headerNav.hidden) {
+	// 	grid-template-areas: "toolbar toolbar"
+	// 		"preview preview";
+	// 	.headerNav.hidden {
+	// 		display: none;
+	// 	}
+	// }
 }
 
 .brewRenderer {

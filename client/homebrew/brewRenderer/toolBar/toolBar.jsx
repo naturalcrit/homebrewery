@@ -97,151 +97,166 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		return deltaZoom;
 	};
 
+	const renderToggleMenuDot = ()=>{
+		return (
+			<Menubar id='preview-toolbar-dot'>
+				<MenuSection role='group' aria-label='Toggles'>
+					<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+					<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
+				</MenuSection>
+			</Menubar>
+		);
+	};
+
 	return (
-		<Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
-			<div className='toggleButton'>
-				<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
-				<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+		<>
+			{toolsVisible ? <Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
+				<MenuSection id='preview-toggles' role='group' aria-label='UI Toggles' aria-hidden={!toolsVisible}>
+					<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+					<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
+				</MenuSection>
+				
 
-			</div>
-			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
-			<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
-				<MenuItem
-					id='fill-width'
-					icon='fac fit-width'
-					title='Set zoom to fill preview with one page'
-					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
-				>Fill to Pane Width</MenuItem>
-				<MenuItem
-					id='zoom-to-fit'
-					icon='fac zoom-to-fit'
-					title='Set zoom to fit entire page in preview'
-					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
-				>Zoom To Fit Page</MenuItem>
-				<MenuItem
-					id='zoom-out'
-					icon='fas fa-magnifying-glass-minus'
-					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
-					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
-					title='Zoom Out'
-				>Zoom Out</MenuItem>
-				<MenuItem
-					id='zoom-slider'
-					className='range-input hover-tooltip'
-					type='range'
-					name='zoom'
-					title='Set Zoom'
-					list='zoomLevels'
-					min={MIN_ZOOM}
-					max={MAX_ZOOM}
-					step='1'
-					value={displayOptions.zoomLevel}
-					onChange={(e)=>handleZoomButton(parseInt(e.target.value))}
-				/>
-				<datalist id='zoomLevels'>
-					<option value='100' />
-				</datalist>
+				{/*v=====----------------------< Spread Controls >---------------------=====v*/}
+				<MenuSection role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
+					<div className='radio-group' role='radiogroup'>
+						<MenuItem role='radio'
+							id='single-spread'
+							icon='fac single-spread'
+							title='Single Page'
+							onClick={()=>{handleOptionChange('spread', 'single');}}
+							aria-checked={displayOptions.spread === 'single' || 'single'}
+						>Single Spread</MenuItem>
+						<MenuItem role='radio'
+							id='facing-spread'
+							icon='fac facing-spread'
+							title='Facing Pages'
+							onClick={()=>{handleOptionChange('spread', 'facing');}}
+							aria-checked={displayOptions.spread === 'facing'}
+						>Facing Spread</MenuItem>
+						<MenuItem role='radio'
+							id='flow-spread'
+							icon='fac flow-spread'
+							title='Flow Pages'
+							onClick={()=>{handleOptionChange('spread', 'flow');}}
+							aria-checked={displayOptions.spread === 'flow'}
+						>Flow Spreads</MenuItem>
 
-				<MenuItem
-					id='zoom-in'
-					icon='fas fa-magnifying-glass-plus'
-					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
-					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
-					title='Zoom In'
-				>Zoom In</MenuItem>
-			</MenuSection>
+					</div>
+					<Anchored>
+						<AnchoredTrigger id='spread-settings' title='Spread options' className='menu-item'><i className='fas fa-gear' /></AnchoredTrigger>
+						<AnchoredBox title='Options'>
+							<h1>Options</h1>
+							<label title='Modify the horizontal space between pages.'>
+								Column gap
+								<input type='range' min={0} max={200} defaultValue={displayOptions.columnGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
+							</label>
+							<label title='Modify the vertical space between rows of pages.'>
+								Row gap
+								<input type='range' min={0} max={200} defaultValue={displayOptions.rowGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
+							</label>
+							<label title='Start 1st page on the right side, such as if you have cover page.'>
+								Start on right
+								<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight);}}
+									title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+							</label>
+							<label title='Toggle the page shadow on every page.'>
+								Page shadows
+								<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows);}} />
+							</label>
+						</AnchoredBox>
+					</Anchored>
+				</MenuSection>
 
-			{/*v=====----------------------< Spread Controls >---------------------=====v*/}
-			<MenuSection role='group' aria-label='Spread' aria-hidden={!toolsVisible}>
-				<div className='radio-group' role='radiogroup'>
-					<MenuItem role='radio'
-						id='single-spread'
-						icon='fac single-spread'
-						title='Single Page'
-						onClick={()=>{handleOptionChange('spread', 'single');}}
-						aria-checked={displayOptions.spread === 'single' || 'single'}
-					>Single Spread</MenuItem>
-					<MenuItem role='radio'
-						id='facing-spread'
-						icon='fac facing-spread'
-						title='Facing Pages'
-						onClick={()=>{handleOptionChange('spread', 'facing');}}
-						aria-checked={displayOptions.spread === 'facing'}
-					>Facing Spread</MenuItem>
-					<MenuItem role='radio'
-						id='flow-spread'
-						icon='fac flow-spread'
-						title='Flow Pages'
-						onClick={()=>{handleOptionChange('spread', 'flow');}}
-						aria-checked={displayOptions.spread === 'flow'}
-					>Flow Spreads</MenuItem>
+				{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
+				<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
+					<MenuItem
+						id='fill-width'
+						icon='fac fit-width'
+						title='Set zoom to fill preview with one page'
+						onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
+					>Fill to Pane Width</MenuItem>
+					<MenuItem
+						id='zoom-to-fit'
+						icon='fac zoom-to-fit'
+						title='Set zoom to fit entire page in preview'
+						onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
+					>Zoom To Fit Page</MenuItem>
+					<MenuItem
+						id='zoom-out'
+						icon='fas fa-magnifying-glass-minus'
+						onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
+						disabled={displayOptions.zoomLevel <= MIN_ZOOM}
+						title='Zoom Out'
+					>Zoom Out</MenuItem>
+					<MenuItem
+						id='zoom-slider'
+						className='range-input hover-tooltip'
+						type='range'
+						name='zoom'
+						title='Set Zoom'
+						list='zoomLevels'
+						min={MIN_ZOOM}
+						max={MAX_ZOOM}
+						step='1'
+						value={displayOptions.zoomLevel}
+						onChange={(e)=>handleZoomButton(parseInt(e.target.value))}
+					/>
+					<datalist id='zoomLevels'>
+						<option value='100' />
+					</datalist>
 
-				</div>
-				<Anchored>
-					<AnchoredTrigger id='spread-settings' title='Spread options' className='menu-item'><i className='fas fa-gear' /></AnchoredTrigger>
-					<AnchoredBox title='Options'>
-						<h1>Options</h1>
-						<label title='Modify the horizontal space between pages.'>
-							Column gap
-							<input type='range' min={0} max={200} defaultValue={displayOptions.columnGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
-						</label>
-						<label title='Modify the vertical space between rows of pages.'>
-							Row gap
-							<input type='range' min={0} max={200} defaultValue={displayOptions.rowGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
-						</label>
-						<label title='Start 1st page on the right side, such as if you have cover page.'>
-							Start on right
-							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight);}}
-								title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
-						</label>
-						<label title='Toggle the page shadow on every page.'>
-							Page shadows
-							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows);}} />
-						</label>
-					</AnchoredBox>
-				</Anchored>
-			</MenuSection>
+					<MenuItem
+						id='zoom-in'
+						icon='fas fa-magnifying-glass-plus'
+						onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
+						disabled={displayOptions.zoomLevel >= MAX_ZOOM}
+						title='Zoom In'
+					>Zoom In</MenuItem>
+				</MenuSection>
 
-			{/*v=====----------------------< Page Controls >---------------------=====v*/}
-			<MenuSection role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
-				<MenuItem
-					id='previous-page'
-					className='previousPage'
-					icon='fas fa-arrow-left'
-					type='button'
-					title='Previous Page(s)'
-					onClick={()=>scrollToHash(`#p${_.min(visiblePages) - visiblePages.length}`)}
-					disabled={visiblePages.includes(1)}
-				>Previous Page</MenuItem>
+				{/*v=====----------------------< Page Controls >---------------------=====v*/}
+				<MenuSection role='group'  aria-label='Pages' aria-hidden={!toolsVisible}>
+					<MenuItem
+						id='previous-page'
+						className='previousPage'
+						icon='fas fa-arrow-left'
+						type='button'
+						title='Previous Page(s)'
+						onClick={()=>scrollToHash(`#p${_.min(visiblePages) - visiblePages.length}`)}
+						disabled={visiblePages.includes(1)}
+					>Previous Page</MenuItem>
 
-				<MenuItem
-					id='page-input'
-					className='text-input inline-grid'
-					type='text'
-					name='page'
-					title='Current page(s) in view'
-					inputMode='numeric'
-					pattern='[0-9]'
-					value={pageNum}
-					onClick={(e)=>e.target.select()}
-					onChange={(e)=>handlePageInput(e.target.value)}
-					onBlur={()=>{scrollToHash(`#p${pageNum}`);}}
-					onKeyDown={(e)=>e.key == 'Enter' && scrollToHash(`#p${pageNum}`)}
-					style={{ width: `${pageNum.length}ch` }}
-					autoComplete='off'
-				>Current Page</MenuItem>
-				<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
+					<MenuItem
+						id='page-input'
+						className='text-input inline-grid'
+						type='text'
+						name='page'
+						title='Current page(s) in view'
+						inputMode='numeric'
+						pattern='[0-9]'
+						value={pageNum}
+						onClick={(e)=>e.target.select()}
+						onChange={(e)=>handlePageInput(e.target.value)}
+						onBlur={()=>{scrollToHash(`#p${pageNum}`);}}
+						onKeyDown={(e)=>e.key == 'Enter' && scrollToHash(`#p${pageNum}`)}
+						style={{ width: `${pageNum.length}ch` }}
+						autoComplete='off'
+					>Current Page</MenuItem>
+					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
 
-				<MenuItem
-					id='next-page'
-					icon='fas fa-arrow-right'
-					type='button'
-					title='Next Page(s)'
-					onClick={()=>scrollToHash(`#p${_.max(visiblePages) + 1}`)}
-					disabled={visiblePages.includes(totalPages)}
-				>Next Page</MenuItem>
-			</MenuSection>
-		</Menubar>
+					<MenuItem
+						id='next-page'
+						icon='fas fa-arrow-right'
+						type='button'
+						title='Next Page(s)'
+						onClick={()=>scrollToHash(`#p${_.max(visiblePages) + 1}`)}
+						disabled={visiblePages.includes(totalPages)}
+					>Next Page</MenuItem>
+				</MenuSection>
+			</Menubar> : renderToggleMenuDot()}
+		</>
+		
 	);
 };
 
