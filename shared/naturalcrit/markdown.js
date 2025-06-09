@@ -827,15 +827,16 @@ const Markdown = {
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
-		const systemVariables = [
-			`[HB_pageNumber_${pageNumber + 1}]: $[HB_pageNumber]`
-		];
-
-		rawBrewText = `${rawBrewText}\n${systemVariables.join('\n\n')}`;
-
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
+
+		// Add system variables to the end of each page
+		globalVarsList[pageNumber][`HB_pageNumber_${pageNumber + 1}`] = {
+			content  : globalVarsList[pageNumber]['HB_pageNumber'].content,
+			resolved : true
+		};
+
 		const tokens = Marked.lexer(rawBrewText, opts);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
