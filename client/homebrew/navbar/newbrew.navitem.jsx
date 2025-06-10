@@ -1,13 +1,13 @@
 const React = require('react');
 const _ = require('lodash');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const {MenuItem, MenuDropdown} = require('../../components/menubar/Menubar.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 
-const NewBrew = ()=>{
+const NewBrew = ({...props})=>{
 	const handleFileChange = (e)=>{
 		const file = e.target.files[0];
 		if(file) {
@@ -33,31 +33,29 @@ const NewBrew = ()=>{
 	};
 
 	return (
-		<Nav.dropdown>
-			<Nav.item
-				className='new'
-				color='purple'
-				icon='fa-solid fa-plus-square'>
-                new
-			</Nav.item>
-			<Nav.item
+		<MenuDropdown id='newBrewMenu'
+			groupName='New'
+			color={props.disabled ? 'grey' : 'green'}
+			icon='fa-solid fa-plus-square'
+			caret={true}>
+			<MenuItem
 				className='fromBlank'
 				href='/new'
 				newTab={true}
-				color='purple'
+				color='green'
 				icon='fa-solid fa-file'>
                 from blank
-			</Nav.item>
+			</MenuItem>
 
-			<Nav.item
+			<MenuItem
 				className='fromFile'
-				color='purple'
+				color='green'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
                 from file
-			</Nav.item>
-		</Nav.dropdown>
+			</MenuItem>
+		</MenuDropdown>
 	);
 };
 
