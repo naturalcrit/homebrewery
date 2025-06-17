@@ -11,7 +11,7 @@ import { markedVariables,
 	    setMarkedVarPage,
 		setMarkedVariable,
 		getMarkedVariable,
-		clearMarkedVarsQueue }  from 'marked-variables';
+		clearMarkedVarsQueue }  from 'marked-extended-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
