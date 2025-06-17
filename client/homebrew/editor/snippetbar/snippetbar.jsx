@@ -217,39 +217,39 @@ const Snippetbar = createClass({
 						onClick={()=>this.props.onViewChange('style')}>
 						Style<span className='sr-only'> Editor</span>
 					</MenuItem>
-					<MenuItem id='snippets-tab' role='tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
+					<MenuItem id='snippet-tab' role='tab' className='tab' icon='fas fa-th-list' aria-selected={this.props.view === 'snippet'}
 						onClick={()=>this.props.onViewChange('snippet')}>
 						Snippets<span className='sr-only'> Editor</span>
 					</MenuItem>
-					<MenuItem id='properties-tab' role='tab' className='tab' icon='fas fa-info-circle' aria-selected={this.props.view === 'meta'}
+					<MenuItem id='meta-tab' role='tab' className='tab' icon='fas fa-info-circle' aria-selected={this.props.view === 'meta'}
 						onClick={()=>this.props.onViewChange('meta')}>
 						Properties<span className='sr-only'> Editor</span>
 					</MenuItem>
 				</MenuSection>
 				<MenuSection id='editor-tools'>
 					<MenuSection id='history-tools' className='tool-group'>
-						<MenuDropdown id='history' className='tool' groupName='history' icon='fas fa-clock-rotate-left' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
+						<MenuDropdown id='history' iconOnly className='tool' groupName='history' icon='fas fa-clock-rotate-left' popovertarget='history-menu' style={{ anchorName: '--history-menu' }}>
 							{this.renderHistoryItems()}
 						</MenuDropdown>
-						<MenuItem id='undo' icon='fas fa-undo' disabled={!this.props.historySize.undo ? true : false} className='tool'
+						<MenuItem id='undo' iconOnly icon='fas fa-undo' disabled={!this.props.historySize.undo ? true : false} className='tool'
 							onClick={this.props.undo} >
 							Undo
 						</MenuItem>
-						<MenuItem id='redo' icon='fas fa-redo' disabled={!this.props.historySize.redo ? true : false} className='tool'
+						<MenuItem id='redo' iconOnly icon='fas fa-redo' disabled={!this.props.historySize.redo ? true : false} className='tool'
 							onClick={this.props.redo} >
 							Redo
 						</MenuItem>
 					</MenuSection>
 					<MenuSection id='code-tools' className='tool-group'>
-						<MenuItem id='fold-all' icon='fas fa-compress-alt' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
+						<MenuItem id='fold-all' iconOnly icon='fas fa-compress-alt' disabled={(this.props.view === 'meta' || !this.props.foldCode) ? true : false} className='tool'
 							onClick={this.props.foldCode} >
 								Fold All Code
 						</MenuItem>
-						<MenuItem id='unfold-all' icon='fas fa-expand-alt' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
+						<MenuItem id='unfold-all' iconOnly icon='fas fa-expand-alt' disabled={(this.props.view === 'meta' || !this.props.unfoldCode) ? true : false} className='tool'
 							onClick={this.props.unfoldCode} >
 							Unfold All Code
 						</MenuItem>
-						<MenuDropdown id='show-themes' className='tool' icon='fas fa-palette' groupName='Editor Themes'>
+						<MenuDropdown id='show-themes' iconOnly className='tool' icon='fas fa-palette' groupName='Editor Themes'>
 							{this.renderThemeSelector()}
 						</MenuDropdown>
 					</MenuSection>

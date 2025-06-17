@@ -112,8 +112,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 		<>
 			{toolsVisible ? <Menubar id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 				<MenuSection id='preview-toggles' role='group' aria-label='UI Toggles' aria-hidden={!toolsVisible}>
-					<MenuItem icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
-					<MenuItem icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
+					<MenuItem iconOnly icon='fas fa-glasses' title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{setToolsVisible(!toolsVisible);localStorage.setItem('hb_toolbarVisibility', !toolsVisible)}}>{toolsVisible ? 'Hide toolbar' : 'Show toolbar'}</MenuItem>
+					<MenuItem iconOnly icon='fas fa-rectangle-list' title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}>{headerState ? 'Hide header navigation' : 'Show header navigation'}</MenuItem>
 				</MenuSection>
 				
 
@@ -122,6 +122,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					<div className='radio-group' role='radiogroup'>
 						<MenuItem role='radio'
 							id='single-spread'
+							iconOnly
 							icon='fac single-spread'
 							title='Single Page'
 							onClick={()=>{handleOptionChange('spread', 'single');}}
@@ -129,6 +130,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						>Single Spread</MenuItem>
 						<MenuItem role='radio'
 							id='facing-spread'
+							iconOnly
 							icon='fac facing-spread'
 							title='Facing Pages'
 							onClick={()=>{handleOptionChange('spread', 'facing');}}
@@ -136,6 +138,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						>Facing Spread</MenuItem>
 						<MenuItem role='radio'
 							id='flow-spread'
+							iconOnly
 							icon='fac flow-spread'
 							title='Flow Pages'
 							onClick={()=>{handleOptionChange('spread', 'flow');}}
@@ -172,18 +175,21 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 				<MenuSection role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
 					<MenuItem
 						id='fill-width'
+						iconOnly
 						icon='fac fit-width'
 						title='Set zoom to fill preview with one page'
 						onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
 					>Fill to Pane Width</MenuItem>
 					<MenuItem
 						id='zoom-to-fit'
+						iconOnly
 						icon='fac zoom-to-fit'
 						title='Set zoom to fit entire page in preview'
 						onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
 					>Zoom To Fit Page</MenuItem>
 					<MenuItem
 						id='zoom-out'
+						iconOnly
 						icon='fas fa-magnifying-glass-minus'
 						onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
 						disabled={displayOptions.zoomLevel <= MIN_ZOOM}
@@ -191,6 +197,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					>Zoom Out</MenuItem>
 					<MenuItem
 						id='zoom-slider'
+						iconOnly
 						className='range-input hover-tooltip'
 						type='range'
 						name='zoom'
@@ -208,6 +215,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 
 					<MenuItem
 						id='zoom-in'
+						iconOnly
 						icon='fas fa-magnifying-glass-plus'
 						onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
 						disabled={displayOptions.zoomLevel >= MAX_ZOOM}
@@ -220,6 +228,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					<MenuItem
 						id='previous-page'
 						className='previousPage'
+						iconOnly
 						icon='fas fa-arrow-left'
 						type='button'
 						title='Previous Page(s)'
@@ -247,6 +256,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 
 					<MenuItem
 						id='next-page'
+						iconOnly
 						icon='fas fa-arrow-right'
 						type='button'
 						title='Next Page(s)'

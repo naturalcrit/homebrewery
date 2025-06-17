@@ -3,11 +3,15 @@ const React = require('react');
 const { useRef, useEffect, useState, useCallback } = React;
 const cx = require('classnames');
 const _     = require('lodash');
+import Button from '../Button.jsx';
 
+
+const MenubarContext = React.createContext({ isCompact: false });
+const MenuDepthContext = React.createContext(0);
 
 const Menubar = ({ id = null, className, children })=>{
 	const menubarRef = useRef(null);
-	const [isCompact, setIsCompact] = useState(false);
+	const [isCompact, setIsCompact] = useState(undefined);
 	const fullWidthRef = useRef(null);
 
 	useEffect(()=>{
@@ -57,13 +61,16 @@ const Menubar = ({ id = null, className, children })=>{
 	}, []);
 
 	return (
-		<div
-			id={id}
-			ref={menubarRef}
-			className={cx('menu-bar', className, { compact: isCompact })}
-		>
-			{children}
-		</div>
+		<MenubarContext.Provider value={{ isCompact }}>
+			<nav
+				id={id}
+				ref={menubarRef}
+				className={cx('menu-bar', className, { compact: isCompact })}
+				role='menubar'
+			>
+				{children}
+			</nav>
+		</MenubarContext.Provider>
 	);
 };
 
@@ -77,6 +84,11 @@ const MenuSection = ({ className, children, ...props })=>{
 };
 
 const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, onChange = null, color = null, className = null, children, caret = null, ...props })=>{
+	const { isCompact } = React.useContext(MenubarContext);
+	const depth = React.useContext(MenuDepthContext);
+
+	// A menu is a submenu if depth > 0
+	const isSubMenu = depth > 0;
 
 	const handleClick = (e)=>{
 		onClick(e);
@@ -89,12 +101,10 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 	const renderMenuItem = ()=>{
 		const classes = cx('menu-item', color, className);
 
-		icon = icon ? <i className={icon}></i> : null;
-
 		if(href){
 			return (
 				<a className={classes} href={href} target={newTab ? '_blank' : '_self'} rel='noopener noreferrer'>
-					{icon}
+					{icon && <i className={icon}></i>}
 					{children && <span className='name'>{children}</span>}
 				</a>
 			);
@@ -104,15 +114,14 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 			);
 		} else if(onClick) {
 			return (
-				<button className={classes} onClick={handleClick} {...props}>
-					{icon}
+				<Button className={classes} icon={icon} onClick={handleClick} {...props} compact={!isSubMenu && isCompact}>
 					{children && <span className='name'>{children}</span>}
-				</button>
+				</Button>
 			);
 		} else {
 			return (
 				<div className={classes} {...props}>
-					{icon}
+					{icon && <i className={icon}></i>}
 					{children && <span className='name'>{children}</span>}
 				</div>
 			);
@@ -133,6 +142,11 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 	const [supportsAnchorPosition, setSupportsAnchorPosition] = useState(false);
 	const menuId = `${_.kebabCase(groupName)}-menu`;
 	const anchorName = `--${menuId}`;
+	const { isCompact } = React.useContext(MenubarContext);
+	const depth = React.useContext(MenuDepthContext);
+
+	// A menu is a submenu if depth > 0
+	const isSubMenu = depth > 0;
 
 	useEffect(()=>{
 		// Check for position-anchor support
@@ -141,6 +155,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 		);
 	}, []);
 
+	// Simplified position calculation
 	const updatePosition = useCallback(()=>{
 		if(!wrapperRef.current || !menuRef.current) return;
 
@@ -148,14 +163,17 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 		requestAnimationFrame(()=>{
 			const triggerRect = wrapperRef.current.getBoundingClientRect();
 			const menubarRect = wrapperRef.current.closest('.menu-bar').getBoundingClientRect();
-			const isNested = wrapperRef.current.closest('.menu-list') !== null;
 
 			setMenuPosition({
-				top  : isNested ? triggerRect.height + triggerRect.y - menubarRect.height : triggerRect.height + triggerRect.y,
-				left : isNested ? triggerRect.width + triggerRect.x : triggerRect.x
+				top: isSubMenu 
+					? triggerRect.height + triggerRect.y - menubarRect.height 
+					: triggerRect.height + triggerRect.y,
+				left: isSubMenu 
+					? triggerRect.width + triggerRect.x 
+					: triggerRect.x
 			});
 		});
-	}, []);
+	}, [isSubMenu]); // Now depends on isSubMenu from context
 
 	useEffect(()=>{
 		// Check if browser supports CSS Anchor Positioning
@@ -203,9 +221,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 	const trigger = (groupName)=>{
 		if(!customTrigger){
 			return <>
-				{icon && <i className={icon} />}
 				<span className='menu-name'>{groupName}</span>
-				{dir && <i className={`caret fas fa-caret-${dir}`}></i>}
 			</>;
 		} else {
 			return customTrigger;
@@ -216,16 +232,26 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 
 	return (
 		<div ref={wrapperRef} className='menu-wrapper' style={{ anchorName }}>
-			<button className={classes} popovertarget={menuId}>
+			<Button 
+				id={groupName.replace(' ', '-')}
+				className={classes}
+				popovertarget={menuId}
+				icon={icon}
+				compact={!isSubMenu && isCompact}
+				isMenu={{ caretDirection: isSubMenu ? 'right' : 'down' }}
+			>
 				{trigger(groupName)}
-			</button>
-			<div ref={menuRef}
-				id={menuId}
-				className='menu-list'
-				popover='auto'
-				style={{ positionAnchor: anchorName, ...(!supportsAnchorPosition && menuPosition) }}>
-				{children}
-			</div>
+			</Button>
+			<MenuDepthContext.Provider value={depth + 1}>
+				<div ref={menuRef}
+					id={menuId}
+					className='menu-list'
+					popover='auto'
+					style={{ positionAnchor: anchorName, ...(!supportsAnchorPosition && menuPosition) }}
+				>
+					{children}
+				</div>
+			</MenuDepthContext.Provider>
 		</div>
 	);
 };

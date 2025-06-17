@@ -34,12 +34,18 @@
 
 
 	&.compact {
-		.menu-section > .menu-item, .menu-section > .menu-wrapper > .menu-item {
+		.menu-section > .menu-wrapper > .menu-item.compact {
 			grid-template-areas: "icon icon caret";
-			.name, .menu-name {
+			> .name, > .menu-name {
 				display: none;
 			}
-
+		}
+		.menu-section > .menu-item.compact {
+			grid-template-columns+: min(min-content, 40px);
+			grid-template-areas: "icon";
+			> .name, > .menu-name {
+				display: none;
+			}
 		}
 	}
 
@@ -133,12 +139,12 @@
 					.tooltipLeft('Style Editor');
 					background-color: oklch(from @blueLight l .05 h);
 				}
-				#snippets-tab { 
+				#snippet-tab { 
 					.highlight(@purpleLight);
 					.tooltipLeft('Snippets Editor');
 					background-color: oklch(from @purpleLight l .05 h);
 				}
-				#properties-tab { 
+				#meta-tab { 
 					.highlight(@tealLight);
 					.tooltipLeft('Properties');
 					background-color: oklch(from @tealLight l .05 h);

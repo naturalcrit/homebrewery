@@ -1,6 +1,7 @@
 require('./splitPane.less');
 const React = require('react');
 const { useState, useEffect } = React;
+import Button from 'client/components/Button.jsx';
 
 const storageKey = 'naturalcrit-pane-split';
 
@@ -86,18 +87,23 @@ const SplitPane = (props)=>{
 
 	const  renderMoveArrows = (showMoveArrows &&
 		<div id='split-pane-tools'>
-			<div className='arrow left'
+			<Button id='move-source' className='arrow left' iconOnly icon='fas fa-arrow-left'
+				tooltipDirection={['right']}
 				onClick={()=>setMoveSource(!moveSource)} >
-				<i className='fas fa-arrow-left' />
-			</div>
-			<div className='arrow right'
+				Jump to location in Editor
+			</Button>
+			<Button id='move-preview' className='arrow right' iconOnly icon='fas fa-arrow-right'
+				tooltipDirection={['right']}
 				onClick={()=>setMoveBrew(!moveBrew)} >
-				<i className='fas fa-arrow-right' />
-			</div>
-			<div id='scrollToggleDiv' className={liveScroll ? 'arrow lock' : 'arrow unlock'}
+				Jump to location in Preview
+			</Button>
+			<Button id='scroll-lock' className={liveScroll ? 'arrow lock' : 'arrow unlock'}
+				tooltipDirection={['right']}
+				iconOnly
+				icon={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'}
 				onClick={liveScrollToggle} >
-				<i id='scrollToggle' className={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
-			</div>
+				{liveScroll ? 'Un-Sync Editor and Preview locations' : 'Sync Editor and Preview locations'}
+			</Button>
 		</div>
 	);
 
