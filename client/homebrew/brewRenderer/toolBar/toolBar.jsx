@@ -197,7 +197,6 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					>Zoom Out</MenuItem>
 					<MenuItem
 						id='zoom-slider'
-						iconOnly
 						className='range-input hover-tooltip'
 						type='range'
 						name='zoom'

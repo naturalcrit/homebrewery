@@ -61,7 +61,7 @@ const Button = ({
 	const hideTooltip = ()=>{popoverRef.current.hidePopover();};
 	const showTooltip = ()=>{popoverRef.current.showPopover();};
 
-	if(compact === true || iconOnly === true){
+	if(compact === true || iconOnly == true){
 		return (
 			<>
 				<button id={id} className={`${className} compact`} style={{ anchorName }} onMouseEnter={(e)=>showTooltip(e)} onMouseLeave={(e)=>hideTooltip(e)} {...props}>
