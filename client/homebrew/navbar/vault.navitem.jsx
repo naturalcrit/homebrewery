@@ -1,10 +1,11 @@
 const React = require('react');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 
-module.exports = function (props) {
+
+const VaultNavItem = () => {
 	return (
-		<Nav.item
+		<MenuItem
 			color='purple'
 			icon='fas fa-dungeon'
 			href='/vault'
@@ -12,6 +13,10 @@ module.exports = function (props) {
 			rel='noopener noreferrer'
 		>
 			Vault
-		</Nav.item>
+		</MenuItem>
 	);
 };
+
+VaultNavItem.displayName = 'VaultNavItem';
+
+module.exports = VaultNavItem;
