@@ -239,6 +239,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 				icon={icon}
 				compact={!isSubMenu && isCompact}
 				isMenu={{ caretDirection: isSubMenu ? 'right' : 'down' }}
+				aria-haspopup='menu'
 			>
 				{trigger(groupName)}
 			</Button>
