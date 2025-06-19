@@ -260,10 +260,16 @@ const Snippetbar = createClass({
 	},
 
 	render : function(){
-		return <Menubar id='snippet-bar'>
-			{this.renderEditorButtons()}
-			{this.renderSnippetGroups()}
-		</Menubar>;
+		return <>
+			<Menubar id='editor-bar'>
+				{this.renderEditorButtons()}
+			</Menubar>
+			<Menubar id='snippet-bar'>
+				{this.renderSnippetGroups()}
+			</Menubar>
+
+		</>;
+		
 	}
 });
 

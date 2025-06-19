@@ -2,19 +2,39 @@
 @import (less) '././././themes/fonts/5e/fonts.less';
 @import (less) 'naturalcrit/styles/core.less';
 
-
+#editor-bar.menu-bar {
+	display          : grid;
+	grid-template-columns: min-content auto;
+	grid-template-rows: min-content;
+	grid-template-areas: "tabs tools";
+	&:has(#brew-tab[aria-selected='true']){
+		--menubar-border: 4px solid @orangeLight;
+	}
+	&:has(#style-tab[aria-selected='true']){
+		--menubar-border: 4px solid @blueLight;
+	}
+	&:has(#snippet-tab[aria-selected='true']){
+		--menubar-border: 4px solid @purpleLight;
+	}
+	&:has(#meta-tab[aria-selected='true']){
+		--menubar-border: 4px solid @greenLight;
+	}
+}
 
 #snippet-bar.menu-bar {
+	display          : grid;
+	grid-template-columns: auto;
+	grid-template-rows: min-content;
+	grid-template-areas: "snippets";
+	justify-content:start;
+
+}
+
+#snippet-bar.menu-bar, #editor-bar.menu-bar {
 	--menubar-color  : #DDDDDD;
 	--menubar-border : 1px solid #666;
 	--menubar-shadow : 0 0px 4px -1px black;
 	--menubar-accent : #AAAAAA;
-	display          : grid;
-	grid-template-columns: min-content auto;
-	grid-template-rows: min-content min-content;
-	grid-template-areas:
-		"tabs tools"
-		"snippets snippets";
 	color            : black;
 	background-color : var(--menubar-color);
 	text-transform   : uppercase;
@@ -29,6 +49,9 @@
 		padding: 0 5px;
 		&:focus-within {
 			background-color: var(--menubar-accent);
+		}
+		&:hover {
+			background-color:#c3c3c3 ;
 		}
 	}
 
@@ -112,8 +135,8 @@
 		&[aria-selected='true']{
 			background-color : @color;
 			color: whitesmoke;
-			outline: 1px solid currentColor;
-			outline-offset: -1px;
+			border: 1px solid white;
+			border-bottom: none;
 			box-sizing: border-box;
 			z-index: 2;
 			box-shadow: 0 -2px 4px #666;
