@@ -466,6 +466,7 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
+					isOwner={this.props.isOwner}
 					themeBundle={this.props.themeBundle}
 					onChange={this.props.onMetaChange}
 					reportError={this.props.reportError}
