@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 750, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -35,6 +35,8 @@ import contentNegotiation from './middleware/content-negotiation.js';
 import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
+
+import Stream from './eventStreamSource.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -509,6 +511,27 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 
 	return next();
 }));
+
+// Create Event Stream source for pages to listen to
+app.get('/stream', (req, res)=>{
+	res.writeHead(200, {
+		'Content-Type'     : 'text/event-stream',
+		'Cache-Control'    : 'no-cache',
+		'Connection'       : 'keep-alive',
+		'Content-Encoding' : 'none'
+	});
+
+	Stream.on('sendUpdate', (event, data)=>{
+		console.log('Event:', event, '\nData:', data);
+		res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
+	});
+});
+
+// After Stream starts, send initStream event
+setTimeout(()=>{
+	Stream.emit('sendUpdate', 'initStream', { time: new Date });
+}, 1000);
+
 
 // Local only
 if(isLocalEnvironment){

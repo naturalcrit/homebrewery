@@ -18,6 +18,8 @@ const router = express.Router();
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
 
+import Stream from './eventStreamSource.js';
+
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
@@ -411,6 +413,8 @@ const api = {
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
+
+		Stream.emit('sendUpdate', 'brewUpdated', { time: new Date, shareId: brew.shareId, version: brew.version });
 
 		res.status(200).send(saved);
 	},

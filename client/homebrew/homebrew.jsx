@@ -66,6 +66,18 @@ const Homebrew = createClass({
 		return {};
 	},
 
+	componentDidMount : function(){
+		const eventSource = new EventSource('/stream');
+
+		eventSource.addEventListener('message', (evt)=>{
+			const messageData = JSON.parse(evt.data);
+
+			if(messageData.eventType == 'initStream'){
+				window.location.reload();
+			}
+		});
+	},
+
 	render : function (){
 		return (
 			<Router location={this.props.url}>
