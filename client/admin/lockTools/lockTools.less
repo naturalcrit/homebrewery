@@ -1,0 +1,66 @@
+.lockTools {
+	.lockBrew { 
+		columns : 2;
+
+		.lockForm {
+			break-inside : avoid;
+
+			label {
+				display     : inline-block;
+				width       : 100%;
+				line-height : 2.25em;
+				text-align  : right;
+				input {
+					float       : right;
+					width       : 65%;
+					margin-left : 10px;
+				}
+				&.checkbox {
+					line-height: 1.5em;
+					input {
+						width  : 1.5em;
+						height : 1.5em;
+					}
+				}
+			}
+		}
+
+		.lockSuggestions {
+			line-height  : 1.2em;
+			break-inside : avoid;
+			columns      : 2;
+			h2 { column-span : all; }
+			h3 { margin-top : 0px; }
+			b { font-weight : 600; }
+
+			.lockCodes { break-inside : avoid; }
+		}
+	}
+
+	.lockTable {
+		cursor       : default;
+		break-inside : avoid;
+		.row:hover {
+			color            : #000000;
+			background-color : #CCCCCC;
+		}
+		.icon {
+			cursor : pointer;
+			&:hover { text-shadow : 0px 0px 6px black; }
+		}
+	}
+    
+	th, td {
+		padding    : 4px 10px;
+		text-align : center;
+	}
+	table, td { border : 1px solid #333333; }
+
+	.brewLookup {
+		min-height   : 175px;
+		break-inside : avoid;
+		h2 { margin-top : 0px; }
+	}
+
+	button i { padding-left : 5px; }
+}

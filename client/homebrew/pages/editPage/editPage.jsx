@@ -102,6 +102,14 @@ const EditPage = createClass({
 		window.onbeforeunload = function(){};
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
+	componentDidUpdate : function(){
+		const hasChange = this.hasChanges();
+		if(this.state.isPending != hasChange){
+			this.setState({
+				isPending : hasChange
+			});
+		}
+	},
 
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey || e.metaKey)) return;
@@ -138,6 +146,17 @@ const EditPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, text: text },
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
+	handleSnipChange : function(snippet){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
 			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
@@ -145,8 +164,7 @@ const EditPage = createClass({
 
 	handleStyleChange : function(style){
 		this.setState((prevState)=>({
-			brew      : { ...prevState.brew, style: style },
-			isPending : true
+			brew : { ...prevState.brew, style: style }
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -158,8 +176,7 @@ const EditPage = createClass({
 			brew : {
 				...prevState.brew,
 				...metadata
-			},
-			isPending : true,
+			}
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -247,16 +264,17 @@ const EditPage = createClass({
 			});
 		if(!res) return;
 
-		this.savedBrew = res.body;
+		this.savedBrew = {
+			...this.state.brew,
+			googleId : res.body.googleId ? res.body.googleId : null,
+			editId 	 : res.body.editId,
+			shareId  : res.body.shareId,
+			version  : res.body.version
+		};
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew,
-				googleId : this.savedBrew.googleId ? this.savedBrew.googleId : null,
-				editId 	 : this.savedBrew.editId,
-				shareId  : this.savedBrew.shareId,
-				version  : this.savedBrew.version
-			},
+		this.setState(()=>({
+			brew        : this.savedBrew,
 			isPending   : false,
 			isSaving    : false,
 			unsavedTime : new Date()
@@ -311,7 +329,14 @@ const EditPage = createClass({
 	},
 
 	renderSaveButton : function(){
-		if(this.state.autoSaveWarning && this.hasChanges()){
+
+		// #1 - Currently saving, show SAVING
+		if(this.state.isSaving){
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+		}
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		if(this.state.isPending && this.state.autoSaveWarning){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
@@ -324,18 +349,17 @@ const EditPage = createClass({
 			</Nav.item>;
 		}
 
-		if(this.state.isSaving){
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		// Use trySave(true) instead of save() to use debounced save function
+		if(this.state.isPending){
+			return <Nav.item className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
-		if(this.state.isPending && this.hasChanges()){
-			return <Nav.item className='save' onClick={this.save} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
-		}
-		if(!this.state.isPending && !this.state.isSaving && this.state.autoSave){
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(this.state.autoSave){
 			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
 		}
-		if(!this.state.isPending && !this.state.isSaving){
-			return <Nav.item className='save saved'>saved.</Nav.item>;
-		}
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved.</Nav.item>;
 	},
 
 	handleAutoSave : function(){
@@ -379,7 +403,7 @@ const EditPage = createClass({
 		const title = `${this.props.brew.title} ${systems}`;
 		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
-**[Homebrewery Link](${global.config.publicUrl}/share/${shareLink})**`;
+**[Homebrewery Link](${global.config.baseUrl}/share/${shareLink})**`;
 
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
@@ -410,7 +434,7 @@ const EditPage = createClass({
 					<Nav.item color='blue' href={`/share/${shareLink}`}>
 						view
 					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.publicUrl}/share/${shareLink}`);}}>
+					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
 						copy url
 					</Nav.item>
 					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
@@ -431,7 +455,7 @@ const EditPage = createClass({
 			<Meta name='robots' content='noindex, nofollow' />
 			{this.renderNavbar()}
 
-			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} />}
+			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
@@ -439,11 +463,12 @@ const EditPage = createClass({
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
+						onSnipChange={this.handleSnipChange}
 						onMetaChange={this.handleMetaChange}
 						reportError={this.errorReported}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
-						snippetBundle={this.state.themeBundle.snippets}
+						themeBundle={this.state.themeBundle}
 						updateBrew={this.updateBrew}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}

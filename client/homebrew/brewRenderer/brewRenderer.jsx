@@ -19,12 +19,11 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet" type="text/css" />
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<base target=_blank>
@@ -39,7 +38,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(props.contents);
+	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -117,6 +116,12 @@ const BrewRenderer = (props)=>{
 		pageShadows  : true
 	});
 
+	//useEffect to store or gather toolbar state from storage
+	useEffect(()=>{
+		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		toolbarState &&	setDisplayOptions(toolbarState);
+	}, []);
+
 	const [headerState, setHeaderState] = useState(false);
 
 	const mainRef  = useRef(null);
@@ -186,17 +191,19 @@ const BrewRenderer = (props)=>{
 		} else {
 			if(pageText.startsWith('\\page')) {
 				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
-				const injectedTags = firstLineTokens.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
+				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
-					styles     = _.mapKeys(styles, (v, k) => k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
+					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
 
+			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+
 			const html = Markdown.render(pageText, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
@@ -272,6 +279,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
+		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {

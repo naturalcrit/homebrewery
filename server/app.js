@@ -2,7 +2,7 @@
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
-import packageJSON       from './../package.json' with { type: 'json' };
+import packageJSON from './../package.json' with { type: 'json' };
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 process.chdir(`${__dirname}/..`);
@@ -11,7 +11,6 @@ const version = packageJSON.version;
 import _       from 'lodash';
 import jwt     from 'jwt-simple';
 import express from 'express';
-import yaml    from 'js-yaml';
 import config  from './config.js';
 import fs      from 'fs-extra';
 
@@ -72,13 +71,11 @@ const corsOptions = {
 			'https://homebrewery-stage.herokuapp.com',
 		];
 
-		if(isLocalEnvironment) {
-			allowedOrigins.push('http://localhost:8000', 'http://localhost:8010');
-		}
+		const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
 
 		const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
-		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin)) {
+		if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 			callback(null, true);
 		} else {
 			console.log(origin, 'not allowed');
@@ -409,6 +406,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
 		tags     : req.brew.tags,
+		snippets : req.brew.snippets
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -438,7 +436,7 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 	const { brew } = req;
 	req.ogMeta = { ...defaultMetaTags,
-		title       : req.brew.title || 'Untitled Brew',
+		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
@@ -575,6 +573,7 @@ const renderPage = async (req, res)=>{
 	const configuration = {
 		local       : isLocalEnvironment,
 		publicUrl   : config.get('publicUrl') ?? '',
+		baseUrl     : `${req.protocol}://${req.get('host')}`,
 		environment : nodeEnv,
 		deployment  : config.get('heroku_app_name') ?? ''
 	};
