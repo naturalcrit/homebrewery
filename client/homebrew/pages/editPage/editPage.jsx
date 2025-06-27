@@ -3,6 +3,7 @@ require('./editPage.less');
 const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
+import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -251,8 +252,29 @@ const EditPage = createClass({
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 
-		const brew = this.state.brew;
+		const brew = { ...this.state.brew };
+
+		let jsonString = JSON.stringify(brew);
+		let bytes = new TextEncoder().encode(jsonString).length;
+
+		console.log(`Before size: ${bytes} bytes (${(bytes / 1024).toFixed(2)} KB)`);
+
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+
+		brew.patches = makePatches(this.savedBrew.text, brew.text);
+		brew.text    = undefined;
+		brew.textBin = undefined;
+		console.log('Saving Brew', brew);
+
+		jsonString = JSON.stringify(brew);
+		bytes = new TextEncoder().encode(jsonString).length;
+
+		console.log(`After size: ${bytes} bytes (${(bytes / 1024).toFixed(2)} KB)`);
+
+		jsonString = JSON.stringify(brew.patches);
+		bytes = new TextEncoder().encode(jsonString).length;
+
+		console.log(`Patch size: ${bytes} bytes (${(bytes / 1024).toFixed(2)} KB)`);
 
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request

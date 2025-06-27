@@ -8,6 +8,7 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
+import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
 import { splitTextStyleAndMetadata, 
 		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
@@ -337,12 +338,18 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
+
 		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
+		console.log(`Brewfromserver: ${JSON.stringify(brewFromServer)}`);
+		splitTextStyleAndMetadata(brewFromServer);
+		brewFromClient.text = applyPatches(brewFromClient.patches, brewFromServer.text)[0];
+		console.log(`Server Text: ${brewFromServer.text}`);
+		console.log(`Brew text: ${brewFromClient.text}`);
 		let brew = _.assign(brewFromServer, brewFromClient);
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
@@ -484,8 +491,8 @@ const api = {
 };
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
