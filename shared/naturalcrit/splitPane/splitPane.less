@@ -30,25 +30,28 @@
 			position: relative;
 			left: 10px;
 			background: inherit;
-			width: 16px;
+			width: auto;
 			border-radius: 0 4px 4px 0;
 			display        : block;
 			color: #CCC;
 			display: flex;
 			flex-direction: column;
 			gap: 5px;
-			padding: 5px 2px 5px 0 ;
+			padding: 5px 4px 5px 0 ;
 			#split-pane-tools {
 				display: flex;
 				flex-direction: column;
 				gap: 3px;
+				[aria-checked='true']{
+					color: @orangeLight;
+				}
 			}
 		}
 
 		&.on-right-edge #flip-box {
 			left: -10px;
 			border-radius: 4px 0 0 4px;
-			padding: 5px 0px 5px 2px ;
+			padding: 5px 0px 5px 4px ;
 		}
 
 		.dots {
@@ -60,26 +63,4 @@
 		}
 		&:hover,&.dragging { background-color : #999999; }
 	}
-	// .arrow {
-	// 	aspect-ratio: 1 / 1;
-	// 	cursor           : pointer;
-	// 	&.left {
-	// 		.tooltipLeft('Jump to location in Editor');
-	// 		top : 30px;
-	// 	}
-	// 	&.right {
-	// 		.tooltipRight('Jump to location in Preview');
-	// 		top : 60px;
-	// 	}
-	// 	&.lock {
-	// 		.tooltipRight('De-sync Editor and Preview locations.');
-	// 		top        : 90px;
-	// 		color: @orangeLight;
-	// 	}
-	// 	&.unlock {
-	// 		.tooltipRight('Sync Editor and Preview locations');
-	// 		top : 90px;
-	// 	}
-	// 	// &:hover { background-color : #666666; }
-	// }
 }

@@ -49,9 +49,9 @@ const BrewPage = (props)=>{
 		const visibleObserver = new IntersectionObserver(
 			(entries)=>{
 				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
+					if(entry.isIntersecting){
 						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
-					else
+					} else
 						props.onVisibilityChange(props.index + 1, false, false);
 				});
 			},
@@ -85,8 +85,6 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-let renderedPages = [];
-let rawPages      = [];
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -104,14 +102,20 @@ const BrewRenderer = (props)=>{
 		...props
 	};
 
+	let renderedPages = [];
+	let rawPages      = [];
+
 	useEffect(()=>{
-		console.log('renderer loaded')
+		console.log('renderer loaded');
+		return ()=> {
+			console.log('renderer unloaded')
+		}
 	}, []);
 
 	const [state, setState] = useState({
 		isMounted    : false,
 		visibility   : 'hidden',
-		visiblePages : [],
+		visiblePages : [1],
 		centerPage   : 1
 	});
 

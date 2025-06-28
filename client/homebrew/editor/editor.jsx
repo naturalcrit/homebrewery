@@ -92,6 +92,7 @@ const Editor = createClass({
 		}
 
 		this.setState({ snippetbarHeight: document.querySelector('#snippet-bar').offsetHeight });
+		console.log('editor mounted')
 	},
 
 	componentWillUnmount : function() {

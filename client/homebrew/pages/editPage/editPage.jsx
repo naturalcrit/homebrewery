@@ -59,6 +59,8 @@ const EditPage = createClass({
 			currentBrewRendererPageNum : 1,
 			displayLockMessage         : this.props.brew.lock || false,
 			themeBundle                : {},
+			openStoragePicker          : false,
+			paneOrder                  : [0, 1],
 			alerts                     : {
 				alertLoginToTransfer   : false,
 				alertTrashedGoogleBrew : this.props.brew.trashed,
@@ -67,7 +69,7 @@ const EditPage = createClass({
 				isPending              : false,
 				isSaving               : false,
 			},
-			openStoragePicker : false
+			swapCount: 0,
 		};
 	},
 
@@ -575,6 +577,7 @@ const EditPage = createClass({
 			</Menubar>
 		);
 	},
+	
 
 	render : function(){
 		return <div className='editPage sitePage'>
@@ -585,8 +588,13 @@ const EditPage = createClass({
 
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={this.handleSplitMove} paneOrder={this.state.paneOrder} 
+					setPaneOrder={order => this.setState(prev => ({
+						paneOrder: order,
+						swapCount: prev.swapCount + 1
+					}))}>
 					<Editor
+						key={`editor-pane-${this.state.paneOrder.indexOf(0)}`}
 						ref={this.editor}
 						brew={this.state.brew}
 						onTextChange={this.handleTextChange}
@@ -606,6 +614,7 @@ const EditPage = createClass({
 						htmlErrors={this.state.alerts.htmlErrors}
 					/>
 					<BrewRenderer
+						key={`renderer-pane-${this.state.swapCount}`}
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}

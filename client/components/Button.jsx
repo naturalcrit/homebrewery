@@ -64,7 +64,7 @@ const Button = ({
 	if(compact === true || iconOnly == true){
 		return (
 			<>
-				<button id={id} className={`${className} compact`} style={{ anchorName }} onMouseEnter={(e)=>showTooltip(e)} onMouseLeave={(e)=>hideTooltip(e)} {...props}>
+				<button id={id} className={`${className && className} compact`} style={{ anchorName }} onMouseEnter={(e)=>showTooltip(e)} onMouseLeave={(e)=>hideTooltip(e)} {...props}>
 					{icon && <i className={icon} />}
 					<span className='sr-only'>{children}</span>
 					{isMenu.caretDirection && <i className={`caret fas fa-caret-${isMenu.caretDirection}`}></i>}
@@ -74,7 +74,7 @@ const Button = ({
 		);
 	} else {
 		return (
-			<button id={id} className={className} style={{ anchorName }} {...props}>
+			<button id={id} className={className && className} style={{ anchorName }} {...props}>
 				{icon && <i className={icon} />}
 				{children}
 				{isMenu.caretDirection && <i className={`caret fas fa-caret-${isMenu.caretDirection}`}></i>}

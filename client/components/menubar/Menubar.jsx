@@ -18,6 +18,8 @@ const Menubar = ({ id = null, className, children })=>{
 		const menubar = menubarRef.current;
 		if(!menubar) return;
 
+		let resizeObserver = null; // <-- define here
+
 		const measureFullWidth = ()=>{
 			// Temporarily remove compact class to measure full width
 			const wasCompact = menubar.classList.contains('compact');
@@ -39,13 +41,11 @@ const Menubar = ({ id = null, className, children })=>{
 			setIsCompact(fullWidth > containerWidth);
 		}, 100);
 
-		// Wait for parent element to stabilize
-		setTimeout(()=>{
+		const timeoutId = setTimeout(()=>{
 			measureFullWidth();
 			checkOverflow();
 
-			// Set up resize observer after initial measurement
-			const resizeObserver = new ResizeObserver(()=>{
+			resizeObserver = new ResizeObserver(()=>{
 				checkOverflow();
 			});
 
@@ -56,7 +56,8 @@ const Menubar = ({ id = null, className, children })=>{
 
 		return ()=>{
 			checkOverflow.cancel();
-			resizeObserver.disconnect();
+			clearTimeout(timeoutId);
+			if(resizeObserver) resizeObserver.disconnect();
 		};
 	}, []);
 
