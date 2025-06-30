@@ -1,29 +1,25 @@
 @keyframes glideDown {
-	0%   {transform : translate(-50% + 3px, 0px);
-				opacity   : 0;}
-	100% {transform : translate(-50% + 3px, 10px);
-				opacity   : 1;}
+	0% {
+		opacity   : 0;transform : translate(-50% + 3px, 0px);}
+	100% {
+		opacity   : 1;transform : translate(-50% + 3px, 10px);}
 }
-.editPage{
-	.navItem.save{
+.editPage {
+	.navItem.save {
+		position   : relative;
 		width      : 106px;
 		text-align : center;
-		position   : relative;
-		&.saved{
+		&.saved {
+			color  : #666666;
 			cursor : initial;
-			color  : #666;
 		}
 	}
-	.googleDriveStorage {
-		position : relative;
-	}
-	.googleDriveStorage img{
-		height	: 18px;
+	.googleDriveStorage { position : relative; }
+	.googleDriveStorage img {
+		height  : 18px;
 		padding : 0px;
 		margin  : -5px;
 
-		&.inactive {
-			filter: grayscale(1);
-		}
+		&.inactive { filter : grayscale(1); }
 	}
 }

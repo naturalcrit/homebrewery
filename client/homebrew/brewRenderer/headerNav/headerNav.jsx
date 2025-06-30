@@ -25,7 +25,7 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 			'.toc'         : ()=>{ return 'Table of Contents'; },
 		};
 
-		const getHeaderContent = el => el.querySelector('h1')?.textContent;
+		const getHeaderContent = (el)=>el.querySelector('h1')?.textContent;
 
 		const topLevelPageSelector = Object.keys(topLevelPages).join(',');
 
@@ -52,25 +52,23 @@ const HeaderNav = React.forwardRef(({}, pagesRef)=>{
 				depth : 7,              // All unmatched elements with IDs are set to the maximum depth (7)
 				text  : el.textContent, // Use `textContent` because `innerText` is affected by rendering, e.g. 'content-visibility: auto'
 				link  : el.id
-			}
+			};
 			if(el.classList.contains('page')) {
 				let text = `Page ${el.id.slice(1)}`; // Get the page # by trimming off the 'p' from the ID
-				const pageType = Object.keys(topLevelPages).find(pageType => el.querySelector(pageType));
-				if (pageType)
-					text += ` - ${topLevelPages[pageType](el, pageType)}` // If a Top Level Page, add extra label
+				const pageType = Object.keys(topLevelPages).find((pageType)=>el.querySelector(pageType));
+				if(pageType)
+					text += ` - ${topLevelPages[pageType](el, pageType)}`; // If a Top Level Page, add extra label
 
 				navEntry.depth     = 0; // Pages are always at the least indented level
 				navEntry.text      = text;
 				navEntry.className = 'pageLink';
-			}
-			else if(el.localName.match(/^h[1-6]/)){  // Header elements H1 through H6
+			} else if(el.localName.match(/^h[1-6]/)){  // Header elements H1 through H6
 				navEntry.depth = el.localName[1];      // Depth is set by the header level
 			}
 			navList.push(navEntry);
 		});
 
-		return _.map(navList, (navItem, index)=>
-			<HeaderNavItem {...navItem} key={index} />
+		return _.map(navList, (navItem, index)=><HeaderNavItem {...navItem} key={index} />
 		);
 	};
 

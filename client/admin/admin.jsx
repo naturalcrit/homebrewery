@@ -3,14 +3,15 @@ import React, { useEffect, useState } from 'react';
 const BrewUtils = require('./brewUtils/brewUtils.jsx');
 const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
 import AuthorUtils from './authorUtils/authorUtils.jsx';
+import LockTools  from './lockTools/lockTools.jsx';
 
-const tabGroups = ['brew', 'notifications', 'authors'];
+const tabGroups = ['brew', 'notifications', 'authors', 'locks'];
 
 const Admin = ()=>{
-	const [currentTab, setCurrentTab] = useState('brew');
+	const [currentTab, setCurrentTab] = useState('');
 
 	useEffect(()=>{
-		setCurrentTab(localStorage.getItem('hbAdminTab'));
+		setCurrentTab(localStorage.getItem('hbAdminTab') || 'brew');
 	}, []);
 
 	useEffect(()=>{
@@ -40,6 +41,7 @@ const Admin = ()=>{
 				{currentTab === 'brew' && <BrewUtils />}
 				{currentTab === 'notifications' && <NotificationUtils />}
 				{currentTab === 'authors' && <AuthorUtils />}
+        		{currentTab === 'locks' && <LockTools />}
 			</main>
 		</div>
 	);

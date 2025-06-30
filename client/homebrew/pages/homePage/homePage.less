@@ -1,50 +1,40 @@
-.homePage{
+.homePage {
 	position : relative;
-	a.floatingNewButton{
+	a.floatingNewButton {
 		.animate(background-color);
 		position         : absolute;
-		display          : block;
 		right            : 70px;
 		bottom           : 50px;
-		z-index          : 100;
 		z-index          : 5001;
+		display          : block;
 		padding          : 1em;
-		background-color : @orange;
 		font-size        : 1.5em;
 		color            : white;
 		text-decoration  : none;
+		background-color : @orange;
 		box-shadow       : 3px 3px 15px black;
-		&:hover{
-			background-color : darken(@orange, 20%);
-		}
+		&:hover { background-color : darken(@orange, 20%); }
 	}
-	.floatingSaveButton{
+	.floatingSaveButton {
 		.animateAll();
 		position         : absolute;
-		display          : block;
 		right            : 200px;
 		bottom           : 70px;
-		z-index          : 100;
 		z-index          : 5000;
+		display          : block;
 		padding          : 0.8em;
-		cursor           : pointer;
-		background-color : @blue;
 		font-size        : 0.8em;
 		color            : white;
 		text-decoration  : none;
+		cursor           : pointer;
+		background-color : @blue;
 		box-shadow       : 3px 3px 15px black;
-		&:hover{
-			background-color : darken(@blue, 20%);
-		}
-		&.show{
-			right : 350px;
-		}
+		&:hover { background-color : darken(@blue, 20%); }
+		&.show { right : 350px; }
 	}
 
-	.navItem.save{
-		background-color: @orange;
-		&:hover{
-			background-color: @green;
-		}
+	.navItem.save {
+		background-color : @orange;
+		&:hover { background-color : @green; }
 	}
 }

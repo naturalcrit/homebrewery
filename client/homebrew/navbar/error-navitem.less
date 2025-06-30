@@ -1,78 +1,70 @@
 .navItem.error {
-  position         : relative;
-  background-color : @red;
+	position         : relative;
+	background-color : @red;
 }
 
-.errorContainer{
-  animation-name: glideDown;
-  animation-duration: 0.4s;
-  position         : absolute;
-  top              : 100%;
-  left             : 50%;
-  z-index          : 1000;
-  width            : 140px;
-  padding          : 3px;
-  color            : white;
-  background-color : #333;
-  border           : 3px solid #444;
-  border-radius    : 5px;
-  transform        : translate(-50% + 3px, 10px);
-  text-align       : center;
-  font-size        : 10px;
-  font-weight      : 800;
-  text-transform   : uppercase;
-	.lowercase {
-		text-transform : none;
+.errorContainer {
+	position           : absolute;
+	top                : 100%;
+	left               : 50%;
+	z-index            : 1000;
+	width              : 140px;
+	padding            : 3px;
+	font-size          : 10px;
+	font-weight        : 800;
+	color              : white;
+	text-align         : center;
+	text-transform     : uppercase;
+	background-color   : #333333;
+	border             : 3px solid #444444;
+	border-radius      : 5px;
+	transform          : translate(-50% + 3px, 10px);
+	animation-name     : glideDown;
+	animation-duration : 0.4s;
+	.lowercase { text-transform : none; }
+	a { color : @teal; }
+	&::before {
+		position      : absolute;
+		top           : -23px;
+		left          : 53px;
+		width         : 0px;
+		height        : 0px;
+		content       : '';
+		border-top    : 10px solid transparent;
+		border-right  : 10px solid transparent;
+		border-bottom : 10px solid #444444;
+		border-left   : 10px solid transparent;
 	}
-  a{
-    color : @teal;
-  }
-  &:before {
-    content: "";
-    width: 0px;
-    height: 0px;
-    position: absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #444;
-    left: 53px;
-    top: -23px;
-  }
-  &:after {
-    content: "";
-    width: 0px;
-    height: 0px;
-    position: absolute;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid transparent;
-    border-bottom: 10px solid #333;
-    left: 53px;
-    top: -19px;
-  }
-  .deny {
-    width            : 48%;
-    margin           : 1px;
-    padding          : 5px;
-    background-color : #333;
-    display          : inline-block;
-    border-left      : 1px solid #666;
-    .animate(background-color);
-    &:hover{
-      background-color : red;
-    }
-  }
-  .confirm {
-    width            : 48%;
-    margin           : 1px;
-    padding          : 5px;
-    background-color : #333;
-    display          : inline-block;
-    color            : white;
-    .animate(background-color);
-    &:hover{
-      background-color : teal;
-    }
-  }
+	&::after {
+		position      : absolute;
+		top           : -19px;
+		left          : 53px;
+		width         : 0px;
+		height        : 0px;
+		content       : '';
+		border-top    : 10px solid transparent;
+		border-right  : 10px solid transparent;
+		border-bottom : 10px solid #333333;
+		border-left   : 10px solid transparent;
+	}
+	.deny {
+		display          : inline-block;
+		width            : 48%;
+		padding          : 5px;
+		margin           : 1px;
+		background-color : #333333;
+		border-left      : 1px solid #666666;
+		.animate(background-color);
+		&:hover { background-color : red; }
+	}
+	.confirm {
+		display          : inline-block;
+		width            : 48%;
+		padding          : 5px;
+		margin           : 1px;
+		color            : white;
+		background-color : #333333;
+		.animate(background-color);
+		&:hover { background-color : teal; }
+	}
 }

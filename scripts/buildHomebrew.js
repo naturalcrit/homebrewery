@@ -10,7 +10,7 @@ import babel          from '@babel/core';
 import babelConfig    from '../babel.config.json' with { type : 'json' };
 import less           from 'less';
 
-const isDev = !!process.argv.find((arg) => arg === '--dev');
+const isDev = !!process.argv.find((arg)=>arg === '--dev');
 
 const babelify = async (code)=>(await babel.transformAsync(code, babelConfig)).code;
 
@@ -53,7 +53,7 @@ fs.emptyDirSync('./build');
 	const themes = { Legacy: {}, V3: {} };
 
 	let themeFiles = fs.readdirSync('./themes/Legacy');
-	for (let dir of themeFiles) {
+	for (const dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.Legacy[dir] = (themeData);
@@ -70,7 +70,7 @@ fs.emptyDirSync('./build');
 	}
 
 	themeFiles = fs.readdirSync('./themes/V3');
-	for (let dir of themeFiles) {
+	for (const dir of themeFiles) {
 		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
 		themeData.path = dir;
 		themes.V3[dir] = (themeData);
@@ -113,7 +113,7 @@ fs.emptyDirSync('./build');
 	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
 	stream.write('[\n"default"');
 
-	for (let themeFile of editorThemeFiles) {
+	for (const themeFile of editorThemeFiles) {
 		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
 	}
 	stream.write('\n]\n');

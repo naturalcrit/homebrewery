@@ -1,6 +1,6 @@
 import express    from 'express';
 import asyncHandler from 'express-async-handler';
-import {model as HomebrewModel }     from './homebrew.model.js';
+import { model as HomebrewModel }     from './homebrew.model.js';
 
 const router = express.Router();
 
@@ -29,7 +29,7 @@ const rendererConditions = (legacy, v3)=>{
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
-const sortConditions = (sort, dir) => {
+const sortConditions = (sort, dir)=>{
 	return { [sort]: dir === 'asc' ? 1 : -1 };
 };
 

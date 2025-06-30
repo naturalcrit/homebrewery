@@ -1,36 +1,32 @@
 @import 'naturalcrit/styles/core.less';
-.homebrew{
+.homebrew {
 	height : 100%;
-	.sitePage{
+	.sitePage {
 		display          : flex;
-		height           : 100%;
-		background-color : @steel;
 		flex-direction   : column;
+		height           : 100%;
 		overflow-y       : hidden;
-		.content{
+		background-color : @steel;
+		.content {
 			position   : relative;
-			height     : calc(~"100% - 29px"); //Navbar height
 			flex       : auto;
+			height     : calc(~'100% - 29px'); //Navbar height
 			overflow-y : hidden;
 		}
 		&.listPage .content {
 			overflow-y : scroll;
 
 			&::-webkit-scrollbar {
-				width: 20px;
-				&:horizontal{
-					height: 20px;
-					width:auto;
+				width : 20px;
+				&:horizontal {
+					width  : auto;
+					height : 20px;
 				}
 				&-thumb {
-					background: linear-gradient(90deg, #d3c1af 15px, #00000000 15px);
-					&:horizontal{
-						background: linear-gradient(0deg, #d3c1af 15px, #00000000 15px);
-					}
+					background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
+					&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
 				}
-				&-corner {
-					visibility: hidden;
-				}
+				&-corner { visibility : hidden; }
 			}
 		}
 	}

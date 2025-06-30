@@ -99,14 +99,14 @@ const VaultPage = (props)=>{
 		setSearching(true);
 		setError(null);
 
-		const title  = titleRef.current.value || '';
-		const author = authorRef.current.value || '';
-		const count  = countRef.current.value || 10;
-		const v3     = v3Ref.current.checked != false;
-		const legacy = legacyRef.current.checked != false;
+		const title      = titleRef.current.value || '';
+		const author     = authorRef.current.value || '';
+		const count      = countRef.current.value || 10;
+		const v3         = v3Ref.current.checked != false;
+		const legacy     = legacyRef.current.checked != false;
 		const sortOption = sort || 'title';
-		const dirOption = dir || 'asc';
-		const pageProp = page || 1;
+		const dirOption  = dir || 'asc';
+		const pageProp   = page || 1;
 
 		setSort(sortOption);
 		setdir(dirOption);
@@ -247,7 +247,7 @@ const VaultPage = (props)=>{
 					</li>
 					<li>
 						Some common words like "a", "after", "through", "itself", "here", etc.,
-						are ignored in searches. The full list can be found &nbsp;
+						are ignored in searches. The full list can be found&nbsp;
 						<a href='https://github.com/mongodb/mongo/blob/0e3b3ca8480ddddf5d0105d11a94bd4698335312/src/mongo/db/fts/stop_words_english.txt'>
 							here
 						</a>
@@ -286,9 +286,9 @@ const VaultPage = (props)=>{
 	};
 
 	const renderPaginationControls = ()=>{
-		if(!totalBrews) return null;
+		if(!totalBrews || totalBrews < 10) return null;
 
-		const countInt = parseInt(props.query.count || 20);
+		const countInt = parseInt(brewCollection.length || 20);
 		const totalPages = Math.ceil(totalBrews / countInt);
 
 		let startPage, endPage;
@@ -355,7 +355,7 @@ const VaultPage = (props)=>{
 	};
 
 	const renderFoundBrews = ()=>{
-		if(searching) {
+		if(searching && !brewCollection) {
 			return (
 				<div className='foundBrews searching'>
 					<h3 className='searchAnim'>Searching</h3>
@@ -395,6 +395,7 @@ const VaultPage = (props)=>{
 					{`Brews found: `}
 					<span>{totalBrews}</span>
 				</span>
+				{brewCollection.length > 10 && renderPaginationControls()}
 				{brewCollection.map((brew, index)=>{
 					return (
 						<BrewItem
@@ -415,14 +416,14 @@ const VaultPage = (props)=>{
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
 			{renderNavItems()}
-			<div className="content">
-			<SplitPane showDividerButtons={false}>
-				<div className='form dataGroup'>{renderForm()}</div>
-				<div className='resultsContainer dataGroup'>
-					{renderSortBar()}
-					{renderFoundBrews()}
-				</div>
-			</SplitPane>
+			<div className='content'>
+				<SplitPane showDividerButtons={false}>
+					<div className='form dataGroup'>{renderForm()}</div>
+					<div className='resultsContainer dataGroup'>
+						{renderSortBar()}
+						{renderFoundBrews()}
+					</div>
+				</SplitPane>
 			</div>
 		</div>
 	);

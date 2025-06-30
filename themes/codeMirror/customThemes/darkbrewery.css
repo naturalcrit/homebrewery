@@ -1,0 +1,134 @@
+/*stylelint-disable*/
+.editor .snippetBar {
+	color: white;
+	background-color: #2F393C;
+	.dropdown {
+		background-color: #2F393C;
+	}
+	.editors {
+		border-color: #ccc;
+	}
+}
+/* Main BG color and normal text color */
+.CodeMirror {
+	--bg: #293134;
+	--highlight: #bcbcbc;
+	color: #91A6AA;
+	background: var(--bg);
+	.CodeMirror-scroll {
+		.CodeMirror-gutters {
+			border-right: 1px solid #555;
+			background: var(--bg);
+			.CodeMirror-gutter {
+				background-color: var(--bg);
+				&.CodeMirror-foldgutter {
+					cursor: pointer;
+					border-left: 1px solid #555;
+					transition: background 0.1s;
+					&:hover {
+						background: #555;
+					}
+				}
+			}
+		}
+		.CodeMirror-lines {
+			/* Line numbers*/
+			.CodeMirror-linenumber.CodeMirror-gutter-elt {
+				background-color: var(--bg);
+				color: #81969A;
+			}
+			/* Blinking cursor */
+			.CodeMirror-cursor {
+				border-left: 1px solid #E0E2E4;
+			}
+			.pageLine {
+				color: #000000;
+				background: #000000;
+				border-bottom: 1px solid #FFFFFF;
+			}
+			.CodeMirror-code .CodeMirror-line {
+				&.columnSplit {
+					font-style: italic;
+					color: inherit;
+					background-color: #1F5763;
+					border-bottom: #229999 solid 1px;
+				}
+				/*syntax*/
+				.cm-header {
+					font-weight: bold;
+					color: #C51B1B;
+					-webkit-text-stroke-width: 0.1px;
+					-webkit-text-stroke-color: #000000;
+				}
+				.cm-strong {
+					color: #309DD2;
+				}
+				.cm-em {
+					/*italics*/
+				}
+				.cm-link {
+					color: #DD6300;
+				}
+				.cm-string {
+					color: #AA8261;
+				}
+				/* @import */
+				.cm-def {
+					color: #2986CC;
+				}
+				/* Bullets and such */
+				.cm-variable-2 {
+					color: #3CBF30;
+				}
+				.block:not(.cm-comment) {
+					color: #E3E3E3;
+				}
+				.inline-block {
+					color: #E3E3E3;
+				}
+				.cm-tag {
+					color: #E3FF00;
+				}
+				.cm-attribute {
+					color: #E3FF00;
+				}
+				.cm-atom {
+					color: #c1939a;
+				}
+				.cm-number {
+					color: #2986CC;
+				}
+				.cm-property:not(.cm-error) ~ .cm-variable {
+					color:#9e1f9e;
+				}
+				.cm-qualifier {
+					color: #EE1919;
+				}
+				.cm-comment {
+					color: #BBC700;
+				}
+				.cm-keyword {
+					color: white;
+				}
+				.cm-error {
+					color: #C50202;
+				}
+				.CodeMirror-foldmarker {
+					color: #F0FF00;
+				}
+				.cm-builtin {
+					color: #FFFFFF;
+				}
+				.dt-highlight {
+					background: #ffffff14;
+				}
+				.dl-colon-highlight {
+					background: #ccc;
+				}
+				.dl-highlight.dd-highlight {
+					color: #b5858d;
+				}
+			}
+		}
+	}
+}

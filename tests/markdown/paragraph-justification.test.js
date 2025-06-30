@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 
 import Markdown from 'naturalcrit/markdown.js';
 

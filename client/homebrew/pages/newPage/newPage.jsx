@@ -141,6 +141,18 @@ const NewPage = createClass({
 		localStorage.setItem(STYLEKEY, style);
 	},
 
+	handleSnipChange : function(snippet){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
+			isPending  : true,
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
 			fetchThemeBundle(this, metadata.renderer, metadata.theme);
@@ -223,39 +235,39 @@ const NewPage = createClass({
 	render : function(){
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
-			<div className="content">
-			<SplitPane onDragFinish={this.handleSplitMove}>
-				<Editor
-					ref={this.editor}
-					brew={this.state.brew}
-					onTextChange={this.handleTextChange}
-					onStyleChange={this.handleStyleChange}
-					onMetaChange={this.handleMetaChange}
-					renderer={this.state.brew.renderer}
-					userThemes={this.props.userThemes}
-					themeBundle={this.state.themeBundle}
-					snippetBundle={this.state.themeBundle.snippets}
-					onCursorPageChange={this.handleEditorCursorPageChange}
-					onViewPageChange={this.handleEditorViewPageChange}
-					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-				/>
-				<BrewRenderer
-					text={this.state.brew.text}
-					style={this.state.brew.style}
-					renderer={this.state.brew.renderer}
-					theme={this.state.brew.theme}
-					themeBundle={this.state.themeBundle}
-					errors={this.state.htmlErrors}
-					lang={this.state.brew.lang}
-					onPageChange={this.handleBrewRendererPageChange}
-					currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-					currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-					currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-					allowPrint={true}
-				/>
-			</SplitPane>
+			<div className='content'>
+				<SplitPane onDragFinish={this.handleSplitMove}>
+					<Editor
+						ref={this.editor}
+						brew={this.state.brew}
+						onTextChange={this.handleTextChange}
+						onStyleChange={this.handleStyleChange}
+						onMetaChange={this.handleMetaChange}
+						onSnipChange={this.handleSnipChange}
+						renderer={this.state.brew.renderer}
+						userThemes={this.props.userThemes}
+						themeBundle={this.state.themeBundle}
+						onCursorPageChange={this.handleEditorCursorPageChange}
+						onViewPageChange={this.handleEditorViewPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+					/>
+					<BrewRenderer
+						text={this.state.brew.text}
+						style={this.state.brew.style}
+						renderer={this.state.brew.renderer}
+						theme={this.state.brew.theme}
+						themeBundle={this.state.themeBundle}
+						errors={this.state.htmlErrors}
+						lang={this.state.brew.lang}
+						onPageChange={this.handleBrewRendererPageChange}
+						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
+						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
+						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						allowPrint={true}
+					/>
+				</SplitPane>
 			</div>
 		</div>;
 	}
