@@ -5,7 +5,7 @@
 	height    : 100%;
 	container : editor / inline-size;
 	.codeEditor {
-		height            : 100%;
+		height            : calc(100% - 25px);
 		.CodeMirror { height : 100%; }
 		.pageLine, .snippetLine, .templateLine {
 			background : #33333328;
@@ -108,9 +108,4 @@
 		span { padding : 2px 5px; }
 	}
 
-}
-
-@container editor (width < 683px) {
-	.editor .codeEditor .CodeMirror { height : calc(100% - 51px);}
-	.homePage .editor .codeEditor .CodeMirror { height : calc(100% - 25px);}
 }

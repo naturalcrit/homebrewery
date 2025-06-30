@@ -88,24 +88,70 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Tuesday 03/18/2025 - v3.18.1
+### Thursday 05/22/2025 - v3.19.0
 
 {{taskList
+##### abquintic
+* [x] Fix crash due to colons after `\page`
+
+Fixes issue [#4105](https://github.com/naturalcrit/homebrewery/issues/4105)
+
+* [x] Fix images with spaces in alt text not rendering
+
+Fixes issue [#3659](https://github.com/naturalcrit/homebrewery/issues/3659)
+
+* [x] Custom snippets! Open the new {{openSans **:fas_table_list: SNIPPETS**}} tab (next to the {{openSans **:fas_paintbrush: STYLE**}} tab). Custom snippets will appear in a new snippet dropdown, and will be included when imported as a custom theme.
+
+* [x] Move several generic styles/snippets from PHB to the Blank theme; generic snippets like image masks no longer require the PHB theme.
+
+* [x] Extract several Markdown+ syntax extensions into their own NPM packages, for use by the wider community.
+
+* [x] Allow `\pagebreak` and `\columnbreak` as alternatives to `\page` and `\column`
+
+Partially fixes issue [#4035](https://github.com/naturalcrit/homebrewery/issues/4035)
+
+* [x] Fix misbehaving column breaks on old Chrome
+
+Fixes issue [#4192](https://github.com/naturalcrit/homebrewery/issues/4192)
+
+* [x] Self-host font-awesome icons; fix missing icons on local installs
+
+Fixes issue [#1965](https://github.com/naturalcrit/homebrewery/issues/1965)
+Fixes issue [#1548](https://github.com/naturalcrit/homebrewery/issues/1548)
+
 ##### G-Ambatte
-* [x] Revert colon rendering from br elements to blank divs
+* [x] Fix CORS issue on local installs
+
+* [x] Fix print size issues when using the Facing and Flow view options.
+
+Fixes issue [#4146](https://github.com/naturalcrit/homebrewery/issues/4146)
+
+* [x] New built-in `$[HB_pageNumber]` variable. Works with math operations or can be reassigned like any other variable for more customization over the old `{{pageNumber,auto}}` snippet.\
+New snippet found at {{openSans **:fas_pencil: TEXT EDITOR :fas_arrow_right: :fas_bookmark: PAGE NUMBERING :fas_arrow_right: :fas_arrow_down_1_9: VARIABLE AUTO PAGE NUMBER**}}
 
 ##### 5e-Cleric
-* [x] Allow for local connections within a same network when running a local version
-Fixes issue [#4094](https://github.com/naturalcrit/homebrewery/issues/4094)
+* [x] Fix search bar covering up snippet bar (3 times)
 
-* [x] Add US Letter size page snippet
-Fixes issue [#3893](https://github.com/naturalcrit/homebrewery/issues/3893)
+Fixes issue [#4098](https://github.com/naturalcrit/homebrewery/issues/4098)
+
+* [x] Save view toolbar settings across sessions
+
+Fixes issue [#3835](https://github.com/naturalcrit/homebrewery/issues/3835)
+
+* [x] Fix styling issues on the view toolbar
+
+* [x] Update the Darkbrewery editor theme
+
+Fixes issue [#3312](https://github.com/naturalcrit/homebrewery/issues/3312)
+
 }}
+
+\page
 
 ### Monday 03/10/2025 - v3.18.0
 
 {{taskList
-##### dbolack
+##### abquintic
 * [x] Add ability to paste in any Share ID/URL into a brew's {{openSans :fas_circle_info: **Properties** :fas_arrow_right: **THEMES**}} selection, as long as that brew has been tagged as `meta:theme`. You can now share your custom brew themes without needing to make a personal copy.
 * [x] Begin migration of custom Markdown extensions into their own NPM packages, for easier adoption by other users or projects
 * [x] Fix external HTML appearing in open codeblocks
@@ -167,7 +213,7 @@ Fixes issue [#4073](https://github.com/naturalcrit/homebrewery/issues/4073)
 
 * [x] Fix Reddit link crash when title has non-latin chars
 
-##### dbolack
+##### abquintic
 
 * [x] Fix page shadows toolbar option
 

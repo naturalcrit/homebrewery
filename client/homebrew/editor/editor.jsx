@@ -66,8 +66,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta', 'snippet', 'template'
+			editorTheme      : this.props.editorTheme,
+			view             : 'text', //'text', 'style', 'meta', 'snippet', 'template'
+			snippetbarHeight : 25
 		};
 	},
 
@@ -95,6 +96,7 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
+		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -429,6 +431,9 @@ const Editor = createClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.codeEditor.current?.updateSize();
+		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
+		if(snipHeight !== this.state.snippetbarHeight)
+			this.setState({ snippetbarHeight: snipHeight });
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -453,7 +458,8 @@ const Editor = createClass({
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isTemplate()){
@@ -479,7 +485,8 @@ const Editor = createClass({
 					onChange={this.props.onStyleChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -508,7 +515,8 @@ const Editor = createClass({
 					onChange={this.props.onSnipChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 	},
