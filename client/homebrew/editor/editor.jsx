@@ -12,8 +12,10 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *[\w -_]*)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
+const TEMPLATEBREAK_REGEX_V3 = /^\\template\ .*$/;
+const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -21,6 +23,10 @@ const DEFAULT_STYLE_TEXT = dedent`
 				.myExampleClass {
 					color: black;
 				}`;
+
+const DEFAULT_TEMPLATE_TEXT = dedent`
+				\template Blank
+				`;
 
 const DEFAULT_SNIPPET_TEXT = dedent`
 				\snippet example snippet
@@ -40,11 +46,12 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onTextChange  : ()=>{},
-			onStyleChange : ()=>{},
-			onMetaChange  : ()=>{},
-			onSnipChange  : ()=>{},
-			reportError   : ()=>{},
+			onTextChange     : ()=>{},
+			onStyleChange    : ()=>{},
+			onMetaChange     : ()=>{},
+			onSnipChange     : ()=>{},
+			onTemplateChange : ()=>{},
+			reportError      : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
@@ -60,7 +67,7 @@ const Editor = createClass({
 	getInitialState : function() {
 		return {
 			editorTheme      : this.props.editorTheme,
-			view             : 'text', //'text', 'style', 'meta', 'snippet'
+			view             : 'text', //'text', 'style', 'meta', 'snippet', 'template'
 			snippetbarHeight : 25
 		};
 	},
@@ -68,10 +75,11 @@ const Editor = createClass({
 	editor     : React.createRef(null),
 	codeEditor : React.createRef(null),
 
-	isText  : function() {return this.state.view == 'text';},
-	isStyle : function() {return this.state.view == 'style';},
-	isMeta  : function() {return this.state.view == 'meta';},
-	isSnip  : function() {return this.state.view == 'snippet';},
+	isText     : function() {return this.state.view == 'text';},
+	isStyle    : function() {return this.state.view == 'style';},
+	isMeta     : function() {return this.state.view == 'meta';},
+	isTemplate : function() {return this.state.view == 'template';},
+	isSnip     : function() {return this.state.view == 'snippet';},
 
 	componentDidMount : function() {
 
@@ -153,7 +161,7 @@ const Editor = createClass({
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
-		if((this.state.view === 'text') ||(this.state.view === 'snippet')) {
+		if((this.state.view === 'text') || (this.state.view === 'snippet') || (this.state.view === 'template')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
 			codeMirror.operation(()=>{ // Batch CodeMirror styling
@@ -172,18 +180,30 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-				let userSnippetCount = 1; // start snippet count from snippet 1
-				let editorPageCount = 1; // start page count from page 1
+				const sectionCounters = [];
 
-				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
+				sectionCounters['snippet']  = 1; // start snippet count from snippet 1
+				sectionCounters['view']     = 1; // start page count from page 1
+				sectionCounters['template'] = 1; // start template count from page 1
+
+				let whichSource = this.props.brew.text;
+				let whichSectionMatch = PAGEBREAK_REGEX_V3;
+				if(this.state.view === 'snippet') {
+					whichSource = this.props.brew.snippets;
+					whichSectionMatch = SNIPPETBREAK_REGEX_V3;
+				}
+				if(this.state.view === 'template') {
+					whichSource = this.props.brew.templates;
+					whichSectionMatch = TEMPLATEBREAK_REGEX_V3;
+				}
 				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
 
-					const tabHighlight = this.state.view === 'text' ? 'pageLine' : 'snippetLine';
-					const textOrSnip = this.state.view === 'text';
+					const tabHighlight = this.state.view === 'text' ? 'pageLine' : `${this.state.view}Line`;
 
 					//reset custom line styles
 					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
 					codeMirror.removeLineClass(lineNumber, 'background', 'snippetLine');
+					codeMirror.removeLineClass(lineNumber, 'background', 'templateLine');
 					codeMirror.removeLineClass(lineNumber, 'text');
 					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
@@ -194,17 +214,15 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(textOrSnip ? PAGEBREAK_REGEX_V3 : SNIPPETBREAK_REGEX_V3))) {
-
-						if((lineNumber > 0) && (textOrSnip))      // Since \page is optional on first line of document,
-							editorPageCount += 1; // don't use it to increment page count; stay at 1
-						else if(this.state.view !== 'text')	userSnippetCount += 1;
+					 ((this.props.renderer == 'V3') && (line.match(whichSectionMatch)))) {
+						if(lineNumber > 0)
+							sectionCounters[this.state.view] += 1;
 
 						// add back the original class 'background' but also add the new class '.pageline'
 						codeMirror.addLineClass(lineNumber, 'background', tabHighlight);
 						const pageCountElement = Object.assign(document.createElement('span'), {
 							className   : 'editor-page-count',
-							textContent : textOrSnip ? editorPageCount : userSnippetCount
+							textContent : sectionCounters[this.state.view]
 						});
 						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
 					};
@@ -444,6 +462,19 @@ const Editor = createClass({
 					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
+		if(this.isTemplate()){
+			if(!this.props.brew.templates) { this.props.brew.templates = DEFAULT_TEMPLATE_TEXT; }
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.templates ?? DEFAULT_TEMPLATE_TEXT}
+					onChange={this.props.onTemplateChange}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent} />
+			</>;
+		}
 		if(this.isStyle()){
 			return <>
 				<CodeEditor key='codeEditor'
@@ -528,6 +559,8 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
+					snippetBundle={this.props.snippetBundle}
+					templateBundle={this.props.templateBundle}
 					themeBundle={this.props.themeBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}

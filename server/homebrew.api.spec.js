@@ -590,7 +590,8 @@ brew`);
 				name     : 'User Theme A',
 				author   : 'authorName',
 				styles   : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
-				snippets : []
+				snippets : [],
+				templates : []
 			});
 		});
 
@@ -616,7 +617,8 @@ brew`);
 					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
 					'/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'
 				],
-				snippets : []
+				snippets : [],
+				templates : []
 			});
 		});
 
@@ -636,7 +638,8 @@ brew`);
 				snippets : [
 					'V3_Blank',
 					'V3_5ePHB'
-				]
+				],
+				templates : []
 			});
 		});
 
@@ -669,7 +672,8 @@ brew`);
 					'V3_Blank',
 					'V3_5ePHB',
 					'V3_5eDMG'
-				]
+				],
+				templates : []
 			});
 		});
 
@@ -952,9 +956,9 @@ brew`);
 			await api.getCSS(req, res);
 
 			expect(req.brew).toEqual(testBrew);
-			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(req.brew).toHaveProperty('style', '\nI Have a style!');
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!');
 			expect(res.set).toHaveBeenCalledWith({
 				'Cache-Control' : 'no-cache',
 				'Content-Type'  : 'text/css'
@@ -1034,7 +1038,7 @@ brew`);
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
 			// Style
-			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
+			expect(testBrew.style).toEqual('style\nstyle\nstyle');
 			// Text
 			expect(testBrew.text).toEqual('text\n');
 		});
