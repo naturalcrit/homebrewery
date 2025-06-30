@@ -412,6 +412,8 @@ const api = {
 		const after = await afterSave();
 		if(!after) return;
 
+		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
+
 		res.status(200).send(saved);
 	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
