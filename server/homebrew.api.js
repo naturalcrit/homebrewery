@@ -8,8 +8,10 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import { splitTextStyleAndMetadata, 
+		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+
 
 const router = express.Router();
 
@@ -118,8 +120,8 @@ const api = {
 					throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04' };
 			}
 
-			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '51', code: stub?.lock.code, message: stub?.lock.shareMessage, brewId: stub?.shareId, brewTitle: stub?.title };
+			if(stub?.lock && accessType === 'share') {
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title, brewAuthors: stub.authors };
 			}
 
 			// If there's a google id, get it if requesting the full brew or if no stub found yet
@@ -175,6 +177,8 @@ const api = {
 				`${text}`;
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
+		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
@@ -301,7 +305,7 @@ const api = {
 				themeAuthor ??= currentTheme.authors?.[0];
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.snippets) completeSnippets.push({ name: currentTheme.title, snippets: currentTheme.snippets });
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
@@ -407,6 +411,8 @@ const api = {
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
+
+		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
 
 		res.status(200).send(saved);
 	},
