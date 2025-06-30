@@ -113,13 +113,14 @@ const BrewRenderer = (props)=>{
 		zoomLevel    : 100,
 		spread       : 'single',
 		startOnRight : true,
-		pageShadows  : true
+		pageShadows  : true,
+		rowGap       : 5,
+		columnGap    : 10,
 	});
 
 	//useEffect to store or gather toolbar state from storage
 	useEffect(()=>{
 		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
-		console.log('toolbar state:', toolbarState);
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
