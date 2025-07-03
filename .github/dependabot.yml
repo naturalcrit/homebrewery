@@ -5,15 +5,15 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 99
-  groups:
-    dev-dependencies:
-      dependency-type: "development"
-      patterns: ["*"]
-      update-types: ["patch", "minor"]
-    prod-dependencies:
-      dependency-type: "production"
-      patterns: ["*"]
-      update-types: ["patch", "minor"]
+  groups:
+    dev-dependencies:
+      dependency-type: "development"
+      patterns: ["*"]
+      update-types: ["patch", "minor"]
+    prod-dependencies:
+      dependency-type: "production"
+      patterns: ["*"]
+      update-types: ["patch", "minor"]
   ignore:
   - dependency-name: eslint
     versions:
