@@ -340,8 +340,10 @@ const api = {
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 		const serverHash     = md5(brewFromServer.text);
+		console.log({serverHash: serverHash});
+		console.log({clientHash: brewFromClient.hash});
 
-		if((brewFromServer?.version !== brewFromClient?.version) || (serverHash !== brewFromClient.hash)) {
+		if((brewFromServer?.version !== brewFromClient?.version)) {
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
