@@ -47,7 +47,7 @@ const EditPage = createClass({
 		return {
 			brew                       : this.props.brew,
 			isSaving                   : false,
-			isPending                  : false,
+			unsavedChanges             : false,
 			alertTrashedGoogleBrew     : this.props.brew.trashed,
 			alertLoginToTransfer       : false,
 			saveGoogle                 : this.props.brew.googleId ? true : false,
@@ -85,7 +85,7 @@ const EditPage = createClass({
 		});
 
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.isPending){
+			if(this.state.isSaving || this.state.unsavedChanges){
 				return 'You have unsaved changes!';
 			}
 		};
@@ -104,9 +104,9 @@ const EditPage = createClass({
 	},
 	componentDidUpdate : function(){
 		const hasChange = this.hasChanges();
-		if(this.state.isPending != hasChange){
+		if(this.state.unsavedChanges != hasChange){
 			this.setState({
-				isPending : hasChange
+				unsavedChanges : hasChange
 			});
 		}
 	},
@@ -156,9 +156,9 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, snippets: snippet },
-			isPending  : true,
-			htmlErrors : htmlErrors,
+			brew           : { ...prevState.brew, snippets: snippet },
+			unsavedChanges : true,
+			htmlErrors     : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -274,10 +274,10 @@ const EditPage = createClass({
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
 		this.setState(()=>({
-			brew        : this.savedBrew,
-			isPending   : false,
-			isSaving    : false,
-			unsavedTime : new Date()
+			brew           : this.savedBrew,
+			unsavedChanges : false,
+			isSaving       : false,
+			unsavedTime    : new Date()
 		}));
 	},
 
@@ -336,7 +336,7 @@ const EditPage = createClass({
 		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(this.state.isPending && this.state.autoSaveWarning){
+		if(this.state.unsavedChanges && this.state.autoSaveWarning){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
@@ -351,7 +351,7 @@ const EditPage = createClass({
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		// Use trySave(true) instead of save() to use debounced save function
-		if(this.state.isPending){
+		if(this.state.unsavedChanges){
 			return <Nav.item className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
