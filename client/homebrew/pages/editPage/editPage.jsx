@@ -4,6 +4,7 @@ const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
 import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
+import { md5 } from 'hash-wasm';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -263,6 +264,7 @@ const EditPage = createClass({
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 
 		brew.patches = makePatches(this.savedBrew.text, brew.text);
+		brew.hash    = await md5(this.savedBrew.text);
 		brew.text    = undefined;
 		brew.textBin = undefined;
 		console.log('Saving Brew', brew);

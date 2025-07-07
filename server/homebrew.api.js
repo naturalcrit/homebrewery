@@ -9,6 +9,7 @@ import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
 import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata, 
 		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
@@ -338,11 +339,12 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
+		const serverHash     = md5(brewFromServer.text);
 
-		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
+		if((brewFromServer?.version !== brewFromClient?.version) || (serverHash !== brewFromClient.hash)) {
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
-			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
 		console.log(`Brewfromserver: ${JSON.stringify(brewFromServer)}`);
