@@ -197,11 +197,14 @@ const EditPage = createClass({
 
 	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.hasChanges() && !this.state.isSaving){
+		if(this.state.isSaving)
+			return;
+		
+		if(this.hasChanges())
 			this.debounceSave();
-		} else {
+		else
 			this.debounceSave.cancel();
-		}
+
 		if(immediate) this.debounceSave.flush();
 	},
 
