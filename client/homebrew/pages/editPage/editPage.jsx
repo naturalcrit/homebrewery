@@ -197,7 +197,7 @@ const EditPage = createClass({
 
 	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.hasChanges()){
+		if(this.hasChanges() && !this.state.isSaving){
 			this.debounceSave();
 		} else {
 			this.debounceSave.cancel();
@@ -216,8 +216,7 @@ const EditPage = createClass({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.setState({
-			error    : null,
-			isSaving : false
+			error    : null
 		});
 	},
 
@@ -233,9 +232,8 @@ const EditPage = createClass({
 	toggleGoogleStorage : function(){
 		this.setState((prevState)=>({
 			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
 			error      : null
-		}), ()=>this.save());
+		}), ()=>this.trySave(true));
 	},
 
 	save : async function(){
