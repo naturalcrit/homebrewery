@@ -339,29 +339,29 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
-		const serverHash     = md5(brewFromServer.text);
-		console.log({serverHash: serverHash});
-		console.log({clientHash: brewFromClient.hash});
+		splitTextStyleAndMetadata(brewFromServer);
 
-		if((brewFromServer?.version !== brewFromClient?.version)) {
-			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+		brewFromServer.hash  = await md5(brewFromServer.text);
+
+		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
+			if(brewFromClient?.version !== brewFromClient?.version)
+				console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+			if(brewFromServer?.hash    !== brewFromClient?.hash) {
+				console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
+			}
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
+		
+		let brew         = _.assign(brewFromServer, brewFromClient);
+		brew.title       = brew.title.trim();
+		brew.description = brew.description.trim() || '';
+		brew.text        = applyPatches(brewFromClient.patches, brewFromServer.text)[0];
+		brew.text        = api.mergeBrewText(brew);
 
-		console.log(`Brewfromserver: ${JSON.stringify(brewFromServer)}`);
-		splitTextStyleAndMetadata(brewFromServer);
-		brewFromClient.text = applyPatches(brewFromClient.patches, brewFromServer.text)[0];
-		console.log(`Server Text: ${brewFromServer.text}`);
-		console.log(`Brew text: ${brewFromClient.text}`);
-		let brew = _.assign(brewFromServer, brewFromClient);
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
-
-		brew.title = brew.title.trim();
-		brew.description = brew.description.trim() || '';
-		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
