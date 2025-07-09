@@ -341,7 +341,7 @@ const api = {
 		const brewFromServer = req.brew;
 		splitTextStyleAndMetadata(brewFromServer);
 
-		brewFromServer.hash  = await md5(brewFromServer.text);
+		brewFromServer.hash  = await md5(brewFromServer.text.normalize());
 
 		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
 			if(brewFromClient?.version !== brewFromClient?.version)
