@@ -3,6 +3,8 @@ require('./editPage.less');
 const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
+import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
+import { md5 } from 'hash-wasm';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -47,7 +49,7 @@ const EditPage = createClass({
 		return {
 			brew                       : this.props.brew,
 			isSaving                   : false,
-			isPending                  : false,
+			unsavedChanges             : false,
 			alertTrashedGoogleBrew     : this.props.brew.trashed,
 			alertLoginToTransfer       : false,
 			saveGoogle                 : this.props.brew.googleId ? true : false,
@@ -85,7 +87,7 @@ const EditPage = createClass({
 		});
 
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.isPending){
+			if(this.state.isSaving || this.state.unsavedChanges){
 				return 'You have unsaved changes!';
 			}
 		};
@@ -104,9 +106,9 @@ const EditPage = createClass({
 	},
 	componentDidUpdate : function(){
 		const hasChange = this.hasChanges();
-		if(this.state.isPending != hasChange){
+		if(this.state.unsavedChanges != hasChange){
 			this.setState({
-				isPending : hasChange
+				unsavedChanges : hasChange
 			});
 		}
 	},
@@ -156,9 +158,9 @@ const EditPage = createClass({
 		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
 
 		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, snippets: snippet },
-			isPending  : true,
-			htmlErrors : htmlErrors,
+			brew           : { ...prevState.brew, snippets: snippet },
+			unsavedChanges : true,
+			htmlErrors     : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
 
@@ -197,12 +199,19 @@ const EditPage = createClass({
 
 	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.hasChanges()){
+		if(this.state.isSaving)
+			return;
+
+		if(immediate) {
 			this.debounceSave();
-		} else {
-			this.debounceSave.cancel();
+			this.debounceSave.flush();
+			return;
 		}
-		if(immediate) this.debounceSave.flush();
+		
+		if(this.hasChanges())
+			this.debounceSave();
+		else
+			this.debounceSave.cancel();
 	},
 
 	handleGoogleClick : function(){
@@ -216,8 +225,7 @@ const EditPage = createClass({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.setState({
-			error    : null,
-			isSaving : false
+			error    : null
 		});
 	},
 
@@ -233,9 +241,8 @@ const EditPage = createClass({
 	toggleGoogleStorage : function(){
 		this.setState((prevState)=>({
 			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
 			error      : null
-		}), ()=>this.save());
+		}), ()=>this.trySave(true));
 	},
 
 	save : async function(){
@@ -250,11 +257,17 @@ const EditPage = createClass({
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
+		const preSaveSnapshot = { ...this.state.brew }
 
-		const brew = this.state.brew;
+		//Prepare content to send to server
+		const brew     = { ...this.state.brew };
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+		brew.patches   = makePatches(this.savedBrew.text, brew.text);
+		brew.hash      = await md5(this.savedBrew.text);
+		brew.text      = undefined;
+		brew.textBin   = undefined;
 
+		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
@@ -266,20 +279,28 @@ const EditPage = createClass({
 		if(!res) return;
 
 		this.savedBrew = {
-			...this.state.brew,
+			...preSaveSnapshot,
 			googleId : res.body.googleId ? res.body.googleId : null,
 			editId 	 : res.body.editId,
 			shareId  : res.body.shareId,
 			version  : res.body.version
 		};
-		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
-		this.setState(()=>({
-			brew        : this.savedBrew,
-			isPending   : false,
-			isSaving    : false,
-			unsavedTime : new Date()
-		}));
+		this.setState((prevState) => ({
+			brew: {
+				...prevState.brew,
+				googleId : res.body.googleId ? res.body.googleId : null,
+				editId 	 : res.body.editId,
+				shareId  : res.body.shareId,
+				version  : res.body.version
+			},
+			isSaving       : false,
+			unsavedTime    : new Date()
+		}), ()=>{
+			this.setState({ unsavedChanges : this.hasChanges() });
+		});
+
+		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 	},
 
 	renderGoogleDriveIcon : function(){
@@ -337,7 +358,7 @@ const EditPage = createClass({
 		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(this.state.isPending && this.state.autoSaveWarning){
+		if(this.state.unsavedChanges && this.state.autoSaveWarning){
 			this.setAutosaveWarning();
 			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
 			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
@@ -352,7 +373,7 @@ const EditPage = createClass({
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		// Use trySave(true) instead of save() to use debounced save function
-		if(this.state.isPending){
+		if(this.state.unsavedChanges){
 			return <Nav.item className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 		}
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
