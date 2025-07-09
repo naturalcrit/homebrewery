@@ -88,6 +88,15 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 7/09/2025 - v3.19.1
+
+{{taskList
+##### calculuschild
+* [x] Send diffs instead of full file on save - should help with timeout/disconnect errors
+}}
+
+\column
+
 ### Thursday 05/22/2025 - v3.19.0
 
 {{taskList
