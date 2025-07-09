@@ -256,12 +256,12 @@ const EditPage = createClass({
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		const preSaveSnapshot = { ...this.state.brew }
+		const preSaveSnapshot = { ...this.state.brew };
 
 		//Prepare content to send to server
 		const brew     = { ...this.state.brew };
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches   = makePatches(this.savedBrew.text, brew.text);
+		brew.patches   = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
 		brew.hash      = await md5(this.savedBrew.text);
 		brew.text      = undefined;
 		brew.textBin   = undefined;

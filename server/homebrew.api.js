@@ -352,11 +352,11 @@ const api = {
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
-		
+
 		let brew         = _.assign(brewFromServer, brewFromClient);
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
-		brew.text        = applyPatches(brewFromClient.patches, brewFromServer.text)[0];
+		brew.text        = applyPatches(parsePatch(brewFromClient.patches), brewFromServer.text)[0];
 		brew.text        = api.mergeBrewText(brew);
 
 		const googleId = brew.googleId;
