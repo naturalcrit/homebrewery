@@ -3,6 +3,8 @@ require('./editPage.less');
 const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
+import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
+import { md5 } from 'hash-wasm';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -196,12 +198,19 @@ const EditPage = createClass({
 
 	trySave : function(immediate=false){
 		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.hasChanges()){
+		if(this.state.isSaving)
+			return;
+
+		if(immediate) {
 			this.debounceSave();
-		} else {
-			this.debounceSave.cancel();
+			this.debounceSave.flush();
+			return;
 		}
-		if(immediate) this.debounceSave.flush();
+		
+		if(this.hasChanges())
+			this.debounceSave();
+		else
+			this.debounceSave.cancel();
 	},
 
 	handleGoogleClick : function(){
@@ -215,8 +224,7 @@ const EditPage = createClass({
 			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
 		}));
 		this.setState({
-			error    : null,
-			isSaving : false
+			error    : null
 		});
 	},
 
@@ -232,9 +240,8 @@ const EditPage = createClass({
 	toggleGoogleStorage : function(){
 		this.setState((prevState)=>({
 			saveGoogle : !prevState.saveGoogle,
-			isSaving   : false,
 			error      : null
-		}), ()=>this.save());
+		}), ()=>this.trySave(true));
 	},
 
 	save : async function(){
@@ -249,11 +256,17 @@ const EditPage = createClass({
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
+		const preSaveSnapshot = { ...this.state.brew }
 
-		const brew = this.state.brew;
+		//Prepare content to send to server
+		const brew     = { ...this.state.brew };
 		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+		brew.patches   = makePatches(this.savedBrew.text, brew.text);
+		brew.hash      = await md5(this.savedBrew.text);
+		brew.text      = undefined;
+		brew.textBin   = undefined;
 
+		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
@@ -265,20 +278,28 @@ const EditPage = createClass({
 		if(!res) return;
 
 		this.savedBrew = {
-			...this.state.brew,
+			...preSaveSnapshot,
 			googleId : res.body.googleId ? res.body.googleId : null,
 			editId 	 : res.body.editId,
 			shareId  : res.body.shareId,
 			version  : res.body.version
 		};
-		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 
-		this.setState(()=>({
-			brew           : this.savedBrew,
-			unsavedChanges : false,
+		this.setState((prevState) => ({
+			brew: {
+				...prevState.brew,
+				googleId : res.body.googleId ? res.body.googleId : null,
+				editId 	 : res.body.editId,
+				shareId  : res.body.shareId,
+				version  : res.body.version
+			},
 			isSaving       : false,
 			unsavedTime    : new Date()
-		}));
+		}), ()=>{
+			this.setState({ unsavedChanges : this.hasChanges() });
+		});
+
+		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
 	},
 
 	renderGoogleDriveIcon : function(){
