@@ -339,17 +339,22 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
+
+		if(brewFromServer?.version !== brewFromClient?.version){
+			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
+		}
+
 		splitTextStyleAndMetadata(brewFromServer);
-		
+
 		brewFromServer.text  = brewFromServer.text.normalize();
 		brewFromServer.hash  = await md5(brewFromServer.text);
 
-		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
-			if(brewFromClient?.version !== brewFromClient?.version)
-				console.log(`Version mismatch on brew ${brewFromClient.editId}`);
-			if(brewFromServer?.hash    !== brewFromClient?.hash) {
-				console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
-			}
+		if(brewFromServer?.hash !== brewFromClient?.hash) {
+			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
+
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
