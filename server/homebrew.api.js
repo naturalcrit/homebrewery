@@ -48,6 +48,15 @@ const api = {
 			}
 			id = id.slice(googleId.length);
 		}
+
+		// ID Validation Checks
+		if(!id.match(/^[A-Za-z0-9_-]{12}$/)){
+			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
+		}
+		if(googleId && !googleId.match(/^1(?:[A-Za-z0-9+\/]{32}|[A-Za-z0-9+\/]{43})$/)){
+			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
+		}
+
 		return { id, googleId };
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
