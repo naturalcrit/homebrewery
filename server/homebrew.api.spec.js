@@ -1085,24 +1085,25 @@ brew`);
 			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
 		});
 
-		it('should return error on applying patches', async ()=>{
-			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
-			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+		// Commenting this one out for now, since we are no longer throwing this error while we monitor
+		// it('should return error on applying patches', async ()=>{
+		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
 
-			const req = {
-				brew : brewFromServer,
-				body : brewFromClient
-			};
+		// 	const req = {
+		// 		brew  : brewFromServer,
+		// 		body  : brewFromClient,
+		// 	};
 
-			let err;
-			try {
-				await api.updateBrew(req, res);
-			} catch (e) {
-				err = e;
-			}
+		// 	let err;
+		// 	try {
+		// 		await api.updateBrew(req, res);
+		// 	} catch (e) {
+		// 		err = e;
+		// 	}
 
-			expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
-		});
+		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+		// });
 
 		it('should save brew, no ID', async ()=>{
 			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
