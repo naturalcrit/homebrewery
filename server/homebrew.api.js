@@ -11,7 +11,7 @@ import { nanoid }                    from 'nanoid';
 import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata, 
-		 brewSnippetsToJSON }        from '../shared/helpers.js';
+		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
 
@@ -354,7 +354,7 @@ const api = {
 
 		if(brewFromServer?.hash !== brewFromClient?.hash) {
 			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
-
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
@@ -369,6 +369,7 @@ const api = {
 			const patchedResult = applyPatches(patches, brewFromServer.text)[0];
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				patches : brewFromClient.patches,
 				brewId  : brew.editId || 'unknown',
