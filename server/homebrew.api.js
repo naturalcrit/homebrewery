@@ -340,7 +340,7 @@ const api = {
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 		splitTextStyleAndMetadata(brewFromServer);
-		
+
 		brewFromServer.text  = brewFromServer.text.normalize();
 		brewFromServer.hash  = await md5(brewFromServer.text);
 
@@ -357,15 +357,20 @@ const api = {
 		let brew         = _.assign(brewFromServer, brewFromClient);
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
+
 		try {
 			const patches = parsePatch(brewFromClient.patches);
-			brew.text = applyPatches(patches, brewFromServer.text)[0];
+			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
+			const patchedResult = applyPatches(patches, brewFromServer.text)[0];
+			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
 			console.error('Failed to apply patches:', {
-				patches: brewFromClient.patches,
-				brewId: brew.editId || 'unknown'
+				patches : brewFromClient.patches,
+				brewId  : brew.editId || 'unknown',
+				error   : err
 			});
-			throw err; // rethrow to preserve the 500 behavior
+			// While running in parallel, don't throw the error upstream.
+			// throw err; // rethrow to preserve the 500 behavior
 		}
 
 		brew.text        = api.mergeBrewText(brew);

@@ -88,6 +88,14 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 7/09/2025 - v3.19.3
+
+{{taskList
+##### calculuschild
+* [x] Restoring original saving behavior; will continue investigating why save was failing for some users in background
+}}
+
+
 ### Wednesday 7/09/2025 - v3.19.2
 
 {{taskList
