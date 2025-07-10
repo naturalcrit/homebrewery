@@ -264,7 +264,7 @@ const EditPage = createClass({
 		this.savedBrew.text = this.savedBrew.text.normalize();
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
-		brew.hash           = await md5(this.savedBrew.text.normalize());
+		brew.hash           = await md5(this.savedBrew.text);
 		brew.text           = undefined;
 		brew.textBin        = undefined;
 
