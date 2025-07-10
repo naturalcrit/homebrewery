@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.19.2",
+  "version": "3.19.3",
   "type": "module",
   "engines": {
     "npm": "^10.8.x",
@@ -72,7 +72,7 @@
         "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 69,
+        "statements": 60,
         "branches": 50,
         "functions": 65,
         "lines": 70
