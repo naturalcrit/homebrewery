@@ -148,6 +148,6 @@
     "stylelint": "^16.21.1",
     "stylelint-config-recess-order": "^7.1.0",
     "stylelint-config-recommended": "^16.0.0",
-    "supertest": "^7.1.1"
+    "supertest": "^7.1.3"
   }
 }
