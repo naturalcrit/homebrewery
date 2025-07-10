@@ -88,6 +88,13 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Wednesday 7/09/2025 - v3.19.2
+
+{{taskList
+##### calculuschild
+* [x] Hotfix for saving issues - Please refresh your browser and report if problems continue
+}}
+
 ### Wednesday 7/09/2025 - v3.19.1
 
 {{taskList
