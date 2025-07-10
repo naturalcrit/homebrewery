@@ -247,6 +247,9 @@ const EditPage = createClass({
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
+		const brewState       = this.state.brew; // freeze the current state
+		const preSaveSnapshot = { ...brewState };
+
 		this.setState((prevState)=>({
 			isSaving   : true,
 			error      : null,
@@ -256,12 +259,10 @@ const EditPage = createClass({
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		const preSaveSnapshot = { ...this.state.brew };
-
 		//Prepare content to send to server
-		const brew          = { ...this.state.brew };
-		brew.text           = brew.text.normalize();
-		this.savedBrew.text = this.savedBrew.text.normalize();
+		const brew          = { ...brewState };
+		brew.text           = brew.text.normalize('NFC');
+		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
 		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
 		brew.hash           = await md5(this.savedBrew.text);
@@ -295,8 +296,8 @@ const EditPage = createClass({
 				shareId  : res.body.shareId,
 				version  : res.body.version
 			},
-			isSaving       : false,
-			unsavedTime    : new Date()
+			isSaving    : false,
+			unsavedTime : new Date()
 		}), ()=>{
 			this.setState({ unsavedChanges : this.hasChanges() });
 		});
