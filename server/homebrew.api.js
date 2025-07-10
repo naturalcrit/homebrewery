@@ -50,7 +50,7 @@ const api = {
 		}
 
 		// ID Validation Checks
-		if(!id.match(/^[A-Za-z0-9_-]{7,12}$/)){
+		if(!id.match(/^[A-Za-z0-9_-]{7,14}$/)){
 			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
 		}
 		if(googleId && !googleId.match(/^1(?:[A-Za-z0-9+\/]{32}|[A-Za-z0-9+\/]{43})$/)){
