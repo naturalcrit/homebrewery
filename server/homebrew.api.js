@@ -339,9 +339,10 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
+		brewFromServer.text  = brewFromServer.text.normalize();
 		splitTextStyleAndMetadata(brewFromServer);
 
-		brewFromServer.hash  = await md5(brewFromServer.text.normalize());
+		brewFromServer.hash  = await md5(brewFromServer.text);
 
 		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
 			if(brewFromClient?.version !== brewFromClient?.version)
