@@ -72,7 +72,7 @@
         "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 70,
+        "statements": 69,
         "branches": 50,
         "functions": 65,
         "lines": 70

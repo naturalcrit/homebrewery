@@ -340,7 +340,8 @@ const api = {
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 		splitTextStyleAndMetadata(brewFromServer);
-
+		
+		brewFromServer.text  = brewFromServer.text.normalize();
 		brewFromServer.hash  = await md5(brewFromServer.text);
 
 		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {

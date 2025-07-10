@@ -259,12 +259,14 @@ const EditPage = createClass({
 		const preSaveSnapshot = { ...this.state.brew };
 
 		//Prepare content to send to server
-		const brew     = { ...this.state.brew };
-		brew.pageCount = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches   = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
-		brew.hash      = await md5(this.savedBrew.text);
-		brew.text      = undefined;
-		brew.textBin   = undefined;
+		const brew          = { ...this.state.brew };
+		brew.text           = brew.text.normalize();
+		this.savedBrew.text = this.savedBrew.text.normalize();
+		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
+		brew.hash           = await md5(this.savedBrew.text);
+		brew.text           = undefined;
+		brew.textBin        = undefined;
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
