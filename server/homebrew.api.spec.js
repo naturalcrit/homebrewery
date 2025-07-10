@@ -1052,4 +1052,82 @@ brew`);
 			expect(testBrew.tags).toEqual(['tag a']);
 		});
 	});
+
+	describe('updateBrew', ()=>{
+		it('should return error on version mismatch', async ()=>{
+			const brewFromClient = { version: 1 };
+			const brewFromServer = { version: 1000 };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		it('should return error on hash mismatch', async ()=>{
+			const brewFromClient = { version: 1, hash: '1234' };
+			const brewFromServer = { version: 1, text: 'test' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		it('should return error on applying patches', async ()=>{
+			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			let err;
+			try {
+				await api.updateBrew(req, res);
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+		});
+
+		it('should save brew, no ID', async ()=>{
+			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
+			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			model.save = jest.fn((brew)=>{return brew;});
+
+			const req = {
+				brew  : brewFromServer,
+				body  : brewFromClient,
+				query : { saveToGoogle: false, removeFromGoogle: false }
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					_id         : '1',
+					description : 'Test Description',
+					hash        : '098f6bcd4621d373cade4e832627b4f6',
+					title       : 'Test Title',
+					version     : 2
+				})
+			);
+		});
+	});
 });
