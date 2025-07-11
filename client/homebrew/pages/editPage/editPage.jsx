@@ -5,6 +5,7 @@ const _ = require('lodash');
 const createClass = require('create-react-class');
 import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
 import { md5 } from 'hash-wasm';
+import { gzipSync, strToU8 } from 'fflate';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -260,7 +261,7 @@ const EditPage = createClass({
 		await versionHistoryGarbageCollection().catch(console.error);
 
 		//Prepare content to send to server
-		const brew          = { ...brewState };
+		let brew          = { ...brewState };
 		brew.text           = brew.text.normalize('NFC');
 		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
@@ -269,10 +270,16 @@ const EditPage = createClass({
 		//brew.text           = undefined; - Temporary parallel path
 		brew.textBin        = undefined;
 
+		brew = JSON.stringify(brew);
+		brew = strToU8(brew);
+		brew = gzipSync(brew);
+
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
+			.set('Content-Encoding', 'gzip')
+			.set('Content-Type', 'application/json')
 			.send(brew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
