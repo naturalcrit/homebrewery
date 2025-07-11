@@ -99,18 +99,51 @@ describe('Tests for api', ()=>{
 			expect(googleId).toBeUndefined();
 		});
 
+		it('should throw if id is too short', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcd'
+					}
+				});
+			} catch (e) {
+				err = e;
+			};
+
+			expect(err).toEqual({ HBErrorCode: '11', brewId: 'abcd', message: 'Invalid ID', name: 'ID Error', status: 404 });
+		});
+
 		it('should return id and google id from request body', ()=>{
 			const { id, googleId } = api.getId({
 				params : {
-					id : 'abcdefgh'
+					id : 'abcdefghijkl'
 				},
 				body : {
-					googleId : '12345'
+					googleId : '123456789012345678901234567890123'
 				}
 			});
 
-			expect(id).toEqual('abcdefgh');
-			expect(googleId).toEqual('12345');
+			expect(id).toEqual('abcdefghijkl');
+			expect(googleId).toEqual('123456789012345678901234567890123');
+		});
+
+		it('should throw invalid google id', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '012345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
 		});
 
 		it('should return 12-char id and google id from params', ()=>{
