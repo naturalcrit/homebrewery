@@ -339,7 +339,6 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
-		splitTextStyleAndMetadata(brewFromServer);
 
 		if(brewFromServer?.version !== brewFromClient?.version){
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
@@ -347,6 +346,8 @@ const api = {
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
+
+		splitTextStyleAndMetadata(brewFromServer);
 
 		brewFromServer.text  = brewFromServer.text.normalize('NFC');
 		brewFromServer.hash  = await md5(brewFromServer.text);
