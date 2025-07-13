@@ -24,18 +24,6 @@ const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
 
-const uncompressBrew = (input, encoding)=> {
-	try {
-		const jsonStr = encoding === 'gzip'
-		? zlib.gunzipSync(input).toString('utf-8')
-		: input.toString('utf-8');
-
-	return JSON.parse(jsonStr);
-	} catch (err) {
-	throw new Error('Failed to parse JSON: ' + err.message);
-	}
-}
-
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
 // 		cb(brews);
@@ -349,7 +337,7 @@ const api = {
 	},
 	updateBrew : async (req, res)=>{
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
-		const brewFromClient = api.excludePropsFromUpdate(uncompressBrew(req.body, req.headers['content-encoding']));
+		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 		splitTextStyleAndMetadata(brewFromServer);
 
