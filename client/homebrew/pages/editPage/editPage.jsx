@@ -261,7 +261,7 @@ const EditPage = createClass({
 		await versionHistoryGarbageCollection().catch(console.error);
 
 		//Prepare content to send to server
-		let brew          = { ...brewState };
+		const brew          = { ...brewState };
 		brew.text           = brew.text.normalize('NFC');
 		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
@@ -271,8 +271,6 @@ const EditPage = createClass({
 		brew.textBin        = undefined;
 
 		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
-		console.log('uncompressed size:', (JSON.stringify(brew).length / 1024).toFixed(2), 'KB');
-		console.log('compressed size', (compressedBrew.length / 1024).toFixed(2), 'KB');
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
