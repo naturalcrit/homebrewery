@@ -191,8 +191,9 @@ const EditPage = createClass({
 		this.setState((prevState)=>({
 			brew : {
 				...prevState.brew,
-				style : newData.style,
-				text  : newData.text
+				style    : newData.style,
+				text     : newData.text,
+				snippets : newData.snippets
 			}
 		}));
 	},
