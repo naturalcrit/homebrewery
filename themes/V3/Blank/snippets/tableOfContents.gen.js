@@ -50,7 +50,7 @@ const getMarkdown = (headings, pageMap)=>{
 		}
 
 		// const markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ ${mappedPage}}}](#p${page})`;
-		const markdown = `${levelPad[depthChain.length - 2]} [{{ ${title}}}{{ $[HB_pageNumber_${page}]}}](#p${page})`;
+		const markdown = `${levelPad[depthChain.length - 2]} [{{content ${title}}}{{number $[HB_pageNumber_${page}]}}](#p${page})`;
 		allMarkdown.push(markdown);
 	});
 	return allMarkdown.join('\n');
