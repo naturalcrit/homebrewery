@@ -270,9 +270,9 @@ const EditPage = createClass({
 		//brew.text           = undefined; - Temporary parallel path
 		brew.textBin        = undefined;
 
-		brew = JSON.stringify(brew);
-		brew = strToU8(brew);
-		brew = gzipSync(brew);
+		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
+		console.log('uncompressed size:', (JSON.stringify(brew).length / 1024).toFixed(2), 'KB');
+		console.log('compressed size', (compressedBrew.length / 1024).toFixed(2), 'KB');
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
@@ -280,7 +280,7 @@ const EditPage = createClass({
 			.put(`/api/update/${brew.editId}${params}`)
 			.set('Content-Encoding', 'gzip')
 			.set('Content-Type', 'application/json')
-			.send(brew)
+			.send(compressedBrew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
 				this.setState({ error: err });
