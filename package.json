@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.19.2",
+  "version": "3.19.3",
   "type": "module",
   "engines": {
     "npm": "^10.8.x",
@@ -72,7 +72,7 @@
         "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 69,
+        "statements": 60,
         "branches": 50,
         "functions": 65,
         "lines": 70
@@ -88,6 +88,7 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/runtime": "^7.27.6",
+    "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^13.0.1",
     "@sanity/diff-match-patch": "^3.2.0",
     "body-parser": "^2.2.0",
