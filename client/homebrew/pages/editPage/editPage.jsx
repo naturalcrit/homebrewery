@@ -5,6 +5,7 @@ const _ = require('lodash');
 const createClass = require('create-react-class');
 import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
 import { md5 } from 'hash-wasm';
+import { gzipSync, strToU8 } from 'fflate';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -270,11 +271,15 @@ const EditPage = createClass({
 		//brew.text           = undefined; - Temporary parallel path
 		brew.textBin        = undefined;
 
+		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
+
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
-			.send(brew)
+			.set('Content-Encoding', 'gzip')
+			.set('Content-Type', 'application/json')
+			.send(compressedBrew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
 				this.setState({ error: err });
