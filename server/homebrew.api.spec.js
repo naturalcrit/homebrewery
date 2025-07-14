@@ -128,7 +128,7 @@ describe('Tests for api', ()=>{
 			expect(googleId).toEqual('123456789012345678901234567890123');
 		});
 
-		it('should throw invalid google id', ()=>{
+		it('should throw invalid - google id right length but does not match pattern', ()=>{
 			let err;
 			try {
 				api.getId({
@@ -137,6 +137,42 @@ describe('Tests for api', ()=>{
 					},
 					body : {
 						googleId : '012345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too short (32 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '12345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too long (45 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '123456789012345678901234567890123456789012345'
 					}
 				});
 			} catch (e) {
