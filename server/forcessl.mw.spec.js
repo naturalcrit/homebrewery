@@ -1,73 +1,65 @@
 import forceSSL from './forcessl.mw';
 
 describe('Tests for ForceSSL middleware', ()=>{
+	let originalEnv;
+	let nextFn;
 
-	it('should call next() when NODE_ENV is set to local', ()=>{
-		const nodeEnv = process.env.NODE_ENV;
-		process.env.NODE_ENV = 'local';
+	let req = {};
+	let res = {};
 
-		const nextFn = jest.fn();
+	beforeEach(()=>{
+		originalEnv = process.env.NODE_ENV;
+		nextFn = jest.fn();
 
-		forceSSL(null, null, nextFn);
-
-		process.env.NODE_ENV = nodeEnv;
-
-		expect(nextFn).toHaveBeenCalled();
-	});
-
-	it('should call next() when NODE_ENV is set to docker', ()=>{
-		const nodeEnv = process.env.NODE_ENV;
-		process.env.NODE_ENV = 'docker';
-
-		const nextFn = jest.fn();
-
-		forceSSL(null, null, nextFn);
-
-		process.env.NODE_ENV = nodeEnv;
-
-		expect(nextFn).toHaveBeenCalled();
-	});
-
-	it('should return 302 when header not HTTPS', ()=>{
-		const nodeEnv = process.env.NODE_ENV;
-		process.env.NODE_ENV = 'test';
-
-		const req = {
-			header : ()=>{ return true; },
+		req = {
+			header : ()=>{ return 'http'; },
 			get    : ()=>{ return 'test'; },
 			url    : 'URL'
 		};
 
-		const res = {
-			redirect : jest.fn((code, url)=>{})
+		res = {
+			redirect : jest.fn()
 		};
-
-		const nextFn = jest.fn();
-
-		forceSSL(req, res, nextFn);
-
-		process.env.NODE_ENV = nodeEnv;
-
-		expect(res.redirect).toHaveBeenCalledWith(302, 'https://testURL');
+	});
+	afterEach(()=>{
+		process.env.NODE_ENV = originalEnv;
+		jest.clearAllMocks();
 	});
 
-	it('should call next() header is HTTPS and NODE_ENV not local or docker', ()=>{
-		const nodeEnv = process.env.NODE_ENV;
+	it('should not redirect when NODE_ENV is set to local', ()=>{
+		process.env.NODE_ENV = 'local';
+
+		forceSSL(null, null, nextFn);
+
+		expect(res.redirect).not.toHaveBeenCalled();
+		expect(nextFn).toHaveBeenCalled();
+	});
+
+	it('should not redirect when NODE_ENV is set to docker', ()=>{
+		process.env.NODE_ENV = 'docker';
+
+		forceSSL(null, null, nextFn);
+
+		expect(res.redirect).not.toHaveBeenCalled();
+		expect(nextFn).toHaveBeenCalled();
+	});
+
+	it('should redirect with 302 when header is not HTTPS and NODE_ENV is not local or docker', ()=>{
 		process.env.NODE_ENV = 'test';
-
-		const req = {
-			header : ()=>{ return 'https'; }
-		};
-
-		const res = {
-		};
-
-		const nextFn = jest.fn();
 
 		forceSSL(req, res, nextFn);
 
-		process.env.NODE_ENV = nodeEnv;
+		expect(res.redirect).toHaveBeenCalledWith(302, 'https://testURL');
+		expect(nextFn).not.toHaveBeenCalled();
+	});
 
+	it('should not redirect when header is HTTPS and NODE_ENV is not local or docker', ()=>{
+		process.env.NODE_ENV = 'test';
+		req.header = ()=>{ return 'https'; };
+
+		forceSSL(req, res, nextFn);
+
+		expect(res.redirect).not.toHaveBeenCalled();
 		expect(nextFn).toHaveBeenCalled();
 	});
 
