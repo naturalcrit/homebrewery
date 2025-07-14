@@ -28,6 +28,7 @@
 		"codemirror/addon/hint/show-hint.js",
 		"moment",
 		"superagent",
-		"@sanity/diff-match-patch"
+		"@sanity/diff-match-patch",
+		"fflate"
 	]
 }
