@@ -1089,7 +1089,7 @@ brew`);
 	describe('updateBrew', ()=>{
 		it('should return error on version mismatch', async ()=>{
 			const brewFromClient = { version: 1 };
-			const brewFromServer = { version: 1000 };
+			const brewFromServer = { version: 1000, text: '' };
 
 			const req = {
 				brew : brewFromServer,
