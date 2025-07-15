@@ -21,7 +21,7 @@ import { safeHTML } from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
-const COLUMNBREAK_LEGACY = /\\column(:?break)?/m;
+const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -132,7 +132,7 @@ const BrewRenderer = (props)=>{
 	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
-		rawPages = props.text.replace(COLUMNBREAK_LEGACY, '```\n````\n').split(PAGEBREAK_REGEX_LEGACY);
+		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
 	} else {
 		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
@@ -189,6 +189,7 @@ const BrewRenderer = (props)=>{
 		let attributes = {};
 
 		if(props.renderer == 'legacy') {
+			pageText.replace(COLUMNBREAK_REGEX_LEGACY, '```\n````\n'); // Allow Legacy brews to use `\column(break)`
 			const html = MarkdownLegacy.render(pageText);
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
