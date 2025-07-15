@@ -42,6 +42,7 @@ function parseBrewForStorage(brew, slot = 0) {
 		title    : brew.title,
 		text     : brew.text,
 		style    : brew.style,
+		snippets : brew.snippets,
 		version  : brew.version,
 		shareId  : brew.shareId,
 		savedAt  : brew?.savedAt || new Date(),
