@@ -176,6 +176,26 @@ const errorIndex = (props)=>{
 		
 		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
 
+		// ID validation error
+		'11' : dedent`
+		## No Homebrewery document could be found.
+		
+		The server could not locate the Homebrewery document. The Brew ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Google ID validation error
+		'12' : dedent`
+		## No Google document could be found.
+		
+		The server could not locate the Google document. The Google ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
