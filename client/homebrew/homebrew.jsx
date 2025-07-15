@@ -4,14 +4,14 @@ import './homebrew.less';
 import React from 'react';
 import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
 
-const HomePage = require('./pages/homePage/homePage.jsx');
-const EditPage = require('./pages/editPage/editPage.jsx');
-const UserPage = require('./pages/userPage/userPage.jsx');
-const SharePage = require('./pages/sharePage/sharePage.jsx');
-const NewPage = require('./pages/newPage/newPage.jsx');
-const ErrorPage = require('./pages/errorPage/errorPage.jsx');
-const VaultPage = require('./pages/vaultPage/vaultPage.jsx');
-const AccountPage = require('./pages/accountPage/accountPage.jsx');
+import HomePage    from './pages/homePage/homePage.jsx';
+import EditPage    from './pages/editPage/editPage.jsx';
+import UserPage    from './pages/userPage/userPage.jsx';
+import SharePage   from './pages/sharePage/sharePage.jsx';
+import NewPage     from './pages/newPage/newPage.jsx';
+import ErrorPage   from './pages/errorPage/errorPage.jsx';
+import VaultPage   from './pages/vaultPage/vaultPage.jsx';
+import AccountPage from './pages/accountPage/accountPage.jsx';
 
 const WithRoute = (props)=>{
 	const params = useParams();
