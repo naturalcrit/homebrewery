@@ -13,21 +13,12 @@ import ErrorPage   from './pages/errorPage/errorPage.jsx';
 import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
 
-const WithRoute = (props)=>{
+const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
-	const queryParams = {};
-	for (const [key, value] of searchParams?.entries() || []) {
-		queryParams[key] = value;
-	}
-	const Element = props.el;
-	const allProps = {
-		...props,
-		...params,
-		query : queryParams,
-		el    : undefined
-	};
-	return <Element {...allProps} />;
+	const queryParams = Object.fromEntries(searchParams?.entries() || []);
+
+	return <Element {...rest} {...params} query={queryParams} />;
 };
 
 const Homebrew = (props)=>{
@@ -51,11 +42,11 @@ const Homebrew = (props)=>{
 		brews
 	} = props;
 
-	global.account = account;
-	global.version = version;
-	global.enable_v3 = enable_v3;
+	global.account       = account;
+	global.version       = version;
+	global.enable_v3     = enable_v3;
 	global.enable_themes = enable_themes;
-	global.config = config;
+	global.config        = config;
 
 	return (
 		<Router location={url}>
