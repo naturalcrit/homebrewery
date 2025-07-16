@@ -1,6 +1,6 @@
-/* eslint-disable max-lines */
 
-const Markdown = require('naturalcrit/markdown.js');
+
+import Markdown from 'naturalcrit/markdown.js';
 
 describe('Inline Definition Lists', ()=>{
 	test('No Term 1 Definition', function() {
@@ -92,12 +92,12 @@ describe('Multiline Definition Lists', ()=>{
 	test('Multiline Definition Term must have at least one non-empty Definition', function() {
 		const source = 'Term 1\n::';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>Term 1</p>\n<div class='blank'></div><div class='blank'></div>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>Term 1</p>\n<div class='blank'></div>\n<div class='blank'></div>`);
 	});
 
 	test('Multiline Definition List must have at least one non-newline character after ::', function() {
 		const source = 'Term 1\n::\nDefinition 1\n\n';
 		const rendered = Markdown.render(source).trim();
-		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>Term 1</p>\n<div class='blank'></div><div class='blank'></div>\n<p>Definition 1</p>`);
+		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(`<p>Term 1</p>\n<div class='blank'></div>\n<div class='blank'></div>\n<p>Definition 1</p>`);
 	});
 });

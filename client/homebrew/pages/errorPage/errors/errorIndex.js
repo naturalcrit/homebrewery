@@ -2,6 +2,11 @@ const dedent = require('dedent-tabs').default;
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
+// Prevent parsing text (e.g. document titles) as markdown
+const escape = (text = '')=>{
+	return text.split('').map((char)=>`&#${char.charCodeAt(0)};`).join('');
+};
+
 //001-050 : Brew errors
 //050-100 : Other pages errors
 
@@ -18,7 +23,18 @@ const errorIndex = (props)=>{
 		'01' : dedent`
 			## An error occurred while retrieving this brew from Google Drive!
 			
-			Google reported an error while attempting to retrieve a brew from this link.`,
+			Google is able to see the brew at this link, but reported an error while attempting to retrieve it.
+
+			### Refreshing your Google Credentials
+
+			This issue is likely caused by an issue with your Google credentials; if you are the owner of this file, the following steps may resolve the issue:
+
+			- Go to https://www.naturalcrit.com/login and click logout if present (in small text at the bottom of the page).
+			- Click "Sign In with Google", which will refresh your Google credentials.
+			- After completing the sign in process, return to Homebrewery and refresh/reload the page so that it can pick up the updated credentials.
+			- If this was the source of the issue, it should now be resolved.
+
+			If following these steps does not resolve the issue, please let us know!`,
 
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
@@ -50,7 +66,7 @@ const errorIndex = (props)=>{
 			- **The Google Account may be closed.** Google may have removed the account
 			due to inactivity or violating a Google policy. Make sure the owner can
 			still access Google Drive normally and upload/download files to it.
-			:
+			
 			If the file isn't found, Google Drive usually puts your file in your Trash folder for
 			30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
 			You can also find the Activity tab on the right side of the Google Drive page, which
@@ -78,7 +94,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 		
@@ -93,7 +109,7 @@ const errorIndex = (props)=>{
 		
 		:
 
-		**Brew Title:** ${props.brew.brewTitle || 'Unable to show title'}
+		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
 
@@ -152,6 +168,34 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Theme Not Valid
+		'10' : dedent`
+		## The selected theme is not tagged as a theme.
+		
+		The brew selected as a theme exists, but has not been marked for use as a theme with the \`theme:meta\` tag.
+		
+		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
+
+		// ID validation error
+		'11' : dedent`
+		## No Homebrewery document could be found.
+		
+		The server could not locate the Homebrewery document. The Brew ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Google ID validation error
+		'12' : dedent`
+		## No Google document could be found.
+		
+		The server could not locate the Google document. The Google ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
@@ -170,12 +214,46 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}
 		
-		**Brew Title:** ${props.brew.brewTitle}`,
+		**Brew Title:** ${escape(props.brew.brewTitle)}
+		
+		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
 
-		// ####### Admin page error ####### 
-		'52': dedent`
+		// ####### Admin page error #######
+		'52' : dedent`
 		## Access Denied
 		You need to provide correct administrator credentials to access this page.`,
+
+		// ####### Lock Errors
+
+		'60' : dedent`Lock Error: General`,
+
+		'61' : dedent`Lock Get Error: Unable to get lock count`,
+
+		'62' : dedent`Lock Set Error: Cannot lock`,
+
+		'63' : dedent`Lock Set Error: Brew not found`,
+
+		'64' : dedent`Lock Set Error: Already locked`,
+
+		'65' : dedent`Lock Remove Error: Cannot unlock`,
+
+		'66' : dedent`Lock Remove Error: Brew not found`,
+
+		'67' : dedent`Lock Remove Error: Not locked`,
+
+		'68' : dedent`Lock Get Review Error: Cannot get review requests`,
+
+		'69' : dedent`Lock Set Review Error: Cannot set review request`,
+
+		'70' : dedent`Lock Set Review Error: Brew not found`,
+
+		'71' : dedent`Lock Set Review Error: Review already requested`,
+
+		'72' : dedent`Lock Remove Review Error: Cannot clear review request`,
+
+		'73' : dedent`Lock Remove Review Error: Brew not found`,
+
+		// ####### Other Errors
 
 		'90' : dedent` An unexpected error occurred while looking for these brews.  
             Try again in a few minutes.`,

@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
 const dedent = require('dedent-tabs').default;
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -300,7 +300,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 		it('Renders a span "text" with its own styles, appended with injected styles', function() {
 			const source = '{{color:blue,height:10px text}}{width:10px,color:red}';
 			const rendered = Markdown.render(source);
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:blue; height:10px; width:10px; color:red;">text</span>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<span class="inline-block" style="color:red; height:10px; width:10px;">text</span>');
 		});
 
 		it('Renders a span "text" with its own classes, appended with injected classes', function() {
@@ -429,7 +429,7 @@ describe('Injection: When an injection tag follows an element', ()=>{
 														}}
 														{width:10px,color:red}`;
 			const rendered = Markdown.render(source).trimReturns();
-			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:blue; height:10px; width:10px; color:red;"><p>text</p></div>');
+			expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe('<div class="block" style="color:red; height:10px; width:10px;"><p>text</p></div>');
 		});
 
 		it('Renders a span "text" with its own classes, appended with injected classes', function() {

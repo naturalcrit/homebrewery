@@ -2,9 +2,9 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-const request = require('../../utils/request-middleware.js');
+import request from '../../utils/request-middleware.js';
 
-const Markdown = require('naturalcrit/markdown.js');
+import Markdown from 'naturalcrit/markdown.js';
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
@@ -141,6 +141,17 @@ const NewPage = createClass({
 		localStorage.setItem(STYLEKEY, style);
 	},
 
+	handleSnipChange : function(snippet){
+		//If there are errors, run the validator on every change to give quick feedback
+		let htmlErrors = this.state.htmlErrors;
+		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
+
+		this.setState((prevState)=>({
+			brew       : { ...prevState.brew, snippets: snippet },
+			htmlErrors : htmlErrors,
+		}), ()=>{if(this.state.autoSave) this.trySave();});
+	},
+
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
 			fetchThemeBundle(this, metadata.renderer, metadata.theme);
@@ -231,9 +242,10 @@ const NewPage = createClass({
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
+						onSnipChange={this.handleSnipChange}
 						renderer={this.state.brew.renderer}
 						userThemes={this.props.userThemes}
-						snippetBundle={this.state.themeBundle.snippets}
+						themeBundle={this.state.themeBundle}
 						onCursorPageChange={this.handleEditorCursorPageChange}
 						onViewPageChange={this.handleEditorViewPageChange}
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}

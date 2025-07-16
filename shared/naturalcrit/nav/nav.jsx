@@ -12,9 +12,7 @@ const Nav = {
 		displayName : 'Nav.base',
 		render      : function(){
 			return <nav>
-				<div className='navContent'>
-					{this.props.children}
-				</div>
+				{this.props.children}
 			</nav>;
 		}
 	}),

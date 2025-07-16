@@ -1,7 +1,7 @@
 require('./errorPage.less');
 const React      = require('react');
 const UIPage     = require('../basePages/uiPage/uiPage.jsx');
-const Markdown   = require('../../../../shared/naturalcrit/markdown.js');
+import Markdown  from '../../../../shared/naturalcrit/markdown.js';
 const ErrorIndex = require('./errors/errorIndex.js');
 
 const ErrorPage = ({ brew })=>{

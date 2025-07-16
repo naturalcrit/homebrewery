@@ -24,13 +24,12 @@
 }
 
 .homebrew nav {
+	position         : relative;
+	z-index          : 2;
+	display          : flex;
+	justify-content  : space-between;
 	background-color : #333333;
-	.navContent {
-		position        : relative;
-		z-index         : 2;
-		display         : flex;
-		justify-content : space-between;
-	}
+	
 	.navSection {
 		display     : flex;
 		align-items : center;
@@ -83,8 +82,8 @@
 		font-weight      : 800;
 		line-height      : 13px;
 		color            : white;
-		text-decoration  : none;
 		text-transform   : uppercase;
+		text-decoration  : none;
 		cursor           : pointer;
 		background-color : #333333;
 		i {
@@ -107,11 +106,11 @@
 			display          : block;
 			width            : 100%;
 			overflow         : hidden;
+			text-overflow    : ellipsis;
 			font-size        : 12px;
 			font-weight      : 800;
 			color            : white;
 			text-align       : center;
-			text-overflow    : ellipsis;
 			text-transform   : initial;	
 			white-space      : nowrap;
 			background-color : transparent;		
@@ -171,16 +170,16 @@
 					h4 {
 						box-sizing : border-box;
 						display    : block;
-						flex-basis : 20%;
 						flex-grow  : 1;
+						flex-basis : 20%;
 						min-width  : 76px;
 						padding    : 5px 0;
 						color      : #BBBBBB;
 						text-align : center;
 					}
 					p {
-						flex-basis     : 80%;
 						flex-grow      : 1;
+						flex-basis     : 80%;
 						padding        : 5px 0;
 						font-family    : 'Open Sans', sans-serif;
 						font-size      : 10px;
@@ -216,10 +215,10 @@
 				z-index          : 10000;
 				box-sizing       : border-box;
 				display          : block;
+				visibility       : hidden;
 				width            : 100%;
 				padding          : 13px 5px;
 				text-align       : center;
-				visibility       : hidden;
 				background-color : #333333;
 			}
 		}
