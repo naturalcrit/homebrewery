@@ -111,7 +111,7 @@
     "jwt-simple": "^0.5.6",
     "less": "^3.13.1",
     "lodash": "^4.17.21",
-    "marked": "15.0.12",
+    "marked": "16.0.0",
     "marked-alignment-paragraphs": "^1.0.0",
     "marked-definition-lists": "^1.0.1",
     "marked-emoji": "^2.0.1",
