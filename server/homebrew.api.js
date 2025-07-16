@@ -11,7 +11,7 @@ import { nanoid }                    from 'nanoid';
 import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata, 
-		 brewSnippetsToJSON }        from '../shared/helpers.js';
+		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
 
@@ -48,6 +48,20 @@ const api = {
 			}
 			id = id.slice(googleId.length);
 		}
+
+		// ID Validation Checks
+		// Homebrewery ID
+		// Typically 12 characters, but the DB shows a range of 7 to 14 characters
+		if(!id.match(/^[A-Za-z0-9_-]{7,14}$/)){
+			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
+		}
+		// Google ID
+		// Typically 33 characters, old format is 44 - always starts with a 1
+		// Managed by Google, may change outside of our control, so any length between 33 and 44 is acceptable
+		if(googleId && !googleId.match(/^1(?:[A-Za-z0-9+\/]{32,43})$/)){
+			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
+		}
+
 		return { id, googleId };
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
@@ -340,34 +354,45 @@ const api = {
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 		splitTextStyleAndMetadata(brewFromServer);
-		
-		brewFromServer.text  = brewFromServer.text.normalize();
+
+		if(brewFromServer?.version !== brewFromClient?.version){
+			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
+		}
+
+		brewFromServer.text  = brewFromServer.text.normalize('NFC');
 		brewFromServer.hash  = await md5(brewFromServer.text);
 
-		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
-			if(brewFromClient?.version !== brewFromClient?.version)
-				console.log(`Version mismatch on brew ${brewFromClient.editId}`);
-			if(brewFromServer?.hash    !== brewFromClient?.hash) {
-				console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
-			}
+		if(brewFromServer?.hash !== brewFromClient?.hash) {
+			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
+			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
+		}
+
+		try {
+			const patches = parsePatch(brewFromClient.patches);
+			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
+			const patchedResult = applyPatches(patches, brewFromServer.text, { allowExceedingIndices: true })[0];
+			if(patchedResult != brewFromClient.text)
+				throw("Patches did not apply cleanly, text mismatch detected");
+			// brew.text = applyPatches(patches, brewFromServer.text)[0];
+		} catch (err) {
+			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			console.error('Failed to apply patches:', {
+				patches : brewFromClient.patches,
+				brewId  : brewFromClient.editId || 'unknown',
+				error   : err
+			});
+			// While running in parallel, don't throw the error upstream.
+			// throw err; // rethrow to preserve the 500 behavior
 		}
 
 		let brew         = _.assign(brewFromServer, brewFromClient);
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
-		try {
-			const patches = parsePatch(brewFromClient.patches);
-			brew.text = applyPatches(patches, brewFromServer.text)[0];
-		} catch (err) {
-			console.error('Failed to apply patches:', {
-				patches: brewFromClient.patches,
-				brewId: brew.editId || 'unknown'
-			});
-			throw err; // rethrow to preserve the 500 behavior
-		}
-
 		brew.text        = api.mergeBrewText(brew);
 
 		const googleId = brew.googleId;
