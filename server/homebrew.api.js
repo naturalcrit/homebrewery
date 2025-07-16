@@ -8,6 +8,8 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
+import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata, 
 		 brewSnippetsToJSON }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
@@ -337,20 +339,40 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
-		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
-			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+		splitTextStyleAndMetadata(brewFromServer);
+		
+		brewFromServer.text  = brewFromServer.text.normalize();
+		brewFromServer.hash  = await md5(brewFromServer.text);
+
+		if((brewFromServer?.version !== brewFromClient?.version) || (brewFromServer?.hash !== brewFromClient?.hash)) {
+			if(brewFromClient?.version !== brewFromClient?.version)
+				console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+			if(brewFromServer?.hash    !== brewFromClient?.hash) {
+				console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
+			}
 			res.setHeader('Content-Type', 'application/json');
-			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
-		let brew = _.assign(brewFromServer, brewFromClient);
+		let brew         = _.assign(brewFromServer, brewFromClient);
+		brew.title       = brew.title.trim();
+		brew.description = brew.description.trim() || '';
+		try {
+			const patches = parsePatch(brewFromClient.patches);
+			brew.text = applyPatches(patches, brewFromServer.text)[0];
+		} catch (err) {
+			console.error('Failed to apply patches:', {
+				patches: brewFromClient.patches,
+				brewId: brew.editId || 'unknown'
+			});
+			throw err; // rethrow to preserve the 500 behavior
+		}
+
+		brew.text        = api.mergeBrewText(brew);
+
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
-
-		brew.title = brew.title.trim();
-		brew.description = brew.description.trim() || '';
-		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
@@ -484,8 +506,8 @@ const api = {
 };
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
