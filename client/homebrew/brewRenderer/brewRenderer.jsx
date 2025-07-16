@@ -22,6 +22,8 @@ import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
+const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
 
 const INITIAL_CONTENT = dedent`
@@ -110,21 +112,24 @@ const getPageTemplates = (pages)=>{
 	return tempPages;
 };
 const insertTemplate = (props, pageNumber)=>{
+	if(brewTemplates.length == 0) return ''; // No templates available.
 	let lookAt = pageNumber;
 	while ((lookAt > 0) && (typeof brewTemplates[lookAt] === 'undefined')) lookAt--;
-	if(typeof brewTemplates[lookAt] !== 'undefined') {
+	const foundTemplate = lookAt > -1 ? brewTemplates[lookAt] : 'Blank';
+	if(typeof foundTemplate != 'undefined') {
 
-		const whichTemplate = brewTemplates[lookAt].split(':');
+		const whichTemplate = foundTemplate.split(':');
 		let whichTheme = 0;
 
 		// If the user did not supply the Template's document source, assume the current document
 		// and insert it into the array.
 
 		if(whichTemplate.length != 2) {
-			whichTemplate.splice(0, 0, props.title);
+			whichTemplate[0] = props.title;
+			whichTemplate[1] = foundTemplate;
 		}
 
-		if((whichTemplate.length == 2) && (whichTemplate[0].length != 0)) {
+		if((whichTemplate.length == 2) && (whichTemplate[0]?.length != 0)) {
 			if(! props?.templates?.length > 0) return '';
 			for (;whichTheme < props.templates.length; whichTheme++) {
 				if(props.templates[whichTheme].name == whichTemplate[0]) {
@@ -185,7 +190,7 @@ const BrewRenderer = (props)=>{
 	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
-		rawPages = props.text.split('\\page');
+		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
 	} else {
 		rawPages = getPageTemplates(props.text.split(PAGEBREAK_REGEX_V3));
 	}
@@ -242,6 +247,7 @@ const BrewRenderer = (props)=>{
 		let attributes = {};
 
 		if(props.renderer == 'legacy') {
+			pageText.replace(COLUMNBREAK_REGEX_LEGACY, '```\n````\n'); // Allow Legacy brews to use `\column(break)`
 			const html = MarkdownLegacy.render(pageText);
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;

@@ -160,7 +160,6 @@ const NewPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, snippets: snippet },
-			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},
