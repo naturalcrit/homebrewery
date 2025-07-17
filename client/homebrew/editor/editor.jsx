@@ -544,7 +544,7 @@ const Editor = createClass({
 					updateBrew={this.props.updateBrew}
 				/>
 
-				<div aria-labelledby={`${this.state.view}-tab`} role='tabpanel' style={{ height: '100%', width: '100%' }}>
+				<div aria-labelledby={`${this.state.view}-tab`} role='tabpanel' style={{ height: 'calc(100% - 26px)', width: '100%' }}>
 					{this.renderEditor()}
 				</div>
 			</div>
