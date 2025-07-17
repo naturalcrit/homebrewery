@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.19.2",
+  "version": "3.19.3",
   "type": "module",
   "engines": {
     "npm": "^10.8.x",
@@ -72,7 +72,7 @@
         "lines": 50
       },
       "server/homebrew.api.js": {
-        "statements": 69,
+        "statements": 60,
         "branches": 50,
         "functions": 65,
         "lines": 70
@@ -88,13 +88,14 @@
     "@babel/preset-env": "^7.28.0",
     "@babel/preset-react": "^7.27.1",
     "@babel/runtime": "^7.27.6",
+    "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^13.0.1",
     "@sanity/diff-match-patch": "^3.2.0",
     "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
     "cookie-parser": "^1.4.7",
-    "core-js": "^3.43.0",
+    "core-js": "^3.44.0",
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
     "dedent-tabs": "^0.10.3",
@@ -102,6 +103,7 @@
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "3.0.0",
+    "fflate": "^0.8.2",
     "fs-extra": "11.3.0",
     "hash-wasm": "^4.12.0",
     "idb-keyval": "^6.2.2",
@@ -120,7 +122,7 @@
     "marked-subsuper-text": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^8.16.1",
+    "mongoose": "^8.16.3",
     "nanoid": "5.1.5",
     "nconf": "^0.13.0",
     "react": "^18.3.1",
@@ -136,7 +138,7 @@
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^3.1.3",
     "babel-plugin-transform-import-meta": "^2.3.3",
-    "eslint": "^9.30.1",
+    "eslint": "^9.31.0",
     "eslint-plugin-jest": "^29.0.1",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.3.0",
@@ -147,6 +149,6 @@
     "stylelint": "^16.21.1",
     "stylelint-config-recess-order": "^7.1.0",
     "stylelint-config-recommended": "^16.0.0",
-    "supertest": "^7.1.1"
+    "supertest": "^7.1.3"
   }
 }
