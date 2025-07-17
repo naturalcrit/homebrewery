@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import 'core-js/es/string/to-well-formed.js'; //Polyfill for older browsers
 import './homebrew.less';
-import React from 'react';
+import { useState, useEffect } from 'react';
 import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
 
 import HomePage    from './pages/homePage/homePage.jsx';
@@ -17,7 +17,6 @@ const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
 	const queryParams = Object.fromEntries(searchParams?.entries() || []);
-
 	return <Element {...rest} {...params} query={queryParams} />;
 };
 
@@ -42,15 +41,35 @@ const Homebrew = (props)=>{
 		brews
 	} = props;
 
+	const [isClient, setIsClient] = useState(false);
+
+	useEffect(() => {
+		setIsClient(true);
+	}, []);
+
 	global.account       = account;
 	global.version       = version;
 	global.enable_v3     = enable_v3;
 	global.enable_themes = enable_themes;
 	global.config        = config;
 
+	const backgroundObject = ()=>{
+		if(!isClient) return null;
+		if(config.deployment) {
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${config.deployment}</text></svg>")`
+			};
+		} else if(config.local) {
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>Local</text></svg>")`
+			};
+		}
+		return null;
+	};
+
 	return (
 		<Router location={url}>
-			<div className='homebrew'>
+			<div className={`homebrew${isClient && (config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
