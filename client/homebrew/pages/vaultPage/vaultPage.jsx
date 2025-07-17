@@ -5,11 +5,13 @@ require('./vaultPage.less');
 const React = require('react');
 const { useState, useEffect, useRef } = React;
 
-// const Nav           = require('naturalcrit/nav/nav.jsx');
-const Navbar        = require('../../../components/menubar/Menubar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('client/components/menubar/Menubar.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account       = require('../../navbar/account.navitem.jsx');
-const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const { SplitPane }     = require('client/components/splitPane/splitPane.jsx'); 
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
@@ -117,20 +119,30 @@ const VaultPage = (props)=>{
 			loadTotal(title, author, v3, legacy);
 	};
 
-	const renderNavItems = ()=>(
-		<Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>
-					Vault: Search for brews
-				</Nav.item>
-			</Nav.section>
-			<Nav.section>
-				<NewBrew />
-				<RecentNavItem />
-				<Account />
-			</Nav.section>
-		</Navbar>
-	);
+
+
+	const renderNavbar = ()=>{
+		return (
+			<Menubar id='navbar'>
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
+						<NewBrewItem />
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem>
+						<RecentNavItem />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+			</Menubar>
+		);
+	};
 
 	const validateForm = ()=>{
 		//form validity: title or author must be written, and at least one renderer set
@@ -414,7 +426,7 @@ const VaultPage = (props)=>{
 		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
-			{renderNavItems()}
+			{renderNavbar()}
 			<div className='content'>
 				<SplitPane
 					paneOrder={paneOrder}

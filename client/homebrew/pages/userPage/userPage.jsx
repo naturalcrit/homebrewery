@@ -4,13 +4,12 @@ const _ = require('lodash');
 
 const ListPage = require('../basePages/listPage/listPage.jsx');
 
-// const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../../components/menubar/Menubar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('client/components/menubar/Menubar.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const VaultNavitem = require('../../navbar/vault.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 
 const UserPage = (props)=>{
 	props = {
@@ -38,21 +37,31 @@ const UserPage = (props)=>{
 		}] : [])
 	];
 
-	const navItems = (
-		<Navbar>
-			<Nav.section>
-				{error && (<ErrorNavItem error={error} parent={null}></ErrorNavItem>)}
-				<NewBrew />
-				<HelpNavItem />
-				<VaultNavitem />
-				<RecentNavItem />
-				<Account />
-			</Nav.section>
-		</Navbar>
-	);
+	const renderNavbar = ()=>{
+		return (
+			<Menubar id='navbar'>
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
+						<NewBrewItem />
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem>
+						<RecentNavItem />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+			</Menubar>
+		);
+	};
 
 	return (
-		<ListPage brewCollection={brewCollection}  navItems={navItems} query={props.query} reportError={(err)=>setError(err)} />
+		<ListPage brewCollection={brewCollection}  navItems={renderNavbar()} query={props.query} reportError={(err)=>setError(err)} />
 	);
 };
 
