@@ -26,8 +26,9 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	}, [visiblePages]);
 
 	useEffect(()=>{
-		const visibility = localStorage.getItem('hb_toolbarVisibility') === 'true';
-		setToolsVisible(visibility);
+		const Visibility = localStorage.getItem('hb_toolbarVisibility');
+		if (Visibility) setToolsVisible(Visibility === 'true');
+
 	}, []);
 
 	const handleZoomButton = (zoom)=>{

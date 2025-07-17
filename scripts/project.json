@@ -28,6 +28,8 @@
 		"codemirror/addon/selection/active-line.js",
 		"codemirror/addon/hint/show-hint.js",
 		"moment",
-		"superagent"
+		"superagent",
+		"@sanity/diff-match-patch",
+		"fflate"
 	]
 }
