@@ -16,7 +16,8 @@ const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
+const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -49,7 +50,8 @@ const NewPage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			paneOrder                  : [0, 1],
 		};
 	},
 
@@ -246,7 +248,16 @@ const NewPage = createClass({
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={this.handleSplitMove}
+					paneOrder={this.state.paneOrder}
+					setPaneOrder={(order)=>this.setState({ paneOrder: order })}
+					dividerButtons={ScrollButtons({
+						paneOrder          : this.state.paneOrder,
+						editorRef          : this.editor,
+						liveScroll         : this.state.liveScroll,
+						onLiveScrollToggle : this.liveScrollToggle
+					})}>
+
 					<Editor
 						ref={this.editor}
 						brew={this.state.brew}
@@ -262,6 +273,7 @@ const NewPage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						liveScroll={this.state.liveScroll}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}

@@ -1,3 +1,5 @@
+// currently a SplitPane must only have two children.
+
 require('./splitPane.less');
 const React = require('react');
 const { useState, useEffect } = React;
@@ -5,14 +7,10 @@ import Button from 'client/components/Button.jsx';
 
 const storageKey = 'naturalcrit-pane-split';
 
-const SplitPane = ({ onDragFinish= ()=>{}, showDividerButtons = true, paneOrder = [0, 1], ...props })=>{
+const SplitPane = ({ onDragFinish= ()=>{}, paneOrder = [0, 1], dividerButtons = [], ...props })=>{
 
 	const [isDragging, setIsDragging] = useState(false);
 	const [dividerPos, setDividerPos] = useState(null);
-	const [moveSource, setMoveSource] = useState(false);
-	const [moveBrew, setMoveBrew] = useState(false);
-	const [showMoveArrows, setShowMoveArrows] = useState(true);
-	const [liveScroll, setLiveScroll] = useState(false);
 	const [dragStartTime, setDragStartTime] = useState(0);
   	const [dragStartPos, setDragStartPos] = useState(0);
   	const [lastWidth, setLastWidth] = useState(null);
@@ -21,7 +19,6 @@ const SplitPane = ({ onDragFinish= ()=>{}, showDividerButtons = true, paneOrder 
 	useEffect(()=>{
 		const savedPos = window.localStorage.getItem(storageKey);
 		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 4), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
-		setLiveScroll(window.localStorage.getItem('liveScroll') === 'true');
 		setWindowWidth(window.innerWidth);
 
 		const handleWindowResize = ()=>{
@@ -72,11 +69,6 @@ const SplitPane = ({ onDragFinish= ()=>{}, showDividerButtons = true, paneOrder 
 		setDividerPos(limitPosition(e.pageX));
 	};
 
-	const liveScrollToggle = ()=>{
-		window.localStorage.setItem('liveScroll', String(!liveScroll));
-		setLiveScroll(!liveScroll);
-	};
-
 	const handleSwapClick = ()=>{
 		if(props.setPaneOrder) {
 			const newOrder = [paneOrder[1], paneOrder[0]];
@@ -88,43 +80,38 @@ const SplitPane = ({ onDragFinish= ()=>{}, showDividerButtons = true, paneOrder 
 		return dividerPos > (windowWidth - 16);
 	};
 
+	const  renderSplitPaneTools = ()=>{
+		return (
+			<div id='split-pane-tools'>
+				{dividerButtons && dividerButtons.map((button, i)=>{
+					return React.isValidElement(button) ?
+						button :
+						<Button
+							key={i}
+							iconOnly
+							icon={button.icon}
+							tooltipDirection={['right']}
+							onClick={button.onClick}
+						>
+							{button.tooltip}
+						</Button>;
+				})}
+				<Button id='swap-panes'
+					tooltipDirection={['right']}
+					iconOnly
+					icon='fas fa-arrow-right-arrow-left'
+					onClick={handleSwapClick}>
+						Swap Panes
+				</Button>
+			</div>
 
-
-	const  renderSplitPaneTools = (showMoveArrows &&
-		<div id='split-pane-tools'>
-			<Button id='move-source' iconOnly icon={paneOrder[0] === 0 ? `fas fa-arrow-left` : `fas fa-arrow-right`}
-				tooltipDirection={['right']}
-				onClick={()=>setMoveSource(!moveSource)} >
-				Jump to location in Editor
-			</Button>
-			<Button id='move-preview' iconOnly icon={paneOrder[0] === 0 ? `fas fa-arrow-right` : `fas fa-arrow-left`}
-				tooltipDirection={['right']}
-				onClick={()=>setMoveBrew(!moveBrew)} >
-				Jump to location in Preview
-			</Button>
-			<Button id='scroll-lock'
-				role='switch'
-				aria-checked={liveScroll ? 'true' : 'false'}
-				tooltipDirection={['right']}
-				iconOnly
-				icon={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'}
-				onClick={liveScrollToggle} >
-				{liveScroll ? 'Un-Sync Editor and Preview locations' : 'Sync Editor and Preview locations'}
-			</Button>
-			<Button id='swap-panes'
-				tooltipDirection={['right']}
-				iconOnly
-				icon='fas fa-arrow-right-arrow-left'
-				onClick={handleSwapClick}>
-					Swap Panes
-			</Button>
-		</div>
-	);
+		);
+	};
 
 	const renderDivider = (
 		<div className={`divider${isDragging ? ' dragging' : ''}${onRightEdge() ? ' on-right-edge' : ''}`} onPointerDown={handleDown}>
 			<div id='flip-box'>
-				{showDividerButtons && renderSplitPaneTools}
+				{renderSplitPaneTools()}
 				<div className={`dots`}>
 					<i className='fas fa-grip-vertical' />
 				</div>
@@ -134,28 +121,29 @@ const SplitPane = ({ onDragFinish= ()=>{}, showDividerButtons = true, paneOrder 
 
 	const children = React.Children.toArray(props.children);
 
-
 	return (
 		<div className='splitPane' onPointerMove={handleMove} onPointerUp={handleUp}>
-			<Pane key={`pane-${paneOrder[0]}`} width={dividerPos} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
+			<Pane key={`pane-${paneOrder[0]}`} width={dividerPos}>
 				{children[paneOrder[0]]}
 			</Pane>
 			{renderDivider}
-			<Pane key={`pane-${paneOrder[1]}`}isDragging={isDragging}>{children[paneOrder[1]]}</Pane>
+			<Pane key={`pane-${paneOrder[1]}`}isDragging={isDragging}>
+				{children[paneOrder[1]]}
+			</Pane>
 		</div>
 	);
 };
 
-const Pane = ({ width, children, isDragging, moveBrew, moveSource, liveScroll = false, setMoveArrows })=>{
+const Pane = ({ width, children, isDragging, ...props })=>{
 	const styles = width
 		? { flex: 'none', width: `${width}px` }
 		: { pointerEvents: isDragging ? 'none' : 'auto' }; //Disable mouse capture in the right pane; else dragging into the iframe drops the divider
 
 	return (
 		<div className='pane' style={styles}>
-			{React.cloneElement(children, { moveBrew, moveSource, liveScroll, setMoveArrows })}
+			{children}
 		</div>
 	);
 };
 
-module.exports = SplitPane;
+module.exports = { SplitPane, Pane };

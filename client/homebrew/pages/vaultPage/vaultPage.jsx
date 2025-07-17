@@ -11,12 +11,13 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account       = require('../../navbar/account.navitem.jsx');
 const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
-const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
+const { SplitPane }     = require('client/components/splitPane/splitPane.jsx'); 
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
 import request from '../../utils/request-middleware.js';
 
 const VaultPage = (props)=>{
+	const [paneOrder, setPaneOrder] = useState([0,1]);
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
 
 	const [sortState, setSort] = useState(props.query.sort || 'title');
@@ -415,7 +416,10 @@ const VaultPage = (props)=>{
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
 			{renderNavItems()}
 			<div className='content'>
-				<SplitPane showDividerButtons={false}>
+				<SplitPane
+					paneOrder={paneOrder}
+					setPaneOrder={(order)=>setPaneOrder(order)}
+					>
 					<div className='form dataGroup'>{renderForm()}</div>
 					<div className='resultsContainer dataGroup'>
 						{renderSortBar()}

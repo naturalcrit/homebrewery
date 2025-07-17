@@ -18,8 +18,8 @@ const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const DialogZone = require('../../../components/Dialogs/DialogZone.jsx');
 const Dialog = require('../../../components/Dialogs/Dialog.jsx');
 
-
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
+const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -54,6 +54,7 @@ const EditPage = createClass({
 			url                        : '',
 			autoSave                   : true,
 			unsavedTime                : new Date(),
+			editorView                 : 'text',
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
@@ -61,6 +62,7 @@ const EditPage = createClass({
 			themeBundle                : {},
 			openStoragePicker          : false,
 			paneOrder                  : [0, 1],
+			liveScroll                 : false,
 			alerts                     : {
 				alertLoginToTransfer   : false,
 				alertTrashedGoogleBrew : this.props.brew.trashed,
@@ -69,7 +71,6 @@ const EditPage = createClass({
 				isPending              : false,
 				isSaving               : false,
 			},
-			swapCount: 0,
 		};
 	},
 
@@ -90,6 +91,8 @@ const EditPage = createClass({
 				this.setState((prevState)=>({ alerts: { ...prevState.alerts, autoSaveWarning: true } }));
 			}
 		});
+
+		this.setState({ liveScroll: JSON.parse(localStorage.getItem('liveScroll')) === 'true' });
 
 		window.onbeforeunload = ()=>{
 			if(this.state.alerts.isSaving || this.state.alerts.isPending){
@@ -138,6 +141,18 @@ const EditPage = createClass({
 
 	handleSplitMove : function(){
 		this.editor.current.update();
+	},
+
+	liveScrollToggle : function() {
+		console.log('toggled');
+		this.setState(
+			(prevState)=>({ liveScroll: !prevState.liveScroll }),
+			()=>{localStorage.setItem('liveScroll', JSON.stringify(this.state.liveScroll)); console.log(this.state.liveScroll);}
+		);
+	},
+
+	handleEditorViewChange : function(newView){
+		this.setState({ editorView: newView });
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
@@ -248,8 +263,8 @@ const EditPage = createClass({
 	closeAlerts : function(event){
 		event.stopPropagation();	//Only handle click once so alert doesn't reopen
 		this.setState((prevState)=>({
-			confirmGoogleTransfer  : false,
-			alerts : {
+			confirmGoogleTransfer : false,
+			alerts                : {
 				...prevState.alerts,
 				alertTrashedGoogleBrew : false,
 				alertLoginToTransfer   : false,
@@ -376,7 +391,7 @@ const EditPage = createClass({
 		return <Dialog
 			className='prompt-dialog'
 			openModal={this.state.openStoragePicker}
-			onClose={()=>{this.setState({openStoragePicker : false })}}
+			onClose={()=>{this.setState({ openStoragePicker: false });}}
 			zone='app-dialogs'
 		>
 			<Dialog.Title>Save location...</Dialog.Title>
@@ -410,7 +425,7 @@ const EditPage = createClass({
 	},
 
 	renderStoragePicker : function(){
-		return <MenuItem className='googleDriveStorage' onClick={()=>{this.setState({openStoragePicker : true})}}>
+		return <MenuItem className='googleDriveStorage' onClick={()=>{this.setState({ openStoragePicker: true });}}>
 			Saved to {this.state.saveGoogle ? <img src={googleDriveIcon} /> : 'HB'}
 
 			{/* {this.state.alertTrashedGoogleBrew &&
@@ -531,6 +546,7 @@ const EditPage = createClass({
 		};
 	},
 
+
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
@@ -577,7 +593,7 @@ const EditPage = createClass({
 			</Menubar>
 		);
 	},
-	
+
 
 	render : function(){
 		return <div className='editPage sitePage'>
@@ -588,15 +604,23 @@ const EditPage = createClass({
 
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove} paneOrder={this.state.paneOrder} 
-					setPaneOrder={order => this.setState(prev => ({
-						paneOrder: order,
-						swapCount: prev.swapCount + 1
-					}))}>
+				<SplitPane
+					onDragFinish={this.handleSplitMove}
+					paneOrder={this.state.paneOrder}
+					setPaneOrder={(order)=>this.setState({ paneOrder: order })}
+					dividerButtons={this.state.editorView === 'text' ? ScrollButtons({
+						paneOrder          : this.state.paneOrder,
+						editorRef          : this.editor,
+						liveScroll         : this.state.liveScroll,
+						onLiveScrollToggle : this.liveScrollToggle
+					}) : null}
+
+				>
 					<Editor
-						key={`editor-pane-${this.state.paneOrder.indexOf(0)}`}
+						key={`editor-${this.state.paneOrder.indexOf(0)}`}
 						ref={this.editor}
 						brew={this.state.brew}
+						onViewChange={this.handleEditorViewChange}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onSnipChange={this.handleSnipChange}
@@ -612,9 +636,10 @@ const EditPage = createClass({
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
 						htmlErrors={this.state.alerts.htmlErrors}
+						liveScroll={this.state.liveScroll}
 					/>
 					<BrewRenderer
-						key={`renderer-pane-${this.state.swapCount}`}
+						key={`renderer-${this.state.paneOrder.indexOf(1)}`}
 						text={this.state.brew.text}
 						style={this.state.brew.style}
 						renderer={this.state.brew.renderer}

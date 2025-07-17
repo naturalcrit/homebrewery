@@ -57,6 +57,7 @@ const Editor = createClass({
 			currentBrewRendererPageNum : 1,
 
 			htmlErrors : [],
+			liveScroll : false
 		};
 	},
 	getInitialState : function() {
@@ -150,8 +151,7 @@ const Editor = createClass({
 	},
 
 	handleViewChange : function(newView){
-		this.props.setMoveArrows(newView === 'text');
-		
+		this.props.onViewChange(newView);
 		this.setState({
 			view : newView
 		}, ()=>{

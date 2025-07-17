@@ -7,9 +7,15 @@
 	height         : 100%;
 	outline        : none;
 	.pane {
-		flex       : 1;
+		
+		flex: 1 1 0;
+		min-width: 0;
+		position: relative;
+		display: flex;
+		flex-direction: column;
 		overflow-x : hidden;
 		overflow-y : hidden;
+		position   : relative;
 	}
 	.divider {
 		position: relative;
@@ -28,7 +34,7 @@
 		}
 		#flip-box {
 			position: relative;
-			left: 10px;
+			left: 9px;
 			background: inherit;
 			width: auto;
 			border-radius: 0 4px 4px 0;
@@ -49,7 +55,7 @@
 		}
 
 		&.on-right-edge #flip-box {
-			left: -10px;
+			left: -9px;
 			border-radius: 4px 0 0 4px;
 			padding: 5px 0px 5px 4px ;
 		}
