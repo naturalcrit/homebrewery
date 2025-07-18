@@ -47,6 +47,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
+			isOwner : global.account?.username && global.account?.username === this.props.metadata?.authors[0],
 			showThumbnail : true
 		};
 	},
@@ -212,7 +213,7 @@ const MetadataEditor = createClass({
 		if(authors && authors.length){
 			text = authors.join(', ');
 		}
-		if(!this.props.isOwner || authors.length < 2) return (
+		if(!this.state.isOwner || authors.length < 2) return (
 			<div className='field authors'>
 				<label>authors</label>
 				<div className='value'>

@@ -39,8 +39,7 @@ const Homebrew = (props)=>{
 			lang      : ''
 		},
 		userThemes,
-		brews,
-		isOwner,
+		brews
 	} = props;
 
 	global.account       = account;
@@ -53,7 +52,7 @@ const Homebrew = (props)=>{
 		<Router location={url}>
 			<div className='homebrew'>
 				<Routes>
-					<Route path='/edit/:id' element={<WithRoute el={EditPage} isOwner={isOwner} brew={brew} userThemes={userThemes}/>} />
+					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
