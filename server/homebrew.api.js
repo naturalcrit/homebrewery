@@ -170,7 +170,6 @@ const api = {
 			next();
 		};
 	},
-
 	getCSS : async (req, res)=>{
 		const { brew } = req;
 		if(!brew) return res.status(404).send('');
@@ -183,7 +182,6 @@ const api = {
 		});
 		return res.status(200).send(brew.style);
 	},
-
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
@@ -201,7 +199,6 @@ const api = {
 			`${text}`;
 		return text;
 	},
-
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
@@ -463,6 +460,28 @@ const api = {
 
 		res.status(200).send(saved);
 	},
+	deleteAuthor : async (req, res)=>{
+		try {
+			await api.getBrew('edit')(req, res, ()=>{});
+		} catch (err) {
+			throw { name: 'deleteAuthor Error', message: err, status: 500, brewId: brew._id };
+		}
+
+		let brew = req.brew;
+		const account = req.account;
+		const author = req.params.author;
+		const isOwner = account && (brew.authors[0] === account.username);
+
+		if(brew._id && isOwner) {
+			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
+			brew.authors = _.pull(brew.authors, author);
+			brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
+			await brew.save().catch((err)=>{
+				throw { name: 'deleteAuthor Error', message: err, status: 500, HBErrorCode: '08', brewId: brew._id };
+			});
+		}
+		res.status(204).send();
+	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
 		const auth = await GoogleActions.authCheck(account, res);
 		await GoogleActions.deleteGoogleBrew(auth, id, editId);
@@ -534,6 +553,7 @@ router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.put('/api/prune/:id/:author', checkClientVersion, asyncHandler(api.deleteAuthor));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
