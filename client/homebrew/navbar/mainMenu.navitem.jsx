@@ -2,7 +2,7 @@ require('./navbar.less');
 const React = require('react');
 const dedent = require('dedent-tabs').default;
 
-const { MenuDropdown, MenuItem } = require('../../components/menubar/Menubar.jsx');
+const { MenuDropdown, MenuItem, MenuRule } = require('../../components/menubar/Menubar.jsx');
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
 const HomebreweryIcon = require('client/icons/homebrewery-animated-css.svg.jsx');
 
@@ -12,8 +12,11 @@ const MainMenu = ()=>{
 
 	return (
 		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger} color='blue'>
-			<MenuItem id='naturalCritItem' newTab={true} href='https://www.naturalcrit.com' color='blue'>
-				<span className='natural'>Natural<span className='crit'>Crit</span></span>
+			<MenuItem color='orange' 
+				href='/'
+				newTab={false}
+				rel='noopener noreferrer'>
+					Home
 			</MenuItem>
 			<MenuItem newTab={true} href='/changelog' color='purple' icon='far fa-file-alt'>
 				{`v${global.version}`}
@@ -47,6 +50,10 @@ const MainMenu = ()=>{
 				color='green'
 				icon='fas fa-heart'>
 				Patreon
+			</MenuItem>
+			<MenuRule />
+			<MenuItem id='naturalCritItem' newTab={true} href='https://www.naturalcrit.com' color='blue' icon='fac naturalcrit'>
+				<span className='natural'>Natural<span className='crit'>Crit</span></span>
 			</MenuItem>
 		</MenuDropdown>
 	)
