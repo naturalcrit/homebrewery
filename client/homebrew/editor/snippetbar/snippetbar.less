@@ -8,16 +8,16 @@
 	grid-template-rows: min-content;
 	grid-template-areas: "tabs tools";
 	&:has(#brew-tab[aria-selected='true']){
-		--menubar-border: 4px solid @orangeLight;
+		border-bottom: 4px solid @orangeLight;
 	}
 	&:has(#style-tab[aria-selected='true']){
-		--menubar-border: 4px solid @blueLight;
+		border-bottom: 4px solid @blueLight;
 	}
 	&:has(#snippet-tab[aria-selected='true']){
-		--menubar-border: 4px solid @purpleLight;
+		border-bottom: 4px solid @purpleLight;
 	}
 	&:has(#meta-tab[aria-selected='true']){
-		--menubar-border: 4px solid @greenLight;
+		border-bottom: 4px solid @greenLight;
 	}
 }
 
@@ -71,8 +71,8 @@
 
 	.menu-list {
 		background-color: var(--menubar-color);
-		border: var(--menubar-border);
 		box-shadow: var(--menubar-shadow);
+		border: var(--menubar-border);
 		.menu-item {
 			column-gap: 10px;
 			.beta {

@@ -5,7 +5,6 @@ const cx = require('classnames');
 const _     = require('lodash');
 import Button from '../Button.jsx';
 
-
 const MenubarContext = React.createContext({ isCompact: false });
 const MenuDepthContext = React.createContext(0);
 
