@@ -29,7 +29,7 @@ const disconnect = async ()=>{
 const connect = async (config)=>{
 	return await Mongoose.connect(getMongoDBURL(config), {
 		retryWrites : false,
-		autoIndex   : (config.get('node_env') == 'local' || config.get('node_env') == 'docker')
+		autoIndex   : (config.get('local_environments').includes(config.get('node_env')))
 	})
 		.catch((error)=>handleConnectionError(error));
 };
