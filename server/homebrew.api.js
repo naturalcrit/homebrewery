@@ -375,7 +375,7 @@ const api = {
 		try {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
-			const patchedResult = applyPatches(patches, brewFromServer.text, { allowExceedingIndices: true })[0];
+			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
 			if(patchedResult != brewFromClient.text)
 				throw("Patches did not apply cleanly, text mismatch detected");
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
