@@ -3,7 +3,7 @@ const React = require('react');
 const dedent = require('dedent-tabs').default;
 
 const { MenuDropdown, MenuItem, MenuRule } = require('../../components/menubar/Menubar.jsx');
-const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+const NaturalCritIcon = require('client/svg/naturalcrit.svg.jsx');
 const HomebreweryIcon = require('client/icons/homebrewery-animated-css.svg.jsx');
 
 const MainMenu = ()=>{

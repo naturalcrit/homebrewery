@@ -36,7 +36,7 @@ const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpe
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
 const googleDriveIcon = require('../../googleDrive.svg');
-const NaturalCritIcon = require('shared/naturalcrit/svg/naturalcrit.svg.jsx');
+const NaturalCritIcon = require('client/svg/naturalcrit.svg.jsx');
 
 const SAVE_TIMEOUT = 10000;
 
