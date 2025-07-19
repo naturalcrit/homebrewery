@@ -266,7 +266,7 @@ const EditPage = createClass({
 		brew.text           = brew.text.normalize('NFC');
 		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
+		brew.patches        = stringifyPatches(makePatches(encodeURI(this.savedBrew.text), encodeURI(brew.text)));
 		brew.hash           = await md5(this.savedBrew.text);
 		//brew.text           = undefined; - Temporary parallel path
 		brew.textBin        = undefined;
