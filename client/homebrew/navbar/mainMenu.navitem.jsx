@@ -4,10 +4,11 @@ const dedent = require('dedent-tabs').default;
 
 const { MenuDropdown, MenuItem } = require('../../components/menubar/Menubar.jsx');
 const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+const HomebreweryIcon = require('client/icons/homebrewery-animated-css.svg.jsx');
 
 const MainMenu = ()=>{
 
-	const customTrigger = <><NaturalCritIcon /><span className='name'>The Homebrewery</span><i className='caret fas fa-caret-down'></i></>;
+	const customTrigger = <><HomebreweryIcon /><span className='name'>The Homebrewery</span><i className='caret fas fa-caret-down'></i></>;
 
 	return (
 		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger} color='blue'>

@@ -64,27 +64,10 @@
 			}
 
 			// LOGO ITEM
-			svg.natural-crit-logo {
-				fill: #fff5;
+			.homebrewery.fac {
 				.animate(color);
 				&:hover {
-					fill : @orange;
-				}
-				&:active {
-					z-index:4;
-					animation: roll 2s cubic-bezier(.5, -.4, .75, .9);
-					@keyframes roll {
-						0% {
-							transform: rotate(0deg);
-							translate: 0 0;
-						}
-						90% { opacity: 1; }
-						100% {
-							transform: rotate(1050deg);
-							translate: 400px 0px;
-							opacity: 0;
-						}
-					}
+					color : @orange;
 				}
 			}
 
