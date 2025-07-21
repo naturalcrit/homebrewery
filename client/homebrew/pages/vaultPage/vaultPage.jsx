@@ -16,6 +16,8 @@ const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const { SplitPane }     = require('client/components/splitPane/splitPane.jsx'); 
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
+const VaultLogo = require('client/svg/theVault.svg.jsx');
+
 import request from '../../utils/request-middleware.js';
 
 const VaultPage = (props)=>{
@@ -24,6 +26,8 @@ const VaultPage = (props)=>{
 
 	const [sortState, setSort] = useState(props.query.sort || 'title');
 	const [dirState, setdir] = useState(props.query.dir || 'asc');
+
+	const [rendererSelected, setRendererSelected] = useState(true);
 
 	//Response state
 	const [brewCollection, setBrewCollection] = useState(null);
@@ -148,9 +152,9 @@ const VaultPage = (props)=>{
 		//form validity: title or author must be written, and at least one renderer set
 		const isTitleValid      = titleRef.current.validity.valid && titleRef.current.value;
 		const isAuthorValid     = authorRef.current.validity.valid && authorRef.current.value;
-		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
+		(legacyRef.current.checked || v3Ref.current.checked) ? setRendererSelected(true) : setRendererSelected(false);
 
-		const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
+		const isFormValid = (isTitleValid || isAuthorValid) && rendererSelected;
 
 		return isFormValid;
 	};
@@ -160,11 +164,19 @@ const VaultPage = (props)=>{
 	};
 
 	const renderForm = ()=>(
-		<div className='brewLookup'>
-			<h2 className='formTitle'>Brew Lookup</h2>
-			<div className='formContents'>
+		<>
+			<VaultLogo /><h1 className='sr-only'>The Vault</h1>
+			<blockquote>“Reading brings us unknown friends.” <br />– Honoré Balzac</blockquote>
+			<form
+				id='vault-search-form'
+				onSubmit={e=>{
+					e.preventDefault();
+					if(!submitButtonRef.current.disabled)
+						loadPage(1, true);
+				}}
+			>
 				<label>
-					Title of the brew
+					Title
 					<input
 						ref={titleRef}
 						type='text'
@@ -173,16 +185,12 @@ const VaultPage = (props)=>{
 						onKeyUp={disableSubmitIfFormInvalid}
 						pattern='.{3,}'
 						title='At least 3 characters'
-						onKeyDown={(e)=>{
-							if(e.key === 'Enter' && !submitButtonRef.current.disabled)
-								loadPage(1, true);
-						}}
 						placeholder='v3 Reference Document'
 					/>
 				</label>
 
 				<label>
-					Author of the brew
+					Author
 					<input
 						ref={authorRef}
 						type='text'
@@ -190,13 +198,37 @@ const VaultPage = (props)=>{
 						pattern='.{1,}'
 						defaultValue={props.query.author || ''}
 						onKeyUp={disableSubmitIfFormInvalid}
-						onKeyDown={(e)=>{
-							if(e.key === 'Enter' && !submitButtonRef.current.disabled)
-								loadPage(1, true);
-						}}
 						placeholder='Username'
 					/>
 				</label>
+
+				<fieldset>
+					<legend>Renderers</legend>
+					<small className={rendererSelected ? null : 'invalid'}>(choose at least one)</small>
+					<label>
+						<input
+							className='renderer'
+							ref={v3Ref}
+							type='checkbox'
+							defaultChecked={props.query.v3 !== 'false'}
+							onChange={disableSubmitIfFormInvalid}
+						/>
+						v3
+					</label>
+
+					<label>
+						<input
+							className='renderer'
+							ref={legacyRef}
+							type='checkbox'
+							defaultChecked={props.query.legacy !== 'false'}
+							onChange={disableSubmitIfFormInvalid}
+						/>
+						Legacy
+					</label>
+
+				</fieldset>
+				
 
 				<label>
 					Results per page
@@ -208,43 +240,19 @@ const VaultPage = (props)=>{
 					</select>
 				</label>
 
-				<label>
-					<input
-						className='renderer'
-						ref={v3Ref}
-						type='checkbox'
-						defaultChecked={props.query.v3 !== 'false'}
-						onChange={disableSubmitIfFormInvalid}
-					/>
-					Search for v3 brews
-				</label>
-
-				<label>
-					<input
-						className='renderer'
-						ref={legacyRef}
-						type='checkbox'
-						defaultChecked={props.query.legacy !== 'false'}
-						onChange={disableSubmitIfFormInvalid}
-					/>
-					Search for legacy brews
-				</label>
-
 				<button
 					id='searchButton'
 					ref={submitButtonRef}
-					onClick={()=>{
-						loadPage(1, true);
-					}}
+					type='submit'
 				>
 					Search
 					<i
 						className={searching ? 'fas fa-spin fa-spinner': 'fas fa-search'}
 					/>
 				</button>
-			</div>
-			<legend>
-				<h3>Tips and tricks</h3>
+			</form>
+			<details>
+				<summary>Tips & Tricks</summary>
 				<ul>
 					<li>
 						Only <b>published</b> brews are searchable via this tool
@@ -264,9 +272,10 @@ const VaultPage = (props)=>{
 						</a>
 					</li>
 				</ul>
-				<small>New features will be coming, such as filters and search by tags.</small>
-			</legend>
-		</div>
+				<p>New features will be coming, such as filters and search by tags.</p>
+
+			</details>
+		</>
 	);
 
 	const renderSortOption = (optionTitle, optionValue)=>{
@@ -432,8 +441,8 @@ const VaultPage = (props)=>{
 					paneOrder={paneOrder}
 					setPaneOrder={(order)=>setPaneOrder(order)}
 					>
-					<div className='form dataGroup'>{renderForm()}</div>
-					<div className='resultsContainer dataGroup'>
+					<div id='search-panel'>{renderForm()}</div>
+					<div id='results-panel'>
 						{renderSortBar()}
 						{renderFoundBrews()}
 					</div>
@@ -444,3 +453,21 @@ const VaultPage = (props)=>{
 };
 
 module.exports = VaultPage;
+
+// alternative quotes
+
+// from Tamms @ discord
+// "For those who are willing to make an effort, great miracles and wonderful treasures are in store."
+// Isaac Bashevis Singer
+
+// "There is more treasure in books than in all the pirates' loot on Treasure Island..."
+// Walt Disney
+
+// "The rose and thorn, the treasure and dragon, joy and sorrow, all mingle into one."
+// Saadi
+
+// "The dangers gather as the treasures rise."
+// Samuel Johnson
+
+// "Sometimes lost treasures can be reclaimed."
+// Rebecca Wells

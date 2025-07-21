@@ -1,4 +1,5 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
+@import (multiple, less) 'shared/naturalcrit/styles/scrollbars.less';
 
 #preview-pane {
 	display: grid;
@@ -130,29 +131,8 @@
 		}
 		*[id] { scroll-margin-top : 100px; }
 	}
-	--sb-track-color: #fff0;
-	--sb-thumb-color: #8fa1ad;
-	--sb-size: 14px;
 
-	&::-webkit-scrollbar {
-		width: var(--sb-size);
-		height: var(--sb-size);
-	}
-
-	&::-webkit-scrollbar-track {
-		background: var(--sb-track-color);
-		border-radius: 1px;
-		&:vertical {border-left: 1px solid #61666a;}
-		&:horizontal {border-top: 1px solid #61666a;}
-	}
-
-	&::-webkit-scrollbar-thumb {
-		background: var(--sb-thumb-color);
-		border-radius: 1px;
-	}
-	&::-webkit-scrollbar-corner {
-		background: #61666a;
-	}
+	.scrollbar-styles(#fff0, #8fa1ad, 14px);
 }
 
 .pane { position : relative; }
