@@ -52,13 +52,13 @@ const api = {
 		// ID Validation Checks
 		// Homebrewery ID
 		// Typically 12 characters, but the DB shows a range of 7 to 14 characters
-		if(!id.match(/^[A-Za-z0-9_-]{7,14}$/)){
+		if(!id.match(/^[a-zA-Z0-9-_]{7,14}$/)){
 			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
 		}
 		// Google ID
 		// Typically 33 characters, old format is 44 - always starts with a 1
 		// Managed by Google, may change outside of our control, so any length between 33 and 44 is acceptable
-		if(googleId && !googleId.match(/^1(?:[A-Za-z0-9+\/]{32,43})$/)){
+		if(googleId && !googleId.match(/^1(?:[a-zA-Z0-9-_]{32,43})$/)){
 			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
 		}
 
