@@ -382,7 +382,7 @@ const api = {
 		} catch (err) {
 			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				patches : brewFromClient.patches,
+				//patches : brewFromClient.patches,
 				brewId  : brewFromClient.editId || 'unknown',
 				error   : err
 			});
