@@ -159,15 +159,11 @@ const MetadataEditor = createClass({
 
 	handleDeleteAuthor : function(author){
 		if(!confirm('Are you sure you want to delete this author? They will lose all edit access to this brew.')) return;
-		request.put(`/api/prune/${this.props.metadata.editId}/${author}`)
-			.send()
-			.end((err, res)=>{
-				if(err) {
-					this.props.reportError(err);
-				} else {
-					window.location.reload();
-				}
-			});
+		if(!this.props.metadata.authors.includes(author)) return;
+		this.props.onChange({
+    		...this.props.metadata,
+    		authors: this.props.metadata.authors.filter(a => a !== author)
+		});
 	},
 
 	renderSystems : function(){

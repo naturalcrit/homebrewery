@@ -378,6 +378,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 	req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 	req.userThemes = await(getUsersBrewThemes(req.account?.username));
+
 	req.ogMeta = { ...defaultMetaTags,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
@@ -564,7 +565,7 @@ const renderPage = async (req, res)=>{
 		enable_themes : config.get('enable_themes'),
 		config        : configuration,
 		ogMeta        : req.ogMeta,
-		userThemes    : req.userThemes,
+		userThemes    : req.userThemes
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
