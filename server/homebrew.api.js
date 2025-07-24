@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import {model as HomebrewModel}      from './homebrew.model.js';
+import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -8,8 +8,12 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { md5 }                       from 'hash-wasm';
+import { splitTextStyleAndMetadata, 
+		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+
 
 const router = express.Router();
 
@@ -44,6 +48,20 @@ const api = {
 			}
 			id = id.slice(googleId.length);
 		}
+
+		// ID Validation Checks
+		// Homebrewery ID
+		// Typically 12 characters, but the DB shows a range of 7 to 14 characters
+		if(!id.match(/^[a-zA-Z0-9-_]{7,14}$/)){
+			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
+		}
+		// Google ID
+		// Typically 33 characters, old format is 44 - always starts with a 1
+		// Managed by Google, may change outside of our control, so any length between 33 and 44 is acceptable
+		if(googleId && !googleId.match(/^1(?:[a-zA-Z0-9-_]{32,43})$/)){
+			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
+		}
+
 		return { id, googleId };
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
@@ -92,7 +110,7 @@ const api = {
 			const accessMap = {
 				edit  : { editId: id },
 				share : { shareId: id },
-				admin : { $or : [{ editId: id }, { shareId: id }] }
+				admin : { $or: [{ editId: id }, { shareId: id }] }
 			};
 
 			// Try to find the document in the Homebrewery database -- if it doesn't exist, that's fine.
@@ -118,8 +136,8 @@ const api = {
 					throw { ...accessError, message: 'User is not logged in', HBErrorCode: '04' };
 			}
 
-			if(stub?.lock?.locked && accessType != 'edit') {
-				throw { HBErrorCode: '51', code: stub?.lock.code, message: stub?.lock.shareMessage, brewId: stub?.shareId, brewTitle: stub?.title };
+			if(stub?.lock && accessType === 'share') {
+				throw { HBErrorCode: '51', code: stub.lock.code, message: stub.lock.shareMessage, brewId: stub.shareId, brewTitle: stub.title, brewAuthors: stub.authors };
 			}
 
 			// If there's a google id, get it if requesting the full brew or if no stub found yet
@@ -175,12 +193,15 @@ const api = {
 				`${text}`;
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
+		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
 			`${text}`;
 		return text;
 	},
+
 	getGoodBrewTitle : (text)=>{
 		const tokens = Markdown.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
@@ -279,6 +300,8 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
+		let themeName;
+		let themeAuthor;
 
 		while (req.params.id) {
 			//=== User Themes ===//
@@ -292,15 +315,20 @@ const api = {
 
 				currentTheme = req.brew;
 				splitTextStyleAndMetadata(currentTheme);
+				if(!currentTheme.tags.some((tag)=>tag === 'meta:theme' || tag === 'meta:Theme'))
+					throw { brewId: req.params.id, name: 'Invalid Theme Selected', message: 'Selected theme does not have the meta:theme tag', status: 422, HBErrorCode: '10' };
+				themeName   ??= currentTheme.title;
+				themeAuthor ??= currentTheme.authors?.[0];
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
-				if(currentTheme?.snippets) completeSnippets.push(JSON.parse(currentTheme.snippets));
+				if(currentTheme?.snippets) completeSnippets.push({ name: currentTheme.title, snippets: currentTheme.snippets });
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
 				req.params.renderer = currentTheme.renderer;
 			} else {
 			//=== Static Themes ===//
+				themeName ??= req.params.id;
 				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
 				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
 				completeSnippets.push(localSnippets);
@@ -313,7 +341,9 @@ const api = {
 		const returnObj = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
 			styles   : completeStyles.reverse(),
-			snippets : completeSnippets.reverse()
+			snippets : completeSnippets.reverse(),
+			name     : themeName,
+			author   : themeAuthor
 		};
 
 		res.setHeader('Content-Type', 'application/json');
@@ -323,20 +353,51 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
-		if(brewFromServer.version && brewFromClient.version && brewFromServer.version > brewFromClient.version) {
+		splitTextStyleAndMetadata(brewFromServer);
+
+		if(brewFromServer?.version !== brewFromClient?.version){
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);
+
 			res.setHeader('Content-Type', 'application/json');
-			return res.status(409).send(JSON.stringify({ message: `The brew has been changed on a different device. Please save your changes elsewhere, refresh, and try again.` }));
+			return res.status(409).send(JSON.stringify({ message: `The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
-		let brew = _.assign(brewFromServer, brewFromClient);
+		brewFromServer.text  = brewFromServer.text.normalize('NFC');
+		brewFromServer.hash  = await md5(brewFromServer.text);
+
+		if(brewFromServer?.hash !== brewFromClient?.hash) {
+			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
+			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			res.setHeader('Content-Type', 'application/json');
+			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
+		}
+
+		try {
+			const patches = parsePatch(brewFromClient.patches);
+			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
+			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
+			if(patchedResult != brewFromClient.text)
+				throw("Patches did not apply cleanly, text mismatch detected");
+			// brew.text = applyPatches(patches, brewFromServer.text)[0];
+		} catch (err) {
+			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			console.error('Failed to apply patches:', {
+				//patches : brewFromClient.patches,
+				brewId  : brewFromClient.editId || 'unknown',
+				error   : err
+			});
+			// While running in parallel, don't throw the error upstream.
+			// throw err; // rethrow to preserve the 500 behavior
+		}
+
+		let brew         = _.assign(brewFromServer, brewFromClient);
+		brew.title       = brew.title.trim();
+		brew.description = brew.description.trim() || '';
+		brew.text        = api.mergeBrewText(brew);
+
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 		let afterSave = async ()=>true;
-
-		brew.title = brew.title.trim();
-		brew.description = brew.description.trim() || '';
-		brew.text = api.mergeBrewText(brew);
 
 		if(brew.googleId && removeFromGoogle) {
 			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
@@ -397,6 +458,8 @@ const api = {
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
 		if(!after) return;
+
+		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
 
 		res.status(200).send(saved);
 	},
@@ -468,8 +531,8 @@ const api = {
 };
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', true)), asyncHandler(api.updateBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
