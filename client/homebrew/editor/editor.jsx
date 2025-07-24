@@ -12,8 +12,9 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
+const HARDPAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3     = /^(?=\\(:?soft)?page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3  = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -30,6 +31,7 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
 let isJumping = false;
+let softPageCalc  = false;
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -94,6 +96,7 @@ const Editor = createClass({
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
 		this.highlightCustomMarkdown();
+		this.handleSoftPages();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -150,6 +153,81 @@ const Editor = createClass({
 			this.codeEditor.current?.codeMirror.focus();
 		});
 	},
+
+	handleSoftPages : function(targetPage=this.props.currentEditorCursorPageNum) {
+		if(softPageCalc) return;
+		if(this.props.renderer == 'Legacy') return;
+		const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
+		if(!testPage) return;
+
+		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];
+		const preserveStyles = columnWrapper.style;
+
+		let child=columnWrapper.children.length -1;
+		let softInsert = false;
+
+		const beforeX = testPage.getBoundingClientRect().width;
+		const beforeY = testPage.getBoundingClientRect().height;
+		console.log(getComputedStyle(testPage));
+
+		while (child>-1){
+			const inX = columnWrapper.children[child].getBoundingClientRect().x < beforeX;
+			const inY = columnWrapper.children[child].getBoundingClientRect().y < beforeY;
+			
+			if((inX) && (inY) &&
+		      ((getComputedStyle(columnWrapper.children[child])?.position !== 'absolute') &&
+			   (columnWrapper.children[child].className != 'columnSplit'))) {
+				// Walk children in case of p, etc.
+				let absolute = false;
+				for (let inner = 0; inner < columnWrapper.children[child]?.children?.length; inner++) {
+					if(getComputedStyle(columnWrapper.children[child].children[inner])?.position === 'absolute') absolute = true;
+				}
+				if(!absolute) break;
+			   }
+			if((!inX)||(!inY)) softInsert = true;
+			child--;
+		}
+
+		console.log(child);
+		console.log(columnWrapper.children.length);
+		// console.log(getComputedStyle(columnWrapper?.children[child]));
+		console.log(columnWrapper.children[child]);
+		// console.log(columnWrapper.children[child].getBoundingClientRect().x);
+		console.log(beforeX);
+		// console.log(columnWrapper.children[child].getBoundingClientRect().y);
+		console.log(beforeY);
+		// Exit if the last element is in bounds and is not absolutely positioned
+		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
+
+		columnWrapper.style.overflow = 'hidden';
+
+		const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
+		while((targetPage>0) && (allPages[targetPage - 1]?.startsWith('\\softpage'))) targetPage--;
+		let textString = allPages[targetPage -1];  // Get the current page's text.
+	    for (let i = targetPage; (!allPages[i]?.startsWith('\\softpage') && (i<allPages.length)); i++)
+			textString +=`\n${allPages[i]}`;
+		const strippedString = textString?.replace(/\n?\\softpage +\n/, '\n');
+
+		if(softInsert) {
+			const lines = strippedString.split('\n');
+			for (let line in lines) {
+				const render = Markdown.render(lines[line]);
+				if(render.trim() == columnWrapper.children[child].outerHTML.trim()) {
+					softPageCalc = true;
+					const prevPages = this.props.brew.text.split(HARDPAGEBREAK_REGEX_V3).slice(0, targetPage-1).join(HARDPAGEBREAK_REGEX_V3);
+                    const targetLine = prevPages.split('\n').length + parseInt(line, 10) + 1;
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					this.handleInject('\\softpage');
+					columnWrapper.style=preserveStyles;
+					softPageCalc = false;
+					return;
+				}
+			}
+		}
+		columnWrapper.style=preserveStyles;
+
+	},
+
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
