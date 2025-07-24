@@ -4,12 +4,13 @@ import _                        from 'lodash';
 import { Parser as MathParser } from 'expr-eval';
 import { marked as Marked }     from 'marked';
 import MarkedExtendedTables     from 'marked-extended-tables';
+import MarkedDefinitionLists    from 'marked-definition-lists';
+import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
+import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
+import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-import MarkedAlignedParagraphs 														                               from 'marked-alignment-paragraphs';
-import MarkedNonbreakingSpaces                                                           from 'marked-nonbreaking-spaces';
-import MarkedSubSuperText from 'marked-subsuper-text';
 import { romanize } from 'romans';
 import writtenNumber from 'written-number';
 
@@ -184,7 +185,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -241,7 +242,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -296,7 +297,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -342,7 +343,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?. ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -407,93 +408,6 @@ const forcedParagraphBreaks = {
 	},
 	renderer(token) {
 		return `<div class='blank'></div>\n`.repeat(token.length);
-	}
-};
-
-const definitionListsSingleLine = {
-	name  : 'definitionListsSingleLine',
-	level : 'block',
-	start(src) { return src.match(/\n[^\n]*?::[^\n]*/m)?.index; }, // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym;
-		let match;
-		let endIndex = 0;
-		const definitions = [];
-		while (match = regex.exec(src)) {
-			const originalLine = match[0];											// This line and below to handle conflict with emojis
-			let firstLine = originalLine;											// Remove in V4 when definitionListsInline updated to
-			this.lexer.inlineTokens(firstLine.trim())					// require spaces around `::`
-				.filter((t)=>t.type == 'emoji')
-				.map((emoji)=>firstLine = firstLine.replace(emoji.raw, 'x'.repeat(emoji.raw.length)));
-
-			const newMatch = /^([^\n]*?)::([^\n]*)(?:\n|$)/ym.exec(firstLine);
-			if(newMatch) {
-				definitions.push({
-					dt : this.lexer.inlineTokens(originalLine.slice(0, newMatch[1].length).trim()),
-					dd : this.lexer.inlineTokens(originalLine.slice(newMatch[1].length + 2).trim())
-				});
-			}																									// End of emoji hack.
-			endIndex = regex.lastIndex;
-		}
-		if(definitions.length) {
-			return {
-				type : 'definitionListsSingleLine',
-				raw  : src.slice(0, endIndex),
-				definitions
-			};
-		}
-	},
-	renderer(token) {
-		return `<dl>${token.definitions.reduce((html, def)=>{
-			return `${html}<dt>${this.parser.parseInline(def.dt)}</dt>`
-			            + `<dd>${this.parser.parseInline(def.dd)}</dd>\n`;
-		}, '')}</dl>`;
-	}
-};
-
-const definitionListsMultiLine = {
-	name  : 'definitionListsMultiLine',
-	level : 'block',
-	start(src) { return src.match(/\n[^\n]*\n::[^:\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
-	tokenizer(src, tokens) {
-		const regex = /(\n?\n?(?!::)[^\n]+?(?=\n::[^:\n]))|\n::([^:\n](?:.|\n)*?(?=(?:\n::)|(?:\n\n)|$))/y;
-		let match;
-		let endIndex = 0;
-		const definitions = [];
-		while (match = regex.exec(src)) {
-			if(match[1]) {
-				if(this.lexer.blockTokens(match[1].trim())[0]?.type !== 'paragraph') // DT must not be another block-level token besides <p>
-					break;
-				definitions.push({
-					dt  : this.lexer.inlineTokens(match[1].trim()),
-					dds : []
-				});
-			}
-			if(match[2] && definitions.length) {
-				definitions[definitions.length - 1].dds.push(
-					this.lexer.inlineTokens(match[2].trim().replace(/\s/g, ' '))
-				);
-			}
-			endIndex = regex.lastIndex;
-		}
-		if(definitions.length) {
-			return {
-				type : 'definitionListsMultiLine',
-				raw  : src.slice(0, endIndex),
-				definitions
-			};
-		}
-	},
-	renderer(token) {
-		let returnVal = `<dl>`;
-		token.definitions.forEach((def)=>{
-			const dds = def.dds.map((s)=>{
-				return `\n<dd>${this.parser.parseInline(s).trim()}</dd>`;
-			}).join('');
-			returnVal += `<dt>${this.parser.parseInline(def.dt)}</dt>${dds}\n`;
-		});
-		returnVal = returnVal.trim();
-		return `${returnVal}</dl>`;
 	}
 };
 
@@ -765,8 +679,8 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
-Marked.use({ extensions : [definitionListsMultiLine, definitionListsSingleLine, forcedParagraphBreaks,
-	mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use(MarkedDefinitionLists());
+Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
@@ -911,7 +825,7 @@ const Markdown = {
 			MarkedGFMResetHeadingIDs();
 		}
 
-		rawBrewText = rawBrewText.replace(/^\\column$/gm, `\n<div class='columnSplit'></div>\n`);
+		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
 		const opts = Marked.defaults;
 
