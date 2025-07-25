@@ -318,6 +318,9 @@ app.get('/user/:username', async (req, res, next)=>{
 		// If stub matches file from Google, use Google metadata over stub metadata
 		if(googleBrews && googleBrews.length > 0) {
 			for (const brew of brews.filter((brew)=>brew.googleId)) {
+				const permissionCheck = await GoogleActions.checkPermissions(auth, brew);
+				brew.permissionCheck = permissionCheck;
+
 				const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
 				if(match !== -1) {
 					brew.googleId = googleBrews[match].googleId;
@@ -330,7 +333,7 @@ app.get('/user/:username', async (req, res, next)=>{
 			}
 
 			//Remaining unstubbed google brews display current user as author
-			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
+			googleBrews = googleBrews.map(async (brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
 	}
