@@ -47,6 +47,7 @@ const NewPage = createClass({
 			saveGoogle                 : (global.account && global.account.googleId ? true : false),
 			error                      : null,
 			htmlErrors                 : Markdown.validate(brew.text),
+			editorView                 : 'text',
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
@@ -112,6 +113,10 @@ const NewPage = createClass({
 
 	handleSplitMove : function(){
 		this.editor.current.update();
+	},
+
+	handleEditorViewChange : function(newView){
+		this.setState({ editorView: newView });
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
@@ -260,6 +265,7 @@ const NewPage = createClass({
 					<Editor
 						ref={this.editor}
 						brew={this.state.brew}
+						onViewChange={this.handleEditorViewChange}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
