@@ -6,7 +6,7 @@ const _ = require('lodash');
 
 const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
 import Markdown from 'naturalcrit/markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
+// const ErrorBar = require('./errorBar/errorBar.jsx');
 const ToolBar  = require('./toolBar/toolBar.jsx');
 
 //TODO: move to the brew renderer
@@ -18,6 +18,8 @@ const { printCurrentBrew } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
+
+import ErrorIcon from './poison-bottle.jsx';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -49,9 +51,9 @@ const BrewPage = (props)=>{
 		const visibleObserver = new IntersectionObserver(
 			(entries)=>{
 				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
+					if(entry.isIntersecting){
 						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
-					else
+					} else
 						props.onVisibilityChange(props.index + 1, false, false);
 				});
 			},
@@ -85,8 +87,6 @@ const BrewPage = (props)=>{
 
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
-let renderedPages = [];
-let rawPages      = [];
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -95,7 +95,7 @@ const BrewRenderer = (props)=>{
 		renderer                   : 'legacy',
 		theme                      : '5ePHB',
 		lang                       : '',
-		errors                     : [],
+		htmlErrors                 : [],
 		currentEditorCursorPageNum : 1,
 		currentEditorViewPageNum   : 1,
 		currentBrewRendererPageNum : 1,
@@ -104,10 +104,20 @@ const BrewRenderer = (props)=>{
 		...props
 	};
 
+	let renderedPages = [];
+	let rawPages      = [];
+
+	useEffect(()=>{
+		console.log('renderer loaded');
+		return ()=> {
+			console.log('renderer unloaded')
+		}
+	}, []);
+
 	const [state, setState] = useState({
 		isMounted    : false,
 		visibility   : 'hidden',
-		visiblePages : [],
+		visiblePages : [1],
 		centerPage   : 1
 	});
 
@@ -116,8 +126,8 @@ const BrewRenderer = (props)=>{
 		spread       : 'single',
 		startOnRight : true,
 		pageShadows  : true,
-		rowGap       : 5,
 		columnGap    : 10,
+		rowGap       : 10
 	});
 
 	//useEffect to store or gather toolbar state from storage
@@ -216,7 +226,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = ()=>{
-		if(props.errors && props.errors.length)
+		if(props.htmlErrors && props.htmlErrors.length)
 			return renderedPages;
 
 		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
@@ -277,9 +287,10 @@ const BrewRenderer = (props)=>{
 		}, 100);
 	};
 
-	const emitClick = ()=>{ // Allow clicks inside iFrame to interact with dropdowns, etc. from outside
+	const emitClick = ()=>{ 
 		if(!window || !document) return;
-		document.dispatchEvent(new MouseEvent('click'));
+		// Emit a custom event instead of simulating a regular click
+		document.dispatchEvent(new CustomEvent('iframe-click'));
 	};
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
@@ -303,7 +314,7 @@ const BrewRenderer = (props)=>{
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
 	return (
-		<>
+		<div id='preview-pane'>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
 				? <div className='brewRenderer'>
@@ -313,25 +324,26 @@ const BrewRenderer = (props)=>{
 				</div>
 				: null}
 
-			<ErrorBar errors={props.errors} />
+			{/* <ErrorBar errors={props.errors} /> */}
 			<div className='popups' ref={mainRef}>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
-
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState} scrollToHash={scrollToHash} />
+			<HeaderNav className={`${headerState ? 'visible' : 'hidden'}`} ref={pagesRef} onScrollToHash={scrollToHash} />
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				style={{ width: '100%',  visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+				<div className={`brewRenderer${global.config.deployment && ' deployment'}${props.htmlErrors && ' html-errors'}`}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={ styleObject }
 				>
+					{props.htmlErrors.length > 0 && <div id='splash-image'><ErrorIcon /></div>}
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
 					{state.isMounted
@@ -344,9 +356,8 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
-				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
-		</>
+		</div>
 	);
 };
 

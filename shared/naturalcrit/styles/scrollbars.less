@@ -1,0 +1,23 @@
+.scrollbar-styles(@track-color, @thumb-color, @size) {
+    --sb-track-color: @track-color;
+    --sb-thumb-color: @thumb-color;
+    --sb-size: @size;
+
+    &::-webkit-scrollbar {
+        width: var(--sb-size);
+        height: var(--sb-size);
+    }
+    &::-webkit-scrollbar-track {
+        background: var(--sb-track-color);
+        border-radius: 1px;
+        &:vertical { border-left: 1px solid #61666a; }
+        &:horizontal { border-top: 1px solid #61666a; }
+    }
+    &::-webkit-scrollbar-thumb {
+        background: var(--sb-thumb-color);
+        border-radius: 1px;
+    }
+    &::-webkit-scrollbar-corner {
+        background: #61666a;
+    }
+}

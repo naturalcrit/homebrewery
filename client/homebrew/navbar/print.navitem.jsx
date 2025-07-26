@@ -1,9 +1,14 @@
 const React = require('react');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 const { printCurrentBrew } = require('../../../shared/helpers.js');
 
-module.exports = function(){
-	return <Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
+
+const PrintNavItem = () => {
+	return <MenuItem onClick={printCurrentBrew} color='yellow' icon='far fa-file-pdf'>
 		get PDF
-	</Nav.item>;
+	</MenuItem>;
 };
+PrintNavItem.displayName = 'PrintNavItem';
+
+module.exports = PrintNavItem;
+

@@ -1,23 +1,33 @@
 
 .brewItem {
 	position                    : relative;
-	box-sizing                  : border-box;
-	display                     : inline-block;
-	width                       : 48%;
-	min-height                  : 105px;
-	padding                     : 5px 15px 2px 6px;
-	padding-right               : 15px;
-	margin-right                : 15px;
-	margin-bottom               : 15px;
+	display                     : flex;
+	flex-direction: column;
+	gap: 8px;
+	padding                     : 15px 20px;
 	overflow                    : hidden;
-	vertical-align              : top;
-	background-color            : #CAB2802E;
-	border                      : 1px solid #C9AD6A;
-	border-radius               : 5px;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 13px;
+	color: ghostwhite;
+	background-color            : #555555;
+	border                      : 1px ridge #C9AD6A;
 	box-shadow                  : 0px 4px 5px 0px #333333;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
+	height: auto;
+
+
+	&.list {
+		.description {
+			display: none;
+		}
+		.text, .text h2, .info {
+			flex: 1 1 auto;
+			display: inline;
+			width: auto;
+		}
+	}
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -32,35 +42,43 @@
 		-webkit-mask-image  : linear-gradient(80deg, #00000000 20%, #005500 40%);
 		mask-image          : linear-gradient(80deg, #00000000 20%, #005500 40%);
 	}
+
+	hr {
+		width: 100%;
+		border: none;
+		border-bottom: .5px inset currentColor;
+		margin: 0;
+	}
 	.text {
-		min-height : 54px;
-		h4 {
-			margin-bottom : 5px;
-			font-size     : 2.2em;
+		h2 {
+			font-size: 16px;
+			line-height: 1.3;
+			a:any-link {
+				color: #ead195;
+				text-decoration-thickness: 1px;
+				text-underline-offset: 2px;
+			}
+			a:visited{
+				color: #bca772;
+			}
 		}
 	}
 	.info {
-		position    : initial;
-		bottom      : 2px;
-		font-family : "ScalySansRemake";
-		font-size   : 1.2em;
 		& > span {
 			margin-right : 12px;
 			line-height  : 1.5em;
 
-			a { color : inherit; }
+			a:any-link { color : inherit; }
 		}
 	}
 	.brewTags span {
 		display          : inline-block;
-		padding          : 2px;
+		padding          : 2px 4px;
 		margin           : 2px;
-		font-weight      : bold;
 		white-space      : nowrap;
 		cursor           : pointer;
 		background-color : #C8AC6E3B;
-		border           : 1px solid #C8AC6E;
-		border-color     : currentColor;
+		border           : 1px ridge gray;
 		border-radius    : 4px;
 		&::before {
 			margin-right : 3px;
@@ -88,31 +106,32 @@
 			&::before { content : '\f518'; }
 		}
 	}
-	&:hover {
-		.links { opacity : 1; }
-	}
 	&:nth-child(2n + 1) { margin-right : 0px; }
 	.links {
 		.animate(opacity);
 		position         : absolute;
 		top              : 0px;
 		right            : 0px;
-		width            : 2em;
-		height           : 100%;
+		opacity: 0;
+		display: flex;
+		align-items: center;
+		font-size       : 1.3em;
 		text-align       : center;
-		background-color : fade(black, 60%);
-		opacity          : 0;
+		background-color : fade(rgb(46, 46, 46), 60%);
 		a {
 			.animate(opacity);
-			display         : block;
-			margin          : 8px 0px;
-			font-size       : 1.3em;
+			display         : inline-block;
+			padding: 7px;
 			color           : white;
 			text-decoration : unset;
 			opacity         : 0.6;
 			&:hover { opacity : 1; }
-			i { cursor : pointer; }
+			cursor : pointer;
 		}
+	}
+
+	&:hover .links {
+		opacity: 1;
 	}
 	.googleDriveIcon {
 		padding : 0px;
@@ -125,5 +144,11 @@
 		top      : 5px;
 		left     : -7.5px;
 		height   : 18px;
+	}
+}
+
+@media (hover: none) {
+  .vaultPage .brewItem .links {
+		opacity: 1;
 	}
 }

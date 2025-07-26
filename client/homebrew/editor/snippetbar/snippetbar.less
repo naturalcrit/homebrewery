@@ -1,254 +1,220 @@
 @import (less) './client/icons/customIcons.less';
 @import (less) '././././themes/fonts/5e/fonts.less';
+@import (less) 'naturalcrit/styles/core.less';
 
-.snippetBar {
-	@menuHeight      : 25px;
-	position         : relative;
-	display          : flex;
-	flex-wrap        : wrap-reverse;
-	justify-content  : space-between;
-	height           : auto;
+#editor-bar.menu-bar {
+	display          : grid;
+	grid-template-columns: min-content auto;
+	grid-template-rows: min-content;
+	grid-template-areas: "tabs tools";
+	&:has(#brew-tab[aria-selected='true']){
+		border-bottom: 4px solid @orangeLight;
+	}
+	&:has(#style-tab[aria-selected='true']){
+		border-bottom: 4px solid @blueLight;
+	}
+	&:has(#snippet-tab[aria-selected='true']){
+		border-bottom: 4px solid @purpleLight;
+	}
+	&:has(#meta-tab[aria-selected='true']){
+		border-bottom: 4px solid @greenLight;
+	}
+}
+
+#snippet-bar.menu-bar {
+	display          : grid;
+	grid-template-columns: auto;
+	grid-template-rows: min-content;
+	grid-template-areas: "snippets";
+	justify-content:start;
+
+}
+
+#snippet-bar.menu-bar, #editor-bar.menu-bar {
+	--menubar-color  : #DDDDDD;
+	--menubar-border : 1px solid #666;
+	--menubar-shadow : 0 0px 4px -1px black;
+	--menubar-accent : #AAAAAA;
 	color            : black;
-	background-color : #DDDDDD;
-
-	.snippets {
-		display         : flex;
-		justify-content : flex-start;
-		min-width       : 432.18px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
+	background-color : var(--menubar-color);
+	text-transform   : uppercase;
+	font-weight      : 600;
+	box-shadow       : var(--menubar-shadow);
+	border-bottom    : var(--menubar-border);
+	z-index          : 5000;
+	.menu-wrapper:has(:popover-open) > [popovertarget]{
+		background-color: var(--menubar-accent);
 	}
-
-	.editors {
-		display         : flex;
-		justify-content : flex-end;
-		min-width       : 250px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-
-		&:only-child {min-width   : unset; margin-left : auto;}
-
-		>div {
-			display         : flex;
-			flex            : 1;
-			justify-content : space-around;
-
-			&:first-child { border-left : none; }
-
-			& > div {
-				position    : relative;
-				width       : @menuHeight;
-				height      : @menuHeight;
-				line-height : @menuHeight;
-				text-align  : center;
-				cursor      : pointer;
-
-				&.editorTool:not(.active) { cursor : not-allowed; }
-
-				&:hover,&.selected { background-color : #999999; }
-				&.text {
-					.tooltipLeft('Brew Editor');
-				}
-				&.style {
-					.tooltipLeft('Style Editor');
-				}
-				&.meta {
-					.tooltipLeft('Properties');
-				}
-				&.snippet {
-					.tooltipLeft('Snippets');
-				}
-				&.undo {
-					.tooltipLeft('Undo');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.redo {
-					.tooltipLeft('Redo');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.foldAll {
-					.tooltipLeft('Fold All');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.unfoldAll {
-					.tooltipLeft('Unfold All');
-					font-size : 0.75em;
-					color     : grey;
-					&.active { color : inherit; }
-				}
-				&.history {
-					.tooltipLeft('History');
-					position  : relative;
-					font-size : 0.75em;
-					color     : grey;
-					border    : none;
-					&.active { color : inherit; }
-					& > .dropdown {
-						right : -1px;
-						& > .snippet { padding-right : 10px; }
-					}
-				}
-				&.editorTheme {
-					.tooltipLeft('Editor Themes');
-					font-size : 0.75em;
-					color     : inherit;
-					&.active {
-						position         : relative;
-						background-color : #999999;
-					}
-				}
-				&.divider {
-					width      : 5px;
-					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-					&:hover { background-color : inherit; }
-				}
-			}
-			.themeSelector {
-				position         : absolute;
-				top              : 25px;
-				right            : 0;
-				z-index          : 10;
-				display          : flex;
-				align-items      : center;
-				justify-content  : center;
-				width            : 170px;
-				height           : inherit;
-				background-color : inherit;
-			}
-		}		
-	}
-	.snippetBarButton {
-		display        : inline-block;
-		height         : @menuHeight;
-		padding        : 0px 5px;
-		font-size      : 0.625em;
-		font-weight    : 800;
-		line-height    : @menuHeight;
-		text-transform : uppercase;
-		text-wrap      : nowrap;
-		cursor         : pointer;
-		&:hover, &.selected { background-color : #999999; }
-		i {
-			margin-right   : 3px;
-			font-size      : 1.4em;
-			vertical-align : middle;
-		}
-	}
-	.toggleMeta {
-		position    : absolute;
-		top         : 0px;
-		right       : 0px;
-		border-left : 1px solid black;
-		.tooltipLeft('Edit Brew Properties');
-	}
-	.snippetGroup {
-
+	.menu-item {
+		padding: 0 5px;
 		&:hover {
-			& > .dropdown { visibility : visible; }
+			background-color:#c3c3c3 ;
 		}
-		.dropdown {
-			position         : absolute;
-			top              : 100%;
-			z-index          : 1000;
-			visibility       : hidden;
-			padding          : 0px;
-			margin-left      : -5px;
-			background-color : #DDDDDD;
-			.snippet {
-				position    : relative;
-				display     : flex;
-				align-items : center;
-				min-width   : max-content;
-				padding     : 5px;
-				font-size   : 10px;
-				cursor      : pointer;
-				.animate(background-color);
-				i {
-					min-width    : 25px;
-					height       : 1.2em;
-					margin-right : 8px;
-					font-size    : 1.2em;
-					text-align   : center;
-					& ~ i {
-						margin-right : 0;
-						margin-left  : 5px;
-					}
-					/* Fonts */
-					&.font {
-						height : auto;
-						&::before {
-							font-size : 1em;
-							content   : 'ABC';
-						}
+	}
 
-						&.OpenSans {font-family : 'OpenSans';}
-						&.CodeBold {font-family : 'CodeBold';}
-						&.CodeLight {font-family : 'CodeLight';}
-						&.ScalySansRemake {font-family : 'ScalySansRemake';}
-						&.BookInsanityRemake {font-family : 'BookInsanityRemake';}
-						&.MrEavesRemake {font-family : 'MrEavesRemake';}
-						&.SolberaImitationRemake {font-family : 'SolberaImitationRemake';}
-						&.ScalySansSmallCapsRemake {font-family : 'ScalySansSmallCapsRemake';}
-						&.WalterTurncoat {font-family : 'WalterTurncoat';}
-						&.Lato {font-family : 'Lato';}
-						&.Courier {font-family : 'Courier';}
-						&.NodestoCapsCondensed {font-family : 'NodestoCapsCondensed';}
-						&.Overpass {font-family : 'Overpass';}
-						&.Davek {font-family : 'Davek';}
-						&.Iokharic {font-family : 'Iokharic';}
-						&.Rellanic {font-family : 'Rellanic';}
-						&.TimesNewRoman {font-family : 'Times New Roman';}
-					}
+
+	&.compact {
+		.menu-section > .menu-wrapper > .menu-item.compact {
+			grid-template-areas: "icon icon caret";
+			> .name, > .menu-name {
+				display: none;
+			}
+		}
+		.menu-section > .menu-item.compact {
+			grid-template-columns+: min(min-content, 40px);
+			grid-template-areas: "icon";
+			> .name, > .menu-name {
+				display: none;
+			}
+		}
+	}
+
+	.menu-list {
+		background-color: var(--menubar-color);
+		box-shadow: var(--menubar-shadow);
+		border: var(--menubar-border);
+		.menu-item {
+			column-gap: 10px;
+			.beta {
+				padding       : 4px 6px;
+				margin-left   : 5px;
+				font-size     : 0.9em;
+				line-height   : 1em;
+				color         : white;
+				background    : grey;
+				border-radius : 12px;
+			}
+
+			&:has(i.font) {
+				column-gap: 3ch;
+			}
+			i.font {
+				height : auto;
+				&::before {
+					font-size : 1em;
+					content   : 'ABC';
 				}
-				.name { margin-right : auto; }
-				.disabled { text-decoration : line-through; }
-				.beta {
-					align-self    : center;
-					padding       : 4px 6px;
-					margin-left   : 5px;
-					font-family   : monospace;
-					line-height   : 1em;
-					color         : white;
-					background    : grey;
-					border-radius : 12px;
+
+				&.OpenSans {font-family : 'OpenSans';}
+				&.CodeBold {font-family : 'CodeBold';}
+				&.CodeLight {font-family : 'CodeLight';}
+				&.ScalySansRemake {font-family : 'ScalySansRemake';}
+				&.BookInsanityRemake {font-family : 'BookInsanityRemake';}
+				&.MrEavesRemake {font-family : 'MrEavesRemake';}
+				&.SolberaImitationRemake {font-family : 'SolberaImitationRemake';}
+				&.ScalySansSmallCapsRemake {font-family : 'ScalySansSmallCapsRemake';}
+				&.WalterTurncoat {font-family : 'WalterTurncoat';}
+				&.Lato {font-family : 'Lato';}
+				&.Courier {font-family : 'Courier';}
+				&.NodestoCapsCondensed {font-family : 'NodestoCapsCondensed';}
+				&.Overpass {font-family : 'Overpass';}
+				&.Davek {font-family : 'Davek';}
+				&.Iokharic {font-family : 'Iokharic';}
+				&.Rellanic {font-family : 'Rellanic';}
+				&.TimesNewRoman {font-family : 'Times New Roman';}
+			}
+		}
+	}
+
+	:disabled { color: #999999; }
+
+	#snippets.menu-section {
+		gap: 0 8px;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+	}
+
+	.menu-hr {
+		padding : 0 4px;
+	}
+
+	.highlight(@color: #999999) {
+		&[aria-selected='true']{
+			background-color : @color;
+			color: whitesmoke;
+			border: 1px solid white;
+			border-bottom: none;
+			box-sizing: border-box;
+			z-index: 2;
+			box-shadow: 0 -2px 4px #666;
+		}
+	}
+
+	// group that holds all non-snippet buttons.
+	#snippets {
+		grid-area: snippets;
+	}
+
+	#editor-tabs {
+		grid-area: tabs;
+
+		// editor tabs
+				#brew-tab { 
+					.highlight(@orangeLight);
+					.tooltipLeft('Brew Editor');
+					background-color: oklch(from @orangeLight l .05 h);
 				}
-				&:hover {
-					background-color : #999999;
-					& > .dropdown {
-						visibility : visible;
-						&.side {
-							top         : 0%;
-							left        : 100%;
-							margin-left : 0;
-							box-shadow  : -1px 1px 2px 0px #999999;
-						}
-					}
+				#style-tab { 
+					.highlight(@blueLight);
+					.tooltipLeft('Style Editor');
+					background-color: oklch(from @blueLight l .05 h);
+				}
+				#snippet-tab { 
+					.highlight(@purpleLight);
+					.tooltipLeft('Snippets Editor');
+					background-color: oklch(from @purpleLight l .05 h);
+				}
+				#meta-tab { 
+					.highlight(@tealLight);
+					.tooltipLeft('Properties');
+					background-color: oklch(from @tealLight l .05 h);
+				}	
+	}
+	#editor-tools {
+		grid-area: tools;
+		justify-content: end;
+
+		
+
+
+		// subgroups for tools (history, code folding/theme, editor tabs)
+		> .tool-group {
+
+			> .menu-wrapper > .menu-item, &:not(#editor-tabs) > .menu-item {
+				gap : 0;
+				.menu-name, .name, .caret {
+					.screen-reader-only();
+				}
+			}
+			
+			// history tools
+			#history-menu { .tooltipLeft('History'); }
+
+			// any non-snippet button
+			 button {
+				&:not(* .menu-list .menu-item){
+					aspect-ratio: 1 / 1;
+					grid-template-columns: 1fr;
+				}
+				&#undo { .tooltipLeft('Undo'); }
+				&#redo { .tooltipLeft('Redo'); }
+
+				// code tools
+				&#fold-all { .tooltipLeft('Fold All'); }
+				&#unfold-all { .tooltipLeft('Unfold All'); }
+				&#show-themes { .tooltipLeft('Editor Themes'); }
+
+							
+			}			
+		}
+				// Add container query for narrow state
+		@container tools (max-width: 450px) {
+			.menu-item {
+				gap: 0 !important;
+				.name {
+					.screen-reader-only();
 				}
 			}
 		}
 	}
-	.disabledSnippets {
-		color: grey;
-		cursor: not-allowed;
-
-		&:hover { background-color: #DDDDDD;}
-	}
-
 }
-@container editor (width < 683px) {
-	.snippetBar {
-		.editors { 
-			flex            : 1;
-			justify-content : space-between;
-			border-bottom   : 1px solid;
-		}
-		.snippets { 
-			flex            : 1;
-			justify-content : space-evenly; 
-		}
-		.editors > div.history > .dropdown { right : unset; }
-	}
-}
-

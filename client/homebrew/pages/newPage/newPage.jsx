@@ -6,15 +6,18 @@ import request from '../../utils/request-middleware.js';
 
 import Markdown from 'naturalcrit/markdown.js';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+
+const Account = require('../../navbar/account.navitem.jsx');
+const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const VaultNavItem = require('../../navbar/vault.navitem.jsx');
+const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
+
+const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
+const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -44,10 +47,12 @@ const NewPage = createClass({
 			saveGoogle                 : (global.account && global.account.googleId ? true : false),
 			error                      : null,
 			htmlErrors                 : Markdown.validate(brew.text),
+			editorView                 : 'text',
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			paneOrder                  : [0, 1],
 		};
 	},
 
@@ -108,6 +113,10 @@ const NewPage = createClass({
 
 	handleSplitMove : function(){
 		this.editor.current.update();
+	},
+
+	handleEditorViewChange : function(newView){
+		this.setState({ editorView: newView });
 	},
 
 	handleEditorViewPageChange : function(pageNumber){
@@ -201,44 +210,62 @@ const NewPage = createClass({
 
 	renderSaveButton : function(){
 		if(this.state.isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
-			</Nav.item>;
+			return <MenuItem className='save' icon='fas fa-spinner fa-spin'>saving...</MenuItem>;
 		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
-				save
-			</Nav.item>;
+			return <MenuItem onClick={this.save} color='orange' icon='fas fa-save'>Save Now</MenuItem>;
 		}
 	},
 
 	renderNavbar : function(){
-		return <Navbar>
+		return (
+			<Menubar id='navbar'>
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+						<NewBrewItem />
+						<MenuRule />
+						{this.renderSaveButton()}
+						<MenuRule />
+						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem> }
+						<RecentNavItem brew={this.state.brew} storageKey='view' />
+						<MenuRule />
+						<PrintNavItem />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
 
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>{this.state.brew.title}</MenuItem>
+				</MenuSection>
 
-			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					this.renderSaveButton()
-				}
-				<PrintNavItem />
-				<HelpNavItem />
-				<RecentNavItem />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>;
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+
+			</Menubar>
+		);
 	},
 
 	render : function(){
 		return <div className='newPage sitePage'>
 			{this.renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={this.handleSplitMove}
+					paneOrder={this.state.paneOrder}
+					setPaneOrder={(order)=>this.setState({ paneOrder: order })}
+					dividerButtons={ScrollButtons({
+						paneOrder          : this.state.paneOrder,
+						editorRef          : this.editor,
+						liveScroll         : this.state.liveScroll,
+						onLiveScrollToggle : this.liveScrollToggle
+					})}>
+
 					<Editor
 						ref={this.editor}
 						brew={this.state.brew}
+						onViewChange={this.handleEditorViewChange}
 						onTextChange={this.handleTextChange}
 						onStyleChange={this.handleStyleChange}
 						onMetaChange={this.handleMetaChange}
@@ -251,6 +278,7 @@ const NewPage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						liveScroll={this.state.liveScroll}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}

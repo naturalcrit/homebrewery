@@ -100,6 +100,7 @@ fs.emptyDirSync('./build');
 	await fs.copy('./themes/fonts', './build/fonts');
 	await fs.copy('./themes/assets', './build/assets');
 	await fs.copy('./client/icons', './build/icons');
+	await fs.copy('./client/svg', './build/svg');
 
 	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
 
