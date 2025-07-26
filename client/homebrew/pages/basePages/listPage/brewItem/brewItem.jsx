@@ -18,7 +18,19 @@ const BrewItem = ({
 	updateListFilter = ()=>{},
 	reportError = ()=>{},
 	renderStorage = true,
+	layout = 'card'
 })=>{
+
+	const getShareLink = ()=>{
+		if(!brew.shareId) return null;
+
+		let shareLink = brew.shareId;
+		if(brew.googleId && !brew.stubbed) {
+			shareLink = brew.googleId + shareLink;
+		}
+
+		return shareLink;
+	};
 
 	const deleteBrew = useCallback(()=>{
 		if(brew.authors.length <= 1) {
@@ -60,15 +72,8 @@ const BrewItem = ({
 	};
 
 	const renderShareLink = ()=>{
-		if(!brew.shareId) return null;
-
-		let shareLink = brew.shareId;
-		if(brew.googleId && !brew.stubbed) {
-			shareLink = brew.googleId + shareLink;
-		}
-
 		return (
-			<a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='shareLink' href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-share-alt' title='Share' />
 			</a>
 		);
@@ -118,23 +123,12 @@ const BrewItem = ({
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 	return (
-		<div className='brewItem'>
+		<div className={`brewItem ${layout}`}>
 			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
-				<h2>{brew.title}</h2>
-				<p className='description'>{brew.description}</p>
+				<h2><a href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>{brew.title}</a></h2>
 			</div>
-			<hr />
 			<div className='info'>
-				{brew.tags?.length ? (
-					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
-						<i className='fas fa-tags' />
-						{brew.tags.map((tag, idx)=>{
-							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
-							return <span key={idx} className={matches[1]} onClick={()=>updateFilter(tag)}>{matches[2]}</span>;
-						})}
-					</div>
-				) : null}
 				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user' />{' '}
 					{brew.authors?.map((author, index)=>(
@@ -148,7 +142,6 @@ const BrewItem = ({
 						</React.Fragment>
 					))}
 				</span>
-				<br />
 				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
 					<i className='fas fa-eye' /> {brew.views}
 				</span>
@@ -165,6 +158,19 @@ const BrewItem = ({
 				</span>
 				{renderStorageIcon()}
 			</div>
+
+			<hr />
+
+			<p className='description'>{brew.description}</p>
+			{brew.tags?.length ? (
+					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
+						<i className='fas fa-tags' />
+						{brew.tags.map((tag, idx)=>{
+							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
+							return <span key={idx} className={matches[1]} onClick={()=>updateFilter(tag)}>{matches[2]}</span>;
+						})}
+					</div>
+				) : null}
 
 			<div className='links'>
 				{renderShareLink()}
