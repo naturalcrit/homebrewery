@@ -114,57 +114,73 @@
 			color       : white;
 		}
 
-		.sort-container {
-			display               : flex;
-			flex-wrap             : wrap;
-			column-gap            : 15px;
-			justify-content       : center;
-			height                : 30px;
-			color                 : white;
-			background-color      : #555555;
-			border-top            : 1px solid #666666;
-			border-bottom         : 1px solid #666666;
-				
-			.sort-option {
-				display     : flex;
-				align-items : center;
-				padding     : 0 8px;
-			
-				&:hover { background-color : #444444; }
-			
-				&.active {
-					background-color : #333333;
-			
-					button {
-						font-weight : 800;
-						color       : white;
-							
-						& + .sortDir { padding-left : 5px; }
-					}
+		#list-toolbar.menu-bar {
+			--menubar-color  : #555555;
+			--menubar-border : 1px solid #666;
+			--menubar-shadow : 0 0px 4px -1px black;
+			--menubar-accent : #AAAAAA;
+			color: ghostwhite;
+			background-color : var(--menubar-color);
+			text-transform   : uppercase;
+			font-weight      : 600;
+			box-shadow       : var(--menubar-shadow);
+			border-bottom    : var(--menubar-border);
+			display: flex;
+
+			#sort-options.menu-section {
+				flex: 1 1 auto;
+				justify-content: space-evenly;
+				gap: 0;
+			}
+
+			#layout-options.menu-section {
+				flex: 0 0 min-content;
+			}
+
+			.menu-item {
+				justify-content: center;
+				padding: 0 5px;
+				&:hover { background-color : #0004; }
+				&:focus {outline : none; border  : 1px solid #D3D3D3;}
+				&.active, &[aria-checked='true'] {
+					background-color : #444444;
+					text-decoration: underline;
 				}
 
-				button {
-					padding          : 0;
-					font-size        : 11px;
-					font-weight      : normal;
-					color            : #CCCCCC;
-					text-transform   : uppercase;
-					background-color : transparent;
-				
-					&:hover { background : none; }
+				span {
+					margin-right: unset;
 				}
 			}
+
+			.menu-item:not(:has(i)) {   // menu-item that does not have an icon
+				grid-template-columns: min-content;
+				grid-template-areas: "name"
+			}
+			
 		}
 
 		.foundBrews {
 			position         : relative;
+			display: grid; 
+			grid-auto-rows: min-content; 
+			grid-template-columns: 1fr; 
+			grid-template-rows: min-content; 
+			grid-template-areas: 
+				"."; 
+			gap: 15px;
 			width            : 100%;
 			height           : 100%;
 			max-height       : 100%;
-			padding          : 70px 50px;
+			padding          : 70px 20px;
 			overflow-y       : scroll;
 			background-color : #2C3E50;
 			container-type   : inline-size;
+
+			&.card {
+				grid-template-columns: 1fr 1fr 1fr;
+  				grid-auto-columns: 1fr; 
+
+			}
 
 			h3 { font-size : 25px; }
 

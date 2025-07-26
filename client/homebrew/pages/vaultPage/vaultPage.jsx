@@ -29,6 +29,8 @@ const VaultPage = (props)=>{
 
 	const [rendererSelected, setRendererSelected] = useState(true);
 
+	const [itemLayout, setItemLayout]=useState('card');
+
 	//Response state
 	const [brewCollection, setBrewCollection] = useState(null);
 	const [totalBrews, setTotalBrews]         = useState(null);
@@ -282,26 +284,43 @@ const VaultPage = (props)=>{
 		const oppositeDir = dirState === 'asc' ? 'desc' : 'asc';
 
 		return (
-			<div className={`sort-option ${sortState === optionValue ? `active` : ''}`}>
-				<button onClick={()=>loadPage(1, false, optionValue, oppositeDir)}>
-					{optionTitle}
-				</button>
+			<MenuItem id={`${optionTitle}-sort`} className='sort-option' role='radio'
+				onClick={()=>loadPage(1, false, optionValue, oppositeDir)}
+				aria-checked={sortState === optionValue ? true : false}
+			>
+				{optionTitle}
 				{sortState === optionValue && (
-					<i className={`sortDir fas ${dirState === 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`} />
+					<>
+						{' '}
+						{dirState === 'asc'
+							? <><span aria-hidden='true'>(asc)</span><span className='sr-only'>(ascending)</span></>  // showing different text for sighted/blind readers
+							: <><span aria-hidden='true'>(desc)</span><span className='sr-only'>(descending)</span></>
+						}
+					</>
 				)}
-			</div>
+			</MenuItem>
 		);
+	};
+
+	const renderDisplayOptions = (layout)=>{
+		return <MenuItem role='radio' onClick={()=>setItemLayout(layout)}>{layout}</MenuItem>
 	};
 
 	const renderSortBar = ()=>{
 
 		return (
-			<div className='sort-container'>
-				{renderSortOption('Title', 'title', props.query.dir)}
-				{renderSortOption('Created Date', 'createdAt', props.query.dir)}
-				{renderSortOption('Updated Date', 'updatedAt', props.query.dir)}
-				{renderSortOption('Views', 'views', props.query.dir)}
-			</div>
+			<Menubar id='list-toolbar'>
+				<MenuSection id='sort-options'>
+					{renderSortOption('Title', 'title', props.query.dir)}
+					{renderSortOption('Created Date', 'createdAt', props.query.dir)}
+					{renderSortOption('Updated Date', 'updatedAt', props.query.dir)}
+					{renderSortOption('Views', 'views', props.query.dir)}
+				</MenuSection>
+				<MenuSection id='layout-options'>
+					{renderDisplayOptions('card')}
+					{renderDisplayOptions('list')}
+				</MenuSection>
+			</Menubar>
 		);
 	};
 
@@ -410,7 +429,7 @@ const VaultPage = (props)=>{
 		}
 
 		return (
-			<div className='foundBrews'>
+			<div className={`foundBrews ${itemLayout}`}>
 				<span className='totalBrews'>
 					{`Brews found: `}
 					<span>{totalBrews}</span>
@@ -423,6 +442,7 @@ const VaultPage = (props)=>{
 							key={index}
 							reportError={props.reportError}
 							renderStorage={false}
+							layout={itemLayout}
 						/>
 					);
 				})}
