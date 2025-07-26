@@ -28,41 +28,42 @@ const RecentItems = createClass({
 	},
 
 	componentDidMount : function() {
-
 		//== Load recent items list ==//
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
 
-		//== Add current brew to appropriate recent items list (depending on storageKey) ==//
-		if(this.props.storageKey == 'edit'){
-			let editId = this.props.brew.editId;
-			if(this.props.brew.googleId && !this.props.brew.stubbed){
-				editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
+		//== Only add current brew if it exists ==//
+		if(this.props.brew) {
+			if(this.props.storageKey == 'edit'){
+				let editId = this.props.brew.editId;
+				if(this.props.brew.googleId && !this.props.brew.stubbed){
+					editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
+				}
+				edited = _.filter(edited, (brew)=>{
+					return brew.id !== editId;
+				});
+				edited.unshift({
+					id    : editId,
+					title : this.props.brew.title,
+					url   : `/edit/${editId}`,
+					ts    : Date.now()
+				});
 			}
-			edited = _.filter(edited, (brew)=>{
-				return brew.id !== editId;
-			});
-			edited.unshift({
-				id    : editId,
-				title : this.props.brew.title,
-				url   : `/edit/${editId}`,
-				ts    : Date.now()
-			});
-		}
-		if(this.props.storageKey == 'view'){
-			let shareId = this.props.brew.shareId;
-			if(this.props.brew.googleId && !this.props.brew.stubbed){
-				shareId = `${this.props.brew.googleId}${this.props.brew.shareId}`;
+			if(this.props.storageKey == 'view'){
+				let shareId = this.props.brew.shareId;
+				if(this.props.brew.googleId && !this.props.brew.stubbed){
+					shareId = `${this.props.brew.googleId}${this.props.brew.shareId}`;
+				}
+				viewed = _.filter(viewed, (brew)=>{
+					return brew.id !== shareId;
+				});
+				viewed.unshift({
+					id    : shareId,
+					title : this.props.brew.title,
+					url   : `/share/${shareId}`,
+					ts    : Date.now()
+				});
 			}
-			viewed = _.filter(viewed, (brew)=>{
-				return brew.id !== shareId;
-			});
-			viewed.unshift({
-				id    : shareId,
-				title : this.props.brew.title,
-				url   : `/share/${shareId}`,
-				ts    : Date.now()
-			});
 		}
 
 		//== Store the updated lists (up to 8 items each) ==//
@@ -79,8 +80,12 @@ const RecentItems = createClass({
 	},
 
 	componentDidUpdate : function(prevProps) {
-		if(prevProps.brew && this.props.brew.editId !== prevProps.brew.editId) {
-	 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
+		if(
+			this.props.brew &&
+        prevProps.brew &&
+        this.props.brew.editId !== prevProps.brew.editId
+		) {
+			let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 			if(this.props.storageKey == 'edit') {
 				let prevEditId = prevProps.brew.editId;
 				if(prevProps.brew.googleId && !this.props.brew.stubbed){
