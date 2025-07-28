@@ -161,7 +161,7 @@ fs.emptyDirSync('./build');
 		livereload('./build');     // Install the Chrome extension LiveReload to automatically refresh the browser
 		watchFile('./server.js', { // Restart server when change detected to this file or any nested directory from here
 			ignore : ['./build', './client', './themes'],  // Ignore folders that are not running server code / avoids unneeded restarts
-			ext    : 'js json'                             // Extensions to watch (only .js/.json by default)
+			ext    : 'js'                             // Extensions to watch (only .js/.json by default)
 			//watch : ['./server', './themes'],            // Watch additional folders if needed
 		});
 	}

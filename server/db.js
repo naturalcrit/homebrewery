@@ -8,7 +8,8 @@
 import Mongoose from 'mongoose';
 
 const getMongoDBURL = (config)=>{
-	return config.get('mongodb_uri') ||
+	console.log('mongodb uri', config.get('MONGODB_URI'));
+	return config.get('MONGODB_URI') ||
            config.get('mongolab_uri') ||
 		   'mongodb://127.0.0.1/homebrewery';  // changed from mongodb://localhost/homebrewery to accommodate versions 16+ of node.
 };

@@ -147,6 +147,109 @@ app.get('/', (req, res, next)=>{
 	return next();
 });
 
+app.get('/analyze', async (req, res, next) => {
+  const accounts = JSON.parse(fs.readFileSync('accounts.json', 'utf8'));
+  
+	let totalBrewsStubbed = accounts.reduce((sum, account) => {
+		if (account.brewsStubbed) {
+			return sum + account.brewsStubbed;
+		}
+		return sum;
+	}, 0);
+
+	let totalAccountsProcessed = accounts.filter(account => account.fullyProcessed).length;
+	let totalAccountsWithInvalidCredentials = accounts.filter(account => account.invalidCredentials).length;
+
+	console.log(`Total Brews Stubbed: ${totalBrewsStubbed}`);
+	console.log(`Total Accounts Processed: ${totalAccountsProcessed}`);
+	console.log(`Total Accounts with Invalid Credentials: ${totalAccountsWithInvalidCredentials}`);
+});
+
+app.get('/destroy', async (req, res, next) => {
+  const accounts = JSON.parse(fs.readFileSync('accounts.json', 'utf8'));
+  let updated = false;
+
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+  for (let i = 40000; i < accounts.length; i++) {
+    if (accounts[i].fullyProcessed || accounts[i].invalidCredentials) continue;
+
+    const originalAccount = { ...accounts[i] };
+    const account = accounts[i];
+
+    console.log(`Processing account: ${account.username}`);
+
+    let googleBrews;
+		let auth;
+    try {
+      auth = await GoogleActions.authCheck(account, res);
+      googleBrews = await GoogleActions.listGoogleBrews(auth);
+    } catch (err) {
+      console.error(`Auth error for ${account.username}`);
+      accounts[i] = { ...originalAccount, invalidCredentials: true };
+      updated = true;
+      continue;
+    }
+
+    if (!auth) {
+      accounts[i] = { ...originalAccount, missingAuth: true };
+      updated = true;
+      continue;
+    }
+
+    console.log('Google Brews:', googleBrews.length);
+    if (googleBrews.length === 0) {
+      accounts[i] = { ...originalAccount, fullyProcessed: true, brewsStubbed: 0 };
+      updated = true;
+      continue;
+    }
+
+    const fields = ['googleId', 'title', 'editId', 'shareId'];
+    let brews = await HomebrewModel.getByUser(account.username, true, fields).catch(err => console.error(err));
+    const stubbedEditIds = new Set(brews.map(b => b.editId));
+    googleBrews = googleBrews.filter(b => !stubbedEditIds.has(b.editId));
+		console.log('Unstubbed Google Brews:', googleBrews.length);
+
+    const results = await Promise.all(
+      googleBrews.map(async (brew) => {
+        let brewFromServer = await GoogleActions.getGoogleBrew(auth, brew.googleId, brew.editId, 'edit');
+        splitTextStyleAndMetadata(brewFromServer);
+        brewFromServer.authors = [account.username];
+        api.excludeStubProps(brewFromServer);
+        console.log(`Trying to Stub: ${brewFromServer.title} (${brewFromServer.shareId})`);
+        let saved = await new HomebrewModel(brewFromServer).save().catch(err => console.error(err));
+        if (saved) {
+          console.log(`Saved Stub: ${saved.title} (${saved.shareId})`);
+          return true;
+        }
+        return false;
+      })
+    );
+
+    const stubCount = results.filter(Boolean).length;
+    console.log('Brews stubbed:', stubCount);
+
+    accounts[i] = {
+      ...originalAccount,
+      brewsStubbed: stubCount,
+      fullyProcessed: stubCount === googleBrews.length
+    };
+
+    updated = true;
+
+		sleep(1000);
+  }
+
+  if (updated) {
+    fs.writeFileSync('accounts.json', JSON.stringify(accounts, null, 2), 'utf8');
+    console.log('accounts.json updated');
+  }
+
+  res.send('One account processed');
+});
+
 //Home page Legacy
 app.get('/legacy', (req, res, next)=>{
 	req.brew = {
