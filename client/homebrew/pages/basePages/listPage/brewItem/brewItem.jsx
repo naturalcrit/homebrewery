@@ -1,6 +1,6 @@
 require('./brewItem.less');
-const React = require('react');
-const { useCallback } = React;
+import React from 'react';
+const { useState, useCallback } = React;
 const moment = require('moment');
 import request from '../../../../utils/request-middleware.js';
 
@@ -18,7 +18,21 @@ const BrewItem = ({
 	updateListFilter = ()=>{},
 	reportError = ()=>{},
 	renderStorage = true,
+	layout = 'card'
 })=>{
+
+	const [itemExpanded, setItemExpanded] = useState(false);
+
+	const getShareLink = ()=>{
+		if(!brew.shareId) return null;
+
+		let shareLink = brew.shareId;
+		if(brew.googleId && !brew.stubbed) {
+			shareLink = brew.googleId + shareLink;
+		}
+
+		return shareLink;
+	};
 
 	const deleteBrew = useCallback(()=>{
 		if(brew.authors.length <= 1) {
@@ -37,7 +51,7 @@ const BrewItem = ({
 	const updateFilter = useCallback((type, term)=>updateListFilter(type, term), [updateListFilter]);
 
 	const renderDeleteBrewLink = ()=>{
-		if(!brew.editId) return null;
+		if(!brew.authors.includes(global.account?.username)) return null;
 
 		return (
 			<a className='deleteLink' onClick={deleteBrew}>
@@ -47,7 +61,10 @@ const BrewItem = ({
 	};
 
 	const renderEditLink = ()=>{
-		if(!brew.editId) return null;
+		console.log(brew);
+		if(!brew.authors.includes(global.account?.username)) return null;
+
+		console.log('editId?');
 
 		let editLink = brew.editId;
 		if(brew.googleId && !brew.stubbed) editLink = brew.googleId + editLink;
@@ -60,15 +77,8 @@ const BrewItem = ({
 	};
 
 	const renderShareLink = ()=>{
-		if(!brew.shareId) return null;
-
-		let shareLink = brew.shareId;
-		if(brew.googleId && !brew.stubbed) {
-			shareLink = brew.googleId + shareLink;
-		}
-
 		return (
-			<a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='shareLink' href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-share-alt' title='Share' />
 			</a>
 		);
@@ -111,23 +121,61 @@ const BrewItem = ({
 	if(Array.isArray(brew.tags)) {
 		brew.tags = brew.tags?.filter((tag)=>tag); // remove tags that are empty strings
 		brew.tags.sort((a, b)=>{
-			return a.indexOf(':') - b.indexOf(':') !== 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+			return b.indexOf(':') - a.indexOf(':') !== 0 ? b.indexOf(':') - a.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
 		});
 	}
 
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 	return (
-		<div className='brewItem'>
-			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
-			<div className='text'>
-				<h2>{brew.title}</h2>
-				<p className='description'>{brew.description}</p>
+		<div className={`brewItem ${layout}${itemExpanded ? ' expanded' : ''}`}
+			onClick={()=>{setItemExpanded(!itemExpanded)}}
+		>
+			<img className='thumbnail' src={brew.thumbnail} />
+			<div className='header'>
+				<div className='title'>
+					<h2><a href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>{brew.title}</a></h2>
+				</div>
+				<div className='info'>
+					<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+						<i className='fas fa-user' />{' '}
+						{brew.authors?.map((author, index)=>(
+							<React.Fragment key={index}>
+								{author === 'hidden' ? (
+									<span title="Username contained an email address; hidden to protect user's privacy">
+										{author}
+									</span>
+								) : (<a href={`/user/${author}`}>{author}</a>)}
+								{index < brew.authors.length - 1 && ', '}
+							</React.Fragment>
+						))}
+					</span>
+					<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+						<i className='fas fa-eye' /> {brew.views}
+					</span>
+					{brew.pageCount && (
+						<span title={`Page count: ${brew.pageCount}`}>
+							<i className='far fa-file' /> {brew.pageCount}
+						</span>
+					)}
+					<span
+						title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
+							Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
+					>
+						<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
+					</span>
+					{renderStorageIcon()}
+				</div>
 			</div>
-			<hr />
-			<div className='info'>
+			
+
+
+			<div className='text'>
+				{brew.description?.length ?
+					<div className='description'>{brew.description}</div>
+					: null}
 				{brew.tags?.length ? (
-					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
+					<div className='brew-tags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
 						<i className='fas fa-tags' />
 						{brew.tags.map((tag, idx)=>{
 							const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
@@ -135,35 +183,6 @@ const BrewItem = ({
 						})}
 					</div>
 				) : null}
-				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
-					<i className='fas fa-user' />{' '}
-					{brew.authors?.map((author, index)=>(
-						<React.Fragment key={index}>
-							{author === 'hidden' ? (
-								<span title="Username contained an email address; hidden to protect user's privacy">
-									{author}
-								</span>
-							) : (<a href={`/user/${author}`}>{author}</a>)}
-							{index < brew.authors.length - 1 && ', '}
-						</React.Fragment>
-					))}
-				</span>
-				<br />
-				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
-					<i className='fas fa-eye' /> {brew.views}
-				</span>
-				{brew.pageCount && (
-					<span title={`Page count: ${brew.pageCount}`}>
-						<i className='far fa-file' /> {brew.pageCount}
-					</span>
-				)}
-				<span
-					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
-                        Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
-				>
-					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
-				</span>
-				{renderStorageIcon()}
 			</div>
 
 			<div className='links'>

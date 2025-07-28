@@ -2,7 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('../../components/menubar/Menubar.jsx');
 
 
 const MetadataNav = createClass({
@@ -77,11 +77,11 @@ const MetadataNav = createClass({
 	},
 
 	render : function(){
-		return <Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
+		return <NavItem icon='fas fa-info-circle' color='grey' className='metadata'
 			onClick={()=>this.toggleMetaWindow()}>
 			{this.props.children}
 			{this.renderMetaWindow()}
-		</Nav.item>;
+		</NavItem>;
 	}
 
 });

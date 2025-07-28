@@ -12,6 +12,7 @@ const dedent             = require('dedent-tabs').default;
 
 
 module.exports = [
+
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -167,7 +168,6 @@ module.exports = [
 			{
 				name        : 'Class Tables',
 				icon        : 'fas fa-table',
-				gen         : ClassTableGen.full('classTable,frame,decoration,wide'),
 				subsnippets : [
 					{
 						name : 'Martial Class Table',
@@ -214,7 +214,6 @@ module.exports = [
 			{
 				name         : 'Rune Table',
 				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
 				experimental : true,
 				subsnippets  : [
 					{

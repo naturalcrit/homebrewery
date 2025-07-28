@@ -1,0 +1,72 @@
+@import 'naturalcrit/styles/colors.less';
+
+.splitPane {
+	position       : relative;
+	display        : flex;
+	flex-direction : row;
+	height         : 100%;
+	outline        : none;
+	.pane {
+		
+		flex: 1 1 0;
+		min-width: 0;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		overflow-x : hidden;
+		overflow-y : hidden;
+		position   : relative;
+	}
+	.divider {
+		position: relative;
+		display: grid;
+		place-content: center;
+		width            : 4px;
+		height           : 100%;
+		text-align       : center;
+		touch-action     : none;
+		cursor           : ew-resize;
+		background-color : #888;
+		z-index          : 5001;
+		filter: drop-shadow(0 0 3px black);
+		&:hover {
+			// outline: 1px solid #333;
+		}
+		#flip-box {
+			position: relative;
+			left: 9px;
+			background: inherit;
+			width: auto;
+			border-radius: 0 4px 4px 0;
+			display        : block;
+			color: #CCC;
+			display: flex;
+			flex-direction: column;
+			gap: 5px;
+			padding: 5px 4px 5px 0 ;
+			#split-pane-tools {
+				display: flex;
+				flex-direction: column;
+				gap: 3px;
+				[aria-checked='true']{
+					color: @orangeLight;
+				}
+			}
+		}
+
+		&.on-right-edge #flip-box {
+			left: -9px;
+			border-radius: 4px 0 0 4px;
+			padding: 5px 0px 5px 4px ;
+		}
+
+		.dots {
+			z-index: 5;
+			&:hover i,&.dragging i { color : @orangeLight; }
+			i {
+				color     : #666666;
+			}
+		}
+		&:hover,&.dragging { background-color : #999999; }
+	}
+}

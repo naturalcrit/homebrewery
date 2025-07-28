@@ -1,7 +1,8 @@
+require('./accountPage.less');
 const React  = require('react');
 const moment = require('moment');
 const UIPage = require('../basePages/uiPage/uiPage.jsx');
-const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+const NaturalCritIcon = require('client/svg/naturalcrit.svg.jsx');
 
 let SAVEKEY = '';
 
@@ -42,12 +43,11 @@ const AccountPage = (props)=>{
 		return (
 			<>
 				<div className='dataGroup'>
-					<h1>Account Information <i className='fas fa-user'></i></h1>
-					<p><strong>Username: </strong>{accountDetails.username || 'No user currently logged in'}</p>
-					<p><strong>Last Login: </strong>{moment(accountDetails.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
+					<h1>{accountDetails.username}</h1>
+					<p>Last Login: {moment(accountDetails.issued).format('dddd, MMMM Do YYYY, h:mm:ss a ZZ') || '-'}</p>
 				</div>
 				<div className='dataGroup'>
-					<h3>Homebrewery Information <NaturalCritIcon /></h3>
+					<h3>Homebrewery Information </h3>
 					<p><strong>Brews on Homebrewery: </strong>{accountDetails.mongoCount}</p>
 				</div>
 				<div className='dataGroup'>
@@ -74,7 +74,7 @@ const AccountPage = (props)=>{
 
 	// return the account page inside the base layout wrapper (with navbar etc).
 	return (
-		<UIPage brew={brew}>
+		<UIPage className='account-page' brew={brew}>
 			{renderAccountPage()}
 		</UIPage>);
 };

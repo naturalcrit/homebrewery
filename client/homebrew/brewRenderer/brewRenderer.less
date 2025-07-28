@@ -1,12 +1,95 @@
 @import (multiple, less) 'shared/naturalcrit/styles/reset.less';
+@import (multiple, less) 'shared/naturalcrit/styles/scrollbars.less';
+
+#preview-pane {
+	display: grid;
+	grid-template-columns: auto min-content;
+	grid-template-rows: min-content auto;
+	grid-template-areas: "toolbar toolbar"
+		"preview panel";
+	height: 100%;
+
+	.toolBar {
+		grid-area: toolbar;
+		min-height: 30px;
+		height: auto;
+	}
+
+	.headerNav {
+		grid-area: panel;
+		width: 250px;
+	}
+
+	iframe {
+		grid-area: preview;
+		border: 0;
+		min-height: 0;
+		height: 100%;
+	}
+	&:has(#preview-toolbar-dot) {
+		grid-template-rows: 0 auto;
+		// .toolBar.hidden {
+		// 	display: none;
+		// }
+	}
+	&:has(.headerNav.hidden) {
+		grid-template-columns: auto 0;
+		// .headerNav.hidden {
+		// 	display: none;
+		// }
+	}
+
+	// &:has(.toolBar.hidden) {
+	// 	grid-template-areas: "preview panel"
+	// 		"preview panel";
+	// 	.toolBar.hidden {
+	// 		display: none;
+	// 	}
+	// }
+	// &:has(.headerNav.hidden) {
+	// 	grid-template-areas: "toolbar toolbar"
+	// 		"preview preview";
+	// 	.headerNav.hidden {
+	// 		display: none;
+	// 	}
+	// }
+}
 
 .brewRenderer {
 	height        : 100vh;
-	padding-top   : 60px;
+	padding-top   : 30px;
 	overflow-y    : scroll;
 	will-change   : transform;
 	&:has(.facing, .flow) { padding : 60px 30px; }
 	&.deployment { background-color : darkred; }
+	&.html-errors {
+		#splash-image {
+			height: 100%;
+			display: grid;
+			place-items: center;
+			#broken-brew {
+				text-align: center;
+				color: #93a4b2;
+				font-weight: bold;
+				user-select: none;
+				line-height: 1.3em;
+				h2 {
+					font-size: 28px;
+					margin-bottom: 1em;
+				}
+				#icon-attribution {
+					font-size: 13px;
+					margin-top: 3em;
+				}
+				a:any-link {
+					color: inherit;
+				}
+				svg {
+					width: ~"min(70vw,400px)";
+				}
+			}
+		}
+	}
 	:where(.pages) {
 		&.facing {
 			display               : grid; 
@@ -48,18 +131,8 @@
 		}
 		*[id] { scroll-margin-top : 100px; }
 	}
-	&::-webkit-scrollbar {
-		width : 20px;
-		&:horizontal {
-			width  : auto;
-			height : 20px;
-		}
-		&-thumb {
-			background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
-			&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
-		}
-		&-corner { visibility : hidden; }
-	}
+
+	.scrollbar-styles(#fff0, #8fa1ad, 14px);
 }
 
 .pane { position : relative; }

@@ -5,15 +5,6 @@
 		opacity   : 1;transform : translate(-50% + 3px, 10px);}
 }
 .editPage {
-	.navItem.save {
-		position   : relative;
-		width      : 106px;
-		text-align : center;
-		&.saved {
-			color  : #666666;
-			cursor : initial;
-		}
-	}
 	.googleDriveStorage { position : relative; }
 	.googleDriveStorage img {
 		height  : 18px;
@@ -21,5 +12,71 @@
 		margin  : -5px;
 
 		&.inactive { filter : grayscale(1); }
+	}
+
+	.menu-item.brewTitle {
+		cursor: unset;
+		& > .name {
+			position: relative;
+			
+			span#alerts {
+				position: absolute;
+				left: calc(100% + 10px);
+				display: inline-flex;
+				flex-wrap: nowrap;
+				gap: 6px;
+
+				i {
+					width: 16px;
+					color: hsl(from currentColor h s 50%);
+					transition: color ease .3s;
+					&:hover {
+						color: currentColor;
+						transition: color ease .3s;
+						&::after {
+							content: attr(title);
+							position: relative;
+							font-family: 'Open Sans';
+							font-size: 10px;
+							justify-self: end;
+							margin-left: 5px;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	#app-dialogs dialog {
+		.options {
+			display: flex;
+			flex-direction: column;
+			align-items: start;
+			justify-content: start;
+			gap: 10px;
+			flex-wrap:nowrap;
+			margin-top: 10px;
+			width: min-content;
+		}
+		.option-box {
+			border: 1px solid gray;
+			padding: 5px 10px;
+			display: grid;
+			grid-template-columns: 25px auto;
+			justify-content: start;
+			align-items: center;
+			gap: 5px;
+			cursor: pointer;
+			text-wrap: nowrap;
+			width: 100%;
+			
+			svg {
+				fill: white;
+			}
+
+			&.selected {
+				background-color: @blueLight;
+			}
+		}
 	}
 }

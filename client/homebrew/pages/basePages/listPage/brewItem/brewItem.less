@@ -1,118 +1,171 @@
-
 .brewItem {
 	position                    : relative;
-	box-sizing                  : border-box;
-	display                     : inline-block;
-	width                       : 48%;
-	min-height                  : 105px;
-	padding                     : 5px 15px 2px 6px;
-	padding-right               : 15px;
-	margin-right                : 15px;
-	margin-bottom               : 15px;
-	overflow                    : hidden;
-	vertical-align              : top;
-	background-color            : #CAB2802E;
-	border                      : 1px solid #C9AD6A;
-	border-radius               : 5px;
+	display: flex;
+	flex-direction: column;
+	font-family: 'Open Sans', sans-serif;
+	font-size: 13px;
+	color: ghostwhite;
+	background-color            : #55555586;
+	border                      : 1px ridge #C9AD6A;
 	box-shadow                  : 0px 4px 5px 0px #333333;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
-	.thumbnail {
-		position            : absolute;
-		top                 : 0;
-		right               : 0;
-		z-index             : -1;
-		width               : 150px;
-		height              : 100%;
-		background-repeat   : no-repeat;
-		background-position : right top;
-		background-size     : contain;
-		opacity             : 50%;
-		-webkit-mask-image  : linear-gradient(80deg, #00000000 20%, #005500 40%);
-		mask-image          : linear-gradient(80deg, #00000000 20%, #005500 40%);
-	}
-	.text {
-		min-height : 54px;
-		h4 {
-			margin-bottom : 5px;
-			font-size     : 2.2em;
-		}
-	}
-	.info {
-		position    : initial;
-		bottom      : 2px;
-		font-family : "ScalySansRemake";
-		font-size   : 1.2em;
-		& > span {
-			margin-right : 12px;
-			line-height  : 1.5em;
 
-			a { color : inherit; }
+
+	& > *:not(img) {
+		padding: 0 10px;
+	}
+
+	.thumbnail {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		filter:  grayscale(1) opacity(.1) blur(0px);
+		transition: all .5s ease-out;
+		&:is(.brewItem:hover .thumbnail){
+			filter: grayscale(0) opacity(.1) blur(0px);
+			transition: all .5s ease-out;
+
+		}
+
+	}
+
+	.header {
+		position: relative;
+		flex: 0 0 min-contents;
+		width: 100%;
+		border-bottom: .5px inset currentColor;
+		padding: 15px 10px;
+		backdrop-filter: blur(4px) brightness(.8);
+		z-index: 1;
+		.title {
+			h2 {
+				font-size: 16px;
+				line-height: 1.3;
+				margin-bottom: 5px;
+				a:any-link {
+					color: #ead195;
+					text-decoration-thickness: 1px;
+					text-underline-offset: 2px;
+				}
+				a:visited{
+					color: #bca772;
+				}
+			}
+		}
+		.info {
+				backdrop-filter: blur(4px) brightness(.9);
+			font-size: .7em;
+			& > span {
+				margin-right : 12px;
+				line-height  : 1.5em;
+
+				a:any-link { color : inherit; }
+			}
 		}
 	}
-	.brewTags span {
-		display          : inline-block;
-		padding          : 2px;
-		margin           : 2px;
-		font-weight      : bold;
-		white-space      : nowrap;
-		cursor           : pointer;
-		background-color : #C8AC6E3B;
-		border           : 1px solid #C8AC6E;
-		border-color     : currentColor;
-		border-radius    : 4px;
-		&::before {
-			margin-right : 3px;
-			font-family  : 'Font Awesome 6 Free';
-			font-size    : 12px;
-		}
-		&.type {
-			color            : #008000;
-			background-color : #0080003B;
-			&::before { content : '\f0ad'; }
-		}
-		&.group {
-			color            : #000000;
-			background-color : #5050503B;
-			&::before { content : '\f500'; }
-		}
-		&.meta {
-			color            : #000080;
-			background-color : #0000803B;
-			&::before { content : '\f05a'; }
-		}
-		&.system {
-			color            : #800000;
-			background-color : #8000003B;
-			&::before { content : '\f518'; }
-		}
+
+	
+
+	.text {
+		height: 100%;
+		z-index: 1;
+		position: relative;
+		min-height: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		gap: 8px;
+		padding: 15px 10px;
 	}
-	&:hover {
-		.links { opacity : 1; }
+
+	.description {
+		flex: 1 1 auto;
+		overflow: hidden;
+		mask-image: linear-gradient(to bottom, #000 75%, transparent 98%);
+		line-height: 1.3;
+		font-weight: 300;
+		font-family: 'Open Sans';
+
 	}
+
+
+	
+	.brew-tags{
+		flex: 0 0 auto;
+		span {
+			display          : inline-block;
+			padding          : 2px 4px;
+			margin           : 2px;
+			white-space      : nowrap;
+			cursor           : pointer;
+			background-color : #C8AC6E3B;
+			border           : 1px ridge gray;
+			border-radius    : 4px;
+			font-size: .75em;
+			&::before {
+				margin-right : 3px;
+				font-family  : 'Font Awesome 6 Free';
+				font-size    : 12px;
+				font-weight: 800;
+			}
+			&.type {
+				color            : #008000;
+				background-color : #0080003B;
+				&::before { content : '\f0ad'; }
+			}
+			&.group {
+				color            : #000000;
+				background-color : #5050503B;
+				&::before { content : '\f500'; }
+			}
+			&.meta {
+				color            : #cecef7;
+				background-color : #34346c;
+				border           : 1px ridge #34346c;
+				&::before { content : '\f05a'; font-family: 'Font Awesome 6 Free' }
+			}
+			&.system {
+				color            : #fbcdcd;
+				background-color : #652e2e;
+				border           : 1px ridge #652e2e;
+				&::before { content : '\f518'; }
+			}
+		}
+	} 
 	&:nth-child(2n + 1) { margin-right : 0px; }
 	.links {
 		.animate(opacity);
 		position         : absolute;
 		top              : 0px;
 		right            : 0px;
-		width            : 2em;
-		height           : 100%;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		display: flex;
+		align-items: center;
+		font-size       : 1.3em;
 		text-align       : center;
-		background-color : fade(black, 60%);
-		opacity          : 0;
+		background-color : fade(rgb(46, 46, 46), 60%);
+		z-index: 5;
 		a {
 			.animate(opacity);
-			display         : block;
-			margin          : 8px 0px;
-			font-size       : 1.3em;
+			display         : inline-block;
+			padding: 7px;
 			color           : white;
 			text-decoration : unset;
 			opacity         : 0.6;
 			&:hover { opacity : 1; }
-			i { cursor : pointer; }
+			cursor : pointer;
 		}
+	}
+
+	&:hover .links {
+		opacity: 1;
 	}
 	.googleDriveIcon {
 		padding : 0px;
@@ -125,5 +178,11 @@
 		top      : 5px;
 		left     : -7.5px;
 		height   : 18px;
+	}
+}
+
+@media (hover: none) {
+  .vaultPage .brewItem .links {
+		opacity: 1;
 	}
 }

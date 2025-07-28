@@ -10,281 +10,227 @@
 	100% { color : pink; }
 }
 
-@keyframes glideDropDown {
-	0% {
-		background-color : #333333;
-		opacity          : 0;
-		transform        : translate(0px, -100%);
-	}
-	100% {
-		background-color : #333333;
-		opacity          : 1;
-		transform        : translate(0px, 0px);
-	}
-}
-
-.homebrew nav {
-	position         : relative;
-	z-index          : 2;
+#navbar.menu-bar {
+	--menubar-color : #333333;
+	--menubar-text : #FFFFFF;
+	--menubar-shadow : 0px 5px 10px -5px  #000;
+	--menubar-accent : #555555;
 	display          : flex;
 	justify-content  : space-between;
-	background-color : #333333;
-	
-	.navSection {
-		display     : flex;
-		align-items : center;
-		&:last-child .navItem { border-left : 1px solid #666666; }
-
-		&:has(.brewTitle) {
-			flex-grow : 1;
-			min-width : 300px; 
-		}
+	box-shadow: var(--menubar-shadow);
+	background-color: var(--menubar-color);
+	div {
+		background-color : inherit;
 	}
-	// "NaturalCrit" logo
-	.navLogo {
-		display         : block;
-		margin-top      : 0px;
-		margin-right    : 8px;
-		margin-left     : 8px;
-		color           : white;
-		text-decoration : none;
-		&:hover {
-			.name { color : @orange; }
-			svg { fill : @orange; }
-		}
-		svg {
-			height       : 13px;
-			margin-right : 0.2em;
-			cursor       : pointer;
-			fill         : white;
-		}
-		span.name {
-			font-family : 'CodeLight';
-			font-size   : 15px;
-			span.crit { font-family : 'CodeBold'; }
-			small {
-				font-family    : 'Open Sans';
-				font-size      : 0.3em;
-				font-weight    : 800;
-				text-transform : uppercase;
-			}
-		}
-	}
-	.navItem {
-		#backgroundColorsHover;
-		.animate(background-color);
-		display          : flex;
-		align-items      : center;
-		justify-content  : center;
-		height           : 100%;
-		padding          : 8px 12px;
-		font-size        : 10px;
-		font-weight      : 800;
-		line-height      : 13px;
-		color            : white;
+	&, a:any-link, button {
+		color            : var(--menubar-text);
 		text-transform   : uppercase;
 		text-decoration  : none;
-		cursor           : pointer;
-		background-color : #333333;
-		i {
-			float       : right;
-			margin-left : 5px;
-			font-size   : 13px;
-		}
-		&.patreon {
-			border-right : 1px solid #666666;
-			border-left  : 1px solid #666666;
-			&:hover i { color : red; }
-			i {
-				color              : pink;
-				.animate(color);
-				animation-name     : pinkColoring;
-				animation-duration : 2s;
-			}
-		}
-		&.brewTitle {
-			display          : block;
-			width            : 100%;
-			overflow         : hidden;
-			text-overflow    : ellipsis;
-			font-size        : 12px;
-			font-weight      : 800;
-			color            : white;
-			text-align       : center;
-			text-transform   : initial;	
-			white-space      : nowrap;
-			background-color : transparent;		
-		}
-
-		// "The Homebrewery" logo
-		&.homebrewLogo {
-			.animate(color);
-			font-family : 'CodeBold';
-			font-size   : 12px;
-			color       : white;
-			div {
-				margin-top    : 2px;
-				margin-bottom : -2px;
-			}
-			&:hover { color : @blue; }
-		}
-		&.metadata {
-			position    : relative;
-			display     : flex;
-			flex-grow   : 1;
-			align-items : center;
-			height      : 100%;
-			padding     : 0;
-			i { margin-right : 10px;}
-			.window {
-				position         : absolute;
-				bottom           : 0;
-				left             : 50%;
-				z-index          : -1;
-				display          : flex;
-				flex-flow        : row wrap;
-				align-content    : baseline;
-				justify-content  : flex-start;
-				width            : 440px;
-				max-height       : ~'calc(100vh - 28px)';
-				padding          : 0 10px 5px;
-				margin           : 0 auto;
-				background-color : #333333;
-				border           : 3px solid #444444;
-				border-top       : unset;
-				border-radius    : 0 0 5px 5px;
-				box-shadow       : inset 0 7px 9px -7px #111111;
-				transition       : transform 0.4s, opacity 0.4s;
-				&.active {
-					opacity   : 1;
-					transform : translateX(-50%) translateY(100%);
-				}
-				&.inactive {
-					opacity   : 0;
-					transform : translateX(-50%) translateY(0%);
-				}
-				.row {
-					display   : flex;
-					flex-flow : row wrap;
-					width     : 100%;
-					h4 {
-						box-sizing : border-box;
-						display    : block;
-						flex-grow  : 1;
-						flex-basis : 20%;
-						min-width  : 76px;
-						padding    : 5px 0;
-						color      : #BBBBBB;
-						text-align : center;
-					}
-					p {
-						flex-grow      : 1;
-						flex-basis     : 80%;
-						padding        : 5px 0;
-						font-family    : 'Open Sans', sans-serif;
-						font-size      : 10px;
-						font-weight    : normal;
-						text-transform : initial;
-						.tag {
-							display          : inline-block;
-							padding          : 2px;
-							margin           : 2px 2px;
-							background-color : #444444;
-							border           : 2px solid grey;
-							border-radius    : 5px;
-						}
-						a.userPageLink {
-							color           : white;
-							text-decoration : none;
-							&:hover { text-decoration : underline; }
-						}
-					}
-					&:nth-of-type(even) { background-color : #555555; }
-				}
-			}
-		}
-		&.warning {
-			position         : relative;
-			color            : white;
-			background-color : @orange;
-			&:hover > .dropdown { visibility : visible; }
-			.dropdown {
-				position         : absolute;
-				top              : 28px;
-				left             : 0;
-				z-index          : 10000;
-				box-sizing       : border-box;
-				display          : block;
-				visibility       : hidden;
-				width            : 100%;
-				padding          : 13px 5px;
-				text-align       : center;
-				background-color : #333333;
-			}
-		}
-		&.account {
-			min-width : 100px;
-			&.username { text-transform : none;}
-		}
+		font-weight      : 800;
+		line-height      : 13px;
 	}
-	.navDropdownContainer {
-		position : relative;
-		height   : 100%;
 
-		.navDropdown {
-			position       : absolute;
-			//top: 28px;
-			right          : 0px;
-			z-index        : 10000;
-			display        : flex;
-			flex-direction : column;
-			align-items    : flex-end;
-			width          : max-content;
-			min-width      : 100%;
-			max-height     : calc(100vh - 28px);
-			overflow       : hidden auto;
-			.navItem {
-				position           : relative;
-				display            : flex;
-				align-items        : center;
-				justify-content    : space-between;
-				width              : 100%;
-				border             : 1px solid #888888;
-				border-bottom      : 0;
-				animation-name     : glideDropDown;
-				animation-duration : 0.4s;
+	.menu-section {
+		column-gap: 12px;
+
+		&:has(.brewTitle) {
+			flex: 1 1 max-content;
+		}
+
+		.menu-wrapper:has(:popover-open) > [popovertarget]{
+			background-color: var(--menubar-accent);
+		}
+
+		.menu-list {
+			box-shadow: 0px 5px 10px -5px  #000;
+			border: 1px groove #929292;
+			.menu-list {
+				margin: 1px -2px;
 			}
 		}
-		&.recent {
-			position : relative;
-			.navDropdown .navItem {
-				#backgroundColorsHover;
-				.animate(background-color);
-				position         : relative;
-				box-sizing       : border-box;
-				display          : block;
-				max-width        : 15em;
-				max-height       : ~'calc(100vh - 28px)';			
-				padding          : 8px 5px 13px;
-				overflow         : hidden auto;
-				color            : white;
-				text-decoration  : none;
-				scrollbar-color  : #666666 #333333;
-				scrollbar-width  : thin;
-				background-color : #333333;
-				border-top       : 1px solid #888888;
+
+		.menu-hr {
+			padding : 0 4px;
+		}
+
+		.menu-item {
+			#backgroundColorsHover;
+			.animate(background-color);
+			padding          : 4px;
+			text-wrap: nowrap;
+
+			&:where(.menu-section .menu-list .menu-item){
+				// padding: 8px 4px;
+			}
+
+			// LOGO ITEM
+			.homebrewery.fac {
+				.animate(color);
+				&:hover {
+					color : @orange;
+				}
+			}
+
+			// PATREON ITEM
+			&.patreon {
+				&:hover i { color : red; }
+				i {
+					color              : pink;
+					.animate(color);
+					animation-name     : pinkColoring;
+					animation-duration : 2s;
+				}
+			}
+
+			// TITLE ITEM
+			&.brewTitle {							//  Navbar should move to CSS Grid, and this item allowed 
+													// to move under the rest of the buttons of the navbar at small screen sizes.  
+				display          : flex;
+				justify-content: center;
+				width: 100%;
+				overflow         : hidden;
+				text-overflow    : ellipsis;
+				text-transform   : initial;	
+				white-space      : nowrap;
+				.save {
+					display: inline-block;
+					color: @orangeLight;
+					padding-left: 3px;
+					&:hover { color: @orange; }
+				}
+			}
+
+			// NATURALCRIT ITEM
+			&#naturalCritItem .natural {
+				font-family : 'CodeLight';
+				font-size: 1.1em;
+				.crit { font-family : 'CodeBold'; }
+			}
+
+			// ACCOUNT ITEM
+			&.account {
+				&.username { text-transform : none;}
+			}
+
+			&.metadata {
+				position    : relative;
+				display     : flex;
+				flex-grow   : 1;
+				align-items : center;
+				height      : 100%;
+				padding     : 0;
+				i { margin-right : 10px;}
+				.window {
+					position         : absolute;
+					bottom           : 0;
+					left             : 50%;
+					z-index          : -1;
+					display          : flex;
+					flex-flow        : row wrap;
+					align-content    : baseline;
+					justify-content  : flex-start;
+					width            : 440px;
+					max-height       : ~'calc(100vh - 28px)';
+					padding          : 0 10px 5px;
+					margin           : 0 auto;
+					background-color : #333333;
+					border           : 3px solid #444444;
+					border-top       : unset;
+					border-radius    : 0 0 5px 5px;
+					box-shadow       : inset 0 7px 9px -7px #111111;
+					transition       : transform 0.4s, opacity 0.4s;
+					&.active {
+						opacity   : 1;
+						transform : translateX(-50%) translateY(100%);
+					}
+					&.inactive {
+						opacity   : 0;
+						transform : translateX(-50%) translateY(0%);
+					}
+					.row {
+						display   : flex;
+						flex-flow : row wrap;
+						width     : 100%;
+						h4 {
+							box-sizing : border-box;
+							display    : block;
+							flex-grow  : 1;
+							flex-basis : 20%;
+							min-width  : 76px;
+							padding    : 5px 0;
+							color      : #BBBBBB;
+							text-align : center;
+						}
+						p {
+							flex-grow      : 1;
+							flex-basis     : 80%;
+							padding        : 5px 0;
+							font-family    : 'Open Sans', sans-serif;
+							font-size      : 10px;
+							font-weight    : normal;
+							text-transform : initial;
+							.tag {
+								display          : inline-block;
+								padding          : 2px;
+								margin           : 2px 2px;
+								background-color : #444444;
+								border           : 2px solid grey;
+								border-radius    : 5px;
+							}
+							a.userPageLink {
+								color           : white;
+								text-decoration : none;
+								&:hover { text-decoration : underline; }
+							}
+						}
+						&:nth-of-type(even) { background-color : #555555; }
+					}
+				}
+			}
+
+			&:where(.menu-bar.compact .menu-section > .menu-item, .menu-bar.compact .menu-section > .menu-wrapper > .menu-item){
+				grid-template-columns: 20px min-content;
+				grid-template-areas: "icon caret";
+				&:not(.brewTitle) .name, .menu-name {
+					display: none;
+				}
+			}
+		}
+
+		#recent-brews-menu.menu-list { 
+			position: relative;
+			max-width: 300px;
+			min-width: 150px;
+			.menu-item {
+				position: relative;
+				grid-template-rows: 2fr;
+				grid-template-areas:
+					"icon name caret"
+					". time .";
+				height: unset;
+				.title {
+					display       : inline-block;
+					width         : 100%;
+					overflow      : hidden auto;
+					text-overflow : ellipsis;
+					white-space   : nowrap;
+				}
 				.clear {
 					position         : absolute;
-					top              : 50%;
-					right            : 0;
+					top:0;
+					right            : 2px;
+					margin: 3px;
 					display          : none;
 					width            : 20px;
-					height           : 100%;
+					height           : calc(100% - 6px);
 					background-color : #333333;
 					border-radius    : 3px;
 					opacity          : 70%;
-					transform        : translateY(-50%);
-					&:hover { opacity : 100%; }
+					box-sizing: border-box;
+					&:hover { 
+						opacity : 100%;
+						background-color: @red;
+					}
 					i {
 						width      : 100%;
 						height     : 100%;
@@ -293,51 +239,22 @@
 						text-align : center;
 					}
 				}
+				.time {
+					font-size : 0.7em;
+					color     : #888888;
+					display: block;
+					grid-area: time;
+				}
+
 				&:hover {
-					background-color : @blue;
+					.time { color : white !important; };
 					.clear {
 						display       : grid;
 						place-content : center;
 					}
 				}
-				.title {
-					display       : inline-block;
-					width         : 100%;
-					overflow      : hidden auto;
-					text-overflow : ellipsis;
-					white-space   : nowrap;
-				}
-				.time {
-					position  : absolute;
-					right     : 2px;
-					bottom    : 2px;
-					font-size : 0.7em;
-					color     : #888888;
-				}
-				&.header {
-					box-sizing       : border-box;
-					display          : block;
-					padding          : 5px 0;
-					color            : #BBBBBB;
-					text-align       : center;
-					background-color : #333333;
-					border-top       : 1px solid #888888;
-					&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-					&:nth-of-type(2) { background-color : darken(@purple, 30%); }
-				}
 			}
-		}
-	}
-}
-
-// this should likely be refactored into .navDropdownContainer
-.save-menu {
-	.dropdown { z-index : 1000; }
-	.navItem i.fa-power-off {
-		color : red;
-		&.active {
-			color  : rgb(0, 182, 52);
-			filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+			
 		}
 	}
 }

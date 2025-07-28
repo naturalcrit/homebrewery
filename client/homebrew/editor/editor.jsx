@@ -55,6 +55,9 @@ const Editor = createClass({
 			currentEditorCursorPageNum : 1,
 			currentEditorViewPageNum   : 1,
 			currentBrewRendererPageNum : 1,
+
+			htmlErrors : [],
+			liveScroll : false
 		};
 	},
 	getInitialState : function() {
@@ -88,7 +91,13 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
+
+		this.setState({ snippetbarHeight: document.querySelector('#snippet-bar').offsetHeight });
+		console.log('editor mounted')
+	},
+
+	componentWillUnmount : function() {
+		window.removeEventListener('resize', this.updateEditorSize);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -142,12 +151,12 @@ const Editor = createClass({
 	},
 
 	handleViewChange : function(newView){
-		this.props.setMoveArrows(newView === 'text');
-		
+		this.props.onViewChange(newView);
 		this.setState({
 			view : newView
 		}, ()=>{
 			this.codeEditor.current?.codeMirror.focus();
+			this.update();
 		});
 	},
 
@@ -412,10 +421,11 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.codeEditor.current?.updateSize();
-		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
-		if(snipHeight !== this.state.snippetbarHeight)
+		const snipHeight = document.querySelector('#snippet-bar').offsetHeight;
+		if(snipHeight !== this.state.snippetbarHeight){
 			this.setState({ snippetbarHeight: snipHeight });
+		}
+		this.codeEditor.current?.updateSize();
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -441,6 +451,7 @@ const Editor = createClass({
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
+					htmlErrors={this.props.htmlErrors}
 					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
@@ -533,7 +544,9 @@ const Editor = createClass({
 					updateBrew={this.props.updateBrew}
 				/>
 
-				{this.renderEditor()}
+				<div aria-labelledby={`${this.state.view}-tab`} role='tabpanel' style={{ height: 'calc(100% - 26px)', width: '100%' }}>
+					{this.renderEditor()}
+				</div>
 			</div>
 		);
 	}

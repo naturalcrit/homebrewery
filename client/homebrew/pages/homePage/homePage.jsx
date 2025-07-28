@@ -5,28 +5,26 @@ const cx = require('classnames');
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
+const Account = require('../../navbar/account.navitem.jsx');
+const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
+const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
-
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
 const HomePage = createClass({
 	displayName     : 'HomePage',
 	getDefaultProps : function() {
 		return {
-			brew : DEFAULT_BREW,
-			ver  : '0.0.0'
+			brew : DEFAULT_BREW
 		};
 	},
 	getInitialState : function() {
@@ -37,7 +35,8 @@ const HomePage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			paneOrder                  : [0, 1],
 		};
 	},
 
@@ -81,19 +80,31 @@ const HomePage = createClass({
 		}));
 	},
 	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
-			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				}
-				<NewBrewItem />
-				<HelpNavItem />
-				<VaultNavItem />
-				<RecentNavItem />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>;
+		return (
+			<Menubar id='navbar'>
+
+				<MenuSection className='navSection'>
+					<MainMenu />
+					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
+						<NewBrewItem />
+						<MenuRule />
+						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
+							brews
+						</MenuItem>
+						<RecentNavItem brew={this.state.brew} storageKey='edit' />
+					</MenuDropdown>
+					<VaultNavItem />
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<MenuItem className='brewTitle'>The Homebrewery {global.version}</MenuItem>
+				</MenuSection>
+
+				<MenuSection className='navSection'>
+					<Account />
+				</MenuSection>
+
+			</Menubar>);
 	},
 
 	render : function(){
@@ -101,7 +112,15 @@ const HomePage = createClass({
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{this.renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={this.handleSplitMove}
+					paneOrder={this.state.paneOrder}
+					setPaneOrder={(order)=>this.setState({ paneOrder: order })}
+					dividerButtons={ScrollButtons({
+						paneOrder          : this.state.paneOrder,
+						editorRef          : this.editor,
+						liveScroll         : this.state.liveScroll,
+						onLiveScrollToggle : this.liveScrollToggle
+					})}>
 					<Editor
 						ref={this.editor}
 						brew={this.state.brew}
@@ -114,6 +133,7 @@ const HomePage = createClass({
 						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
 						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
 						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						liveScroll={this.state.liveScroll}
 					/>
 					<BrewRenderer
 						text={this.state.brew.text}

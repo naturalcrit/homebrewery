@@ -1,9 +1,9 @@
 require('./error-navitem.less');
 const React = require('react');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const { MenuItem } = require('../../components/menubar/Menubar.jsx');
 const createClass = require('create-react-class');
 
-const ErrorNavItem = createClass({
+const ErrorMenuItem = createClass({
 	getDefaultProps : function() {
 		return {
 			error  : '',
@@ -36,25 +36,25 @@ const ErrorNavItem = createClass({
 		} catch (e){}
 
 		if(status === 409) {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'Conflict: please refresh to get latest changes'}
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(status === 412) {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					{message ?? 'Your client is out of date. Please save your changes elsewhere and refresh.'}
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '04') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					You are no longer signed in as an author of
@@ -71,20 +71,20 @@ const ErrorNavItem = createClass({
 						Not Now
 					</div>
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(response?.body?.errors?.[0].reason == 'storageQuotaExceeded') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 				<div className='errorContainer' onClick={clearError}>
 				Can't save because your Google Drive seems to be full!
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(response?.req.url.match(/^\/api.*Google.*$/m)){
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like your Google credentials have
@@ -102,11 +102,11 @@ const ErrorNavItem = createClass({
 						Not Now
 					</div>
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '09') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like there was a problem retreiving
@@ -114,11 +114,11 @@ const ErrorNavItem = createClass({
 					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
 						{response.body.brewId}</a> still exists!
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(HBErrorCode === '10') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					Looks like the brew you have selected
@@ -127,11 +127,11 @@ const ErrorNavItem = createClass({
 					brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
 						{response.body.brewId}</a> has the <span className='lowercase'>meta:theme</span> tag!
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
 		if(errorCode === 'ECONNABORTED') {
-			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
 					The request to the server was interrupted or timed out.
@@ -139,10 +139,10 @@ const ErrorNavItem = createClass({
 					trying to save a particularly large brew.
 					Please check your internet connection and try again.
 				</div>
-			</Nav.item>;
+			</MenuItem>;
 		}
 
-		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+		return <MenuItem className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 			<div className='errorContainer'>
 				Looks like there was a problem saving. <br />
@@ -150,8 +150,8 @@ const ErrorNavItem = createClass({
 				here
 				</a>.
 			</div>
-		</Nav.item>;
+		</MenuItem>;
 	}
 });
 
-module.exports = ErrorNavItem;
+module.exports = ErrorMenuItem;

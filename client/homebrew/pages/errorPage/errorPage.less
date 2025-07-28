@@ -1,13 +1,27 @@
-.homebrew {
-	.uiPage.sitePage {
-		.errorTitle {
-			//background-color: @orange;
-			color      : #D02727;
-			text-align : center;
-		}
-		.content {
-			h1, h2, h3, h4 { border-bottom : none; }
-			hr { border-bottom : 2px solid slategrey; }
-		}
+.uiPage.sitePage.error-page .content {
+	padding: 10vh 25%;
+	text-align: center;
+	color: #93a4b2;
+	font-weight: bold;
+	line-height: 1.3;
+	h2 {
+		font-size: 28px;
+		line-height: 1.3;
+		margin: 1em 0;
+	}
+	#icon-attribution {
+		font-size: 13px;
+		margin-top: 3em;
+	}
+	a:any-link {
+		color: inherit;
+	}
+	img {
+		margin: 0 auto;
+		user-select: none;
+	}
+	#hb-error-code {
+		margin-top: 1em;
+		font-size: .8em;
 	}
 }
