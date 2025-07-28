@@ -51,7 +51,7 @@ const BrewItem = ({
 	const updateFilter = useCallback((type, term)=>updateListFilter(type, term), [updateListFilter]);
 
 	const renderDeleteBrewLink = ()=>{
-		if(!brew.authors.includes(global.account.username)) return null;
+		if(!brew.authors.includes(global.account?.username)) return null;
 
 		return (
 			<a className='deleteLink' onClick={deleteBrew}>
@@ -62,7 +62,7 @@ const BrewItem = ({
 
 	const renderEditLink = ()=>{
 		console.log(brew);
-		if(!brew.authors.includes(global.account.username)) return null;
+		if(!brew.authors.includes(global.account?.username)) return null;
 
 		console.log('editId?');
 
