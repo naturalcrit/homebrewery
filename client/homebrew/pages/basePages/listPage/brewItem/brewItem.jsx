@@ -121,7 +121,7 @@ const BrewItem = ({
 	if(Array.isArray(brew.tags)) {
 		brew.tags = brew.tags?.filter((tag)=>tag); // remove tags that are empty strings
 		brew.tags.sort((a, b)=>{
-			return a.indexOf(':') - b.indexOf(':') !== 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+			return b.indexOf(':') - a.indexOf(':') !== 0 ? b.indexOf(':') - a.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
 		});
 	}
 

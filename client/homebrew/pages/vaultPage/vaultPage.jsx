@@ -429,7 +429,7 @@ const VaultPage = (props)=>{
 		}
 
 		return (
-			<div className={`foundBrews ${itemLayout}`}>
+			<div className={`foundBrews ${itemLayout}-layout`}>
 				<span className='totalBrews'>
 					{`Brews found: `}
 					<span>{totalBrews}</span>
