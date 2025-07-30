@@ -40,7 +40,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
+	const cleanText = safeHTML(`${props.contents}\n`);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
