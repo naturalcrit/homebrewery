@@ -100,6 +100,16 @@ const Editor = createClass({
 		if(prevProps.moveSource !== this.props.moveSource)
 			this.sourceJump();
 
+		if((prevProps.isDragging !== this.props.isDragging) && (this.props.isDragging) && (this.lastCursor == undefined)) {
+			this.lastCursor = this.codeEditor.current.codeMirror.getCursor();
+		}
+
+		if((prevProps.isDragging !== this.props.isDragging) && (!this.props.isDragging)) {
+			this.codeEditor.current.codeMirror.scrollTo(null, this.codeEditor.current.codeMirror.heightAtLine(this.lastCursor.line, 'local', true))
+			this.codeEditor.current.setCursorPosition(this.lastCursor.line, this.lastCursor.ch);
+			this.lastCursor = undefined;
+		}
+
 		if(this.props.liveScroll) {
 			if(prevProps.currentBrewRendererPageNum !== this.props.currentBrewRendererPageNum) {
 				this.sourceJump(this.props.currentBrewRendererPageNum, false);
