@@ -12,8 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
+const PAGEBREAK_REGEX_V3     = /^(?=\\(?:soft)?page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3  = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -30,6 +30,17 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
 let isJumping = false;
+let softPageCalc  = false;
+
+const stripTrailingTags = (str)=>{
+	if(!str) return str;
+	let newStr = str;
+	while (newStr.lastIndexOf('</') > 0) {
+		newStr = newStr.slice(0, newStr.lastIndexOf('</'));
+	}
+
+	return newStr;
+};
 
 const Editor = createClass({
 	displayName     : 'Editor',
@@ -94,6 +105,7 @@ const Editor = createClass({
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
 		this.highlightCustomMarkdown();
+		this.handleSoftPages();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -150,6 +162,88 @@ const Editor = createClass({
 			this.codeEditor.current?.codeMirror.focus();
 		});
 	},
+
+	handleSoftPages : function(targetPage=parseInt(this.props.currentEditorCursorPageNum, 10)) {
+		if(softPageCalc) return;
+		if(this.props.renderer == 'Legacy') return;
+
+		const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
+		if(!testPage) return;
+
+		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];
+		const preserveStyles = columnWrapper.style;
+
+		let child=0;
+		let softInsert = false;
+
+		const parentX      = testPage.getBoundingClientRect().left;
+		const parentX2      = testPage.getBoundingClientRect().right;
+		const parentY      = testPage.getBoundingClientRect().top;
+		const parentY2      = testPage.getBoundingClientRect().bottom;
+
+		while (columnWrapper.children[child]){
+			const childX = columnWrapper.children[child].getBoundingClientRect().left;
+			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
+			const childY = columnWrapper.children[child].getBoundingClientRect().top;
+			const childY2 = childY + columnWrapper.children[child].getBoundingClientRect().height;
+			const inX = ((childX >= parentX) && (childX2 <= parentX2));
+			const inY = ((childY >= parentY) && (childY2 <= parentY2));
+
+			if((inX) && (inY) &&
+		      ((getComputedStyle(columnWrapper.children[child])?.position != 'absolute') &&
+			   (columnWrapper.children[child].className != 'columnSplit'))) {
+			   } else if((!inX)||(!inY)) { // Clean this up...
+				console.log('Out of Bounds.');
+				console.log(columnWrapper.children[child]);
+				softInsert = true;
+				break;
+			}
+			child++;
+		}
+
+		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
+		// if(columnWrapper.children[child-1]?.className == 'columnSplit') {
+		// 	return;
+		// }
+
+		// Exit if the last element is in bounds and is not absolutely positioned
+		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
+
+		columnWrapper.style.overflow = 'hidden';
+
+		// Concatenate all of the softpages surrounding this 
+		const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
+		//while ((targetPage>0) && (allPages[targetPage - 1]?.startsWith('\\softpage'))) targetPage--;
+		let textString = allPages[targetPage -1];  // Get the current page's text.
+	    for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<allPages.length)); i++)
+			textString +=`\n${allPages[i]}`;
+		const strippedString = textString;//?.replace(/\n?\\softpage +\n/, '\n');
+
+		if(softInsert) {
+			const lines = strippedString.split('\n');
+			console.log(lines);
+			for (let line in lines) {
+				const render = stripTrailingTags(Markdown.render(lines[line]));
+				if(render.indexOf('Eye of the Beholder') > 0) console.log(render);
+				if((render?.length>0) && (columnWrapper.children[child].outerHTML.toString().indexOf(render)>-1)) {
+					softPageCalc = true;
+					console.log('This is a match!');
+					let targetLine = parseInt(line, 10) + 1;
+					while (targetLine > 1 && (line[targetLine] != '')) targetLine--;
+					const whereWasI = this.codeEditor.current.getCursorPosition();
+					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
+					this.handleInject('\n\\softpage\n');
+					this.codeEditor.current.setCursorPosition(whereWasI);
+					columnWrapper.style=preserveStyles;
+					softPageCalc = false;
+					break;
+				}
+			}
+		}
+		columnWrapper.style=preserveStyles;
+
+	},
+
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current) return;
