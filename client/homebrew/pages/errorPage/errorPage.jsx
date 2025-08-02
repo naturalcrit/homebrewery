@@ -7,7 +7,7 @@ import DefaultErrorImage from 'client/svg/gandalf.svg';
 
 const ErrorPage = ({ brew })=>{
 	// Retrieving the error text based on the brew's error code from ErrorIndex
-	const error = ErrorIndex(brew.HBErrorCode.toString(), { brew })|| '';
+	const error = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
 
 	return (
 		<UIPage className='error-page'>
