@@ -11,6 +11,7 @@ import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedDiagrams from 'marked-diagrams';
 import { romanize } from 'romans';
 import writtenNumber from 'written-number';
 
@@ -679,8 +680,9 @@ const tableTerminators = [
 ];
 
 Marked.use(MarkedVariables());
+Marked.use(MarkedDiagrams());
 Marked.use(MarkedDefinitionLists());
-Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
