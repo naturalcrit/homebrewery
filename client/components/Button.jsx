@@ -75,9 +75,9 @@ const Button = ({
 	} else {
 		return (
 			<button id={id} className={className && className} style={{ anchorName }} {...props}>
-				{icon && <i className={icon} />}
+				{icon && <i className={icon} aria-hidden='true' />}
 				{children}
-				{isMenu.caretDirection && <i className={`caret fas fa-caret-${isMenu.caretDirection}`}></i>}
+				{isMenu.caretDirection && <i className={`caret fas fa-caret-${isMenu.caretDirection}`} aria-hidden='true'></i>}
 			</button>
 		);
 	}

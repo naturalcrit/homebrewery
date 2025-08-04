@@ -103,25 +103,25 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 
 		if(href){
 			return (
-				<a className={classes} href={href} target={newTab ? '_blank' : '_self'} rel='noopener noreferrer'>
-					{icon && <i className={icon}></i>}
+				<a className={classes} href={href} target={newTab ? '_blank' : '_self'} rel='noopener noreferrer' role='menuitem'>
+					{icon && <i className={icon} aria-hidden='true'></i>}
 					{children && <span className='name'>{children}</span>}
 				</a>
 			);
 		} else if(onChange) {
 			return (
-				<input className={classes} onChange={handleChange} {...props} />
+				<input className={classes} onChange={handleChange} role='menuitem' {...props} />
 			);
 		} else if(onClick) {
 			return (
-				<Button className={classes} icon={icon} onClick={handleClick} {...props} compact={!isSubMenu && isCompact}>
+				<Button className={classes} icon={icon} onClick={handleClick} {...props} compact={!isSubMenu && isCompact} role='menuitem'>
 					{children && <span className='name'>{children}</span>}
 				</Button>
 			);
 		} else {
 			return (
-				<div className={classes} {...props}>
-					{icon && <i className={icon}></i>}
+				<div className={classes} role='menuitem' {...props}>
+					{icon && <i className={icon} aria-hidden='true'></i>}
 					{children && <span className='name'>{children}</span>}
 				</div>
 			);
@@ -231,7 +231,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 	const classes = cx('menu-item', color, className);
 
 	return (
-		<div ref={wrapperRef} className='menu-wrapper' style={{ anchorName }}>
+		<div ref={wrapperRef} className='menu-wrapper' style={{ anchorName }} role='none'>
 			<Button 
 				id={groupName.replace(' ', '-')}
 				className={classes}
@@ -240,6 +240,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 				compact={!isSubMenu && isCompact}
 				isMenu={{ caretDirection: isSubMenu ? 'right' : 'down' }}
 				aria-haspopup='menu'
+				role='menuitem'
 			>
 				{trigger(groupName)}
 			</Button>
@@ -249,6 +250,7 @@ const MenuDropdown = ({ groupName, icon, color = null, className = null, childre
 					className='menu-list'
 					popover='auto'
 					style={{ positionAnchor: anchorName, ...(!supportsAnchorPosition && menuPosition) }}
+					role='menu'
 				>
 					{children}
 				</div>
