@@ -171,6 +171,7 @@ const VaultPage = (props)=>{
 			<blockquote>“Reading brings us unknown friends.” <br />– Honoré Balzac</blockquote>
 			<form
 				id='vault-search-form'
+				role='search'
 				onSubmit={e=>{
 					e.preventDefault();
 					if(!submitButtonRef.current.disabled)
@@ -325,10 +326,10 @@ const VaultPage = (props)=>{
 	};
 
 	const renderPaginationControls = ()=>{
+		if(!brewCollection) return null;
 		if(!totalBrews || totalBrews < 10) return null;
 
-		const countInt = parseInt(brewCollection.length || 20);
-		const totalPages = Math.ceil(totalBrews / countInt);
+		const totalPages = Math.ceil(totalBrews / 20);
 
 		let startPage, endPage;
 		if(pageState <= 6) {
@@ -396,20 +397,21 @@ const VaultPage = (props)=>{
 	const renderFoundBrews = ()=>{
 		if(searching && !brewCollection) {
 			return (
-				<div className='foundBrews searching'>
+				<div className='foundBrews search-status'>
 					<h3 className='searchAnim'>Searching</h3>
 				</div>
 			);
 		}
 
 		if(error) {
-			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+			console.log(error.codeName)
+			// const errorText = ErrorIndex(error.HBErrorCode.toString()) || '';
 
-			return (
-				<div className='foundBrews noBrews'>
-					<h3>Error: {errorText}</h3>
-				</div>
-			);
+			// return (
+			// 	<div className='foundBrews noBrews'>
+			// 		<h3>Error: {errorText}</h3>
+			// 	</div>
+			// );
 		}
 
 		if(!brewCollection) {
@@ -429,23 +431,27 @@ const VaultPage = (props)=>{
 		}
 
 		return (
-			<div className={`foundBrews ${itemLayout}-layout`}>
-				<span className='totalBrews'>
+			<div id='results'>
+
+				<div className='totalBrews'>
 					{`Brews found: `}
-					<span>{totalBrews}</span>
-				</span>
-				{brewCollection.length > 10 && renderPaginationControls()}
-				{brewCollection.map((brew, index)=>{
-					return (
-						<BrewItem
-							brew={{ ...brew }}
-							key={index}
-							reportError={props.reportError}
-							renderStorage={false}
-							layout={itemLayout}
-						/>
-					);
-				})}
+					<div>{totalBrews}</div>
+				</div>
+				{renderPaginationControls()}
+				<div className={`foundBrews ${itemLayout}-layout`}>
+					{brewCollection.map((brew, index)=>{
+						return (
+							<BrewItem
+								id={`brew-item-${index}`}
+								brew={{ ...brew }}
+								key={index}
+								reportError={props.reportError}
+								renderStorage={false}
+								layout={itemLayout}
+							/>
+						);
+					})}
+				</div>
 				{renderPaginationControls()}
 			</div>
 		);
@@ -464,6 +470,7 @@ const VaultPage = (props)=>{
 					<div id='search-panel'>{renderForm()}</div>
 					<div id='results-panel'>
 						{renderSortBar()}
+
 						{renderFoundBrews()}
 					</div>
 				</SplitPane>

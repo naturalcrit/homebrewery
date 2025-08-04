@@ -18,9 +18,14 @@ const BrewItem = ({
 	updateListFilter = ()=>{},
 	reportError = ()=>{},
 	renderStorage = true,
-	layout = 'card'
+	layout = 'card',
+	...props
 })=>{
 
+	// this controls the button/display of the 'additional options' menu on each card.
+	// it could be made simpler & better with Popover + Anchor Positioning, but until
+	// Anchor Positioning is available in all browsers, this is probably fine.
+	// Benefits would include easy 'light dismiss'.
 	const [itemExpanded, setItemExpanded] = useState(false);
 
 	const getShareLink = ()=>{
@@ -54,7 +59,7 @@ const BrewItem = ({
 		if(!brew.authors.includes(global.account?.username)) return null;
 
 		return (
-			<a className='deleteLink' onClick={deleteBrew}>
+			<a className='deleteLink' title='Delete brew' onClick={deleteBrew}>
 				<i className='fas fa-trash-alt' title='Delete' />
 			</a>
 		);
@@ -70,7 +75,7 @@ const BrewItem = ({
 		if(brew.googleId && !brew.stubbed) editLink = brew.googleId + editLink;
 
 		return (
-			<a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='editLink' title='Open Edit page' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-pencil-alt' title='Edit' />
 			</a>
 		);
@@ -78,7 +83,7 @@ const BrewItem = ({
 
 	const renderShareLink = ()=>{
 		return (
-			<a className='shareLink' href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>
+			<a className='shareLink' title='Open Share page' href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-share-alt' title='Share' />
 			</a>
 		);
@@ -93,7 +98,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<a className='downloadLink' href={`/download/${shareLink}`}>
+			<a className='downloadLink' title='Download brew as .txt file' href={`/download/${shareLink}`}>
 				<i className='fas fa-download' title='Download' />
 			</a>
 		);
@@ -127,14 +132,18 @@ const BrewItem = ({
 
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
+
 	return (
-		<div className={`brewItem ${layout}${itemExpanded ? ' expanded' : ''}`}
-			onClick={()=>{setItemExpanded(!itemExpanded)}}
+		<article id={props.id} 
+			className={`brewItem ${layout}-layout${itemExpanded ? ' expanded' : ''}`}
+			aria-label={brew.title}
+			tabIndex='0'
 		>
-			<img className='thumbnail' src={brew.thumbnail} />
+			<img className='thumbnail' src={brew.thumbnail} role='presentation' />
 			<div className='header'>
+				<button onClick={()=>{setItemExpanded(!itemExpanded)}}><i className='fas fa-ellipsis'></i><span className='sr-only'>Open options menu</span></button>
 				<div className='title'>
-					<h2><a href={`/share/${getShareLink()}`} target='_blank' rel='noopener noreferrer'>{brew.title}</a></h2>
+					<h2><a href={`/share/${getShareLink()}`} rel='noopener noreferrer'>{brew.title}</a></h2>
 				</div>
 				<div className='info'>
 					<span title={`Authors:\n${brew.authors?.join('\n')}`}>
@@ -183,15 +192,22 @@ const BrewItem = ({
 						})}
 					</div>
 				) : null}
+				{itemExpanded ? <div className='links'>
+					{renderShareLink()}
+					{renderEditLink()}
+					{renderDownloadLink()}
+					{renderDeleteBrewLink()}
+				</div>
+					: ''}
 			</div>
-
-			<div className='links'>
-				{renderShareLink()}
-				{renderEditLink()}
-				{renderDownloadLink()}
-				{renderDeleteBrewLink()}
+			<div className='badges'>
+				{brew.authors.includes(global.account.username) && <i className='fas fa-user'></i>}
+				{brew.invitedAuthors.includes(global.account.username) && <i className='fas fa-envelope'></i>}
+				{/* non-working examples of future badges */}
+				{/* {brew.pinned && <i className='fas fa-thumbtack'></i>} */}
+				{/* {brew.locked && <i className='fas fa-lock'></i>} */}
 			</div>
-		</div>
+		</article>
 	);
 };
 

@@ -12,9 +12,33 @@
 	-webkit-column-break-inside : avoid;
 	page-break-inside           : avoid;
 
+	&.list-layout {
+		border: none;
+		
+		.header {
+			border: none;
+			padding-bottom: 5px;
+		}
+		.text {
+			padding-top: 5px;
+			padding-bottom: 5px;
+			min-height: calc(2.8em + 10px);
+		}
+		.description {
+			text-overflow: ellipsis;
+			white-space: pre;
+			height: 1.4em;
+		}
+		.links {
+			display: flex;
+		}
+	}
 
 	& > *:not(img) {
 		padding: 0 10px;
+	}
+	&:hover .header {
+		background: radial-gradient(circle, #c9ac6a0d 0%, #c9ac6a17 100%);
 	}
 
 	.thumbnail {
@@ -36,12 +60,26 @@
 
 	.header {
 		position: relative;
-		flex: 0 0 min-contents;
 		width: 100%;
 		border-bottom: .5px inset currentColor;
 		padding: 15px 10px;
 		backdrop-filter: blur(4px) brightness(.8);
 		z-index: 1;
+		> button {
+			position: relative;
+			float: right;
+			background-color: rgba(118, 118, 118, 16%);
+			border-radius: 50%;
+			aspect-ratio: 1;
+			z-index: 10;
+			border: 1px solid #cfcfcfd6;
+			width: 36px;
+			cursor: pointer;
+			padding: 5px;
+			&:hover {
+				background-color: rgba(118, 118, 118, 0.693);
+			}
+		}
 		.title {
 			h2 {
 				font-size: 16px;
@@ -50,7 +88,7 @@
 				a:any-link {
 					color: #ead195;
 					text-decoration-thickness: 1px;
-					text-underline-offset: 2px;
+					text-underline-offset: 4px;
 				}
 				a:visited{
 					color: #bca772;
@@ -58,7 +96,6 @@
 			}
 		}
 		.info {
-				backdrop-filter: blur(4px) brightness(.9);
 			font-size: .7em;
 			& > span {
 				margin-right : 12px;
@@ -145,28 +182,57 @@
 		right            : 0px;
 		width: 100%;
 		height: 100%;
-		opacity: 0;
-		display: flex;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		grid-template-rows: repeat(1fr);
 		align-items: center;
 		font-size       : 1.3em;
 		text-align       : center;
-		background-color : fade(rgb(46, 46, 46), 60%);
+		background-color : fade(rgb(46, 46, 46), 90%);
+		backdrop-filter: blur(3px);
 		z-index: 5;
 		a {
 			.animate(opacity);
-			display         : inline-block;
+			display         : grid;
+			place-content: center;
+			height: 100%;
+			width: 100%;
 			padding: 7px;
 			color           : white;
 			text-decoration : unset;
-			opacity         : 0.6;
-			&:hover { opacity : 1; }
+			opacity         : 0.8;
+			border: .5px solid #7a7a7a;
+			box-sizing: border-box;
+			&:hover { 
+				opacity : 1;
+				background-color: #575757;
+			}
 			cursor : pointer;
 		}
 	}
 
-	&:hover .links {
-		opacity: 1;
+	.badges {
+		position: absolute;
+		top: -13px;
+		left: 10px;
+		width: auto;
+		height: auto;
+		z-index: 10;
+		display: flex;
+		gap: 5px;
+		> i {
+			display: grid;
+			place-items: center;
+			width: 26px;
+			height: 26px;
+			background: #555;
+			padding: 5px;
+			border-radius: 50%;
+			border                      : 1px ridge #C9AD6A;
+
+		}
 	}
+
 	.googleDriveIcon {
 		padding : 0px;
 		margin  : -5px;
@@ -181,8 +247,3 @@
 	}
 }
 
-@media (hover: none) {
-  .vaultPage .brewItem .links {
-		opacity: 1;
-	}
-}
