@@ -636,7 +636,8 @@ const EditPage = createClass({
 			<DialogZone id='app-dialogs' />
 			{this.renderStorageTransfer()}
 			<Meta name='robots' content='noindex, nofollow' />
-			{this.renderNavbar()}
+			<nav>{this.renderNavbar()}</nav>
+			
 
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
