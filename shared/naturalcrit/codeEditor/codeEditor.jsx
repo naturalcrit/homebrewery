@@ -606,7 +606,7 @@ const CodeEditor = createClass({
 	render : function(){
 		return <>
 			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
-			<div className='codeEditor' ref={this.editor} style={this.props.style}/>
+			<div className='codeEditor' ref={this.editor} style={this.props.style} role='region' aria-label='Code Editor (input)'/>
 		</>;
 	}
 });

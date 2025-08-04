@@ -314,7 +314,7 @@ const BrewRenderer = (props)=>{
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
 	return (
-		<div id='preview-pane'>
+		<section id='preview-pane' aria-label='Preview Pane'>
 			{/*render dummy page while iFrame is mounting.*/}
 			{!state.isMounted
 				? <div className='brewRenderer'>
@@ -342,6 +342,8 @@ const BrewRenderer = (props)=>{
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 					style={ styleObject }
+					role='region'
+					aria-label='Brew Preview (scrollable)'
 				>
 					{props.htmlErrors.length > 0 && <div id='splash-image'><ErrorIcon /></div>}
 
@@ -357,7 +359,7 @@ const BrewRenderer = (props)=>{
 					}
 				</div>
 			</Frame>
-		</div>
+		</section>
 	);
 };
 

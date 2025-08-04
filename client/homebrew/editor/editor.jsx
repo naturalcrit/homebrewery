@@ -523,7 +523,7 @@ const Editor = createClass({
 
 	render : function(){
 		return (
-			<div className='editor' ref={this.editor}>
+			<section aria-label='Editor Pane' className='editor' ref={this.editor}>
 				<SnippetBar
 					brew={this.props.brew}
 					view={this.state.view}
@@ -547,7 +547,7 @@ const Editor = createClass({
 				<div aria-labelledby={`${this.state.view}-tab`} role='tabpanel' style={{ height: 'calc(100% - 26px)', width: '100%' }}>
 					{this.renderEditor()}
 				</div>
-			</div>
+			</section>
 		);
 	}
 });
