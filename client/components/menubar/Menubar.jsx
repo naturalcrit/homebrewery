@@ -9,7 +9,6 @@ const MenubarContext = React.createContext({ isCompact: false });
 const MenuDepthContext = React.createContext(0);
 
 const Menubar = ({ id = null, className, children, ...props })=>{
-const Menubar = ({ id = null, className, children, ...props })=>{
 	const menubarRef = useRef(null);
 	const [isCompact, setIsCompact] = useState(undefined);
 	const fullWidthRef = useRef(null);
@@ -115,7 +114,6 @@ const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, on
 			);
 		} else if(onClick) {
 			return (
-				<Button className={classes} role='menuitem' icon={icon} onClick={handleClick} {...props} compact={!isSubMenu && isCompact}>
 				<Button className={classes} role='menuitem' icon={icon} onClick={handleClick} {...props} compact={!isSubMenu && isCompact}>
 					{children && <span className='name'>{children}</span>}
 				</Button>
