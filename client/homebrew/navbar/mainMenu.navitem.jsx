@@ -7,7 +7,7 @@ const HomebreweryIcon = require('client/icons/homebrewery-animated-css.svg.jsx')
 
 const MainMenu = ()=>{
 
-	const customTrigger = <><HomebreweryIcon /><span className='name'>The Homebrewery</span><i className='caret fas fa-caret-down'></i></>;
+	const customTrigger = <><HomebreweryIcon /><span className='name'>The Homebrewery</span><i className='caret fas fa-caret-down' role='none'></i></>;
 
 	return (
 		<MenuDropdown id='mainMenu' className='mainMenu' groupName='The Homebrewery' customTrigger={customTrigger} color='blue'>
