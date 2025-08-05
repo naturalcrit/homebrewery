@@ -416,7 +416,7 @@ const forcedParagraphBreaks = {
 const inlineSVG = function (label, href, title) {
 	const result = `![${label}](${href} ${title ? ` "${title}"` : ''})`; 		// Default image response.
 	if((!href.startsWith('/')) && (href.toLowerCase().endsWith('.svg'))) {		// Only look at off-site svgs.
-		fetch(href).then((response)=>response.text()).then((text)=>{return text;}).catch((error)=>{console.log(err);});
+		fetch(href).then((response)=>response.text()).then((text)=>{return text;}).catch((error)=>{console.log(error);});
 	}
 	return result;
 };
