@@ -13,6 +13,7 @@ const BrewItem = ({
 		title       : '',
 		description : '',
 		authors     : [],
+
 		stubbed     : true,
 	},
 	updateListFilter = ()=>{},
@@ -202,7 +203,7 @@ const BrewItem = ({
 			</div>
 			<div className='badges'>
 				{brew.authors.includes(global.account.username) && <i className='fas fa-user'></i>}
-				{brew.invitedAuthors.includes(global.account.username) && <i className='fas fa-envelope'></i>}
+				{brew.invitedAuthors?.includes(global.account.username) && <i className='fas fa-envelope'></i>}
 				{/* non-working examples of future badges */}
 				{/* {brew.pinned && <i className='fas fa-thumbtack'></i>} */}
 				{/* {brew.locked && <i className='fas fa-lock'></i>} */}
