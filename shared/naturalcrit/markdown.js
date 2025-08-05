@@ -412,6 +412,15 @@ const forcedParagraphBreaks = {
 };
 
 //v=====--------------------< Variable Handling >-------------------=====v// 242 lines
+
+const inlineSVG = function (label, href, title) {
+	const result = `![${label}](${href} ${title ? ` "${title}"` : ''})`; 		// Default image response.
+	if((!href.startsWith('/')) && (href.toLowerCase().endsWith('.svg'))) {		// Only look at off-site svgs.
+		fetch(href).then((response)=>response.text()).then((text)=>{return text;}).catch((error)=>{console.log(err);});
+	}
+	return result;
+};
+
 const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	const regex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g;
 	const match = regex.exec(input);
@@ -456,8 +465,8 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 	if(!prefix[0] && href)        // Link
 		return `[${label}](${href}${title ? ` "${title}"` : ''})`;
 
-	if(prefix[0] == '!' && href)  // Image
-		return `![${label}](${href} ${title ? ` "${title}"` : ''})`;
+	if(prefix[0] == '!' && href)  // Image  
+		return inlineSVG(label, href, title);
 
 	if(prefix[0] == '$')          // Variable
 		return foundVar.content;
