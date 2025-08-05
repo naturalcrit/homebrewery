@@ -18,6 +18,8 @@ const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const MainNavigationBar = require('client/homebrew/mainNavigationBar/MainNavigationBar.jsx');
+
 const DialogZone = require('../../../components/Dialogs/DialogZone.jsx');
 const Dialog = require('../../../components/Dialogs/Dialog.jsx');
 
@@ -587,46 +589,47 @@ const EditPage = createClass({
 		const shareLink = this.processShareId();
 
 		return (
-			<Menubar id='navbar'>
+			<MainNavigationBar>
+				<Menubar>
+					<MenuSection>
+						<MainMenu />
+						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down' color='orange'>
+							<NewBrewItem />
+							<MenuRule />
+							{this.renderSaveButton()}
+							{this.renderAutoSaveButton()}
+							{this.renderStoragePicker()}
+							<MenuRule />
+							{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+								brews
+							</MenuItem> }
+							<RecentNavItem brew={this.state.brew} storageKey='edit' />
+							<MenuRule />
+							<MenuItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
+								share
+							</MenuItem>
+							<MenuItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
+								copy url
+							</MenuItem>
+							<MenuItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+								post to reddit
+							</MenuItem>
+							<MenuRule />
+							<PrintNavItem />
+						</MenuDropdown>
+						<VaultNavItem />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down' color='orange'>
-						<NewBrewItem />
-						<MenuRule />
-						{this.renderSaveButton()}
-						{this.renderAutoSaveButton()}
-						{this.renderStoragePicker()}
-						<MenuRule />
-						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
-							brews
-						</MenuItem> }
-						<RecentNavItem brew={this.state.brew} storageKey='edit' />
-						<MenuRule />
-						<MenuItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
-							share
-						</MenuItem>
-						<MenuItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-							copy url
-						</MenuItem>
-						<MenuItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-							post to reddit
-						</MenuItem>
-						<MenuRule />
-						<PrintNavItem />
-					</MenuDropdown>
-					<VaultNavItem />
-				</MenuSection>
+					<MenuSection>
+						<MenuItem className='brewTitle'>{this.props.brew.title}{this.renderAlerts()}</MenuItem>
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MenuItem className='brewTitle'>{this.props.brew.title}{this.renderAlerts()}</MenuItem>
-				</MenuSection>
+					<MenuSection>
+						<Account />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<Account />
-				</MenuSection>
-
-			</Menubar>
+				</Menubar>
+			</MainNavigationBar>
 		);
 	},
 

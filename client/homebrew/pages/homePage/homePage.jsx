@@ -11,6 +11,7 @@ const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
 
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
@@ -81,36 +82,38 @@ const HomePage = createClass({
 	},
 	renderNavbar : function(){
 		return (
-			<Menubar id='navbar'>
+			<MainNavigationBar>
+				<Menubar>
+					<MenuSection>
+						<MainMenu />
+						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
+							<NewBrewItem />
+							<MenuRule />
+							<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
+								brews
+							</MenuItem>
+							<RecentNavItem brew={this.state.brew} storageKey='edit' />
+						</MenuDropdown>
+						<VaultNavItem />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
-						<NewBrewItem />
-						<MenuRule />
-						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
-							brews
-						</MenuItem>
-						<RecentNavItem brew={this.state.brew} storageKey='edit' />
-					</MenuDropdown>
-					<VaultNavItem />
-				</MenuSection>
+					<MenuSection>
+						<MenuItem className='brewTitle'>The Homebrewery {global.version}</MenuItem>
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MenuItem className='brewTitle'>The Homebrewery {global.version}</MenuItem>
-				</MenuSection>
+					<MenuSection>
+						<Account />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<Account />
-				</MenuSection>
-
-			</Menubar>);
+				</Menubar>
+			</MainNavigationBar>
+		);
 	},
 
 	render : function(){
 		return <div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
-			{this.renderNavbar()}
+			<nav>{this.renderNavbar()}</nav>
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}
 					paneOrder={this.state.paneOrder}

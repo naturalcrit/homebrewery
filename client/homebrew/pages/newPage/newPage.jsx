@@ -15,6 +15,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
+const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
 
 const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
 const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');
@@ -218,39 +219,41 @@ const NewPage = createClass({
 
 	renderNavbar : function(){
 		return (
-			<Menubar id='navbar'>
-				<MenuSection className='navSection'>
-					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
-						<NewBrewItem />
-						<MenuRule />
-						{this.renderSaveButton()}
-						<MenuRule />
-						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
-							brews
-						</MenuItem> }
-						<RecentNavItem brew={this.state.brew} storageKey='view' />
-						<MenuRule />
-						<PrintNavItem />
-					</MenuDropdown>
-					<VaultNavItem />
-				</MenuSection>
+			<MainNavigationBar>
+				<Menubar>
+					<MenuSection>
+						<MainMenu />
+						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+							<NewBrewItem />
+							<MenuRule />
+							{this.renderSaveButton()}
+							<MenuRule />
+							{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+								brews
+							</MenuItem> }
+							<RecentNavItem brew={this.state.brew} storageKey='view' />
+							<MenuRule />
+							<PrintNavItem />
+						</MenuDropdown>
+						<VaultNavItem />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MenuItem className='brewTitle'>{this.state.brew.title}</MenuItem>
-				</MenuSection>
+					<MenuSection>
+						<MenuItem className='brewTitle'>{this.state.brew.title}</MenuItem>
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<Account />
-				</MenuSection>
+					<MenuSection>
+						<Account />
+					</MenuSection>
 
-			</Menubar>
+				</Menubar>
+			</MainNavigationBar>
 		);
 	},
 
 	render : function(){
 		return <div className='newPage sitePage'>
-			{this.renderNavbar()}
+			<nav>{this.renderNavbar()}</nav>
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}
 					paneOrder={this.state.paneOrder}

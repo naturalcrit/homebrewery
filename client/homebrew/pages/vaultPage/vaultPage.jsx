@@ -11,6 +11,7 @@ const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
 
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const { SplitPane }     = require('client/components/splitPane/splitPane.jsx'); 
@@ -129,24 +130,26 @@ const VaultPage = (props)=>{
 
 	const renderNavbar = ()=>{
 		return (
-			<Menubar id='navbar'>
-				<MenuSection className='navSection'>
-					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
-						<NewBrewItem />
-						<MenuRule />
-						<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
-							brews
-						</MenuItem>
-						<RecentNavItem />
-					</MenuDropdown>
-					<VaultNavItem />
-				</MenuSection>
+			<MainNavigationBar>
+				<Menubar>
+					<MenuSection>
+						<MainMenu />
+						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy'>
+							<NewBrewItem />
+							<MenuRule />
+							<MenuItem href={`/user/${encodeURI(global.account?.username)}`} color='purple' icon='fas fa-beer'>
+								brews
+							</MenuItem>
+							<RecentNavItem />
+						</MenuDropdown>
+						<VaultNavItem />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<Account />
-				</MenuSection>
-			</Menubar>
+					<MenuSection>
+						<Account />
+					</MenuSection>
+				</Menubar>
+			</MainNavigationBar>
 		);
 	};
 
@@ -461,7 +464,7 @@ const VaultPage = (props)=>{
 		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
-			{renderNavbar()}
+			<nav>{renderNavbar()}</nav>
 			<div className='content'>
 				<SplitPane
 					paneOrder={paneOrder}

@@ -12,6 +12,8 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const Account = require('../../navbar/account.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
+const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
+
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
@@ -74,48 +76,50 @@ const SharePage = (props)=>{
 	const renderNavbar = ()=>{
 		 // todo: bring back in the metadata viewer (MetadataNav.jsx)
 		return (
-			<Menubar id='navbar'>
-				<MenuSection className='navSection'>
-					<MainMenu />
-					<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
-						<NewBrewItem />
-						<MenuItem color='blue' href={`/new/${processShareId()}`}>
-							clone to new
-						</MenuItem>
-						<MenuRule />
-						{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
-							brews
-						</MenuItem> }
-						<RecentNavItem brew={brew} storageKey='view' />
-						<MenuRule />
-						<MenuItem color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
-							source
-						</MenuItem>
-						<MenuItem color='blue' href={`/download/${processShareId()}`}>
-							download .txt
-						</MenuItem>
-						<MenuRule />
-						<PrintNavItem />
-					</MenuDropdown>
-					<VaultNavItem />
-				</MenuSection>
+			<MainNavigationBar>
+				<Menubar>
+					<MenuSection>
+						<MainMenu />
+						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
+							<NewBrewItem />
+							<MenuItem color='blue' href={`/new/${processShareId()}`}>
+								clone to new
+							</MenuItem>
+							<MenuRule />
+							{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
+								brews
+							</MenuItem> }
+							<RecentNavItem brew={brew} storageKey='view' />
+							<MenuRule />
+							<MenuItem color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
+								source
+							</MenuItem>
+							<MenuItem color='blue' href={`/download/${processShareId()}`}>
+								download .txt
+							</MenuItem>
+							<MenuRule />
+							<PrintNavItem />
+						</MenuDropdown>
+						<VaultNavItem />
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<MenuItem className='brewTitle'>{brew.title}</MenuItem>
-				</MenuSection>
+					<MenuSection>
+						<MenuItem className='brewTitle'>{brew.title}</MenuItem>
+					</MenuSection>
 
-				<MenuSection className='navSection'>
-					<Account />
-				</MenuSection>
+					<MenuSection>
+						<Account />
+					</MenuSection>
 
-			</Menubar>
+				</Menubar>
+			</MainNavigationBar>
 		);
 	};
 
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{renderNavbar()}
+			<nav>{renderNavbar()}</nav>
 
 			<div className='content'>
 				<BrewRenderer
