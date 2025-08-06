@@ -1,5 +1,7 @@
 require('./splitPane.less');
 const React = require('react');
+
+import {localStorageGetWrapper, localStorageSetWrapper} from '../../../shared/helpers.js';
 const { useState, useEffect } = React;
 
 const storageKey = 'naturalcrit-pane-split';
@@ -18,9 +20,9 @@ const SplitPane = (props)=>{
 	const [liveScroll, setLiveScroll] = useState(false);
 
 	useEffect(()=>{
-		const savedPos = window.localStorage.getItem(storageKey);
+		const savedPos = localStorageGetWrapper(window, storageKey);
 		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
-		setLiveScroll(window.localStorage.getItem('liveScroll') === 'true');
+		setLiveScroll(localStorageGetWrapper(window, 'liveScroll') === 'true');
 
 		window.addEventListener('resize', handleResize);
 		return ()=>window.removeEventListener('resize', handleResize);
@@ -29,13 +31,13 @@ const SplitPane = (props)=>{
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
 	//when resizing, the divider should grow smaller if less space is given, then grow back if the space is restored, to the original position
-	const handleResize = ()=>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
+	const handleResize = ()=>setDividerPos(limitPosition(localStorageGetWrapper(window, storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
 
 	const handleUp =(e)=>{
 		e.preventDefault();
 		if(isDragging) {
 			onDragFinish(dividerPos);
-			window.localStorage.setItem(storageKey, dividerPos);
+			localStorageSetWrapper(window, storageKey, dividerPos);
 		}
 		setIsDragging(false);
 	};
@@ -52,7 +54,7 @@ const SplitPane = (props)=>{
 	};
 
 	const liveScrollToggle = ()=>{
-		window.localStorage.setItem('liveScroll', String(!liveScroll));
+		localStorageSetWrapper(window, 'liveScroll', String(!liveScroll));
 		setLiveScroll(!liveScroll);
 	};
 
