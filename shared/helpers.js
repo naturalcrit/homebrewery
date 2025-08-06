@@ -172,12 +172,39 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label) => {
 			break;
 		}
 	}
-}
+};
+
+// Map of replacement -> original localStorage keys
+const localStorageMap = {
+	HB_liveScroll : 'liveScroll'
+};
+
+// Look up the key in the new name.
+//   If not present, check the old name.
+//     If the old name is found, copy to the new space then delete the old one
+// Return the found value or null
+const localStorageGetWrapper = (win, key)=>{
+	let returnVal = win.localStorage.getItem(key);
+	if(returnVal == null) {
+		returnVal = win.localStorage.getItem(localStorageMap[key]);
+		if(returnVal != null) {
+			localStorageSetWrapper(win, key, returnVal);
+			win.localStorage.removeItem(localStorageMap[key]);
+		}
+	}
+	return returnVal;
+};
+
+const localStorageSetWrapper = (win, key, value)=>{
+	win.localStorage.setItem(key, value);
+};
 
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	localStorageGetWrapper,
+	localStorageSetWrapper,
 };
