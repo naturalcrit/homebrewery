@@ -22,7 +22,7 @@ const SplitPane = (props)=>{
 	useEffect(()=>{
 		const savedPos = localStorageGetWrapper(window, storageKey);
 		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
-		setLiveScroll(localStorageGetWrapper(window, 'liveScroll') === 'true');
+		setLiveScroll(localStorageGetWrapper(window, 'HB_liveScroll') === 'true');
 
 		window.addEventListener('resize', handleResize);
 		return ()=>window.removeEventListener('resize', handleResize);
@@ -54,7 +54,7 @@ const SplitPane = (props)=>{
 	};
 
 	const liveScrollToggle = ()=>{
-		localStorageSetWrapper(window, 'liveScroll', String(!liveScroll));
+		localStorageSetWrapper(window, 'HB_liveScroll', String(!liveScroll));
 		setLiveScroll(!liveScroll);
 	};
 
