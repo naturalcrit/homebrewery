@@ -7,7 +7,7 @@ const cx    = require('classnames');
 const moment = require('moment');
 
 import { loadHistory } from '../../utils/versionHistory.js';
-const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+import { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } from '../../../components/menubar/Menubar.jsx';
 
 import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 

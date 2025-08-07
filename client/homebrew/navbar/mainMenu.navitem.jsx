@@ -2,7 +2,7 @@ require('./navbar.less');
 const React = require('react');
 const dedent = require('dedent-tabs').default;
 
-const { MenuDropdown, MenuItem, MenuRule } = require('../../components/menubar/Menubar.jsx');
+import { MenuDropdown, MenuItem, MenuRule } from '../../components/menubar/Menubar.jsx';
 const HomebreweryIcon = require('client/icons/homebrewery-animated-css.svg.jsx');
 
 const MainMenu = ()=>{

@@ -15,7 +15,7 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
+import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
 const ScrollButtons = require('client/components/splitPane/dividerButtons/scrollButtons.jsx');

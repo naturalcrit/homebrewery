@@ -268,4 +268,4 @@ const MenuRule = ({ text = '', className, color = null })=>{
 	);
 };
 
-module.exports = { Menubar, MenuSection, MenuItem, MenuDropdown, MenuRule };
+export { Menubar, MenuSection, MenuItem, MenuDropdown, MenuRule };

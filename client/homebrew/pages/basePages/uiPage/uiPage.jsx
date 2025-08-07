@@ -11,18 +11,18 @@ const VaultNavItem = require('client/homebrew/mainNavigationBar/vault.navitem.js
 const Account = require('client/homebrew/mainNavigationBar/account.navitem.jsx');
 const MainMenu = require('client/homebrew/mainNavigationBar/mainMenu.navitem.jsx');
 
-const MainNavigationBar = require('client/homebrew/mainNavigationBar/MainNavigationBar.jsx');
 
 const renderNavbar = ()=>{
 	return (
 		<MainNavigationBar />
 	);
 };
+import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const UIPage = ({className, ...props})=>{
 
 	return <div className={`uiPage sitePage ${className}`}>
-		<nav>{renderNavbar()}</nav>
+		<MainNavigationBar />
 
 		<div className='content'>
 			{props.children}

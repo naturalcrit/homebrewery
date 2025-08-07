@@ -10,7 +10,7 @@ import { gzipSync, strToU8 } from 'fflate';
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
-const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
+const { MenuItem } = require('client/components/menubar/menubar.jsx');
 
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');

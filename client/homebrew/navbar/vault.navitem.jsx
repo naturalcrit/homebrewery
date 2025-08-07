@@ -1,6 +1,6 @@
 const React = require('react');
 
-const { MenuItem } = require('../../components/menubar/Menubar.jsx');
+import { MenuItem } from '../../components/menubar/Menubar.jsx';
 
 
 const VaultNavItem = () => {

@@ -3,7 +3,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const { MenuItem, MenuDropdown, MenuRule } = require('../../components/menubar/Menubar.jsx');
+import { MenuItem, MenuDropdown, MenuRule } from '../../components/menubar/Menubar.jsx';
 
 const EDIT_KEY = 'homebrewery-recently-edited';
 const VIEW_KEY = 'homebrewery-recently-viewed';

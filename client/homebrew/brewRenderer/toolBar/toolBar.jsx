@@ -5,7 +5,7 @@ const { useState, useEffect } = React;
 const _ = require('lodash');
 
 import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
-const { Menubar, MenuItem, MenuSection } = require('../../../components/menubar/Menubar.jsx');
+import { Menubar, MenuItem, MenuSection } from '../../../components/menubar/Menubar.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;

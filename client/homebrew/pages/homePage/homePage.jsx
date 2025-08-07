@@ -11,7 +11,7 @@ const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
-const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
+import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 

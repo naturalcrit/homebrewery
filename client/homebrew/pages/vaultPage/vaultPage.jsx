@@ -5,13 +5,13 @@ require('./vaultPage.less');
 const React = require('react');
 const { useState, useEffect, useRef } = React;
 
-const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('client/components/menubar/Menubar.jsx');
+import { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } from 'client/components/menubar/Menubar.jsx';
 const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
-const MainNavigationBar = require('client/homebrew/navbar/MainNavigationBar.jsx');
+import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const { SplitPane }     = require('client/components/splitPane/splitPane.jsx'); 

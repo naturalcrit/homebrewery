@@ -2,7 +2,7 @@ require('./navbar.less');
 import React from 'react';
 
 
-const MainNavigationBar = ({ brew })=>{
+import { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } from 'client/components/menubar/menubar.jsx';
 
 	return (
 		<nav id='navbar' aria-label='Main Menubar'>
@@ -10,4 +10,4 @@ const MainNavigationBar = ({ brew })=>{
 	);
 }
 
-module.exports = MainNavigationBar;
+export default MainNavigationBar;

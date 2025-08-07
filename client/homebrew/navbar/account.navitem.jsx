@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const { MenuDropdown, MenuItem } = require('../../components/menubar/Menubar.jsx');
+import { MenuDropdown, MenuItem } from '../../components/menubar/Menubar.jsx';
 const request = require('superagent');
 
 const Account = createClass({
