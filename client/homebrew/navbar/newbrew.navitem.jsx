@@ -2,6 +2,7 @@ const React = require('react');
 const _ = require('lodash');
 const {MenuItem, MenuDropdown} = require('../../components/menubar/Menubar.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
+import { saveBrew } from 'client/homebrew/utils/save.js';
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';

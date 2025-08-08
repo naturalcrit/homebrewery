@@ -83,6 +83,7 @@ const MenuSection = ({ className, children, ...props })=>{
 	</div>;
 };
 
+// todo: add an ability to 'disable' from props
 const MenuItem = ({ icon = null, href = null, newTab = false, onClick = null, onChange = null, color = null, className = null, children, caret = null, ...props })=>{
 	const { isCompact } = React.useContext(MenubarContext);
 	const depth = React.useContext(MenuDepthContext);

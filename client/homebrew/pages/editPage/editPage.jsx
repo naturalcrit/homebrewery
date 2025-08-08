@@ -3,22 +3,13 @@ require('./editPage.less');
 const React = require('react');
 const _ = require('lodash');
 const createClass = require('create-react-class');
-import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
-import { md5 } from 'hash-wasm';
-import { gzipSync, strToU8 } from 'fflate';
+import { saveBrew } from 'client/homebrew/utils/save.js';
 
-import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const { MenuItem } = require('client/components/menubar/menubar.jsx');
 
-const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const Account = require('../../navbar/account.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
-const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
-const MainNavigationBar = require('client/homebrew/mainNavigationBar/MainNavigationBar.jsx');
+import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const DialogZone = require('../../../components/Dialogs/DialogZone.jsx');
 const Dialog = require('../../../components/Dialogs/Dialog.jsx');
@@ -244,7 +235,7 @@ const EditPage = createClass({
 			this.debounceSave.flush();
 			return;
 		}
-		
+
 		if(this.hasChanges())
 			this.debounceSave();
 		else
@@ -272,7 +263,7 @@ const EditPage = createClass({
 			}
 		}));
 		this.setState({
-			error    : null
+			error : null
 		});
 	},
 
@@ -302,50 +293,37 @@ const EditPage = createClass({
 	save : async function(){
 		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
 
-		const brewState       = this.state.brew; // freeze the current state
-		const preSaveSnapshot = { ...brewState };
+		this.setState((prevState)=>({
+			error  : null,
+			alerts : {
+				...prevState.alerts,
+				isSaving   : true,
+				htmlErrors : Markdown.validate(prevState.brew.text)
+			}
+		}));
 
-		this.setState((prevState)=>{
-			return (
-				{
-					error  : null,
-					alerts : {
-						...prevState.alerts,
-						isSaving   : true,
-						htmlErrors : Markdown.validate(prevState.brew.text)
-					}
-				});
-		});
-
+		const brew = this.state.brew;
+		const preSaveSnapshot = { ...brew };
 
 		await updateHistory(this.state.brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		//Prepare content to send to server
-		const brew          = { ...brewState };
-		brew.text           = brew.text.normalize('NFC');
-		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
-		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
-		brew.hash           = await md5(this.savedBrew.text);
-		//brew.text           = undefined; - Temporary parallel path
-		brew.textBin        = undefined;
-
-		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
-
-		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
-		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
-		const res = await request
-			.put(`/api/update/${brew.editId}${params}`)
-			.set('Content-Encoding', 'gzip')
-			.set('Content-Type', 'application/json')
-			.send(compressedBrew)
-			.catch((err)=>{
-				console.log('Error Updating Local Brew');
-				this.setState({ error: err });
+		let res;
+		try {
+			res = await saveBrew({
+				mode       : 'edit',
+				brew       : brew,
+				savedBrew  : this.savedBrew,
+				saveGoogle : this.state.saveGoogle
 			});
+		} catch (err) {
+			console.log('Error Updating Brew');
+			this.setState({ error: err, alerts: { isSaving: false, error: err } });
+			return;
+		}
 		if(!res) return;
 
+		// --- POST-SAVE LOGIC ---
 		this.savedBrew = {
 			...preSaveSnapshot,
 			googleId : res.body.googleId ? res.body.googleId : null,
@@ -355,7 +333,7 @@ const EditPage = createClass({
 		};
 
 		this.setState((prevState)=>({
-			brew        : {
+			brew : {
 				...prevState.brew,
 				googleId : res.body.googleId ? res.body.googleId : null,
 				editId 	 : res.body.editId,
@@ -365,11 +343,11 @@ const EditPage = createClass({
 			unsavedTime : new Date(),
 			alerts      : {
 				...prevState.alerts,
-				isPending : false,
-				isSaving  : false,
+				unsavedChanges : false,
+				isSaving       : false,
 			}
 		}), ()=>{
-			this.setState({ unsavedChanges : this.hasChanges() });
+			this.setState({ unsavedChanges: this.hasChanges() });
 		});
 
 		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
@@ -477,49 +455,6 @@ const EditPage = createClass({
 		</MenuItem>;
 	},
 
-	renderSaveButton : function(){
-
-		// #1 - Currently saving, show SAVING
-		if(this.state.alerts.isSaving){
-			return <MenuItem className='save' icon='fas fa-spinner fa-spin'>saving...</MenuItem>;
-		}
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(this.state.alerts.unsavedChanges && this.state.alerts.autoSaveWarning){
-			this.setAutoSaveWarning();
-			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <MenuItem className='save error' icon='fas fa-exclamation-circle'>
-			Reminder...
-				<div className='errorContainer'>
-					{text}
-				</div>
-			</MenuItem>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		// Use trySave(true) instead of save() to use debounced save function
-		if(this.state.alerts.unsavedChanges){
-			return <MenuItem className='save' onClick={()=>this.trySave(true)} color='orange' icon='fas fa-save'>Save Now</MenuItem>;
-		}
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(this.state.autoSave){
-			return <MenuItem className='save saved disabled' icon='fas fa-save'>auto-saved.</MenuItem>;
-		}
-		// DEFAULT - No unsaved changes, show SAVED
-		return <MenuItem className='save saved disabled' icon='fas fa-save'>saved.</MenuItem>;
-	},
-
-	renderNavbarSaveButton : function(){
-		if(this.state.alerts.isSaving){
-			return <i className='save fas fa-spinner fa-spin'/>;
-		}
-		if(this.state.alerts.isPending){
-			return <i className='save fas fa-save' onClick={()=>this.trySave(true)} title='Pending save.  Click to save now.' />;
-		}
-	},
-
 	handleAutoSave : function(){
 		if(this.warningTimer) clearTimeout(this.warningTimer);
 		this.setState((prevState)=>({
@@ -545,102 +480,19 @@ const EditPage = createClass({
 		});
 	},
 
-	renderAutoSaveButton : function(){
-		return <MenuItem onClick={this.handleAutoSave} color='orange'>
-			Autosave {this.state.autoSave ? ' is ON' : 'is OFF'}
-		</MenuItem>;
-	},
-
-	processShareId : function() {
-		return this.state.brew.googleId && !this.state.brew.stubbed ?
-					 this.state.brew.googleId + this.state.brew.shareId :
-					 this.state.brew.shareId;
-	},
-
-	getRedditLink : function(){
-
-		const shareLink = this.processShareId();
-		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
-		const title = `${this.props.brew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](${global.config.baseUrl}/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
-	},
-
-	renderAlerts : function(){
-		// checks if any this.state.alert is either 'true', or an array with length greater than 0
-		if(Object.values(this.state.alerts).some((alert)=>(typeof alert === 'boolean' && alert) || (Array.isArray(alert) && alert.length > 0))){
-			const autoSaveWarning = this.state.alerts.autoSaveWarning ? <i className='fas fa-triangle-exclamation' title='Autosave is turned OFF, be sure to save your work.'/> : null;
-			const htmlWarning = this.state.alerts.htmlErrors?.length > 0 ? <i className='fas fa-code' title='There are HTML errors in this brew.' /> : null;
-			const googleTrashWarning = this.state.alerts.alertTrashedGoogleBrew ? <i className='fas fa-dumpster' title='This brew is currently in your Trash folder on Google Drive!  If you want to keep it, make sure to move it before it is deleted permanently!' /> : null;
-			return (<span id='alerts'>
-				{this.renderNavbarSaveButton()}
-				{autoSaveWarning}
-				{htmlWarning}
-				{googleTrashWarning}
-			</span>);
-		};
-	},
-
-
-	renderNavbar : function(){
-		const shareLink = this.processShareId();
-
-		return (
-			<MainNavigationBar>
-				<Menubar>
-					<MenuSection>
-						<MainMenu />
-						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down' color='orange'>
-							<NewBrewItem />
-							<MenuRule />
-							{this.renderSaveButton()}
-							{this.renderAutoSaveButton()}
-							{this.renderStoragePicker()}
-							<MenuRule />
-							{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
-								brews
-							</MenuItem> }
-							<RecentNavItem brew={this.state.brew} storageKey='edit' />
-							<MenuRule />
-							<MenuItem color='blue' href={`/share/${shareLink}`} icon='fas fa-share-from-square'>
-								share
-							</MenuItem>
-							<MenuItem color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-								copy url
-							</MenuItem>
-							<MenuItem color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-								post to reddit
-							</MenuItem>
-							<MenuRule />
-							<PrintNavItem />
-						</MenuDropdown>
-						<VaultNavItem />
-					</MenuSection>
-
-					<MenuSection>
-						<MenuItem className='brewTitle'>{this.props.brew.title}{this.renderAlerts()}</MenuItem>
-					</MenuSection>
-
-					<MenuSection>
-						<Account />
-					</MenuSection>
-
-				</Menubar>
-			</MainNavigationBar>
-		);
-	},
-
-
 	render : function(){
 		return <div className='editPage sitePage'>
 			<DialogZone id='app-dialogs' />
 			{this.renderStorageTransfer()}
 			<Meta name='robots' content='noindex, nofollow' />
-			<nav>{this.renderNavbar()}</nav>
-			
+			<MainNavigationBar
+				alerts={this.state.alerts}
+				brew={this.state.brew}
+				setAutoSaveWarning={this.setAutoSaveWarning}
+				trySave={this.trySave}
+				unsavedTime={this.state.unsavedTime}
+				autoSave={this.state.autoSave}
+				toggleAutoSave={this.handleAutoSave} />
 
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>

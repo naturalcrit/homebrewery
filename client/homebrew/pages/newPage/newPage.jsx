@@ -2,19 +2,11 @@
 require('./newPage.less');
 const React = require('react');
 const createClass = require('create-react-class');
-import request from '../../utils/request-middleware.js';
+const _ = require('lodash');
+import { saveBrew } from 'client/homebrew/utils/save.js';
 
 import Markdown from 'naturalcrit/markdown.js';
 
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-
-const { Menubar, MenuItem, MenuSection, MenuDropdown, MenuRule } = require('../../../components/menubar/Menubar.jsx');
-
-const Account = require('../../navbar/account.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const MainMenu = require('../../navbar/mainMenu.navitem.jsx');
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
-const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
 import MainNavigationBar from 'client/homebrew/navbar/mainNavigationBar.jsx';
 
 const { SplitPane } = require('client/components/splitPane/splitPane.jsx');
@@ -30,6 +22,8 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 let SAVEKEY;
 
+const SAVE_TIMEOUT = 10000;
+
 
 const NewPage = createClass({
 	displayName     : 'NewPage',
@@ -44,7 +38,6 @@ const NewPage = createClass({
 
 		return {
 			brew                       : brew,
-			isSaving                   : false,
 			saveGoogle                 : (global.account && global.account.googleId ? true : false),
 			error                      : null,
 			htmlErrors                 : Markdown.validate(brew.text),
@@ -54,6 +47,14 @@ const NewPage = createClass({
 			currentBrewRendererPageNum : 1,
 			themeBundle                : {},
 			paneOrder                  : [0, 1],
+			alerts                     : {
+				alertLoginToTransfer   : false,
+				alertTrashedGoogleBrew : this.props.brew.trashed,
+				htmlErrors             : Markdown.validate(this.props.brew.text),
+				autoSaveWarning        : false,
+				unsavedChanges         : true,
+				isSaving               : false,
+			},
 		};
 	},
 
@@ -180,20 +181,49 @@ const NewPage = createClass({
 		;
 	},
 
+	trySave : function(immediate=false){
+		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
+		if(this.state.alerts.isSaving)
+			return;
+
+		if(immediate) {
+			this.debounceSave();
+			this.debounceSave.flush();
+			return;
+		}
+
+		if(this.hasChanges())
+			this.debounceSave();
+		else
+			this.debounceSave.cancel();
+	},
+
 	save : async function(){
-		this.setState({
-			isSaving : true
-		});
+		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
+
+		this.setState((prevState)=>({
+			error  : null,
+			alerts : {
+				...prevState.alerts,
+				isSaving   : true,
+				htmlErrors : Markdown.validate(prevState.brew.text)
+			}
+		}));
 
 		let brew = this.state.brew;
 
-		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		const res = await request
-			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
-			.send(brew)
-			.catch((err)=>{
-				this.setState({ isSaving: false, error: err });
+		let res;
+		try {
+			res = await saveBrew({
+				mode       : 'new',
+				brew       : brew,
+				saveGoogle : this.state.saveGoogle
 			});
+		} catch (err) {
+			console.log('Error Saving Local Brew');
+			this.setState({ error: err, alerts: { isSaving: false, error: err } });
+			return;
+		}
 		if(!res) return;
 
 		brew = res.body;
@@ -203,51 +233,11 @@ const NewPage = createClass({
 		window.location = `/edit/${brew.editId}`;
 	},
 
-	renderSaveButton : function(){
-		if(this.state.isSaving){
-			return <MenuItem className='save' icon='fas fa-spinner fa-spin'>saving...</MenuItem>;
-		} else {
-			return <MenuItem onClick={this.save} color='orange' icon='fas fa-save'>Save Now</MenuItem>;
-		}
-	},
-
-	renderNavbar : function(){
-		return (
-			<MainNavigationBar>
-				<Menubar>
-					<MenuSection>
-						<MainMenu />
-						<MenuDropdown id='brewMenu' className='brew-menu' groupName='Brew' icon='fas fa-pen-fancy' dir='down'>
-							<NewBrewItem />
-							<MenuRule />
-							{this.renderSaveButton()}
-							<MenuRule />
-							{global.account && <MenuItem href={`/user/${encodeURI(global.account.username)}`} color='purple' icon='fas fa-beer'>
-								brews
-							</MenuItem> }
-							<RecentNavItem brew={this.state.brew} storageKey='view' />
-							<MenuRule />
-							<PrintNavItem />
-						</MenuDropdown>
-						<VaultNavItem />
-					</MenuSection>
-
-					<MenuSection>
-						<MenuItem className='brewTitle'>{this.state.brew.title}</MenuItem>
-					</MenuSection>
-
-					<MenuSection>
-						<Account />
-					</MenuSection>
-
-				</Menubar>
-			</MainNavigationBar>
-		);
-	},
 
 	render : function(){
 		return <div className='newPage sitePage'>
-			<nav>{this.renderNavbar()}</nav>
+			<MainNavigationBar alerts={this.state.alerts} brew={this.state.brew} trySave={this.trySave} unsavedTime={this.state.unsavedTime} autoSave={this.state.autoSave} />
+
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}
 					paneOrder={this.state.paneOrder}
