@@ -37,7 +37,8 @@ const HomePage = createClass({
 			currentEditorViewPageNum   : 1,
 			currentEditorCursorPageNum : 1,
 			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+			themeBundle                : {},
+			userTemplates              : this.props.brew.templates
 		};
 	},
 
