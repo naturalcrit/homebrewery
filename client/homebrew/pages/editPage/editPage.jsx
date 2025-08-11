@@ -13,14 +13,9 @@ const { Meta } = require('vitreum/headtags');
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const Account = require('../../navbar/account.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 
+const BaseEditPage = require('../basePages/editPage/editPage.jsx');
 const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
@@ -441,11 +436,7 @@ const EditPage = createClass({
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
-		return <Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
-
+		return <>
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.state.error ?
@@ -455,8 +446,6 @@ const EditPage = createClass({
 						{this.renderAutoSaveButton()}
 					</Nav.dropdown>
 				}
-				<NewBrew />
-				<HelpNavItem/>
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
 						share
@@ -471,20 +460,19 @@ const EditPage = createClass({
 						post to reddit
 					</Nav.item>
 				</Nav.dropdown>
-				<PrintNavItem />
-				<VaultNavItem />
-				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
 			</Nav.section>
-
-		</Navbar>;
+		</>;
 	},
 
 	render : function(){
-		return <div className='editPage sitePage'>
+		return <BaseEditPage
+							className="editPage"
+							errorState={this.state.error}
+							parent={this}
+							brew={this.state.brew}
+							navButtons={this.renderNavbar()}
+							recentStorageKey='edit'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{this.renderNavbar()}
-
 			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
@@ -522,7 +510,7 @@ const EditPage = createClass({
 					/>
 				</SplitPane>
 			</div>
-		</div>;
+		</BaseEditPage>;
 	}
 });
 

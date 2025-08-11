@@ -7,13 +7,9 @@ import request from '../../utils/request-middleware.js';
 import Markdown from 'naturalcrit/markdown.js';
 
 const Nav = require('naturalcrit/nav/nav.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
+const BaseEditPage = require('../basePages/editPage/editPage.jsx');
 const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
@@ -212,28 +208,23 @@ const NewPage = createClass({
 	},
 
 	renderNavbar : function(){
-		return <Navbar>
-
-			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
-			</Nav.section>
-
+		return <>
 			<Nav.section>
 				{this.state.error ?
 					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
-				<PrintNavItem />
-				<HelpNavItem />
-				<RecentNavItem />
-				<AccountNavItem />
 			</Nav.section>
-		</Navbar>;
+		</>;
 	},
 
 	render : function(){
-		return <div className='newPage sitePage'>
-			{this.renderNavbar()}
+		return <BaseEditPage
+							className="newPage"
+							errorState={this.state.error}
+							parent={this}
+							brew={this.state.brew}
+							navButtons={this.renderNavbar()}>
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
@@ -268,7 +259,7 @@ const NewPage = createClass({
 					/>
 				</SplitPane>
 			</div>
-		</div>;
+		</BaseEditPage>;
 	}
 });
 
