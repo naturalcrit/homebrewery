@@ -22,12 +22,21 @@ const handleConnectionError = (error)=>{
 	}
 };
 
+const addListeners = (conn)=>{
+	conn.connection.on('disconnecting', ()=>{console.log('Mongo disconnecting...');});
+	conn.connection.on('disconnected', ()=>{console.log('Mongo disconnected!');});
+	conn.connection.on('connecting', ()=>{console.log('Mongo connecting...');});
+	conn.connection.on('connected', ()=>{console.log('Mongo connected!');});
+	return conn;
+};
+
 const disconnect = async ()=>{
 	return await Mongoose.disconnect();
 };
 
 const connect = async (config)=>{
 	return await Mongoose.connect(getMongoDBURL(config), { retryWrites: false })
+		.then(addListeners(Mongoose))
 		.catch((error)=>handleConnectionError(error));
 };
 
@@ -35,3 +44,4 @@ export default {
 	connect,
 	disconnect
 };
+
