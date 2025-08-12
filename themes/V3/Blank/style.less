@@ -585,20 +585,24 @@ h6,
 			h3 span:first-child::after { border : none; }
 			span {
 				display : contents;
-				&:first-child::after {
-					bottom        : 0.08cm;
-					flex          : 1;
-					margin-right  : 0.16cm;
-					margin-bottom : 0.08cm;
-					margin-left   : 0.08cm;        /* Spacing before dot leaders */
-					content       : '';
-					border-bottom : 0.05cm dotted #000000;
+				&:first-child, &.content {
+					&::after {
+						bottom        : 0.08cm;
+						flex          : 1;
+						margin-right  : 0.16cm;
+						margin-bottom : 0.08cm;
+						margin-left   : 0.08cm;        /* Spacing before dot leaders */
+						content       : '';
+						border-bottom : 0.05cm dotted #000000;
+						color         : inherit;
+					}
 				}
-				&:last-child {
+				&:last-child, &.number {
 					display     : inline-block;
 					align-self  : flex-end;
 					font-size   : 0.34cm;
 					font-weight : normal;
+					color       : inherit;
 				}
 			}
 			ul { /* List indent */
