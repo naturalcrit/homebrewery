@@ -11,7 +11,6 @@ import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
 
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 
