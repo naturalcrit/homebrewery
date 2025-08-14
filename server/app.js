@@ -105,6 +105,11 @@ app.use((req, res, next)=>{
 	return next();
 });
 
+// Add version endpoint
+app.get('/api/version', (req, res) => {
+	res.json({ version });
+});
+
 app.use(homebrewApi);
 app.use(adminApi);
 app.use(vaultApi);
