@@ -5,7 +5,7 @@ const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // 
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
-const METAKEY  = 'homebrewery-new-meta';
+const METAKEY = 'homebrewery-new-meta';
 
 const NewBrew = ()=>{
 	const handleFileChange = (e)=>{
@@ -22,10 +22,26 @@ const NewBrew = ()=>{
 					splitTextStyleAndMetadata(newBrew); // Modify newBrew directly
 					localStorage.setItem(BREWKEY, newBrew.text);
 					localStorage.setItem(STYLEKEY, newBrew.style);
-					localStorage.setItem(METAKEY, JSON.stringify(_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])));
+					localStorage.setItem(
+						METAKEY,
+						JSON.stringify(
+							_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])
+						)
+					);
 					window.location.href = '/new';
 				} else {
-					alert('This file is invalid, please, enter a valid file');
+					const type = file.name.split('.').pop().toLowercase();
+					if(type === 'txt') {
+						alert(
+							`This file type is correct, but it is not from the homebrewery or has been tampered with,
+							 please try with a correct file or report this as an issue if you think it is a mistake.`
+						);
+					} else if(!type) {
+						alert('This file is invalid, please, enter a valid file');
+						console.log(file);
+					} else {
+						alert(`This is a .${type} file, only '.txt' files are allowed`);
+					}
 				}
 			};
 			reader.readAsText(file);
