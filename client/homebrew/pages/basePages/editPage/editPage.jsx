@@ -29,7 +29,42 @@ const BaseEditPage = (props)=>{
 				</Nav.section>
 			</Navbar>
 
-			{props.children}
+			<div className='content'>
+				<SplitPane onDragFinish={handleSplitMove}>
+					<Editor
+						ref={editorRef}
+						brew={brew}
+						onTextChange={handleTextChange}
+						onStyleChange={handleStyleChange}
+						onMetaChange={handleMetaChange}
+						renderer={brew.renderer}
+						showEditButtons={false}  //FALSE FOR HOME PAGE
+						userThemes={props.userThemes}
+						themeBundle={themeBundle}
+						onCursorPageChange={handleEditorCursorPageChange}
+						onViewPageChange={handleEditorViewPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
+					/>
+					<BrewRenderer
+						text={brew.text}
+						style={brew.style}
+						renderer={brew.renderer}
+						theme={brew.theme}
+						errors={htmlErrors}
+						lang={brew.lang}
+						onPageChange={handleBrewRendererPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						themeBundle={themeBundle}
+						allowPrint={true} // FALSE FOR HOME PAGE
+					/>
+				</SplitPane>
+			</div>
+
+			{props.children?.(welcomeText, brew.text, save)}
 		</div>
 	);	
 };
