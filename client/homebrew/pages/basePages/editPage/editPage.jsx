@@ -11,6 +11,15 @@ const AccountNavItem = require('../../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../../navbar/vault.navitem.jsx');
 
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
+const Editor = require('../../../editor/editor.jsx');
+const BrewRenderer = require('../../../brewRenderer/brewRenderer.jsx');
+
+const { fetchThemeBundle } = require('../../../../../shared/helpers.js');
+
+import { useEffect, useState, useRef } from 'react';
+import Markdown from 'naturalcrit/markdown.js';
+
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
@@ -87,6 +96,39 @@ const BaseEditPage = (props)=>{
 		setError(null);
 		setIsSaving(false);
 	};
+
+	const save = async ()=>{
+		setIsSaving(true);
+		await props.performSave(brew, saveGoogle)
+		.catch((err)=>{
+			setError(err);
+		});
+		setIsSaving(false)
+	};
+
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
+		const S_KEY = 83;
+		const P_KEY = 80;
+		if(e.keyCode == S_KEY) save();
+		if(e.keyCode == P_KEY) BrewRenderer.printCurrentBrew();
+		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
+			e.stopPropagation();
+			e.preventDefault();
+		}
+	};
+
+	useEffect(() => {
+		props.loadBrew?.(brew, setBrew, setSaveGoogle);  //Initial load from localStorage/etc.
+
+		document.addEventListener('keydown', handleControlKeys);
+		return document.removeEventListener('keydown', handleControlKeys);
+	}, []);
+
+	useEffect(() => {
+		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+	}, [brew.renderer, brew.theme]);
+
 	return (
 		<div className={`sitePage ${props.className || ''}`}>
 			<Navbar>
@@ -94,7 +136,13 @@ const BaseEditPage = (props)=>{
 					<Nav.item className='brewTitle'>{props.brew.title}</Nav.item>
 				</Nav.section>
 				<Nav.section>
-					{props.navButtons}
+					{error
+						? <ErrorNavItem error={error} clearError={clearError}></ErrorNavItem>
+						: props.saveButton?.(save, isSaving)
+					}
+					{props.renderUniqueNav?.()}
+				</Nav.section>
+				<Nav.section>
 					<PrintNavItem />
 					<NewBrewItem />
 					<HelpNavItem />
