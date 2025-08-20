@@ -11,7 +11,22 @@ const AccountNavItem = require('../../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../../navbar/vault.navitem.jsx');
 
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const METAKEY  = 'homebrewery-new-meta';
+const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+
 const BaseEditPage = (props)=>{
+  const [brew,                       setBrew]                       = useState(() => props.brew);
+  const [isSaving,                   setIsSaving]                   = useState(false);
+	const [saveGoogle,                 setSaveGoogle]                 = useState(() => (global.account?.googleId ? true : false));
+  const [welcomeText,                setWelcomeText]                = useState(() => props.brew?.text ?? '');
+  const [error,                      setError]                      = useState(undefined);
+	const [htmlErrors,                 setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
+  const [currentEditorViewPageNum,   setCurrentEditorViewPageNum]   = useState(1);
+  const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+  const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
+  const [themeBundle,                setThemeBundle]                = useState({});
 	return (
 		<div className={`sitePage ${props.className || ''}`}>
 			<Navbar>

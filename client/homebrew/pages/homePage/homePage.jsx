@@ -23,18 +23,6 @@ const HomePage = createClass({
 			brew : DEFAULT_BREW
 		};
 	},
-	getInitialState : function() {
-		return {
-			brew                       : this.props.brew,
-			isSaving                   : false,
-			welcomeText                : this.props.brew.text,
-			error                      : undefined,
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
-		};
-	},
 
 	editor : React.createRef(null),
 

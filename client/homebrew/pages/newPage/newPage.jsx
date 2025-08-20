@@ -31,21 +31,6 @@ const NewPage = createClass({
 		};
 	},
 
-	getInitialState : function() {
-		const brew = this.props.brew;
-
-		return {
-			brew                       : brew,
-			isSaving                   : false,
-			saveGoogle                 : (global.account && global.account.googleId ? true : false),
-			error                      : null,
-			htmlErrors                 : Markdown.validate(brew.text),
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
-		};
-	},
 
 	editor : React.createRef(null),
 
