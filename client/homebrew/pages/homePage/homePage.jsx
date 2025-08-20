@@ -49,28 +49,6 @@ const HomePage = createClass({
 				this.setState({ isSaving: false, error: err });
 			});
 	},
-	handleSplitMove : function(){
-		this.editor.current.update();
-	},
-
-	handleEditorViewPageChange : function(pageNumber){
-		this.setState({ currentEditorViewPageNum: pageNumber });
-	},
-
-	handleEditorCursorPageChange : function(pageNumber){
-		this.setState({ currentEditorCursorPageNum: pageNumber });
-	},
-
-	handleBrewRendererPageChange : function(pageNumber){
-		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
-
-	handleTextChange : function(text){
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, text: text },
-		}));
-	},
-
 	renderSaveButton : function(){
 		if(this.state.isSaving){
 			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>

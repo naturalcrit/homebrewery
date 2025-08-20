@@ -27,6 +27,66 @@ const BaseEditPage = (props)=>{
   const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
   const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
   const [themeBundle,                setThemeBundle]                = useState({});
+
+	const editorRef = useRef(null);
+
+	const handleSplitMove = ()=>{
+		editorRef.current.update();
+	};
+
+	const handleEditorViewPageChange = (pageNumber)=>{
+		setCurrentEditorViewPageNum(pageNumber);
+	};
+	
+	const handleEditorCursorPageChange = (pageNumber)=>{
+		setCurrentEditorCursorPageNum(pageNumber);
+	};
+	
+	const handleBrewRendererPageChange	 = (pageNumber)=>{
+		setCurrentBrewRendererPageNum(pageNumber);
+	};
+
+	const handleTextChange = (text)=>{
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(htmlErrors.length)
+			htmlErrors = Markdown.validate(text);
+
+		setHTMLErrors(htmlErrors);
+		setBrew((prevBrew) => ({ ...prevBrew, text }));
+
+		// TODO: ONLY ON /NEW PAGE
+		localStorage.setItem(BREWKEY, text);
+	};
+
+	const handleStyleChange = (style)=>{
+		setBrew((prevBrew) => ({ ...prevBrew, style }));
+
+		if(props.useLocalStorage)
+			localStorage.setItem(STYLEKEY, style);
+	};
+
+	const handleSnipChange = (snippet)=>{
+		setBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
+	};
+
+	const handleMetaChange = (metadata, field=undefined)=>{
+		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
+			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
+
+		setBrew((prevBrew) => ({ ...prevBrew, ...metadata }));
+
+		if(props.useLocalStorage)
+			localStorage.setItem(METAKEY, JSON.stringify({
+				'renderer' : metadata.renderer,
+				'theme'    : metadata.theme,
+				'lang'     : metadata.lang
+			}));
+	};
+	
+	const clearError = ()=>{
+		setError(null);
+		setIsSaving(false);
+	};
 	return (
 		<div className={`sitePage ${props.className || ''}`}>
 			<Navbar>
