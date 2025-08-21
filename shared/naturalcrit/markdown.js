@@ -390,6 +390,26 @@ const mustacheInjectBlock = {
 	}
 };
 
+const underline = {
+	name  : 'underline',
+	level : 'inline',
+	start(src) { return src.match(/\b_(?![_\s])(.*?[^_\s])_\b/m)?.index;},
+	tokenizer(src, tokens) {
+		const uRegex = /^\b_(?![_\s])(.*?[^_\s])_\b/m;
+	    const match = uRegex.exec(src);
+		if(match?.length) {
+			return {
+				type   : 'underline',
+				raw    : match[0],
+				tokens : this.lexer.inlineTokens(match[1])
+			};
+		}
+	},
+	renderer(token) {				
+		return  `<u>${this.parser.parseInline(token.tokens)}</u>`;
+	}
+};
+
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -680,7 +700,8 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use(MarkedDefinitionLists());
-Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [underline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
