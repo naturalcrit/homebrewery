@@ -34,16 +34,11 @@ const NewBrew = ()=>{
 			}
 
 			const type = file.name.split('.').pop().toLowerCase();
-			if(type === 'txt') {
-				alert(
-					`This file type is correct, but it is not from the homebrewery or has been tampered with, please try with a correct file or report this as an issue if you think it is a mistake.`
-				);
-			} else if(!type) {
-				alert('This file is invalid, please, enter a valid file');
-				console.log(file);
-			} else {
-				alert(`This is a .${type} file, only .txt files are allowed`);
-			}
+			
+			alert(`This file is invalid: ${!type ? "Missing file extension" :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
+
+
+			console.log(file);
 		};
 		reader.readAsText(file);
 	};
