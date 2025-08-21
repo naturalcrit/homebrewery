@@ -1,5 +1,5 @@
 require('./sharePage.less');
-const React = require('react');
+const  React = require('react');
 const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
@@ -11,11 +11,18 @@ const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
-const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+const ErrorPage = require('../errorPage/errorPage.jsx');
+
+const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
+const { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } = require('../../../../shared/helpers.js');
+
+import request from '../../utils/request-middleware.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { disableMeta = false, id, fixedText, fixedTitle = '' } = props;
+
+	const [brew, setBrew] = useState(DEFAULT_BREW_LOAD);
+	const [error, setError] = useState();
 
 	const [state, setState] = useState({
 		themeBundle                : {},
@@ -39,12 +46,51 @@ const SharePage = (props)=>{
 	};
 
 	useEffect(()=>{
+		const fetchData = async ()=>{
+
+			let brewData;
+
+			if(fixedText){
+				const data = await request
+					.get(`/api/text/${fixedText}`)
+					.catch((err)=>{
+						return err.response;
+					});
+
+				brewData = Object.assign(DEFAULT_BREW, { text: data.text, title: fixedTitle });
+
+				if(!data.ok) {
+					setError(brewData);
+					return;
+				}
+			}
+
+			if(id){
+				const data = await request
+					.get(`/api/share/${id}`)
+					.catch((err)=>{
+						return err.response;
+					});
+				brewData = data.body;
+				if(!data.ok) {
+					setError(brewData);
+					return;
+				}
+			}
+
+			splitTextStyleAndMetadata(brewData);
+
+			await fetchThemeBundle(
+				{ setState },
+				brewData.renderer,
+				brewData.theme
+			);
+
+			setBrew(brewData);
+		};
+		fetchData();
+
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(
-			{ setState },
-			brew.renderer,
-			brew.theme
-		);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
@@ -72,6 +118,8 @@ const SharePage = (props)=>{
 			{brew.title}
 		</Nav.item>
 	);
+
+	if(error) return <ErrorPage brew={error} />;
 
 	return (
 		<div className='sharePage sitePage'>
