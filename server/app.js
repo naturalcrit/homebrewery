@@ -408,9 +408,9 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 
 app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
-		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || defaultMetaTags.image,
+		title       : `${req.brew?.title || 'Untitled Brew'} - ${req.brew?.authors[0] || 'No author.'}`,
+		description : req.brew?.description || 'No description.',
+		image       : req.brew?.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 
