@@ -14,7 +14,7 @@ const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -148,7 +148,6 @@ const NewPage = createClass({
 
 		this.setState((prevState)=>({
 			brew       : { ...prevState.brew, snippets: snippet },
-			isPending  : true,
 			htmlErrors : htmlErrors,
 		}), ()=>{if(this.state.autoSave) this.trySave();});
 	},

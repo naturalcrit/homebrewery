@@ -358,6 +358,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
+		locale      : req.brew.lang,
 		type        : 'article'
 	};
 
@@ -379,6 +380,7 @@ app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res,
 		renderer : req.brew.renderer,
 		theme    : req.brew.theme,
 		tags     : req.brew.tags,
+		snippets : req.brew.snippets
 	};
 	req.brew = _.defaults(brew, DEFAULT_BREW);
 
@@ -406,9 +408,9 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 
 app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
-		title       : req.metaTagData.title || 'Untitled Brew',
-		description : req.metaTagData.description || 'No description.',
-		image       : req.metaTagData.thumbnail || defaultMetaTags.image,
+		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
+		description : req.brew.description || 'No description.',
+		image       : req.brew.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 

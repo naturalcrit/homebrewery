@@ -12,9 +12,8 @@ const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
 const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
-const SNIPPETBAR_HEIGHT  = 25;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -60,8 +59,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta', 'snippet'
+			editorTheme      : this.props.editorTheme,
+			view             : 'text', //'text', 'style', 'meta', 'snippet'
+			snippetbarHeight : 25
 		};
 	},
 
@@ -88,6 +88,7 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
+		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -211,7 +212,7 @@ const Editor = createClass({
 
 					// New Codemirror styling for V3 renderer
 					if(this.props.renderer === 'V3') {
-						if(line.match(/^\\column$/)){
+						if(line.match(/^\\column(?:break)?$/)){
 							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
@@ -412,6 +413,9 @@ const Editor = createClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){
 		this.codeEditor.current?.updateSize();
+		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
+		if(snipHeight !== this.state.snippetbarHeight)
+			this.setState({ snippetbarHeight: snipHeight });
 	},
 
 	updateEditorTheme : function(newTheme){
@@ -436,7 +440,8 @@ const Editor = createClass({
 					value={this.props.brew.text}
 					onChange={this.props.onTextChange}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -449,7 +454,8 @@ const Editor = createClass({
 					onChange={this.props.onStyleChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -478,7 +484,8 @@ const Editor = createClass({
 					onChange={this.props.onSnipChange}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
 			</>;
 		}
 	},
