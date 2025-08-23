@@ -188,7 +188,6 @@ const mustacheSpans = {
 		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-()#%=?. \&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\=]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
-			console.log('MustacheSpans');
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = {};
@@ -196,7 +195,6 @@ const mustacheSpans = {
 			let endToken = 0;
 			let delim;
 			while (delim = inlineRegex.exec(match[0])) {
-				console.log(delim);
 				if(_.isEmpty(tags)) {
 					tags = processStyleTags(delim[0].substring(2));
 					endTags = delim[0].length;
@@ -243,11 +241,10 @@ const mustacheDivs = {
 	level : 'block',
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
+		const completeBlock = /^ *{{[^\n]* *\n.*\n *}}/s;                // Regex for the complete token
 		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-()#%=?.\&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\= ]*"|[\w\-()#%. ]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
-			console.log('Mustache Divs');
 			//Find closing delimiter
 			let blockCount = 0;
 			let tags = {};
@@ -303,7 +300,6 @@ const mustacheInjectInline = {
 		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.\&\:\!\@\$\^\*\<\>\;\:\[\]\{\}\-\_\+\= ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
-			console.log('InlineInject');
 			const lastToken = tokens[tokens.length - 1];
 			if(!lastToken || lastToken.type == 'mustacheInjectInline')
 				return false;
