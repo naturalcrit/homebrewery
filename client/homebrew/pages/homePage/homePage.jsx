@@ -15,7 +15,7 @@ const AccountNavItem = require('../../navbar/account.navitem.jsx');
 const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const { fetchThemeBundle } = require('../../../../shared/helpers.js');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
