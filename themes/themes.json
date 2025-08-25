@@ -1,5 +1,5 @@
 {
-  "Legacy": {
+  "legacy": {
     "5ePHB": {
       "name": "5e PHB",
       "renderer": "legacy",
@@ -7,7 +7,7 @@
       "path": "5ePHB"
     }
   },
-  "V3": {
+  "v3": {
     "5eDMG": {
       "name": "5e DMG",
       "renderer": "V3",
@@ -18,23 +18,23 @@
     "5ePHB": {
       "name": "5e PHB",
       "renderer": "V3",
-      "baseTheme": "Blank",
+      "baseTheme": "blank",
       "baseSnippets": false,
       "path": "5ePHB"
     },
-    "Blank": {
+    "blank": {
       "name": "Blank",
       "renderer": "V3",
       "baseTheme": false,
       "baseSnippets": false,
-      "path": "Blank"
+      "path": "blank"
     },
-    "Journal": {
+    "journal": {
       "name": "Journal",
       "renderer": "V3",
       "baseTheme": "Blank",
       "baseSnippets": "5ePHB",
-      "path": "Journal"
+      "path": "journal"
     }
   }
 }

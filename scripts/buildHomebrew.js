@@ -50,40 +50,40 @@ fs.emptyDirSync('./build');
 	//v==----------------------------- COMPILE THEMES --------------------------------==v//
 
 	// Update list of all Theme files
-	const themes = { Legacy: {}, V3: {} };
+	const themes = { legacy: {}, v3: {} };
 
-	let themeFiles = fs.readdirSync('./themes/Legacy');
+	let themeFiles = fs.readdirSync('./themes/legacy');
 	for (const dir of themeFiles) {
-		const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`).toString());
+		const themeData = JSON.parse(fs.readFileSync(`./themes/legacy/${dir}/settings.json`).toString());
 		themeData.path = dir;
-		themes.Legacy[dir] = (themeData);
-		//fs.copy(`./themes/Legacy/${dir}/dropdownTexture.png`, `./build/themes/Legacy/${dir}/dropdownTexture.png`);
-		const src = `./themes/Legacy/${dir}/style.less`;
+		themes.legacy[dir] = (themeData);
+		//fs.copy(`./themes/legacy/${dir}/dropdownTexture.png`, `./build/themes/legacy/${dir}/dropdownTexture.png`);
+		const src = `./themes/legacy/${dir}/style.less`;
 		((outputDirectory)=>{
 			less.render(fs.readFileSync(src).toString(), {
 				compress : !isDev
 			}, function(e, output) {
 				fs.outputFile(outputDirectory, output.css);
 			});
-		})(`./build/themes/Legacy/${dir}/style.css`);
+		})(`./build/themes/legacy/${dir}/style.css`);
 
 	}
 
-	themeFiles = fs.readdirSync('./themes/V3');
+	themeFiles = fs.readdirSync('./themes/v3');
 	for (const dir of themeFiles) {
-		const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`).toString());
+		const themeData = JSON.parse(fs.readFileSync(`./themes/v3/${dir}/settings.json`).toString());
 		themeData.path = dir;
-		themes.V3[dir] = (themeData);
-		fs.copy(`./themes/V3/${dir}/dropdownTexture.png`, `./build/themes/V3/${dir}/dropdownTexture.png`);
-		fs.copy(`./themes/V3/${dir}/dropdownPreview.png`, `./build/themes/V3/${dir}/dropdownPreview.png`);
-		const src = `./themes/V3/${dir}/style.less`;
+		themes.v3[dir] = (themeData);
+		fs.copy(`./themes/v3/${dir}/dropdownTexture.png`, `./build/themes/v3/${dir}/dropdownTexture.png`);
+		fs.copy(`./themes/v3/${dir}/dropdownPreview.png`, `./build/themes/v3/${dir}/dropdownPreview.png`);
+		const src = `./themes/v3/${dir}/style.less`;
 	  ((outputDirectory)=>{
 			less.render(fs.readFileSync(src).toString(), {
 				compress : !isDev
 			}, function(e, output) {
 				fs.outputFile(outputDirectory, output.css);
 			});
-		})(`./build/themes/V3/${dir}/style.css`);
+		})(`./build/themes/v3/${dir}/style.css`);
 	}
 
 	await fs.outputFile('./themes/themes.json', JSON.stringify(themes, null, 2));
@@ -134,13 +134,13 @@ fs.emptyDirSync('./build');
 
 	// Possible method for generating separate bundles for theme snippets: factor-bundle first sending all common files to bundle.js, then again using default settings, keeping only snippet bundles
 	// await fs.outputFile('./build/junk.js', '');
-	// await fs.outputFile('./build/themes/Legacy/5ePHB/snippets.js', '');
+	// await fs.outputFile('./build/themes/legacy/5ePHB/snippets.js', '');
 	//
-	// const files = ['./client/homebrew/homebrew.jsx','./themes/Legacy/5ePHB/snippets.js'];
+	// const files = ['./client/homebrew/homebrew.jsx','./themes/legacy/5ePHB/snippets.js'];
 	//
 	// bundles = await pack(files, {
 	// 	dedupe: false,
-	// 	plugin : [['factor-bundle', { outputs: [ './build/junk.js','./build/themes/Legacy/5ePHB/snippets.js'], threshold : function(row, groups) {
+	// 	plugin : [['factor-bundle', { outputs: [ './build/junk.js','./build/themes/legacy/5ePHB/snippets.js'], threshold : function(row, groups) {
 	// 		console.log(groups);
 	//     if (groups.some(group => /.*homebrew.jsx$/.test(group))) {
 	// 			console.log("found homebrewery")
