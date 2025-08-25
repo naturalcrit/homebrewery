@@ -12,7 +12,7 @@ const Account       = require('../../navbar/account.navitem.jsx');
 const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
 const HelpNavItem   = require('../../navbar/help.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
-const SplitPane     = require('../../../../shared/naturalcrit/splitPane/splitPane.jsx');
+const SplitPane     = require('client/components/splitPane/splitPane.jsx');
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');
 
 import request from '../../utils/request-middleware.js';
