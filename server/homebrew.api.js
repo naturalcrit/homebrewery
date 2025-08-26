@@ -48,6 +48,20 @@ const api = {
 			}
 			id = id.slice(googleId.length);
 		}
+
+		// ID Validation Checks
+		// Homebrewery ID
+		// Typically 12 characters, but the DB shows a range of 7 to 14 characters
+		if(!id.match(/^[a-zA-Z0-9-_]{7,14}$/)){
+			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
+		}
+		// Google ID
+		// Typically 33 characters, old format is 44 - always starts with a 1
+		// Managed by Google, may change outside of our control, so any length between 33 and 44 is acceptable
+		if(googleId && !googleId.match(/^1(?:[a-zA-Z0-9-_]{32,43})$/)){
+			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
+		}
+
 		return { id, googleId };
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
@@ -361,14 +375,14 @@ const api = {
 		try {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
-			const patchedResult = applyPatches(patches, brewFromServer.text, { allowExceedingIndices: true })[0];
+			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
 			if(patchedResult != brewFromClient.text)
 				throw("Patches did not apply cleanly, text mismatch detected");
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
 			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				patches : brewFromClient.patches,
+				//patches : brewFromClient.patches,
 				brewId  : brewFromClient.editId || 'unknown',
 				error   : err
 			});

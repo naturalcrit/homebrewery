@@ -5,6 +5,7 @@ const _ = require('lodash');
 const createClass = require('create-react-class');
 import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
 import { md5 } from 'hash-wasm';
+import { gzipSync, strToU8 } from 'fflate';
 
 import request from '../../utils/request-middleware.js';
 const { Meta } = require('vitreum/headtags');
@@ -20,7 +21,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -265,16 +266,20 @@ const EditPage = createClass({
 		brew.text           = brew.text.normalize('NFC');
 		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
 		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches        = stringifyPatches(makePatches(this.savedBrew.text, brew.text));
+		brew.patches        = stringifyPatches(makePatches(encodeURI(this.savedBrew.text), encodeURI(brew.text)));
 		brew.hash           = await md5(this.savedBrew.text);
 		//brew.text           = undefined; - Temporary parallel path
 		brew.textBin        = undefined;
+
+		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
 
 		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
 		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
 			.put(`/api/update/${brew.editId}${params}`)
-			.send(brew)
+			.set('Content-Encoding', 'gzip')
+			.set('Content-Type', 'application/json')
+			.send(compressedBrew)
 			.catch((err)=>{
 				console.log('Error Updating Local Brew');
 				this.setState({ error: err });

@@ -383,6 +383,7 @@ app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res,
 		title       : req.brew.title || 'Untitled Brew',
 		description : req.brew.description || 'No description.',
 		image       : req.brew.thumbnail || defaultMetaTags.image,
+		locale      : req.brew.lang,
 		type        : 'article'
 	};
 
@@ -486,8 +487,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		const query = { authors: req.account.username, googleId: { $exists: false } };
 		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
-				mongoCount = 0;
 				console.log(err);
+				return 0;
 			});
 
 		data.accountDetails = {
