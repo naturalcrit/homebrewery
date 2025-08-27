@@ -21,10 +21,6 @@ import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
 
 const isStaticTheme = (renderer, themeName)=>{
-	if(Themes[renderer.toLowerCase()]?.[themeName] == undefined) {
-		console.log(renderer);
-		console.log(themeName);
-	}
 	return Themes[renderer.toLowerCase()]?.[themeName] !== undefined;
 };
 
@@ -257,6 +253,8 @@ const api = {
 	},
 	newBrew : async (req, res)=>{
 		const brew = req.body;
+		console.log(brew.renderer);
+		//brew.renderer = _.capitalize(brew.renderer); // ensure casing on renderer.
 		const { saveToGoogle } = req.query;
 
 		delete brew.editId;
@@ -349,8 +347,6 @@ const api = {
 			name     : themeName,
 			author   : themeAuthor
 		};
-
-		console.log(returnObj);
 
 		res.setHeader('Content-Type', 'application/json');
 		return res.status(200).send(returnObj);
