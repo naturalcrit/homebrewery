@@ -23,14 +23,15 @@ const ErrorNavItem = createClass({
 
 		const error       = this.props.error;
 		const response    = error.response;
-		const status      = response.status;
-		const HBErrorCode = response.body?.HBErrorCode;
-		const message     = response.body?.message;
+		const status      = response?.status;
+		const errorCode   = error.code
+		const HBErrorCode = response?.body?.HBErrorCode;
+		const message     = response?.body?.message;
 		let errMsg = '';
 		try {
 			errMsg += `${error.toString()}\n\n`;
 			errMsg += `\`\`\`\n${error.stack}\n`;
-			errMsg += `${JSON.stringify(response.error, null, '  ')}\n\`\`\``;
+			errMsg += `${JSON.stringify(response?.error, null, '  ')}\n\`\`\``;
 			console.log(errMsg);
 		} catch (e){}
 
@@ -73,7 +74,7 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
-		if(response.body?.errors?.[0].reason == 'storageQuotaExceeded') {
+		if(response?.body?.errors?.[0].reason == 'storageQuotaExceeded') {
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!
 				<div className='errorContainer' onClick={clearError}>
@@ -82,7 +83,7 @@ const ErrorNavItem = createClass({
 			</Nav.item>;
 		}
 
-		if(response.req.url.match(/^\/api.*Google.*$/m)){
+		if(response?.req.url.match(/^\/api.*Google.*$/m)){
 			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 				Oops!
 				<div className='errorContainer' onClick={clearError}>
@@ -100,6 +101,43 @@ const ErrorNavItem = createClass({
 					<div className='deny'>
 						Not Now
 					</div>
+				</div>
+			</Nav.item>;
+		}
+
+		if(HBErrorCode === '09') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					Looks like there was a problem retreiving
+					the theme, or a theme that it inherits,
+					for this brew. Verify that brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
+						{response.body.brewId}</a> still exists!
+				</div>
+			</Nav.item>;
+		}
+
+		if(HBErrorCode === '10') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					Looks like the brew you have selected
+					as a theme is not tagged for use as a
+					theme. Verify that
+					brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
+						{response.body.brewId}</a> has the <span className='lowercase'>meta:theme</span> tag!
+				</div>
+			</Nav.item>;
+		}
+
+		if(errorCode === 'ECONNABORTED') {
+			return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+				Oops!
+				<div className='errorContainer' onClick={clearError}>
+					The request to the server was interrupted or timed out.
+					This can happen due to a network issue, or if
+					trying to save a particularly large brew.
+					Please check your internet connection and try again.
 				</div>
 			</Nav.item>;
 		}

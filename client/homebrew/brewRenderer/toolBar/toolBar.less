@@ -1,0 +1,191 @@
+@import (less) './client/icons/customIcons.less';
+
+.toolBar {
+	position         : absolute;
+	z-index          : 1;
+	box-sizing       : border-box;
+	display          : flex;
+	flex-wrap        : wrap;
+	gap              : 8px 20px;
+	align-items      : center;
+	justify-content  : center;
+	width            : 100%;
+	height           : auto;
+	padding          : 2px 10px 2px 90px;
+	font-family      : 'Open Sans', sans-serif;
+	font-size        : 13px;
+	color            : #CCCCCC;
+	background-color : #555555;
+	& > *:not(.toggleButton) {
+		opacity    : 1;
+		transition : all 0.2s ease;
+	}
+
+	.group {
+		box-sizing       : border-box;
+		display          : flex;
+		gap              : 0 3px;
+		align-items      : center;
+		justify-content  : center;
+		height           : 28px;
+	}
+
+	.tool {
+		display     : flex;
+		align-items : center;
+	}
+
+	.active, [aria-checked='true'] { background-color : #444444; }
+
+	.anchored-trigger {
+		&.active { background-color : #444444; }
+	}
+
+	.anchored-box {
+		--box-color      : #555555;
+		top              : 30px;
+		display          : flex;
+		flex-direction   : column;
+		gap              : 5px;
+		padding          : 15px;
+		margin-top       : 10px;
+		font-size        : 0.8em;
+		color            : #CCCCCC;
+		background-color : var(--box-color);
+		border-radius    : 5px;
+	
+		h1 {
+			padding-bottom : 0.3em;
+			margin-bottom  : 0.5em;
+			border-bottom  : 1px solid currentColor;
+		}
+	
+		h2 {
+			padding-bottom : 0.3em;
+			margin         : 1em 0 0.5em 0;
+			color          : lightgray;
+			border-bottom  : 1px solid currentColor;
+		}
+	
+		label {
+			display         : flex;
+			gap             : 6px;
+			align-items     : center;
+			justify-content : space-between;
+	
+		}
+		input {
+			height : unset;
+			&[type='range'] { padding : 0; }
+		}
+		&::before {
+			position       : absolute;
+			top            : -20px;
+			left           : 50%;
+			width          : 0px;
+			height         : 0px;
+			pointer-events : none;
+			content        : '';
+			border         : 10px solid transparent;
+			border-bottom  : 10px solid var(--box-color);
+			transform      : translateX(-50%);
+		}
+
+	}
+
+	.radio-group:has(button[role='radio']) {
+		display : flex;
+		height  : 100%;
+		border  : 1px solid #333333;
+	}
+
+	input {
+		position       : relative;
+		height         : 1.5em;
+		padding        : 2px 5px;
+		font-family    : 'Open Sans', sans-serif;
+		color          : inherit;
+		background     : #3B3B3B;
+		border         : none;
+		&:focus { outline : 1px solid #D3D3D3; }
+
+		// `.range-input` if generic to all range inputs, or `#zoom-slider` if only for zoom slider
+		&.range-input {
+			padding      : 2px 0;
+			color        : #D3D3D3;
+			accent-color : #D3D3D3;
+  
+			&::-webkit-slider-thumb, &::-moz-range-thumb { 
+				width            : 5px;
+				height           : 5px;
+				cursor           : ew-resize;
+				outline          : none;
+			}
+
+			&.hover-tooltip[value]:hover::after {
+				position         : absolute;
+				bottom           : -30px;
+				left             : 50%;
+				z-index          : 1;
+				display          : grid;
+				place-items      : center;
+				width            : 4ch;
+				height           : 1.2lh;
+				pointer-events   : none;
+				content          : attr(value);
+				background-color : #555555;
+				border           : 1px solid #A1A1A1;
+				transform        : translate(-50%, 50%);
+			}
+		}
+
+		// `.text-input` if generic to all range inputs, or `#page-input` if only for current page input
+		&#page-input {
+			min-width    : 5ch;
+			margin-right : 1ch;
+			text-align   : center;
+		}
+	}
+
+	button {
+		box-sizing       : border-box;
+		display          : flex;
+		align-items      : center;
+		justify-content  : center;
+		width            : auto;
+		min-width        : 40px;
+		height           : 100%;
+		&:hover { background-color : #444444; }
+		&:focus {outline : none; border  : 1px solid #D3D3D3;}
+		&:disabled {
+			color            : #777777;
+			background-color : unset !important;
+		}
+		i { font-size : 1.2em; }
+	}
+
+	&.hidden {
+		flex-wrap        : nowrap;
+		width            : 92px;
+		overflow         : hidden;
+		background-color : unset;
+		opacity          : 0.7;
+		transition       : all 0.3s ease;
+		& > *:not(.toggleButton) {
+			opacity    : 0;
+			transition : all 0.2s ease;
+		}
+
+		.toggleButton button i {
+			filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
+		}
+	}
+}
+
+.toggleButton {
+	position  : absolute;
+	left      : 0;
+	z-index   : 5;
+	display   : flex;
+	height    : 100%;
+}

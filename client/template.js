@@ -8,11 +8,12 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
+	const ssrModule = await import(`../build/${name}/ssr.cjs`);
+
 	return `<!DOCTYPE html>
 	<html>
 		<head>
 			<meta name="viewport" content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
-			<link href="//use.fontawesome.com/releases/v6.5.1/css/all.css" rel="stylesheet" type="text/css" />
 			<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 			<link href=${`/${name}/bundle.css`} type="text/css" rel='stylesheet' />
 			<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
@@ -21,7 +22,7 @@ const template = async function(name, title='', props = {}){
 			<title>${title.length ? `${title} - The Homebrewery`: 'The Homebrewery - NaturalCrit'}</title>
 		</head>
 		<body>
-			<main id="reactRoot">${require(`../build/${name}/ssr.js`)(props)}</main>
+			<main id="reactRoot">${ssrModule.default(props)}</main>
 			<script src=${`/${name}/bundle.js`}></script>
 			<script>start_app(${JSON.stringify(props)})</script>
 		</body>
@@ -29,4 +30,4 @@ const template = async function(name, title='', props = {}){
 	`;
 };
 
-module.exports = template;
+export default template;

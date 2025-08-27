@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+
 describe('Tests for api', ()=>{
 	let api;
 	let google;
@@ -14,6 +16,9 @@ describe('Tests for api', ()=>{
 	let saved;
 
 	beforeEach(()=>{
+		jest.resetModules();
+		jest.restoreAllMocks();
+
 		saved = undefined;
 		saveFunc = jest.fn(async function() {
 			saved = { ...this, _id: '1' };
@@ -33,8 +38,9 @@ describe('Tests for api', ()=>{
 			}
 		});
 
-		google = require('./googleActions.js');
-		model = require('./homebrew.model.js').model;
+		google = require('./googleActions.js').default;
+		model  = require('./homebrew.model.js').model;
+		api    = require('./homebrew.api').default;
 
 		jest.mock('./googleActions.js');
 		google.authCheck = jest.fn(()=>'client');
@@ -45,11 +51,11 @@ describe('Tests for api', ()=>{
 		model.mockImplementation((brew)=>modelBrew(brew));
 
 		res = {
-			status : jest.fn(()=>res),
-			send   : jest.fn(()=>{})
+			status    : jest.fn(()=>res),
+			send      : jest.fn(()=>{}),
+			set       : jest.fn(()=>{}),
+			setHeader : jest.fn(()=>{})
 		};
-
-		api = require('./homebrew.api');
 
 		hbBrew = {
 			text        : `brew text`,
@@ -81,10 +87,6 @@ describe('Tests for api', ()=>{
 		};
 	});
 
-	afterEach(()=>{
-		jest.restoreAllMocks();
-	});
-
 	describe('getId', ()=>{
 		it('should return only id if google id is not present', ()=>{
 			const { id, googleId } = api.getId({
@@ -97,18 +99,87 @@ describe('Tests for api', ()=>{
 			expect(googleId).toBeUndefined();
 		});
 
+		it('should throw if id is too short', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcd'
+					}
+				});
+			} catch (e) {
+				err = e;
+			};
+
+			expect(err).toEqual({ HBErrorCode: '11', brewId: 'abcd', message: 'Invalid ID', name: 'ID Error', status: 404 });
+		});
+
 		it('should return id and google id from request body', ()=>{
 			const { id, googleId } = api.getId({
 				params : {
-					id : 'abcdefgh'
+					id : 'abcdefghijkl'
 				},
 				body : {
-					googleId : '12345'
+					googleId : '123456789012345678901234567890123'
 				}
 			});
 
-			expect(id).toEqual('abcdefgh');
-			expect(googleId).toEqual('12345');
+			expect(id).toEqual('abcdefghijkl');
+			expect(googleId).toEqual('123456789012345678901234567890123');
+		});
+
+		it('should throw invalid - google id right length but does not match pattern', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '012345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too short (32 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '12345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too long (45 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '123456789012345678901234567890123456789012345'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
 		});
 
 		it('should return 12-char id and google id from params', ()=>{
@@ -296,11 +367,11 @@ describe('Tests for api', ()=>{
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
 			expect(model.get).toHaveBeenCalledWith({ shareId: '1' });
-			expect(google.getGoogleBrew).toHaveBeenCalledWith('2', '1', 'share');
+			expect(google.getGoogleBrew).toHaveBeenCalledWith(undefined, '2', '1', 'share');
 		});
 
 		it('access is denied to a locked brew', async()=>{
-			const lockBrew = { title: 'test brew', shareId: '1', lock: { locked: true, code: 404, shareMessage: 'brew locked' } };
+			const lockBrew = { title: 'test brew', shareId: '1', lock: { code: 404, shareMessage: 'brew locked' } };
 			model.get = jest.fn(()=>toBrewPromise(lockBrew));
 			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
 
@@ -308,7 +379,7 @@ describe('Tests for api', ()=>{
 			const req = { brew: {} };
 			const next = jest.fn();
 
-			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '100', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
+			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '51', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
 
@@ -408,8 +479,8 @@ brew`);
 			expect(sent).not.toEqual(googleBrew);
 			expect(result.text).toBeUndefined();
 			expect(result.textBin).toBeUndefined();
-			expect(result.renderer).toBeUndefined();
-			expect(result.pageCount).toBeUndefined();
+			expect(result.renderer).toBe('v3');
+			expect(result.pageCount).toBe(1);
 		});
 	});
 
@@ -540,9 +611,9 @@ brew`);
 				description : '',
 				editId      : expect.any(String),
 				gDrive      : false,
-				pageCount   : undefined,
+				pageCount   : 1,
 				published   : false,
-				renderer    : undefined,
+				renderer    : 'V3',
 				lang        : 'en',
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
@@ -559,16 +630,6 @@ brew`);
 				views       : 0
 			});
 		});
-
-		it('should handle google error', async()=>{
-			google.newGoogleBrew = jest.fn(()=>{
-				throw 'err';
-			});
-			await api.newBrew({ body: { text: 'asdf', title: '' }, query: { saveToGoogle: true }, account: { username: 'test user' } }, res);
-
-			expect(res.status).toHaveBeenCalledWith(500);
-			expect(res.send).toHaveBeenCalledWith('err');
-		});
 	});
 
 	describe('deleteGoogleBrew', ()=>{
@@ -578,6 +639,150 @@ brew`);
 			expect(result).toBe(true);
 			expect(google.authCheck).toHaveBeenCalledWith({ username: 'test user' }, expect.objectContaining({}));
 			expect(google.deleteGoogleBrew).toHaveBeenCalledWith('client', 'id', 'editId');
+		});
+	});
+
+	describe('Theme bundle', ()=>{
+		it('should return Theme Bundle for a User Theme', async ()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style', tags: ['meta:theme'], authors: ['authorName'] }
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				name     : 'User Theme A',
+				author   : 'authorName',
+				styles   : ['/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'],
+				snippets : []
+			});
+		});
+
+		it('should return Theme Bundle for nested User Themes', async ()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style', tags: ['meta:theme'], authors: ['authorName'] },
+				userThemeBID : { title: 'User Theme B', renderer: 'V3', theme: 'userThemeCID', shareId: 'userThemeBID', style: 'User Theme B Style', tags: ['meta:theme'], authors: ['authorName'] },
+				userThemeCID : { title: 'User Theme C', renderer: 'V3', theme: null, shareId: 'userThemeCID', style: 'User Theme C Style', tags: ['meta:theme'], authors: ['authorName'] }
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				name   : 'User Theme A',
+				author : 'authorName',
+				styles : [
+					'/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style',
+					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
+					'/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'
+				],
+				snippets : []
+			});
+		});
+
+		it('should return Theme Bundle for a Static Theme', async ()=>{
+			const req = { params: { renderer: 'V3', id: '5ePHB' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				name   : '5ePHB',
+				author : undefined,
+				styles : [
+					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
+					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`
+				],
+				snippets : [
+					'V3_Blank',
+					'V3_5ePHB'
+				]
+			});
+		});
+
+		it('should return Theme Bundle for nested User and Static Themes together', async ()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: 'userThemeBID', shareId: 'userThemeAID', style: 'User Theme A Style', tags: ['meta:theme'], authors: ['authorName'] },
+				userThemeBID : { title: 'User Theme B', renderer: 'V3', theme: 'userThemeCID', shareId: 'userThemeBID', style: 'User Theme B Style', tags: ['meta:theme'], authors: ['authorName'] },
+				userThemeCID : { title: 'User Theme C', renderer: 'V3', theme: '5eDMG', shareId: 'userThemeCID', style: 'User Theme C Style', tags: ['meta:theme'], authors: ['authorName'] }
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			await api.getThemeBundle(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith({
+				name   : 'User Theme A',
+				author : 'authorName',
+				styles : [
+					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
+					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`,
+					`/* From Theme 5eDMG */\n\n@import url("/themes/V3/5eDMG/style.css");`,
+					'/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style',
+					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
+					'/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'
+				],
+				snippets : [
+					'V3_Blank',
+					'V3_5ePHB',
+					'V3_5eDMG'
+				]
+			});
+		});
+
+		it('should fail for a missing Theme in the chain', async()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: 'missingTheme', shareId: 'userThemeAID', style: 'User Theme A Style', tags: ['meta:theme'], authors: ['authorName'] },
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			let err;
+			await api.getThemeBundle(req, res)
+			.catch((e)=>err = e);
+
+			expect(err).toEqual({
+				HBErrorCode : '09',
+				accessType  : 'share',
+				brewId      : 'missingTheme',
+				message     : 'Theme Not Found',
+				name        : 'ThemeLoad Error',
+				status      : 404 });
+		});
+
+		it('should fail for a User Theme not tagged with meta:theme', async ()=>{
+			const brews = {
+				userThemeAID : { title: 'User Theme A', renderer: 'V3', theme: null, shareId: 'userThemeAID', style: 'User Theme A Style' }
+			};
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			model.get = jest.fn((getParams)=>toBrewPromise(brews[getParams.shareId]));
+			const req = { params: { renderer: 'V3', id: 'userThemeAID' }, get: ()=>{ return 'localhost'; }, protocol: 'https' };
+
+			let err;
+			await api.getThemeBundle(req, res)
+			.catch((e)=>err = e);
+
+			expect(err).toEqual({
+				HBErrorCode : '10',
+				brewId      : 'userThemeAID',
+				message     : 'Selected theme does not have the meta:theme tag',
+				name        : 'Invalid Theme Selected',
+				status      : 422 });
 		});
 	});
 
@@ -799,6 +1004,200 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test']);
 			expect(saved.googleId).toEqual(brew.googleId);
+		});
+	});
+	describe('Get CSS', ()=>{
+		it('should return brew style content as CSS text', async ()=>{
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
+			expect(res.set).toHaveBeenCalledWith({
+				'Cache-Control' : 'no-cache',
+				'Content-Type'  : 'text/css'
+			});
+		});
+
+		it('should return 404 when brew has no style content', async ()=>{
+			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+
+		it('should return 404 when brew does not exist', async ()=>{
+			const testBrew = { };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+	});
+	describe('Split Text, Style, and Metadata', ()=>{
+
+		it('basic splitting', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'title: title\n' +
+					'description: description\n' +
+					'tags: [ \'tag a\' , \'tag b\' ]\n' +
+					'systems: [ test system ]\n' +
+					'renderer: legacy\n' +
+					'theme: 5ePHB\n' +
+					'lang: en\n' +
+					'\n' +
+					'```\n' +
+					'\n' +
+					'```css\n' +
+					'style\n' +
+					'style\n' +
+					'style\n' +
+					'```\n' +
+					'\n' +
+					'text\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew);
+
+			// Metadata
+			expect(testBrew.title).toEqual('title');
+			expect(testBrew.description).toEqual('description');
+			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
+			expect(testBrew.systems).toEqual(['test system']);
+			expect(testBrew.renderer).toEqual('legacy');
+			expect(testBrew.theme).toEqual('5ePHB');
+			expect(testBrew.lang).toEqual('en');
+			// Style
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
+			// Text
+			expect(testBrew.text).toEqual('text\n');
+		});
+
+		it('convert tags string to array', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'tags: tag a\n' +
+					'```\n\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew);
+
+			// Metadata
+			expect(testBrew.tags).toEqual(['tag a']);
+		});
+	});
+
+	describe('updateBrew', ()=>{
+		it('should return error on version mismatch', async ()=>{
+			const brewFromClient = { version: 1 };
+			const brewFromServer = { version: 1000, text: '' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		it('should return error on hash mismatch', async ()=>{
+			const brewFromClient = { version: 1, hash: '1234' };
+			const brewFromServer = { version: 1, text: 'test' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		// Commenting this one out for now, since we are no longer throwing this error while we monitor
+		// it('should return error on applying patches', async ()=>{
+		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+		// 	const req = {
+		// 		brew  : brewFromServer,
+		// 		body  : brewFromClient,
+		// 	};
+
+		// 	let err;
+		// 	try {
+		// 		await api.updateBrew(req, res);
+		// 	} catch (e) {
+		// 		err = e;
+		// 	}
+
+		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+		// });
+
+		it('should save brew, no ID', async ()=>{
+			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
+			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			model.save = jest.fn((brew)=>{return brew;});
+
+			const req = {
+				brew  : brewFromServer,
+				body  : brewFromClient,
+				query : { saveToGoogle: false, removeFromGoogle: false }
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					_id         : '1',
+					description : 'Test Description',
+					hash        : '098f6bcd4621d373cade4e832627b4f6',
+					title       : 'Test Title',
+					version     : 2
+				})
+			);
 		});
 	});
 });
