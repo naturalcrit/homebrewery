@@ -1,5 +1,5 @@
 {
-  "legacy": {
+  "Legacy": {
     "5ePHB": {
       "name": "5e PHB",
       "renderer": "legacy",
@@ -7,7 +7,7 @@
       "path": "5ePHB"
     }
   },
-  "v3": {
+  "V3": {
     "5eDMG": {
       "name": "5e DMG",
       "renderer": "V3",

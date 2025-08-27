@@ -554,7 +554,7 @@ brew`);
 				gDrive      : false,
 				pageCount   : 1,
 				published   : false,
-				renderer    : 'v3',
+				renderer    : 'V3',
 				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,

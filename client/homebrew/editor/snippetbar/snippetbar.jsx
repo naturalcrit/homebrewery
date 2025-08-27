@@ -108,7 +108,6 @@ const Snippetbar = createClass({
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
-		console.log(this.props.themeBundle.snippets);
 		if(this.props.themeBundle.snippets) {
 			for (let snippets of this.props.themeBundle.snippets) {
 				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
