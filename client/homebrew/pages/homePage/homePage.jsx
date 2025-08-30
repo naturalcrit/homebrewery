@@ -21,25 +21,19 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
-const HomePage = createClass({
-	displayName     : 'HomePage',
-	getDefaultProps : function() {
-		return {
-			brew : DEFAULT_BREW,
-			ver  : '0.0.0'
-		};
-	},
-	getInitialState : function() {
-		return {
-			brew                       : this.props.brew,
-			welcomeText                : this.props.brew.text,
-			error                      : undefined,
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
-		};
-	},
+const HomePage =(props)=>{
+	const {
+		brew = DEFAULT_BREW,
+		ver  = '0.0.0'
+	} = props;
+
+	const [brew                      , setBrew]                       = useState(brew);
+	const [welcomeText               , setWelcomeText]                = useState(brew.text);
+	const [error                     , setError]                      = useState(undefined);
+	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
+	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
+	const [themeBundle               , setThemeBundle]                = useState({});
 
 	editor : React.createRef(null),
 
@@ -136,6 +130,6 @@ const HomePage = createClass({
 			</a>
 		</div>;
 	}
-});
+};
 
 module.exports = HomePage;
