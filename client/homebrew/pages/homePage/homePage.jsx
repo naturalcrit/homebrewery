@@ -80,11 +80,19 @@ const HomePage = createClass({
 			brew : { ...prevState.brew, text: text },
 		}));
 	},
+
+	clearError : function(){
+		setState({
+			error    : null,
+			isSaving : false
+		})
+	},
+
 	renderNavbar : function(){
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
 					null
 				}
 				<NewBrewItem />

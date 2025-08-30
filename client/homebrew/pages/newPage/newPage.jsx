@@ -211,6 +211,13 @@ const NewPage = createClass({
 		}
 	},
 
+	clearError : function(){
+		setState({
+			error    : null,
+			isSaving : false
+		})
+	},
+
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -220,7 +227,7 @@ const NewPage = createClass({
 
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
 				<PrintNavItem />
