@@ -44,7 +44,7 @@ const HomePage =(props)=>{
 
 	const handleSave = ()=>{
 		request.post('/api')
-			.send(this.state.brew)
+			.send(brew)
 			.end((err, res)=>{
 				if(err) {
 					this.setState({ error: err });
@@ -81,7 +81,7 @@ const HomePage =(props)=>{
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<ErrorNavItem error={error} parent={this}></ErrorNavItem> :
 					null
 				}
 				<NewBrewItem />
