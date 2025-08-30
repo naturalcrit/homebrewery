@@ -92,7 +92,7 @@ const HomePage = createClass({
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
 					null
 				}
 				<NewBrewItem />

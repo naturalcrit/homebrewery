@@ -227,7 +227,7 @@ const NewPage = createClass({
 
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
 				<PrintNavItem />

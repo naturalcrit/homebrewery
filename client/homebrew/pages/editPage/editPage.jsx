@@ -456,7 +456,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
 					<Nav.dropdown className='save-menu'>
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}
