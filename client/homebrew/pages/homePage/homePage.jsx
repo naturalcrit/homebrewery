@@ -41,7 +41,7 @@ const HomePage =(props)=>{
 		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
 	},
 
-	handleSave : function(){
+	const handleSave ()=>{
 		request.post('/api')
 			.send(this.state.brew)
 			.end((err, res)=>{
@@ -52,29 +52,31 @@ const HomePage =(props)=>{
 				const brew = res.body;
 				window.location = `/edit/${brew.editId}`;
 			});
-	},
-	handleSplitMove : function(){
+	};
+	
+	const handleSplitMove ()=>{
 		this.editor.current.update();
-	},
+	};
 
-	handleEditorViewPageChange : function(pageNumber){
+	const handleEditorViewPageChange (pageNumber)=>{
 		this.setState({ currentEditorViewPageNum: pageNumber });
-	},
+	};
 
-	handleEditorCursorPageChange : function(pageNumber){
+	const handleEditorCursorPageChange (pageNumber)=>{
 		this.setState({ currentEditorCursorPageNum: pageNumber });
-	},
+	};
 
-	handleBrewRendererPageChange : function(pageNumber){
+	const handleBrewRendererPageChange (pageNumber)=>{
 		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
+	};
 
-	handleTextChange : function(text){
+	const handleTextChange (text)=>{
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, text: text },
 		}));
-	},
-	renderNavbar : function(){
+	};
+
+	const renderNavbar = ()=>{
 		return <Navbar ver={this.props.ver}>
 			<Nav.section>
 				{this.state.error ?
@@ -88,12 +90,12 @@ const HomePage =(props)=>{
 				<AccountNavItem />
 			</Nav.section>
 		</Navbar>;
-	},
+	};
 
-	render : function(){
-		return <div className='homePage sitePage'>
+	return (
+		<div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
-			{this.renderNavbar()}
+			{renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={this.handleSplitMove}>
 					<Editor
@@ -128,8 +130,8 @@ const HomePage =(props)=>{
 			<a href='/new' className='floatingNewButton'>
 				Create your own <i className='fas fa-magic' />
 			</a>
-		</div>;
-	}
+		</div>
+	)
 };
 
 module.exports = HomePage;
