@@ -22,26 +22,27 @@ const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
 
 const HomePage =(props)=>{
-	const {
-		brew = DEFAULT_BREW,
-		ver  = '0.0.0'
-	} = props;
+	props = {
+		brew : DEFAULT_BREW,
+		ver  : '0.0.0',
+    ...props
+  };
 
-	const [brew                      , setBrew]                       = useState(brew);
-	const [welcomeText               , setWelcomeText]                = useState(brew.text);
+	const [brew                      , setBrew]                       = useState(props.brew);
+	const [welcomeText               , setWelcomeText]                = useState(props.brew.text);
 	const [error                     , setError]                      = useState(undefined);
 	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle]                = useState({});
 
-	editor : React.createRef(null),
+	const editorRef = useRef(null);
 
-	componentDidMount : function() {
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
-	},
+	useEffect(()=>{
+		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+	}, []);
 
-	const handleSave ()=>{
+	const handleSave = ()=>{
 		request.post('/api')
 			.send(this.state.brew)
 			.end((err, res)=>{
@@ -53,24 +54,24 @@ const HomePage =(props)=>{
 				window.location = `/edit/${brew.editId}`;
 			});
 	};
-	
-	const handleSplitMove ()=>{
+
+	const handleSplitMove = ()=>{
 		this.editor.current.update();
 	};
 
-	const handleEditorViewPageChange (pageNumber)=>{
+	const handleEditorViewPageChange = (pageNumber)=>{
 		this.setState({ currentEditorViewPageNum: pageNumber });
 	};
 
-	const handleEditorCursorPageChange (pageNumber)=>{
+	const handleEditorCursorPageChange = (pageNumber)=>{
 		this.setState({ currentEditorCursorPageNum: pageNumber });
 	};
 
-	const handleBrewRendererPageChange (pageNumber)=>{
+	const handleBrewRendererPageChange = (pageNumber)=>{
 		this.setState({ currentBrewRendererPageNum: pageNumber });
 	};
 
-	const handleTextChange (text)=>{
+	const handleTextChange = (text)=>{
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, text: text },
 		}));
@@ -97,33 +98,33 @@ const HomePage =(props)=>{
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						renderer={this.state.brew.renderer}
+						ref={editorRef}
+						brew={brew}
+						onTextChange={handleTextChange}
+						renderer={brew.renderer}
 						showEditButtons={false}
-						themeBundle={this.state.themeBundle}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						themeBundle={themeBundle}
+						onCursorPageChange={handleEditorCursorPageChange}
+						onViewPageChange={handleEditorViewPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-						themeBundle={this.state.themeBundle}
+						text={brew.text}
+						style={brew.style}
+						renderer={brew.renderer}
+						onPageChange={handleBrewRendererPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						themeBundle={themeBundle}
 					/>
 				</SplitPane>
 			</div>
-			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
+			<div className={cx('floatingSaveButton', { show: welcomeText != brew.text })} onClick={handleSave}>
 				Save current <i className='fas fa-save' />
 			</div>
 
