@@ -80,7 +80,7 @@ const NewPage = createClass({
 			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
 		});
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, this.props.brew.renderer, this.props.brew.theme);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
@@ -154,7 +154,7 @@ const NewPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+			fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },

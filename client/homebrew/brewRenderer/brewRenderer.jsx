@@ -39,7 +39,7 @@ const BrewPage = (props)=>{
 		index    : 0,
 		...props
 	};
-	const pageRef = useRef(null);
+	const pageRef   = useRef(null);
 	const cleanText = safeHTML(props.contents);
 
 	useEffect(()=>{
