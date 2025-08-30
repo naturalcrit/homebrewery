@@ -40,7 +40,7 @@ const BrewPage = (props)=>{
 		...props
 	};
 	const pageRef = useRef(null);
-	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
+	const cleanText = safeHTML(`${props.contents}\n`);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -207,7 +207,8 @@ const BrewRenderer = (props)=>{
 			}
 
 			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
-			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+
+			pageText += pageText.indexOf(`\n\\column\n`) < 0 ? `\n\n&nbsp;\n\\column\n&nbsp;` : 0; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 
 			const html = Markdown.render(pageText, index);
 
