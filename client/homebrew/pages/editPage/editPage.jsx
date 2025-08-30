@@ -97,7 +97,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, this.props.brew.renderer, this.props.brew.theme);
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -173,7 +173,7 @@ const EditPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+			fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : {
