@@ -30,25 +30,24 @@ const HomePage = createClass({
 	},
 
 	render : function(){
-		return <BaseEditPage
+		return  <BaseEditPage
 							{...this.props}
 							className="homePage"
 							parent={this}
-							performSave={this.save}
-						>
-						{(welcomeText, brewText, save) => {
-							return <>
-								<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
-								<div className={cx('floatingSaveButton', { show: welcomeText != brewText })} onClick={save}>
-									Save current <i className='fas fa-save' />
-								</div>
+							performSave={this.save}>
+							{(welcomeText, brew, save) => {
+								return <>
+									<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
+									<div className={cx('floatingSaveButton', { show: welcomeText != brew.text })} onClick={save}>
+										Save current <i className='fas fa-save' />
+									</div>
 
-								<a href='/new' className='floatingNewButton'>
-									Create your own <i className='fas fa-magic' />
-								</a>
-							</>
-						}}
-					</BaseEditPage>
+									<a href='/new' className='floatingNewButton'>
+										Create your own <i className='fas fa-magic' />
+									</a>
+								</>
+							}}
+						</BaseEditPage>
 	}
 });
 

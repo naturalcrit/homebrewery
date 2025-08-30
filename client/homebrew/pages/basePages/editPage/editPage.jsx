@@ -1,5 +1,6 @@
 require('./editPage.less');
 const React = require('react');
+const _ = require('lodash');
 
 const Nav = require('naturalcrit/nav/nav.jsx');
 const Navbar = require('../../../navbar/navbar.jsx');
@@ -25,9 +26,13 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
 
+const SAVE_TIMEOUT = 10000;
+
 const BaseEditPage = (props)=>{
   const [brew,                       setBrew]                       = useState(() => props.brew);
+	const [savedBrew,                  setSavedBrew]                  = useState(brew);
   const [isSaving,                   setIsSaving]                   = useState(false);
+	const [lastSavedTime,              setLastSavedTime]              = useState(new Date());
 	const [saveGoogle,                 setSaveGoogle]                 = useState(() => (global.account?.googleId ? true : false));
   const [welcomeText,                setWelcomeText]                = useState(() => props.brew?.text ?? '');
   const [error,                      setError]                      = useState(undefined);
@@ -36,8 +41,14 @@ const BaseEditPage = (props)=>{
   const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
   const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
   const [themeBundle,                setThemeBundle]                = useState({});
+	const [unsavedChanges,             setUnsavedChanges]             = useState(false);
+	const [autoSaveEnabled,            setAutoSaveEnabled]            = useState(true);
+	const [warnUnsavedChanges,         setWarnUnsavedChanges]         = useState(false);
 
-	const editorRef = useRef(null);
+	const editorRef     = useRef(null);
+	let   lastSavedBrew = useRef(JSON.parse(JSON.stringify(this.propcopys.brew))); //Deep copy
+	const saveTimeout   = useRef(null);
+	const unsavedChangesTimer = useRef(null);
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
@@ -75,6 +86,11 @@ const BaseEditPage = (props)=>{
 	};
 
 	const handleSnipChange = (snippet)=>{
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(htmlErrors.length)
+			htmlErrors = Markdown.validate(text);
+
+		setHTMLErrors(htmlErrors);
 		setBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
 	};
 
@@ -91,19 +107,39 @@ const BaseEditPage = (props)=>{
 				'lang'     : metadata.lang
 			}));
 	};
-	
+
+	const updateBrew = (newData) => {
+		setBrew(prevBrew => ({	//TODO: May be able to just directly use setBrew instead of a wrapper, if its safe to assume we want all the data from newData
+			...prevBrew,					//OR:  Somehow combine handleTextChange, handleStyleChange, handleMetaChange, and handleSnipChange into one function that calls this
+			style: newData.style,
+			text: newData.text,
+			snippets: newData.snippets
+		}));
+	};
+		
 	const clearError = ()=>{
 		setError(null);
 		setIsSaving(false);
 	};
 
-	const save = async ()=>{
-		setIsSaving(true);
-		await props.performSave(brew, saveGoogle)
-		.catch((err)=>{
-			setError(err);
-		});
-		setIsSaving(false)
+	const save = async (immediate=false)=>{
+		if(isSaving) return;
+		if(!unsavedChanges && !immediate) return;
+
+		clearTimeout(saveTimeout.current);
+
+		const timeout = immediate ? 0 : 10000;
+
+		saveTimeout.current = setTimeout(async () => {
+			setIsSaving(true);
+			await props.performSave(brew, saveGoogle)
+			.catch((err)=>{
+				setError(err);
+			});
+			setIsSaving(false);
+			setLastSavedTime(new Date());
+			setTimeout(setWarnUnsavedChanges(true), 900000); // 15 minutes between unsaved work warnings
+		}, timeout);
 	};
 
 	const handleControlKeys = (e)=>{
@@ -118,16 +154,88 @@ const BaseEditPage = (props)=>{
 		}
 	};
 
+	const	hasChanges =()=>{
+		return !_.isEqual(brew, savedBrew);
+	};
+
 	useEffect(() => {
 		props.loadBrew?.(brew, setBrew, setSaveGoogle);  //Initial load from localStorage/etc.
 
+		//Load settings
+		setAutoSaveEnabled(JSON.parse(localStorage.getItem('AUTOSAVE_ON')) ?? true);
+
+		setHTMLErrors(Markdown.validate(brew.text));
+
 		document.addEventListener('keydown', handleControlKeys);
-		return document.removeEventListener('keydown', handleControlKeys);
+		window.onbeforeunload = ()=>{
+			if(isSaving || unsavedChanges)
+				return 'You have unsaved changes!';
+		};
+
+		return () => {
+			document.removeEventListener('keydown', handleControlKeys);
+			window.onbeforeunload = null;
+		}
 	}, []);
 
 	useEffect(() => {
 		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
 	}, [brew.renderer, brew.theme]);
+
+	useEffect(() => {
+		const hasChange = hasChanges();
+		if(unsavedChanges !== hasChange)
+			setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) save();
+	}, [brew]);
+
+	const resetUnsavedChangesWarning = ()=>{
+		setTimeout(setWarnUnsavedChanges(false), 4000);  // Display warning for 4 seconds
+		setTimeout(setWarnUnsavedChanges(true) , 90000); // 15 minutes between warnings
+	};
+
+	const toggleAutoSave = ()=>{
+		if(unsavedChangesTimer.current) clearTimeout(unsavedChangesTimer.current);
+		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
+		setAutoSaveEnabled(!autoSaveEnabled);
+		setWarnUnsavedChanges(false);
+	};
+
+	const renderSaveButton = ()=>{
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		if(unsavedChanges && warnUnsavedChanges){
+			resetUnsavedChangesWarning();
+			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+							Reminder...
+							<div className='errorContainer'>{text}</div>
+						</Nav.item>;
+		}
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={()=>save(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved.</Nav.item>;
+	};
+
+	const renderAutoSaveButton = ()=>{
+		return <Nav.item onClick={toggleAutoSave}>
+						Autosave <i className={autosaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+					</Nav.item>;
+	};
 
 	return (
 		<div className={`sitePage ${props.className || ''}`}>
@@ -138,7 +246,10 @@ const BaseEditPage = (props)=>{
 				<Nav.section>
 					{error
 						? <ErrorNavItem error={error} clearError={clearError}></ErrorNavItem>
-						: props.saveButton?.(save, isSaving)
+						: <Nav.dropdown className='save-menu'>
+								{renderSaveButton()}
+								{renderAutoSaveButton()}
+							</Nav.dropdown>
 					}
 					{props.renderUniqueNav?.()}
 				</Nav.section>
@@ -160,10 +271,13 @@ const BaseEditPage = (props)=>{
 						onTextChange={handleTextChange}
 						onStyleChange={handleStyleChange}
 						onMetaChange={handleMetaChange}
+						onSnipChange={handleSnipChange}
+						reportError={this.errorReported}
 						renderer={brew.renderer}
 						showEditButtons={false}  //FALSE FOR HOME PAGE
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
+						updateBrew={updateBrew}
 						onCursorPageChange={handleEditorCursorPageChange}
 						onViewPageChange={handleEditorViewPageChange}
 						currentEditorViewPageNum={currentEditorViewPageNum}
@@ -187,7 +301,7 @@ const BaseEditPage = (props)=>{
 				</SplitPane>
 			</div>
 
-			{props.children?.(welcomeText, brew.text, save)}
+			{props.children?.(welcomeText, brew, save)}
 		</div>
 	);	
 };

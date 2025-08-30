@@ -66,27 +66,14 @@ const NewPage = createClass({
 			});
 	},
 
-	renderSaveButton : function(save, isSaving){
-		if(isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
-			</Nav.item>;
-		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={save}>
-				save
-			</Nav.item>;
-		}
-	},
-
 	render : function(){
-		return <BaseEditPage
+		return  <BaseEditPage
 							{...this.props}
 							className="newPage"
 							parent={this}
-							saveButton={this.renderSaveButton}
 							performSave={this.save}
 							loadBrew={this.loadBrew}>
-					</BaseEditPage>;
+						</BaseEditPage>;
 	}
 });
 
