@@ -1,25 +1,25 @@
-require('./homePage.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const cx = require('classnames');
-import request from '../../utils/request-middleware.js';
-const { Meta } = require('vitreum/headtags');
+import './homePage.less';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const { fetchThemeBundle } = require('../../../../shared/helpers.js');
+import React                           from 'react';
+import { useEffect, useState, useRef } from 'react';
+import request                         from '../../utils/request-middleware.js';
+import { Meta }                        from 'vitreum/headtags';
 
-const SplitPane = require('client/components/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+import Nav                             from 'naturalcrit/nav/nav.jsx';
+import Navbar                          from '../../navbar/navbar.jsx';
+import NewBrewItem                     from '../../navbar/newbrew.navitem.jsx';
+import HelpNavItem                     from '../../navbar/help.navitem.jsx';
+import VaultNavItem                    from '../../navbar/vault.navitem.jsx';
+import { both as RecentNavItem }       from '../../navbar/recent.navitem.jsx';
+import AccountNavItem                  from '../../navbar/account.navitem.jsx';
+import ErrorNavItem                    from '../../navbar/error-navitem.jsx';
+import { fetchThemeBundle }            from '../../../../shared/helpers.js';
 
-const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
+import SplitPane                       from 'client/components/splitPane/splitPane.jsx';
+import Editor                          from '../../editor/editor.jsx';
+import BrewRenderer                    from '../../brewRenderer/brewRenderer.jsx';
+
+import { DEFAULT_BREW }                from '../../../../server/brewDefaults.js';
 
 const HomePage =(props)=>{
 	props = {
@@ -35,6 +35,7 @@ const HomePage =(props)=>{
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle]                = useState({});
+	const [isSaving                  , setIsSaving]                   = useState(false);
 
 	const editorRef = useRef(null);
 
@@ -42,53 +43,49 @@ const HomePage =(props)=>{
 		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
 	}, []);
 
-	const handleSave = ()=>{
+	const save = ()=>{
 		request.post('/api')
 			.send(brew)
 			.end((err, res)=>{
 				if(err) {
-					this.setState({ error: err });
+					setError(err);
 					return;
 				}
-				const brew = res.body;
-				window.location = `/edit/${brew.editId}`;
+				const saved = res.body;
+				window.location = `/edit/${saved.editId}`;
 			});
 	};
 
 	const handleSplitMove = ()=>{
-		this.editor.current.update();
+		editorRef.current.update();
 	};
 
 	const handleEditorViewPageChange = (pageNumber)=>{
-		this.setState({ currentEditorViewPageNum: pageNumber });
+		setCurrentEditorViewPageNum(pageNumber);
 	};
-
+	
 	const handleEditorCursorPageChange = (pageNumber)=>{
-		this.setState({ currentEditorCursorPageNum: pageNumber });
+		setCurrentEditorCursorPageNum(pageNumber);
 	};
-
+	
 	const handleBrewRendererPageChange = (pageNumber)=>{
-		this.setState({ currentBrewRendererPageNum: pageNumber });
+		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
 	const handleTextChange = (text)=>{
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, text: text },
-		}));
+		setBrew((prevBrew) => ({ ...prevBrew, text }));
 	};
 
 	const clearError = ()=>{
-		setState({
-			error    : null,
-			isSaving : false
-		})
+		setError(null);
+		setIsSaving(false);
 	};
 
-	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+	const renderNavbar = ()=>{
+		return <Navbar ver={props.ver}>
 			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} clearError={clearError}></ErrorNavItem> :
+				{error ?
+					<ErrorNavItem error={error} clearError={clearError}></ErrorNavItem> :
 					null
 				}
 				<NewBrewItem />
@@ -131,7 +128,7 @@ const HomePage =(props)=>{
 					/>
 				</SplitPane>
 			</div>
-			<div className={cx('floatingSaveButton', { show: welcomeText != brew.text })} onClick={handleSave}>
+			<div className={`floatingSaveButton${welcomeText !== brew.text ? ' show' : ''}`} onClick={save}>
 				Save current <i className='fas fa-save' />
 			</div>
 
