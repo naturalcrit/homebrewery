@@ -14,7 +14,7 @@ const ErrorNavItem = require('../../navbar/error-navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const HelpNavItem = require('../../navbar/help.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -80,7 +80,7 @@ const NewPage = createClass({
 			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
 		});
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, this.props.brew.renderer, this.props.brew.theme);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
@@ -154,7 +154,7 @@ const NewPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+			fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : { ...prevState.brew, ...metadata },
@@ -211,6 +211,13 @@ const NewPage = createClass({
 		}
 	},
 
+	clearError : function(){
+		setState({
+			error    : null,
+			isSaving : false
+		})
+	},
+
 	renderNavbar : function(){
 		return <Navbar>
 
@@ -220,7 +227,7 @@ const NewPage = createClass({
 
 			<Nav.section>
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
 					this.renderSaveButton()
 				}
 				<PrintNavItem />
