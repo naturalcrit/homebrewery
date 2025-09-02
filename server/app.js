@@ -36,7 +36,6 @@ import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
 
-
 const sanitizeBrew = (brew, accessType)=>{
 	brew._id = undefined;
 	brew.__v = undefined;
@@ -370,6 +369,34 @@ app.put('/api/user/rename', async (req, res)=>{
 	} catch (error) {
 		console.error('Error renaming brews:', error);
 		return res.status(500).json({ error: 'Failed to rename brews.' });
+	}
+});
+
+//Delete brews based on author
+app.delete('/api/user/delete', async (req, res)=>{
+	const { username } = req.body;
+
+	const ownAccount = req.account && (req.account.username == username);
+	if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to delete your account' });
+
+	try {
+		const brews = await HomebrewModel.getByUser(username, true, ['_id', 'googleId', 'editId', 'authors']);
+
+		const deletePromises = brews.map((brew)=>{
+			req.brew = brew;
+			return new Promise((resolve, reject)=>{
+				api.deleteBrew(req, res, (err)=>err ? reject(err) : resolve());
+			});
+		});
+
+		await Promise.all(deletePromises);
+
+		return res.json({ success: true, message: `All brews for ${username} have been deleted.` });
+	} catch (error) {
+		console.error('Error deleting brews:', error);
+		if(!res.headersSent) {
+			return res.status(500).json({ error: 'Failed to delete the brews.' });
+		}
 	}
 });
 
