@@ -36,17 +36,9 @@ describe('database check middleware', ()=>{
 
 		mongoose.connection.readyState = 99;
 
-		dbCheck(request, response);
+		expect(()=>{dbCheck(request, response);}).toThrow(new Error('Unable to connect to database'));
 
 		mongoose.connection.readyState = dbState;
-
-		expect(response.status).toHaveBeenLastCalledWith(503);
-		expect(response.send).toHaveBeenLastCalledWith(
-			expect.objectContaining({
-				message : 'Unable to connect to database',
-				state   : 99
-			})
-		);
 	});
 
 	it('should call next if readystate == 1', ()=>{
