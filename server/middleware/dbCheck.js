@@ -6,8 +6,10 @@ export default (req, res, next)=>{
 	if(config.get('node_env') == 'test') return next();
 
 	if(mongoose.connection.readyState == 1) return next();
-	return res.status(503).send({
-		message : 'Unable to connect to database',
-		state   : mongoose.connection.readyState
-	});
+	throw {
+		HBErrorCode : 13,
+		name        : 'Database Connection Error',
+		message     : 'Unable to connect to database',
+		status      : mongoose.connection.readyState
+	};
 };
