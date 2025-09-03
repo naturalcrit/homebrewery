@@ -25,9 +25,9 @@ const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
 const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
 
-const NewPage = (props) => {
+const NewPage = (props)=>{
 	props = {
-		brew: DEFAULT_BREW,
+		brew : DEFAULT_BREW,
 		...props
 	};
 
@@ -43,12 +43,12 @@ const NewPage = (props) => {
 
 	const editorRef = useRef(null);
 
-	useEffect(() => {
+	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
 		loadBrew();
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
@@ -80,13 +80,13 @@ const NewPage = (props) => {
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
 
-	const handleControlKeys = (e) => {
-		if (!(e.ctrlKey || e.metaKey)) return;
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
-		if (e.keyCode === S_KEY) save();
-		if (e.keyCode === P_KEY) printCurrentBrew();
-		if (e.keyCode === S_KEY || e.keyCode === P_KEY) {
+		if(e.keyCode === S_KEY) save();
+		if(e.keyCode === P_KEY) printCurrentBrew();
+		if(e.keyCode === S_KEY || e.keyCode === P_KEY) {
 			e.preventDefault();
 			e.stopPropagation();
 		}
@@ -99,11 +99,11 @@ const NewPage = (props) => {
 	const handleEditorViewPageChange = (pageNumber)=>{
 		setCurrentEditorViewPageNum(pageNumber);
 	};
-	
+
 	const handleEditorCursorPageChange = (pageNumber)=>{
 		setCurrentEditorCursorPageNum(pageNumber);
 	};
-	
+
 	const handleBrewRendererPageChange = (pageNumber)=>{
 		setCurrentBrewRendererPageNum(pageNumber);
 	};
@@ -114,12 +114,12 @@ const NewPage = (props) => {
 			HTMLErrors = Markdown.validate(text);
 
 		setHTMLErrors(HTMLErrors);
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, text }));
 		localStorage.setItem(BREWKEY, text);
 	};
 
-	const handleStyleChange = (style) => {
-		setCurrentBrew(prevBrew => ({ ...prevBrew, style }));
+	const handleStyleChange = (style)=>{
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, style }));
 		localStorage.setItem(STYLEKEY, style);
 	};
 
@@ -129,14 +129,14 @@ const NewPage = (props) => {
 			HTMLErrors = Markdown.validate(snippet);
 
 		setHTMLErrors(HTMLErrors);
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, snippets: snippet }));
 	};
 
-	const handleMetaChange = (metadata, field = undefined) => {
-		if (field === 'theme' || field === 'renderer')
+	const handleMetaChange = (metadata, field = undefined)=>{
+		if(field === 'theme' || field === 'renderer')
 			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
 
-		setCurrentBrew(prev => ({ ...prev, ...metadata }));
+		setCurrentBrew((prev)=>({ ...prev, ...metadata }));
 		localStorage.setItem(METAKEY, JSON.stringify({
 			renderer : metadata.renderer,
 			theme    : metadata.theme,
@@ -144,10 +144,10 @@ const NewPage = (props) => {
 		}));
 	};
 
-	const save = async () => {
+	const save = async ()=>{
   	setIsSaving(true);
 
-		let updatedBrew = { ...currentBrew };
+		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
 		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
@@ -156,13 +156,13 @@ const NewPage = (props) => {
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(updatedBrew)
-			.catch((err) => {
+			.catch((err)=>{
 				setIsSaving(false);
 				setError(err);
 			});
 
-		setIsSaving(false)
-		if (!res) return;
+		setIsSaving(false);
+		if(!res) return;
 
 		const savedBrew = res.body;
 
@@ -189,7 +189,7 @@ const NewPage = (props) => {
 		setIsSaving(false);
 	};
 
-	const renderNavbar = () => (
+	const renderNavbar = ()=>(
 		<Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
@@ -208,7 +208,7 @@ const NewPage = (props) => {
 	);
 
 	return (
-			<div className='newPage sitePage'>
+		<div className='newPage sitePage'>
 			{renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>
