@@ -10,11 +10,11 @@ import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
 //Import all themes
 const ThemeSnippets = {};
-ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
-ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
-ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
-ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
+ThemeSnippets['Legacy_5ePHB'] = require('themes/legacy/5ePHB/snippets.js');
+ThemeSnippets['V3_5ePHB']     = require('themes/v3/5ePHB/snippets.js');
+ThemeSnippets['V3_5eDMG']     = require('themes/v3/5eDMG/snippets.js');
+ThemeSnippets['V3_journal']   = require('themes/v3/journal/snippets.js');
+ThemeSnippets['V3_blank']     = require('themes/v3/blank/snippets.js');
 
 const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
 
@@ -108,7 +108,6 @@ const Snippetbar = createClass({
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
-
 		if(this.props.themeBundle.snippets) {
 			for (let snippets of this.props.themeBundle.snippets) {
 				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
