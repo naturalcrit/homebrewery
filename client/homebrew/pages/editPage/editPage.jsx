@@ -42,7 +42,7 @@ const EditPage = (props) => {
 		brew: DEFAULT_BREW_LOAD,
 		...props
 	};
-  const editor       = useRef(null);
+  const editorRef    = useRef(null);
   const savedBrew    = useRef(_.cloneDeep(props.brew));
   const warningTimer = useRef(null);
 
@@ -107,7 +107,7 @@ const EditPage = (props) => {
 	};
 
 	const handleSplitMove = () => {
-		editor.current?.update();
+		editorRef.current?.update();
 	};
 
 	const handleEditorViewPageChange = (pageNumber) => {
@@ -371,24 +371,23 @@ const EditPage = (props) => {
 		setIsSaving(false);
 	};
 
-	renderNavbar : function(){
-		const shareLink = this.processShareId();
+	const renderNavbar = ()=>{
+		const shareLink = processShareId();
 
 		return <Navbar>
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
+				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
-				{this.renderGoogleDriveIcon()}
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
-					<Nav.dropdown className='save-menu'>
-						{this.renderSaveButton()}
-						{this.renderAutoSaveButton()}
-					</Nav.dropdown>
-				}
-				<NewBrew />
+				{renderGoogleDriveIcon()}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: <Nav.dropdown className='save-menu'>
+							{renderSaveButton()}
+							{renderAutoSaveButton()}
+						</Nav.dropdown>}
+				<NewBrewItem/>
 				<HelpNavItem/>
 				<Nav.dropdown>
 					<Nav.item color='teal' icon='fas fa-share-alt'>
@@ -400,63 +399,64 @@ const EditPage = (props) => {
 					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
 						copy url
 					</Nav.item>
-					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
+					<Nav.item color='blue' href={getRedditLink()} newTab={true} rel='noopener noreferrer'>
 						post to reddit
 					</Nav.item>
 				</Nav.dropdown>
 				<PrintNavItem />
 				<VaultNavItem />
-				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
+				<RecentNavItem brew={currentBrew} storageKey='edit' />
+				<AccountNavItem/>
 			</Nav.section>
-
 		</Navbar>;
-	},
+	};
 
-	render : function(){
-		return <div className='editPage sitePage'>
+	return (
+		<div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{this.renderNavbar()}
 
-			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
+			{renderNavbar()}
+
+			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
+
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onSnipChange={this.handleSnipChange}
-						onMetaChange={this.handleMetaChange}
+						ref={editorRef}
+						brew={currentBrew}
+						onTextChange={handleTextChange}
+						onStyleChange={handleStyleChange}
+						onSnipChange={handleSnipChange}
+						onMetaChange={handleMetaChange}
 						reportError={setError}
-						renderer={this.state.brew.renderer}
-						userThemes={this.props.userThemes}
-						themeBundle={this.state.themeBundle}
-						updateBrew={this.updateBrew}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						renderer={currentBrew.renderer}
+						userThemes={props.userThemes}
+						themeBundle={themeBundle}
+						updateBrew={updateBrew}
+						onCursorPageChange={handleEditorCursorPageChange}
+						onViewPageChange={handleEditorViewPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						theme={currentBrew.theme}
+						themeBundle={themeBundle}
+						errors={HTMLErrors}
+						lang={currentBrew.lang}
+						onPageChange={handleBrewRendererPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = EditPage;
