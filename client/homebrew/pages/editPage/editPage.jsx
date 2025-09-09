@@ -63,7 +63,6 @@ const EditPage = (props) => {
 	const [autoSave                  , setAutoSave                  ] = useState(true);
 	const [autoSaveWarning           , setAutoSaveWarning           ] = useState(false);
 	const [unsavedTime               , setUnsavedTime               ] = useState(new Date());
-	const [displayLockMessage        , setDisplayLockMessage        ] = useState(props.brew.lock || false);
 
 	const debounceSave = useMemo(() => _.debounce(() => trySave(), SAVE_TIMEOUT), []);
 
