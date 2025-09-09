@@ -35,7 +35,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 
 import googleDriveIcon from '../../googleDrive.svg';
 
-const SAVE_TIMEOUT = 5000;
+const SAVE_TIMEOUT = 10000;
 
 const EditPage = (props) => {
 	props = {
@@ -58,7 +58,7 @@ const EditPage = (props) => {
 	const [confirmGoogleTransfer     , setConfirmGoogleTransfer     ] = useState(false);
 	const [url                       , setUrl                       ] = useState('');
 	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(true);
-	const [autoSaveWarning           , setAutoSaveWarning           ] = useState(false);
+	const [autoSaveWarning           , setAutoSaveWarning           ] = useState(true);
 	const [unsavedTime               , setUnsavedTime               ] = useState(new Date());
 
 	const editorRef    = useRef(null);
@@ -297,6 +297,7 @@ const EditPage = (props) => {
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
 		if (unsavedChanges && autoSaveWarning) {
 			resetAutoSaveWarning();
+			console.log("just set the timer")
 			const elapsedTime = Math.round((new Date() - unsavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
 				? 'Autosave is OFF.'
@@ -323,13 +324,13 @@ const EditPage = (props) => {
 	const toggleAutoSave = () => {
 		if (warningTimer.current) clearTimeout(warningTimer.current);
 		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
+		setAutoSaveWarning(autoSaveWarning);
 		setAutoSaveEnabled(!autoSaveEnabled);
-		setAutoSaveWarning(false);
 	};
 
 	const resetAutoSaveWarning = () => {
-		setTimeout(setAutoSaveWarning(false), 4000); // Hide the warning after 4 seconds
-		warningTimer.current = setTimeout(setAutoSaveWarning(true), 900000); // 15 minutes between unsaved changes warnings
+		setTimeout(()=>setAutoSaveWarning(false), 4000); // Hide the warning after 4 seconds
+		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), 3000); // 15 minutes between unsaved changes warnings
 	};
 
 	const renderAutoSaveButton = () => (
