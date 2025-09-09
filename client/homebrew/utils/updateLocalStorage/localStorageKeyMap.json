@@ -1,0 +1,19 @@
+{
+	"AUTOSAVE_ON" : "HB_editor_autoSaveOn",
+	"HOMEBREWERY-EDITOR-THEME" : "HB_editor_theme",
+	"liveScroll" : "HB_editor_liveScroll",
+	"naturalcrit-pane-split" : "HB_editor_splitWidth",
+	"HOMEBREWERY-LISTPAGE-SORTDIR" : "HB_listPage_sortDir",
+	"HOMEBREWERY-LISTPAGE-SORTTYPE" : "HB_listPage_sortType",
+	"HOMEBREWERY-LISTPAGE-VISIBILITY" : "HB_listPage_visibility_group",
+	"dismiss_notif_drive" : "HB_dismissNotif_drive",
+	"dismiss_notif_faq" : "HB_dismissNotif_faq",
+	"dismiss_notif_update_v3.18" : "HB_dismissNotif_update_v3.18",
+	"dismiss_v134 update" : "HB_dismissNotif_update_v134",
+	"hbAdminTab" : "HB_adminPage_currentTab",
+	"homebrewery-new" : "HB_newPage_content",
+	"homebrewery-new-meta" : "HB_newPage_metadata",
+	"homebrewery-new-style" : "HB_newPage_style",
+	"homebrewery-recently-edited" : "HB_nav_recentlyEdited",
+	"homebrewery-recently-viewed" : "HB_nav_recentlyViewed" 
+}
