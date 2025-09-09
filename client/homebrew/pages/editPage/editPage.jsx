@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import './editPage.less';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
@@ -35,16 +35,13 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 
 import googleDriveIcon from '../../googleDrive.svg';
 
-const SAVE_TIMEOUT = 10000;
+const SAVE_TIMEOUT = 5000;
 
 const EditPage = (props) => {
 	props = {
 		brew: DEFAULT_BREW_LOAD,
 		...props
 	};
-  const editorRef    = useRef(null);
-  const savedBrew    = useRef(_.cloneDeep(props.brew));
-  const warningTimer = useRef(null);
 
 	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
 	const [isSaving                  , setIsSaving                  ] = useState(false);
@@ -64,7 +61,10 @@ const EditPage = (props) => {
 	const [autoSaveWarning           , setAutoSaveWarning           ] = useState(false);
 	const [unsavedTime               , setUnsavedTime               ] = useState(new Date());
 
-	const debounceSave = useMemo(() => _.debounce(() => trySave(), SAVE_TIMEOUT), []);
+	const editorRef    = useRef(null);
+  const savedBrew    = useRef(_.cloneDeep(props.brew));
+  const warningTimer = useRef(null);
+	const debounceSave = useCallback(_.debounce((brew, saveToGoogle)=>save(brew, saveToGoogle), SAVE_TIMEOUT), []);
 
 	useEffect(() => {
 		setUrl(window.location.href);
@@ -92,7 +92,7 @@ const EditPage = (props) => {
 		const hasChange = !_.isEqual(currentBrew, savedBrew.current);
 		setUnsavedChanges(hasChange);
 
-		if(autoSaveEnabled) save();
+		if(hasChange && autoSaveEnabled) trySave();
 	}, [currentBrew]);
 
 	const handleControlKeys = (e) => {
@@ -130,12 +130,10 @@ const EditPage = (props) => {
 
 		setHTMLErrors(HTMLErrors);
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
-		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleStyleChange = (style) => {
 		setCurrentBrew(prevBrew => ({ ...prevBrew, style }));
-		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleSnipChange = (snippet)=>{
@@ -145,7 +143,6 @@ const EditPage = (props) => {
 
 		setHTMLErrors(HTMLErrors);
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
-		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleMetaChange = (metadata, field = undefined) => {
@@ -153,7 +150,6 @@ const EditPage = (props) => {
 			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
 
 		setCurrentBrew(prev => ({ ...prev, ...metadata }));
-		if (autoSaveEnabled) debounceSave();
 	};
 
 	const updateBrew = (newData) => 
@@ -165,22 +161,21 @@ const EditPage = (props) => {
 		}));
 		
 	const trySave = (immediate = false) => {
-		if (!debounceSave.current) return;
+		//debounceSave = _.debounce(save, SAVE_TIMEOUT);
 		if (isSaving) return;
 
 		const hasChange = !_.isEqual(currentBrew, savedBrew.current);
 
 		if (immediate) {
-			debounceSave.current();
-			debounceSave.current.flush?.();
+			debounceSave(currentBrew, saveGoogle);
+			debounceSave.flush?.();
 			return;
 		}
 
-		if (hasChange) {
-			debounceSave.current();
-		} else {
-			debounceSave.current.cancel?.();
-		}
+		if (hasChange)
+			debounceSave(currentBrew, saveGoogle);
+		else
+			debounceSave.cancel?.();
 	};
 
 	const handleGoogleClick = () => {
@@ -206,29 +201,29 @@ const EditPage = (props) => {
 		trySave(true);
 	};
 
-	const save = async () => {
-		debounceSave.current?.cancel?.();
+	const save = async (brew, saveToGoogle) => {
+		debounceSave?.cancel?.();
 
 		setIsSaving(true);
 		setError(null);
-		setHTMLErrors(Markdown.validate(currentBrew.text));
+		setHTMLErrors(Markdown.validate(brew.text));
 
-		await updateHistory(currentBrew).catch(console.error);
+		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
 		//Prepare content to send to server
 		const brewToSave = {
-			...currentBrew,
-			text     : currentBrew.text.normalize('NFC'),
-			pageCount: ((currentBrew.renderer === 'legacy' ? currentBrew.text.match(/\\page/g) : currentBrew.text.match(/^\\page$/gm)) || []).length + 1,
-			patches  : stringifyPatches(makePatches(encodeURI(savedBrew.current.text.normalize('NFC')), encodeURI(currentBrew.text.normalize('NFC')))),
+			...brew,
+			text     : brew.text.normalize('NFC'),
+			pageCount: ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
+			patches  : stringifyPatches(makePatches(encodeURI(savedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
 			hash     : await md5(savedBrew.current.text),
 			textBin  : undefined
 		};
 
 		const compressedBrew = gzipSync(strToU8(JSON.stringify(brewToSave)));
-		const transfer = saveGoogle === _.isNil(currentBrew.googleId);
-		const params = transfer ? `?${saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : '';
+		const transfer = saveToGoogle === _.isNil(brew.googleId);
+		const params = transfer ? `?${saveToGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : '';
 
 		const res = await request
 			.put(`/api/update/${brewToSave.editId}${params}`)
@@ -244,24 +239,17 @@ const EditPage = (props) => {
 		const { googleId, editId, shareId, version } = res.body;
 
 		savedBrew.current = {
-			...currentBrew,
+			...brew,
 			googleId: googleId ?? null,
 			editId,
 			shareId,
 			version
 		};
 
-		setCurrentBrew(prev => ({
-			...prev,
-			googleId: googleId ?? null,
-			editId,
-			shareId,
-			version
-		}));
+		setCurrentBrew(savedBrew.current);
 
 		setIsSaving(false);
 		setUnsavedTime(new Date());
-		setUnsavedChanges(!_.isEqual(currentBrew, savedBrew.current));
 
 		history.replaceState(null, null, `/edit/${editId}`);
 	};
