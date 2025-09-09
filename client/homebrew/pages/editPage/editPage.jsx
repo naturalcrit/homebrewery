@@ -60,7 +60,7 @@ const EditPage = (props) => {
 	const [alertLoginToTransfer      , setAlertLoginToTransfer      ] = useState(false);
 	const [confirmGoogleTransfer     , setConfirmGoogleTransfer     ] = useState(false);
 	const [url                       , setUrl                       ] = useState('');
-	const [autoSave                  , setAutoSave                  ] = useState(true);
+	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(true);
 	const [autoSaveWarning           , setAutoSaveWarning           ] = useState(false);
 	const [unsavedTime               , setUnsavedTime               ] = useState(new Date());
 
@@ -70,7 +70,7 @@ const EditPage = (props) => {
 		setUrl(window.location.href);
 
 		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
-		setAutoSave(autoSavePref);
+		setAutoSaveEnabled(autoSavePref);
 		setAutoSaveWarning(!autoSavePref)
 		setHTMLErrors(Markdown.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -91,6 +91,8 @@ const EditPage = (props) => {
 	useEffect(() => {
 		const hasChange = !_.isEqual(currentBrew, savedBrew.current);
 		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) save();
 	}, [currentBrew]);
 
 	const handleControlKeys = (e) => {
@@ -128,12 +130,12 @@ const EditPage = (props) => {
 
 		setHTMLErrors(HTMLErrors);
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
-		if (autoSave) debounceSave();
+		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleStyleChange = (style) => {
 		setCurrentBrew(prevBrew => ({ ...prevBrew, style }));
-		if (autoSave) debounceSave();
+		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleSnipChange = (snippet)=>{
@@ -143,7 +145,7 @@ const EditPage = (props) => {
 
 		setHTMLErrors(HTMLErrors);
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
-		if (autoSave) debounceSave();
+		if (autoSaveEnabled) debounceSave();
 	};
 
 	const handleMetaChange = (metadata, field = undefined) => {
@@ -151,7 +153,7 @@ const EditPage = (props) => {
 			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
 
 		setCurrentBrew(prev => ({ ...prev, ...metadata }));
-		if (autoSave) debounceSave();
+		if (autoSaveEnabled) debounceSave();
 	};
 
 	const updateBrew = (newData) => 
@@ -306,7 +308,7 @@ const EditPage = (props) => {
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
 		if (unsavedChanges && autoSaveWarning) {
-			setAutosaveWarning();
+			resetAutoSaveWarning();
 			const elapsedTime = Math.round((new Date() - unsavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
 				? 'Autosave is OFF.'
@@ -323,7 +325,7 @@ const EditPage = (props) => {
 			return <Nav.item className='save' onClick={() => trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if (autoSave)
+		if (autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
@@ -333,18 +335,18 @@ const EditPage = (props) => {
 	const handleAutoSave = () => {
 		if (warningTimer.current) clearTimeout(warningTimer.current);
 		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
-		setAutoSave(!autoSave);
+		setAutoSaveEnabled(!autoSaveEnabled);
 		setAutoSaveWarning(false);
 	};
 
-	const resetAutosaveWarning = () => {
+	const resetAutoSaveWarning = () => {
 		setTimeout(setAutoSaveWarning(false), 4000); // Hide the warning after 4 seconds
 		warningTimer.current = setTimeout(setAutoSaveWarning(true), 900000); // 15 minutes between unsaved changes warnings
 	};
 
 	const renderAutoSaveButton = () => (
 		<Nav.item onClick={handleAutoSave}>
-			Autosave <i className={autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>
 	);
 
