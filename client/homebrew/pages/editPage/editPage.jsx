@@ -332,7 +332,7 @@ const EditPage = (props) => {
 		return <Nav.item className='save saved'>saved.</Nav.item>;
 	};
 
-	const handleAutoSave = () => {
+	const toggleAutoSave = () => {
 		if (warningTimer.current) clearTimeout(warningTimer.current);
 		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
 		setAutoSaveEnabled(!autoSaveEnabled);
@@ -345,7 +345,7 @@ const EditPage = (props) => {
 	};
 
 	const renderAutoSaveButton = () => (
-		<Nav.item onClick={handleAutoSave}>
+		<Nav.item onClick={toggleAutoSave}>
 			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>
 	);
