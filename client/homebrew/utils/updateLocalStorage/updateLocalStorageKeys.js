@@ -1,5 +1,15 @@
 import localStorageKeyMap from './localStorageKeyMap.json' with { type: 'json' };
 
+const addDynamicKeys = function(keyObject){
+
+	if(global?.account?.username){
+		const username = global.account.username;
+		 keyObject[`HOMEBREWERY-DEFAULT-SAVE-LOCATION-${username}`] = `HB_editor_defaultSave_${username}`;
+	}
+
+	return keyObject;
+};
+
 const updateLocalStorage = function(){
 	// Return if no window and thus no local storage
 	if(typeof window === 'undefined') return;
@@ -8,11 +18,12 @@ const updateLocalStorage = function(){
 	if(Object.keys(localStorageKeyMap).length == 0) return;
 
 	const storage = window.localStorage;
+	const storageKeyMap = addDynamicKeys(localStorageKeyMap);
 
-	Object.keys(localStorageKeyMap).forEach((key)=>{
+	Object.keys(storageKeyMap).forEach((key)=>{
 		if(storage[key]){
 			const data = storage.getItem(key);
-			storage.setItem(localStorageKeyMap[key], data);
+			storage.setItem(storageKeyMap[key], data);
 			// storage.removeItem(key);
 		}
 	});
