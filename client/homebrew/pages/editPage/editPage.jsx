@@ -64,6 +64,7 @@ const EditPage = (props)=>{
 
 	const editorRef    = useRef(null);
 	const savedBrew    = useRef(_.cloneDeep(props.brew));
+	const warningTimer = useRef(null);
 	const debounceSave = useCallback(_.debounce((brew, saveToGoogle)=>save(brew, saveToGoogle), SAVE_TIMEOUT), []);
 
 	useEffect(()=>{
