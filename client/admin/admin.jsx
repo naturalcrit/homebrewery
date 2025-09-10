@@ -7,7 +7,7 @@ import LockTools  from './lockTools/lockTools.jsx';
 
 const tabGroups = ['brew', 'notifications', 'authors', 'locks'];
 
-const ADMIN_TAB = 'hbAdminTab';
+const ADMIN_TAB = 'HB_adminPage_currentTab';
 
 const Admin = ()=>{
 	const [currentTab, setCurrentTab] = useState('');
