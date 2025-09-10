@@ -9,11 +9,6 @@
 	"HOMEBREWERY-LISTPAGE-VISIBILITY-published"		: "HB_listPage_visibility_group_published",
 	"HOMEBREWERY-LISTPAGE-VISIBILITY-unpublished"	: "HB_listPage_visibility_group_unpublished",
 
-	"dismiss_notif_drive"							: "HB_dismissNotif_drive",
-	"dismiss_notif_faq"								: "HB_dismissNotif_faq",
-	"dismiss_notif_update_v3.18"					: "HB_dismissNotif_update_v3.18",
-	"dismiss_v134 update"							: "HB_dismissNotif_update_v134",
-
 	"hbAdminTab"									: "HB_adminPage_currentTab",
 
 	"homebrewery-new"								: "HB_newPage_content",
