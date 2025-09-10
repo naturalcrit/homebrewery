@@ -126,9 +126,7 @@ const EditPage = (props) => {
 	const handleTextChange = (text) => {
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length)
-			HTMLErrors = Markdown.validate(text);
-
-		setHTMLErrors(HTMLErrors);
+			setHTMLErrors(Markdown.validate(text));
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
 	};
 
@@ -139,9 +137,7 @@ const EditPage = (props) => {
 	const handleSnipChange = (snippet)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length)
-			HTMLErrors = Markdown.validate(snippet);
-
-		setHTMLErrors(HTMLErrors);
+			setHTMLErrors(Markdown.validate(snippet));
 		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
 	};
 
