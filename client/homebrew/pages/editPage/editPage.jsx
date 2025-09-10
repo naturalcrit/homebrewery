@@ -5,10 +5,10 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
-import _                                                           from 'lodash';;
-import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
-import { md5 }                                                     from 'hash-wasm';
-import { gzipSync, strToU8 }                                       from 'fflate';
+import _                               from 'lodash';;
+import {makePatches, stringifyPatches} from '@sanity/diff-match-patch';
+import { md5 }                         from 'hash-wasm';
+import { gzipSync, strToU8 }           from 'fflate';
 
 const { Meta } = require('vitreum/headtags');
 
@@ -28,14 +28,16 @@ import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import LockNotification from './lockNotification/lockNotification.jsx';
 
-import { DEFAULT_BREW_LOAD }                                             from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 
 import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
+const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const EditPage = (props) => {
 	props = {
@@ -77,9 +79,8 @@ const EditPage = (props) => {
 
 		document.addEventListener('keydown', handleControlKeys);
 		window.onbeforeunload = () => {
-			if (isSaving || unsavedChanges) {
+			if (isSaving || unsavedChanges)
 				return 'You have unsaved changes!';
-			}
 		};
 
 		return () => {
@@ -293,7 +294,6 @@ const EditPage = (props) => {
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
 		if (unsavedChanges && autoSaveWarning) {
 			resetAutoSaveWarning();
-			console.log("just set the timer")
 			const elapsedTime = Math.round((new Date() - unsavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
 				? 'Autosave is OFF.'
@@ -325,8 +325,8 @@ const EditPage = (props) => {
 	};
 
 	const resetAutoSaveWarning = () => {
-		setTimeout(()=>setAutoSaveWarning(false), 4000); // Hide the warning after 4 seconds
-		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), 90000); // 15 minutes between unsaved changes warnings
+		setTimeout(()=>setAutoSaveWarning(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved changes warnings
 	};
 
 	const renderAutoSaveButton = () => (
