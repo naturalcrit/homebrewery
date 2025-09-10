@@ -23,7 +23,7 @@ const updateLocalStorage = function(){
 	Object.keys(storageKeyMap).forEach((key)=>{
 		if(storage[key]){
 			const data = storage.getItem(key);
-			storage.setItem(storageKeyMap[key], data);
+			if(!storage[storageKeyMap[key]]) storage.setItem(storageKeyMap[key], data);
 			// storage.removeItem(key);
 		}
 	});
