@@ -20,10 +20,10 @@ import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const METAKEY  = 'HB_newPage_metadata';
+const SAVEKEY  = `HB_editor_defaultSave_${global.account?.username || ''}`;
 
 const NewPage = (props) => {
 	props = {
