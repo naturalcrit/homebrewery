@@ -330,7 +330,7 @@ const EditPage = (props) => {
 
 	const resetAutoSaveWarning = () => {
 		setTimeout(()=>setAutoSaveWarning(false), 4000); // Hide the warning after 4 seconds
-		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), 3000); // 15 minutes between unsaved changes warnings
+		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), 90000); // 15 minutes between unsaved changes warnings
 	};
 
 	const renderAutoSaveButton = () => (
