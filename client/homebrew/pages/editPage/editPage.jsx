@@ -5,12 +5,11 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
-import _                               from 'lodash';;
-import {makePatches, stringifyPatches} from '@sanity/diff-match-patch';
-import { md5 }                         from 'hash-wasm';
-import { gzipSync, strToU8 }           from 'fflate';
-
-const { Meta } = require('vitreum/headtags');
+import _                                 from 'lodash';;
+import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
+import { md5 }                           from 'hash-wasm';
+import { gzipSync, strToU8 }             from 'fflate';
+import { Meta }                          from 'vitreum/headtags';
 
 import Nav                       from 'naturalcrit/nav/nav.jsx';
 import Navbar                    from '../../navbar/navbar.jsx';
@@ -39,9 +38,9 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-const EditPage = (props) => {
+const EditPage = (props)=>{
 	props = {
-		brew: DEFAULT_BREW_LOAD,
+		brew : DEFAULT_BREW_LOAD,
 		...props
 	};
 
@@ -64,141 +63,139 @@ const EditPage = (props) => {
 	const [unsavedTime               , setUnsavedTime               ] = useState(new Date());
 
 	const editorRef    = useRef(null);
-  const savedBrew    = useRef(_.cloneDeep(props.brew));
-  const warningTimer = useRef(null);
+	const savedBrew    = useRef(_.cloneDeep(props.brew));
 	const debounceSave = useCallback(_.debounce((brew, saveToGoogle)=>save(brew, saveToGoogle), SAVE_TIMEOUT), []);
 
-	useEffect(() => {
+	useEffect(()=>{
 		setUrl(window.location.href);
 
 		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
 		setAutoSaveEnabled(autoSavePref);
-		setAutoSaveWarning(!autoSavePref)
+		setAutoSaveWarning(!autoSavePref);
 		setHTMLErrors(Markdown.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		document.addEventListener('keydown', handleControlKeys);
-		window.onbeforeunload = () => {
-			if (isSaving || unsavedChanges)
+		window.onbeforeunload = ()=>{
+			if(isSaving || unsavedChanges)
 				return 'You have unsaved changes!';
 		};
 
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 			window.onbeforeunload = null;
 		};
 	}, []);
 
-	useEffect(() => {
+	useEffect(()=>{
 		const hasChange = !_.isEqual(currentBrew, savedBrew.current);
 		setUnsavedChanges(hasChange);
 
 		if(hasChange && autoSaveEnabled) trySave();
 	}, [currentBrew]);
 
-	const handleControlKeys = (e) => {
-		if (!(e.ctrlKey || e.metaKey)) return;
+	const handleControlKeys = (e)=>{
+		if(!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
-		if (e.keyCode === S_KEY) trySave(true);
-		if (e.keyCode === P_KEY) printCurrentBrew();
-		if (e.keyCode === S_KEY || e.keyCode === P_KEY) {
+		if(e.keyCode === S_KEY) trySave(true);
+		if(e.keyCode === P_KEY) printCurrentBrew();
+		if(e.keyCode === S_KEY || e.keyCode === P_KEY) {
 			e.stopPropagation();
 			e.preventDefault();
 		}
 	};
 
-	const handleSplitMove = () => {
+	const handleSplitMove = ()=>{
 		editorRef.current?.update();
 	};
 
-	const handleEditorViewPageChange = (pageNumber) => {
+	const handleEditorViewPageChange = (pageNumber)=>{
 		setCurrentEditorViewPageNum(pageNumber);
 	};
 
-	const handleEditorCursorPageChange = (pageNumber) => {
+	const handleEditorCursorPageChange = (pageNumber)=>{
 		setCurrentEditorCursorPageNum(pageNumber);
 	};
 
-	const handleBrewRendererPageChange = (pageNumber) => {
+	const handleBrewRendererPageChange = (pageNumber)=>{
 		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
-	const handleTextChange = (text) => {
+	const handleTextChange = (text)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length)
 			setHTMLErrors(Markdown.validate(text));
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, text }));
 	};
 
-	const handleStyleChange = (style) => {
-		setCurrentBrew(prevBrew => ({ ...prevBrew, style }));
+	const handleStyleChange = (style)=>{
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, style }));
 	};
 
 	const handleSnipChange = (snippet)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length)
 			setHTMLErrors(Markdown.validate(snippet));
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
+		setCurrentBrew((prevBrew)=>({ ...prevBrew, snippets: snippet }));
 	};
 
-	const handleMetaChange = (metadata, field = undefined) => {
-		if (field === 'theme' || field === 'renderer')
+	const handleMetaChange = (metadata, field = undefined)=>{
+		if(field === 'theme' || field === 'renderer')
 			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
 
-		setCurrentBrew(prev => ({ ...prev, ...metadata }));
+		setCurrentBrew((prev)=>({ ...prev, ...metadata }));
 	};
 
-	const updateBrew = (newData) => 
-		setCurrentBrew((prevBrew) => ({
-			...prevBrew,
-			style    : newData.style,
-			text     : newData.text,
-			snippets : newData.snippets
-		}));
-		
-	const trySave = (immediate = false) => {
+	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
+		...prevBrew,
+		style    : newData.style,
+		text     : newData.text,
+		snippets : newData.snippets
+	}));
+
+	const trySave = (immediate = false)=>{
 		//debounceSave = _.debounce(save, SAVE_TIMEOUT);
-		if (isSaving) return;
+		if(isSaving) return;
 
 		const hasChange = !_.isEqual(currentBrew, savedBrew.current);
 
-		if (immediate) {
+		if(immediate) {
 			debounceSave(currentBrew, saveGoogle);
 			debounceSave.flush?.();
 			return;
 		}
 
-		if (hasChange)
+		if(hasChange)
 			debounceSave(currentBrew, saveGoogle);
 		else
 			debounceSave.cancel?.();
 	};
 
-	const handleGoogleClick = () => {
-		if (!global.account?.googleId) {
+	const handleGoogleClick = ()=>{
+		if(!global.account?.googleId) {
 			setAlertLoginToTransfer(true);
 			return;
 		}
 
-		setConfirmGoogleTransfer((prev) => !prev);
+		setConfirmGoogleTransfer((prev)=>!prev);
 		setError(null);
 	};
 
-	const closeAlerts = (e) => {
+	const closeAlerts = (e)=>{
 		e.stopPropagation(); //Only handle click once so alert doesn't reopen
 		setAlertTrashedGoogleBrew(false);
 		setAlertLoginToTransfer(false);
 		setConfirmGoogleTransfer(false);
 	};
 
-	const toggleGoogleStorage = () => {
-		setSaveGoogle((prev) => !prev);
+	const toggleGoogleStorage = ()=>{
+		setSaveGoogle((prev)=>!prev);
 		setError(null);
 		trySave(true);
 	};
 
-	const save = async (brew, saveToGoogle) => {
+	const save = async (brew, saveToGoogle)=>{
 		debounceSave?.cancel?.();
 
 		setIsSaving(true);
@@ -211,11 +208,11 @@ const EditPage = (props) => {
 		//Prepare content to send to server
 		const brewToSave = {
 			...brew,
-			text     : brew.text.normalize('NFC'),
-			pageCount: ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
-			patches  : stringifyPatches(makePatches(encodeURI(savedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
-			hash     : await md5(savedBrew.current.text),
-			textBin  : undefined
+			text      : brew.text.normalize('NFC'),
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
+			patches   : stringifyPatches(makePatches(encodeURI(savedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
+			hash      : await md5(savedBrew.current.text),
+			textBin   : undefined
 		};
 
 		const compressedBrew = gzipSync(strToU8(JSON.stringify(brewToSave)));
@@ -237,7 +234,7 @@ const EditPage = (props) => {
 
 		savedBrew.current = {
 			...brew,
-			googleId: googleId ?? null,
+			googleId : googleId ?? null,
 			editId,
 			shareId,
 			version
@@ -251,7 +248,7 @@ const EditPage = (props) => {
 		history.replaceState(null, null, `/edit/${editId}`);
 	};
 
-	const renderGoogleDriveIcon = () => (
+	const renderGoogleDriveIcon = ()=>(
 		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
 			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
 
@@ -286,13 +283,13 @@ const EditPage = (props) => {
 		</Nav.item>
 	);
 
-	const renderSaveButton = () => {
+	const renderSaveButton = ()=>{
 		// #1 - Currently saving, show SAVING
-		if (isSaving)
+		if(isSaving)
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if (unsavedChanges && autoSaveWarning) {
+		if(unsavedChanges && autoSaveWarning) {
 			resetAutoSaveWarning();
 			const elapsedTime = Math.round((new Date() - unsavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
@@ -306,42 +303,42 @@ const EditPage = (props) => {
 		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if (unsavedChanges)
-			return <Nav.item className='save' onClick={() => trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if (autoSaveEnabled)
+		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
 		return <Nav.item className='save saved'>saved.</Nav.item>;
 	};
 
-	const toggleAutoSave = () => {
-		if (warningTimer.current) clearTimeout(warningTimer.current);
+	const toggleAutoSave = ()=>{
+		if(warningTimer.current) clearTimeout(warningTimer.current);
 		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
 		setAutoSaveWarning(autoSaveWarning);
 		setAutoSaveEnabled(!autoSaveEnabled);
 	};
 
-	const resetAutoSaveWarning = () => {
+	const resetAutoSaveWarning = ()=>{
 		setTimeout(()=>setAutoSaveWarning(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
 		warningTimer.current = setTimeout(()=>setAutoSaveWarning(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved changes warnings
 	};
 
-	const renderAutoSaveButton = () => (
+	const renderAutoSaveButton = ()=>(
 		<Nav.item onClick={toggleAutoSave}>
 			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>
 	);
 
-	const processShareId = () => (
+	const processShareId = ()=>(
 		currentBrew.googleId && !currentBrew.stubbed
 			? currentBrew.googleId + currentBrew.shareId
 			: currentBrew.shareId
 	);
 
-	const getRedditLink = () => {
+	const getRedditLink = ()=>{
 		const shareLink = processShareId();
 		const systems = currentBrew.systems.length > 0 ? ` [${currentBrew.systems.join(' - ')}]` : '';
 		const title = `${currentBrew.title} ${systems}`;
@@ -352,7 +349,7 @@ const EditPage = (props) => {
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	};
 
-	const clearError = () => {
+	const clearError = ()=>{
 		setError(null);
 		setIsSaving(false);
 	};
