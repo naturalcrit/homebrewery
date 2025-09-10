@@ -1,13 +1,14 @@
 import react from "eslint-plugin-react";
 import jest from "eslint-plugin-jest";
 import globals from "globals";
+import localPlugin from "./eslint_plugins/index.js";
 
 export default [{
 		ignores: ["build/"]
 	},
 	{
 		files           : ['**/*.js', '**/*.jsx'],
-		plugins         : { react, jest },
+		plugins         : { react, jest, local: localPlugin },
 		languageOptions : {
 				ecmaVersion   : "latest",
 				sourceType    : "module",
@@ -65,7 +66,10 @@ export default [{
 				"key-spacing"                   : ["warn", {
 						multiLine  : { beforeColon: true, afterColon: true, align: "colon" },
 						singleLine : { beforeColon: false, afterColon: true }
-				}]
+				}],
+
+				"local/aligned-useState-pairs": "warn"
+
 		}
 	}
 ];
