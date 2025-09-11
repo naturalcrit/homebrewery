@@ -45,7 +45,7 @@ jobs:
 
   test:
     docker:
-      - image: cimg/node:20.17.0
+      - image: cimg/node:20.18.0
 
     working_directory: ~/homebrewery
     parallelism: 1
