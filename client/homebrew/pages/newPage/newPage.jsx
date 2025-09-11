@@ -96,17 +96,6 @@ const NewPage = (props) => {
 		editorRef.current.update();
 	};
 
-	const handleEditorViewPageChange = (pageNumber)=>{
-		setCurrentEditorViewPageNum(pageNumber);
-	};
-	
-	const handleEditorCursorPageChange = (pageNumber)=>{
-		setCurrentEditorCursorPageNum(pageNumber);
-	};
-	
-	const handleBrewRendererPageChange = (pageNumber)=>{
-		setCurrentBrewRendererPageNum(pageNumber);
-	};
 
 	const handleTextChange = (text)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
@@ -222,8 +211,8 @@ const NewPage = (props) => {
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
-						onCursorPageChange={handleEditorCursorPageChange}
-						onViewPageChange={handleEditorViewPageChange}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
@@ -236,7 +225,7 @@ const NewPage = (props) => {
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
-						onPageChange={handleBrewRendererPageChange}
+						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
