@@ -11,9 +11,9 @@ const updateLocalStorage = function(){
 	const storage = window.localStorage;
 
 	Object.keys(localStorageKeyMap).forEach((key)=>{
-		if(storage[key]){
+		if(storage[key] && !storage[localStorageKeyMap[key]]){
 			const data = storage.getItem(key);
-			if(!storage[localStorageKeyMap[key]]) storage.setItem(localStorageKeyMap[key], data);
+			storage.setItem(localStorageKeyMap[key], data);
 			// storage.removeItem(key);
 		}
 	});
