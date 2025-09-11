@@ -830,6 +830,13 @@ const Markdown = {
 		const opts = Marked.defaults;
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
+
+		// Add system variables to the end of each page
+		globalVarsList[pageNumber][`HB_pageNumber_${pageNumber + 1}`] = {
+			content  : globalVarsList[pageNumber]['HB_pageNumber'].content,
+			resolved : true
+		};
+
 		const tokens = Marked.lexer(rawBrewText, opts);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
