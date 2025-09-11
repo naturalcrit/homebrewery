@@ -73,6 +73,7 @@ export default {
 							pos.comma !== maxComma ||
 							pos.closing !== maxClosing
 						) {
+							console.log(context);
 							context.report({
 								node: pos.node,
 								message: "useState pair is not aligned with others in its block.",
@@ -86,8 +87,6 @@ export default {
 									const paddedLeft = left.padEnd(maxComma - 1);
 									const paddedRight = right.padEnd(maxClosing - maxComma - 2);
 									const aligned = `[${paddedLeft}, ${paddedRight}] = useState(${value})`;
-									console.log("Pre:  " + text);
-									console.log("Post: " + aligned);
 									return [
 										fixer.replaceText(pos.node, aligned),
 										fixer.insertTextBefore(pos.node.parent, ""),

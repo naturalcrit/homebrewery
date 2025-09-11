@@ -47,9 +47,9 @@ export default [{
 				"semi"            : ["warn", "always"],
 
 				/** Whitespace **/
-				"array-bracket-spacing"         : ["warn", "never"],
+				//"array-bracket-spacing"         : ["warn", "never"],
 				"arrow-spacing"                 : ["warn", { before: false, after: false	}],
-				"comma-spacing"                 : ["warn", { before: false, after: true }],
+				//"comma-spacing"                 : ["warn", { before: false, after: true }],
 				"indent"                        : ["warn", "tab", { MemberExpression: "off" }],
 				"linebreak-style"               : "off",
 				"no-trailing-spaces"            : "warn",
