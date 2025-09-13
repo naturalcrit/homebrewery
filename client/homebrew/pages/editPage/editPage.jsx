@@ -15,6 +15,7 @@ import Nav                       from 'naturalcrit/nav/nav.jsx';
 import Navbar                    from '../../navbar/navbar.jsx';
 import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
 import AccountNavItem            from '../../navbar/account.navitem.jsx';
+import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import ErrorNavItem              from '../../navbar/error-navitem.jsx';
 import HelpNavItem               from '../../navbar/help.navitem.jsx';
 import VaultNavItem              from '../../navbar/vault.navitem.jsx';
@@ -333,31 +334,12 @@ const EditPage = (props)=>{
 		</Nav.item>
 	);
 
-	const processShareId = ()=>(
-		currentBrew.googleId && !currentBrew.stubbed
-			? currentBrew.googleId + currentBrew.shareId
-			: currentBrew.shareId
-	);
-
-	const getRedditLink = ()=>{
-		const shareLink = processShareId();
-		const systems = currentBrew.systems.length > 0 ? ` [${currentBrew.systems.join(' - ')}]` : '';
-		const title = `${currentBrew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-	**[Homebrewery Link](${global.config.baseUrl}/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
-	};
-
 	const clearError = ()=>{
 		setError(null);
 		setIsSaving(false);
 	};
 
 	const renderNavbar = ()=>{
-		const shareLink = processShareId();
-
 		return <Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
@@ -373,20 +355,7 @@ const EditPage = (props)=>{
 						</Nav.dropdown>}
 				<NewBrewItem/>
 				<HelpNavItem/>
-				<Nav.dropdown>
-					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
-					</Nav.item>
-					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
-					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-						copy url
-					</Nav.item>
-					<Nav.item color='blue' href={getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
-					</Nav.item>
-				</Nav.dropdown>
+				<ShareNavItem brew={currentBrew} />
 				<PrintNavItem />
 				<VaultNavItem />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
