@@ -21,7 +21,7 @@ const Account = require('../../navbar/account.navitem.jsx');
 const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
 const VaultNavItem = require('../../navbar/vault.navitem.jsx');
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
+const SplitPane = require('client/components/splitPane/splitPane.jsx');
 const Editor = require('../../editor/editor.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
@@ -97,7 +97,7 @@ const EditPage = createClass({
 			htmlErrors : Markdown.validate(prevState.brew.text)
 		}));
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, this.props.brew.renderer, this.props.brew.theme);
 
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
@@ -173,7 +173,7 @@ const EditPage = createClass({
 
 	handleMetaChange : function(metadata, field=undefined){
 		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
+			fetchThemeBundle((err)=>{this.setState({ error: err })}, (theme)=>{this.setState({ themeBundle: theme })}, metadata.renderer, metadata.theme);
 
 		this.setState((prevState)=>({
 			brew : {
@@ -438,6 +438,13 @@ const EditPage = createClass({
 		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 	},
 
+	clearError : function(){
+		setState({
+			error    : null,
+			isSaving : false
+		})
+	},
+
 	renderNavbar : function(){
 		const shareLink = this.processShareId();
 
@@ -449,7 +456,7 @@ const EditPage = createClass({
 			<Nav.section>
 				{this.renderGoogleDriveIcon()}
 				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
+					<ErrorNavItem error={this.state.error} clearError={this.clearError}></ErrorNavItem> :
 					<Nav.dropdown className='save-menu'>
 						{this.renderSaveButton()}
 						{this.renderAutoSaveButton()}

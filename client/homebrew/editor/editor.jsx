@@ -89,6 +89,7 @@ const Editor = createClass({
 		this.highlightCustomMarkdown();
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
+		document.addEventListener('keydown', this.handleSoftPages);
 
 		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
 		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
@@ -105,7 +106,6 @@ const Editor = createClass({
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
 		this.highlightCustomMarkdown();
-		this.handleSoftPages();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -163,7 +163,10 @@ const Editor = createClass({
 		});
 	},
 
-	handleSoftPages : function(targetPage=parseInt(this.props.currentEditorCursorPageNum, 10)) {
+	handleSoftPages : function(e, targetPage=parseInt(this.props.currentEditorCursorPageNum, 10)) {
+		const moveKeys = [33, 34, 35, 36, 37, 38, 39, 40];
+		if((e.ctrlKey || e.metaKey || e.shiftKey)) return; // Skip Control Presses
+		if(moveKeys.includes(e.keyCode)) return; // Skip Navigation keys Presses
 		if(softPageCalc) return;
 		if(this.props.renderer == 'Legacy') return;
 
@@ -192,13 +195,16 @@ const Editor = createClass({
 			if((inX) && (inY) &&
 		      ((getComputedStyle(columnWrapper.children[child])?.position != 'absolute') &&
 			   (columnWrapper.children[child].className != 'columnSplit'))) {
-			   } else if((!inX)||(!inY)) { // Clean this up...
+			} else if((!inX)||(!inY)) { // Clean this up...
 				console.log('Out of Bounds.');
+				console.log(`X: ${inX} Y:${inY}`);
 				console.log(columnWrapper.children[child]);
+				columnWrapper.children[child].backgroundColor = 'red';
 				softInsert = true;
 				break;
 			}
 			child++;
+			if(softInsert) break;
 		}
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
