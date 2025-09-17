@@ -89,7 +89,6 @@ const Editor = createClass({
 		this.highlightCustomMarkdown();
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
-		document.addEventListener('keydown', this.handleSoftPages);
 
 		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
 		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
@@ -104,6 +103,9 @@ const Editor = createClass({
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
+
+		if(prevProps.brew.text !== this.props.brew.text)
+			this.handleSoftPages();
 
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew)
@@ -163,10 +165,7 @@ const Editor = createClass({
 		});
 	},
 
-	handleSoftPages : function(e, targetPage=parseInt(this.props.currentEditorCursorPageNum, 10)) {
-		const moveKeys = [33, 34, 35, 36, 37, 38, 39, 40];
-		if((e.ctrlKey || e.metaKey || e.shiftKey)) return; // Skip Control Presses
-		if(moveKeys.includes(e.keyCode)) return; // Skip Navigation keys Presses
+	handleSoftPages : function(targetPage=(parseInt(this.props.currentEditorCursorPageNum, 10))) {
 		if(softPageCalc) return;
 		if(this.props.renderer == 'Legacy') return;
 
@@ -184,7 +183,7 @@ const Editor = createClass({
 		const parentY      = testPage.getBoundingClientRect().top;
 		const parentY2      = testPage.getBoundingClientRect().bottom;
 
-		while (columnWrapper.children[child]){
+		while ((columnWrapper.children[child]) && !softInsert){
 			const childX = columnWrapper.children[child].getBoundingClientRect().left;
 			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
 			const childY = columnWrapper.children[child].getBoundingClientRect().top;
@@ -198,50 +197,78 @@ const Editor = createClass({
 			} else if((!inX)||(!inY)) { // Clean this up...
 				console.log('Out of Bounds.');
 				console.log(`X: ${inX} Y:${inY}`);
-				console.log(columnWrapper.children[child]);
-				columnWrapper.children[child].backgroundColor = 'red';
+				console.log(`Child - X1: ${childX} X2: ${childX2}`);
+				console.log(`Parent - X1: ${parentX} X2: ${parentX2}`);
 				softInsert = true;
-				break;
 			}
 			child++;
-			if(softInsert) break;
 		}
+		child--;
+
+		console.log(columnWrapper.children[child-2].outerHTML);
+		console.log(columnWrapper.children[child-1].outerHTML);
+		console.log(columnWrapper.children[child].outerHTML);
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
-		// if(columnWrapper.children[child-1]?.className == 'columnSplit') {
-		// 	return;
-		// }
+		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
+			return;
+		}
 
+		console.log(`SI: ${softInsert}`);
 		// Exit if the last element is in bounds and is not absolutely positioned
 		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
 
 		columnWrapper.style.overflow = 'hidden';
+		if(softInsert && columnWrapper.children[child]) {
 
-		// Concatenate all of the softpages surrounding this 
-		const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
-		//while ((targetPage>0) && (allPages[targetPage - 1]?.startsWith('\\softpage'))) targetPage--;
-		let textString = allPages[targetPage -1];  // Get the current page's text.
-	    for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<allPages.length)); i++)
-			textString +=`\n${allPages[i]}`;
-		const strippedString = textString;//?.replace(/\n?\\softpage +\n/, '\n');
+			// Concatenate all of the softpages surrounding this
+			const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
+			let firstPage = targetPage, lastPage = targetPage;
+			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i>0)); i--)
+				firstPage = i;
+			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<=allPages.length)); i++)
+				lastPage = i;
+			console.log(`f: ${firstPage} l:${lastPage} t:${allPages.length}`);
+			const strippedString = lastPage != targetPage ? allPages.slice(targetPage - 1, lastPage - 1).join('\n') : allPages[targetPage - 1];
 
-		if(softInsert) {
 			const lines = strippedString.split('\n');
+			console.log(`Resetting between pages ${firstPage} and ${lastPage}`);
 			console.log(lines);
+			const softPageFormatter = allPages[firstPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage';
+		
+			const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
+			const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
+			const targetPageLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
+
+			let inBlock = '-1';
 			for (let line in lines) {
-				const render = stripTrailingTags(Markdown.render(lines[line]));
-				if(render.indexOf('Eye of the Beholder') > 0) console.log(render);
-				if((render?.length>0) && (columnWrapper.children[child].outerHTML.toString().indexOf(render)>-1)) {
+				const render = stripTrailingTags(Markdown.render(`${lines[line-1]}\n${lines[line]}\n${lines[line + 1]}\n${lines[line + 2]}`));
+				if(lines[line].startsWith('{{')) inBlock = line;
+				if(lines[line].endsWith('}}')) inBlock = '-1';
+				if((render?.length>0) && (columnWrapper.children[child]?.outerHTML?.toString()?.indexOf(render)>-1)) {
+					console.log('This is a match!');
+					console.log(render);
+					console.log(columnWrapper.children[child]?.outerHTML?.toString());
 					softPageCalc = true;
 					console.log('This is a match!');
-					let targetLine = parseInt(line, 10) + 1;
-					while (targetLine > 1 && (line[targetLine] != '')) targetLine--;
+					let targetLine = parseInt(inBlock != '-1' ? inBlock : line, 10) + targetPageLine;
+					console.log(targetLine);
 					const whereWasI = this.codeEditor.current.getCursorPosition();
-					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-					this.handleInject('\n\\softpage\n');
-					this.codeEditor.current.setCursorPosition(whereWasI);
-					columnWrapper.style=preserveStyles;
-					softPageCalc = false;
+					this.codeEditor.current.setCursorPosition({ line: targetLine, ch: 0 });
+					setTimeout(()=>{
+						console.log(this.codeEditor.current.getCursorPosition());
+						console.log('I was at:');
+						console.log(whereWasI);
+						console.log('I inserted at:');
+						console.log(this.codeEditor.current.getCursorPosition());
+						this.handleInject(`\n${softPageFormatter}\n`);
+						this.codeEditor.current.setCursorPosition(whereWasI);
+						console.log(`I inserted: ${softPageFormatter}`);
+						console.log('I returned to:');
+						console.log(this.codeEditor.current.getCursorPosition());
+						columnWrapper.style=preserveStyles;
+						softPageCalc = false;
+					}, 250);
 					break;
 				}
 			}
