@@ -195,19 +195,11 @@ const Editor = createClass({
 		      ((getComputedStyle(columnWrapper.children[child])?.position != 'absolute') &&
 			   (columnWrapper.children[child].className != 'columnSplit'))) {
 			} else if((!inX)||(!inY)) { // Clean this up...
-				console.log('Out of Bounds.');
-				console.log(`X: ${inX} Y:${inY}`);
-				console.log(`Child - X1: ${childX} X2: ${childX2}`);
-				console.log(`Parent - X1: ${parentX} X2: ${parentX2}`);
 				softInsert = true;
 			}
 			child++;
 		}
 		child--;
-
-		console.log(columnWrapper.children[child-2].outerHTML);
-		console.log(columnWrapper.children[child-1].outerHTML);
-		console.log(columnWrapper.children[child].outerHTML);
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
 		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
@@ -223,18 +215,16 @@ const Editor = createClass({
 
 			// Concatenate all of the softpages surrounding this
 			const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
-			let firstPage = targetPage, lastPage = targetPage;
-			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i>0)); i--)
-				firstPage = i;
+			let lastPage = targetPage;
 			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<=allPages.length)); i++)
 				lastPage = i;
 			console.log(`f: ${firstPage} l:${lastPage} t:${allPages.length}`);
 			const strippedString = lastPage != targetPage ? allPages.slice(targetPage - 1, lastPage - 1).join('\n') : allPages[targetPage - 1];
 
 			const lines = strippedString.split('\n');
-			console.log(`Resetting between pages ${firstPage} and ${lastPage}`);
+			console.log(`Resetting between pages ${targetPage} and ${lastPage}`);
 			console.log(lines);
-			const softPageFormatter = allPages[firstPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage';
+			const softPageFormatter = (allPages[targetPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage').trim();
 		
 			const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 			const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
