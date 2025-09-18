@@ -196,6 +196,12 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Database Connection Lost
+		'13' : dedent`
+		## Database connection has been lost.
+		
+		The server could not communicate with the database.`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
