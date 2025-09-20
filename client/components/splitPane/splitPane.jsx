@@ -2,7 +2,8 @@ require('./splitPane.less');
 const React = require('react');
 const { useState, useEffect } = React;
 
-const storageKey = 'naturalcrit-pane-split';
+const PANE_WIDTH_KEY = 'HB_editor_splitWidth';
+const LIVE_SCROLL_KEY = 'HB_editor_liveScroll';
 
 const SplitPane = (props)=>{
 	const {
@@ -18,9 +19,9 @@ const SplitPane = (props)=>{
 	const [liveScroll, setLiveScroll] = useState(false);
 
 	useEffect(()=>{
-		const savedPos = window.localStorage.getItem(storageKey);
+		const savedPos = window.localStorage.getItem(PANE_WIDTH_KEY);
 		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
-		setLiveScroll(window.localStorage.getItem('liveScroll') === 'true');
+		setLiveScroll(window.localStorage.getItem(LIVE_SCROLL_KEY) === 'true');
 
 		window.addEventListener('resize', handleResize);
 		return ()=>window.removeEventListener('resize', handleResize);
@@ -29,13 +30,13 @@ const SplitPane = (props)=>{
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
 	//when resizing, the divider should grow smaller if less space is given, then grow back if the space is restored, to the original position
-	const handleResize = ()=>setDividerPos(limitPosition(window.localStorage.getItem(storageKey), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
+	const handleResize = ()=>setDividerPos(limitPosition(window.localStorage.getItem(PANE_WIDTH_KEY), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
 
 	const handleUp =(e)=>{
 		e.preventDefault();
 		if(isDragging) {
 			onDragFinish(dividerPos);
-			window.localStorage.setItem(storageKey, dividerPos);
+			window.localStorage.setItem(PANE_WIDTH_KEY, dividerPos);
 		}
 		setIsDragging(false);
 	};
@@ -52,7 +53,7 @@ const SplitPane = (props)=>{
 	};
 
 	const liveScrollToggle = ()=>{
-		window.localStorage.setItem('liveScroll', String(!liveScroll));
+		window.localStorage.setItem(LIVE_SCROLL_KEY, String(!liveScroll));
 		setLiveScroll(!liveScroll);
 	};
 

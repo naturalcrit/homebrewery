@@ -4,6 +4,8 @@ import './homebrew.less';
 import React from 'react';
 import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
 
+import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
+
 import HomePage    from './pages/homePage/homePage.jsx';
 import EditPage    from './pages/editPage/editPage.jsx';
 import UserPage    from './pages/userPage/userPage.jsx';
@@ -47,6 +49,8 @@ const Homebrew = (props)=>{
 	global.enable_v3     = enable_v3;
 	global.enable_themes = enable_themes;
 	global.config        = config;
+
+	updateLocalStorage();
 
 	return (
 		<Router location={url}>

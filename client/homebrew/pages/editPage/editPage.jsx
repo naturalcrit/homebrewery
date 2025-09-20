@@ -39,6 +39,8 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+
 const EditPage = (props)=>{
 	props = {
 		brew : DEFAULT_BREW_LOAD,
@@ -71,7 +73,7 @@ const EditPage = (props)=>{
 	useEffect(()=>{
 		setUrl(window.location.href);
 
-		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
+		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setAutoSaveWarning(!autoSavePref);
 		setHTMLErrors(Markdown.validate(currentBrew.text));
@@ -318,7 +320,7 @@ const EditPage = (props)=>{
 
 	const toggleAutoSave = ()=>{
 		if(warningTimer.current) clearTimeout(warningTimer.current);
-		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
+		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
 		setAutoSaveWarning(autoSaveWarning);
 		setAutoSaveEnabled(!autoSaveEnabled);
 	};
