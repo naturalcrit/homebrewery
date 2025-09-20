@@ -10,6 +10,9 @@ import babel          from '@babel/core';
 import babelConfig    from '../babel.config.json' with { type : 'json' };
 import less           from 'less';
 
+import packageJSON from '../package.json' with { type: 'json' };
+const version = packageJSON.version;
+
 const isDev = !!process.argv.find((arg)=>arg === '--dev');
 
 const babelify = async (code)=>(await babel.transformAsync(code, babelConfig)).code;
@@ -24,7 +27,7 @@ const transforms = {
 const build = async ({ bundle, render, ssr })=>{
 	const css = await lessTransform.generate({ paths: './shared' });
 	//css = `@layer bundle {\n${css}\n}`;
-	await fs.outputFile('./build/homebrew/bundle.css', css);
+	await fs.outputFile(`./build/homebrew/bundle-${version}.css`, css);
 	await fs.outputFile('./build/homebrew/bundle.js', bundle);
 	await fs.outputFile('./build/homebrew/ssr.cjs', ssr);
 
@@ -32,11 +35,11 @@ const build = async ({ bundle, render, ssr })=>{
 
 	//compress files in production
 	if(!isDev){
-		await fs.outputFile('./build/homebrew/bundle.css.br', zlib.brotliCompressSync(css));
+		await fs.outputFile(`./build/homebrew/bundle-${version}.css.br`, zlib.brotliCompressSync(css));
 		await fs.outputFile('./build/homebrew/bundle.js.br', zlib.brotliCompressSync(bundle));
 		await fs.outputFile('./build/homebrew/ssr.js.br', zlib.brotliCompressSync(ssr));
 	} else {
-		await fs.remove('./build/homebrew/bundle.css.br');
+		await fs.remove(`./build/homebrew/bundle-${version}.css.br`);
 		await fs.remove('./build/homebrew/bundle.js.br');
 		await fs.remove('./build/homebrew/ssr.js.br');
 	}
