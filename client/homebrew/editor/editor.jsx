@@ -175,7 +175,9 @@ const Editor = createClass({
 		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];
 		const preserveStyles = columnWrapper.style;
 
-		let child=0;
+		let child = Math.floor(columnWrapper.children.length / 2);
+		let lastChild = 0;
+		let shift = Math.floor(child / 2);
 		let softInsert = false;
 
 		const parentX      = testPage.getBoundingClientRect().left;
@@ -183,7 +185,9 @@ const Editor = createClass({
 		const parentY      = testPage.getBoundingClientRect().top;
 		const parentY2      = testPage.getBoundingClientRect().bottom;
 
-		while ((columnWrapper.children[child]) && !softInsert){
+		while ((child != lastChild) && (shift!=0)){
+			console.log(`Looking at: ${columnWrapper.children.length} - L: ${lastChild} C: ${child} - S: ${shift}`);
+			lastChild = child;
 			const childX = columnWrapper.children[child].getBoundingClientRect().left;
 			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
 			const childY = columnWrapper.children[child].getBoundingClientRect().top;
@@ -191,15 +195,26 @@ const Editor = createClass({
 			const inX = ((childX >= parentX) && (childX2 <= parentX2));
 			const inY = ((childY >= parentY) && (childY2 <= parentY2));
 
-			if((inX) && (inY) &&
-		      ((getComputedStyle(columnWrapper.children[child])?.position != 'absolute') &&
+			if((!inX) && (!inY) &&
+		      ((getComputedStyle(columnWrapper.children[child])?.position == 'absolute') &&
 			   (columnWrapper.children[child].className != 'columnSplit'))) {
+				child += 1;
+				softInsert = false;
+				console.log('Out of Bounds but Absolute');
 			} else if((!inX)||(!inY)) { // Clean this up...
+				child -= shift;
+				console.log('Out of Bounds.');
 				softInsert = true;
+				shift = Math.floor(shift / 2);
+			} else {
+				child += 1;
+				console.log('In Bounds.');
+				shift = Math.floor(shift / 2);
 			}
-			child++;
 		}
-		child--;
+
+		console.log(columnWrapper.children[child]);
+		console.log(columnWrapper.children[child-1]);
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
 		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
@@ -218,7 +233,7 @@ const Editor = createClass({
 			let lastPage = targetPage;
 			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<=allPages.length)); i++)
 				lastPage = i;
-			console.log(`f: ${firstPage} l:${lastPage} t:${allPages.length}`);
+			console.log(`l:${lastPage} t:${allPages.length}`);
 			const strippedString = lastPage != targetPage ? allPages.slice(targetPage - 1, lastPage - 1).join('\n') : allPages[targetPage - 1];
 
 			const lines = strippedString.split('\n');
