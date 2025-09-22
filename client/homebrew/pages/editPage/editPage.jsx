@@ -66,7 +66,7 @@ const EditPage = (props)=>{
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew 
+	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
@@ -76,11 +76,11 @@ const EditPage = (props)=>{
 		setHTMLErrors(Markdown.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
-		const handleControlKeys = (e) => {
-			if (!(e.ctrlKey || e.metaKey)) return;
-			if (e.keyCode === 83) trySaveRef.current(true);
-			if (e.keyCode === 80) printCurrentBrew();
-			if ([83, 80].includes(e.keyCode)) {
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey || e.metaKey)) return;
+			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 80) printCurrentBrew();
+			if([83, 80].includes(e.keyCode)) {
 				e.stopPropagation();
 				e.preventDefault();
 			}
@@ -91,7 +91,7 @@ const EditPage = (props)=>{
 			if(unsavedChangesRef.current)
 				return 'You have unsaved changes!';
 		};
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 			window.onBeforeUnload = null;
 		};
@@ -160,7 +160,7 @@ const EditPage = (props)=>{
 	const resetWarnUnsavedTimer = ()=>{
 		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
 		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings	
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
 	};
 
 	const handleGoogleClick = ()=>{
@@ -192,7 +192,7 @@ const EditPage = (props)=>{
 		if(!hasChanges && !immediate) return;
 		const newTimeout = immediate ? 0 : SAVE_TIMEOUT;
 
-		saveTimeout.current = setTimeout(async () => {
+		saveTimeout.current = setTimeout(async ()=>{
 			setIsSaving(true);
 			setError(null);
 			await save(currentBrew, saveGoogle)
@@ -238,10 +238,10 @@ const EditPage = (props)=>{
 		if(!res) return;
 
 		const updatedFields = {
-			googleId: res.body.googleId ?? null,
-			editId  : res.body.editId,
-			shareId : res.body.shareId,
-			version : res.body.version
+			googleId : res.body.googleId ?? null,
+			editId   : res.body.editId,
+			shareId  : res.body.shareId,
+			version  : res.body.version
 		};
 
 		lastSavedBrew.current = {
@@ -307,8 +307,8 @@ const EditPage = (props)=>{
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 							Reminder...
-							<div className='errorContainer'>{text}</div>
-						</Nav.item>
+				<div className='errorContainer'>{text}</div>
+			</Nav.item>;
 		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
@@ -353,9 +353,9 @@ const EditPage = (props)=>{
 				{error
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: <Nav.dropdown className='save-menu'>
-							{renderSaveButton()}
-							{renderAutoSaveButton()}
-						</Nav.dropdown>}
+						{renderSaveButton()}
+						{renderAutoSaveButton()}
+					</Nav.dropdown>}
 				<NewBrewItem/>
 				<HelpNavItem/>
 				<ShareNavItem brew={currentBrew} />
