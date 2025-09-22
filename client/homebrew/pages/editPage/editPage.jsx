@@ -36,7 +36,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 9000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const EditPage = (props)=>{
