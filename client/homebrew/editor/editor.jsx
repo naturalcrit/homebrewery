@@ -186,11 +186,6 @@ const Editor = createClass({
 		const parentY2      = testPage.getBoundingClientRect().bottom;
 
 		while ((child != lastChild) && (child < columnWrapper.children.length)){
-			console.log(`Looking at: ${columnWrapper.children.length} - L: ${lastChild} C: ${child} - S: ${shift}`);
-			console.log('Matched line Predecessor');
-			console.log(columnWrapper.children[child-1]?.outerHTML.toString());
-			console.log('Matched line!');
-			console.log(columnWrapper.children[child]?.outerHTML.toString());
 			shift = Math.floor(Math.abs(lastChild - child) / 2);
 			const childX = columnWrapper.children[child].getBoundingClientRect().left;
 			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
@@ -202,36 +197,23 @@ const Editor = createClass({
 			if(((!inX) || (!inY)) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) { // Clean this up...
 				lastChild = child;
 				child -= shift;
-				console.log('Out of Bounds.');
 				softInsert = true;
 			} else if((inX) && (inY) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) { // Clean this up...
 				lastChild = child;
 				child += shift > 0 ? shift : 1;
-				console.log('In Bounds.');
 			} else if(getComputedStyle(columnWrapper.children[child])?.position == 'absolute') {
 				child -= 1;
 				softInsert = false;
-				console.log('Absolute');
-			} else {
+			} else { // I don't think this should ever trigger....
 				child -= 1;
-				console.log('Unknown Not Absolute');
 			}
 		}
-
-		console.log('Final');
-		console.log(`Looking at: ${columnWrapper.children.length} - L: ${lastChild} C: ${child} - S: ${shift}`);
-		console.log('Matched line Predecessor');
-		console.log(columnWrapper.children[child-1]?.outerHTML.toString());
-		console.log('Matched line!');
-		console.log(columnWrapper.children[child]?.outerHTML.toString());
-		console.log(child);
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
 		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
 			return;
 		}
 
-		console.log(`SI: ${softInsert}`);
 		// Exit if the last element is in bounds and is not absolutely positioned
 		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
 
@@ -243,12 +225,9 @@ const Editor = createClass({
 			let lastPage = targetPage;
 			for (let i = targetPage; (!allPages[i]?.startsWith('\\page') && (i<=allPages.length)); i++)
 				lastPage = i;
-			console.log(`l:${lastPage} t:${allPages.length}`);
 			const strippedString = lastPage != targetPage ? allPages.slice(targetPage - 1, lastPage - 1).join('\n') : allPages[targetPage - 1];
 
 			const lines = strippedString.split('\n');
-			console.log(`Resetting between pages ${targetPage} and ${lastPage}`);
-			console.log(lines);
 			const softPageFormatter = (allPages[targetPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage').trim();
 		
 			const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
@@ -261,26 +240,13 @@ const Editor = createClass({
 				if(lines[line].startsWith('{{')) inBlock = line;
 				if(lines[line].endsWith('}}')) inBlock = '-1';
 				if((render?.length>0) && (columnWrapper.children[child]?.outerHTML?.toString()?.indexOf(render)>-1)) {
-					console.log('This is a match!');
-					console.log(render);
-					console.log(columnWrapper.children[child]?.outerHTML?.toString());
 					softPageCalc = true;
-					console.log('This is a match!');
-					let targetLine = parseInt(inBlock != '-1' ? inBlock : line, 10) + targetPageLine;
-					console.log(targetLine);
+					const targetLine = parseInt(inBlock != '-1' ? inBlock : line, 10) + targetPageLine - 1;
 					const whereWasI = this.codeEditor.current.getCursorPosition();
 					this.codeEditor.current.setCursorPosition({ line: targetLine, ch: 0 });
 					setTimeout(()=>{
-						console.log(this.codeEditor.current.getCursorPosition());
-						console.log('I was at:');
-						console.log(whereWasI);
-						console.log('I inserted at:');
-						console.log(this.codeEditor.current.getCursorPosition());
 						this.handleInject(`\n${softPageFormatter}\n`);
 						this.codeEditor.current.setCursorPosition(whereWasI);
-						console.log(`I inserted: ${softPageFormatter}`);
-						console.log('I returned to:');
-						console.log(this.codeEditor.current.getCursorPosition());
 						columnWrapper.style=preserveStyles;
 						softPageCalc = false;
 					}, 250);
