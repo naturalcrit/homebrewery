@@ -343,7 +343,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-()#%=?.& ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -735,17 +735,6 @@ const voidTags = new Set([
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
 
-const notInside = (string, stringMatch1, stringMatch2)=> {
-	const pos1 = string.indexOf(stringMatch1);
-	const pos2 = string.indexOf(stringMatch2);
-
- 	if(((pos1 > 0) && (pos2 == -1)) ||
-	   ((pos1 > 0) && (pos2 > 0) && (pos2 > pos1))) {
-		return true;
-	}
- 	return false;
-};
-
 const processStyleTags = (string)=>{
 	//split tags up. quotes can only occur right after : or =.
 	//TODO: can we simplify to just split on commas?
@@ -753,7 +742,7 @@ const processStyleTags = (string)=>{
 
 	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
 	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
-	const attributes = _.remove(tags, (tag)=>(notInside(tag, '=', ':'))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
+	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
 		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
 		.reduce((obj, attr)=>{
 			const index = attr.indexOf('=');
