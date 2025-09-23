@@ -116,27 +116,21 @@ const printCurrentBrew = ()=>{
 	}
 };
 
-const fetchThemeBundle = async (obj, renderer, theme)=>{
+const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
 			.catch((err)=>{
-				obj.setState({ error: err });
+				setError(err)
 			});
 	if(!res) {
-		obj.setState((prevState)=>({
-			...prevState,
-			themeBundle : {}
-		}));
+		setThemeBundle({});
 		return;
 	}
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
-	obj.setState((prevState)=>({
-		...prevState,
-		themeBundle : themeBundle,
-		error       : null
-	}));
+	setThemeBundle(themeBundle);
+	setError(null);
 };
 
 const debugTextMismatch = (clientTextRaw, serverTextRaw, label) => {
