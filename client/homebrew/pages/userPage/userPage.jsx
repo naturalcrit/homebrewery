@@ -39,10 +39,14 @@ const UserPage = (props)=>{
 		}] : [])
 	];
 
+	const clearError = ()=>{
+		setError(null);
+	};
+
 	const navItems = (
 		<Navbar>
 			<Nav.section>
-				{error && (<ErrorNavItem error={error} parent={null}></ErrorNavItem>)}
+				{error && (<ErrorNavItem error={error} clearError={clearError}></ErrorNavItem>)}
 				<NewBrew />
 				<HelpNavItem />
 				<VaultNavitem />
