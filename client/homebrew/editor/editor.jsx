@@ -185,9 +185,13 @@ const Editor = createClass({
 		const parentY      = testPage.getBoundingClientRect().top;
 		const parentY2      = testPage.getBoundingClientRect().bottom;
 
-		while ((child != lastChild) && (shift!=0)){
+		while ((child != lastChild) && (child < columnWrapper.children.length)){
 			console.log(`Looking at: ${columnWrapper.children.length} - L: ${lastChild} C: ${child} - S: ${shift}`);
-			lastChild = child;
+			console.log('Matched line Predecessor');
+			console.log(columnWrapper.children[child-1]?.outerHTML.toString());
+			console.log('Matched line!');
+			console.log(columnWrapper.children[child]?.outerHTML.toString());
+			shift = Math.floor(Math.abs(lastChild - child) / 2);
 			const childX = columnWrapper.children[child].getBoundingClientRect().left;
 			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
 			const childY = columnWrapper.children[child].getBoundingClientRect().top;
@@ -195,26 +199,32 @@ const Editor = createClass({
 			const inX = ((childX >= parentX) && (childX2 <= parentX2));
 			const inY = ((childY >= parentY) && (childY2 <= parentY2));
 
-			if((!inX) && (!inY) &&
-		      ((getComputedStyle(columnWrapper.children[child])?.position == 'absolute') &&
-			   (columnWrapper.children[child].className != 'columnSplit'))) {
-				child += 1;
-				softInsert = false;
-				console.log('Out of Bounds but Absolute');
-			} else if((!inX)||(!inY)) { // Clean this up...
+			if(((!inX) || (!inY)) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) { // Clean this up...
+				lastChild = child;
 				child -= shift;
 				console.log('Out of Bounds.');
 				softInsert = true;
-				shift = Math.floor(shift / 2);
-			} else {
-				child += 1;
+			} else if((inX) && (inY) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) { // Clean this up...
+				lastChild = child;
+				child += shift > 0 ? shift : 1;
 				console.log('In Bounds.');
-				shift = Math.floor(shift / 2);
+			} else if(getComputedStyle(columnWrapper.children[child])?.position == 'absolute') {
+				child -= 1;
+				softInsert = false;
+				console.log('Absolute');
+			} else {
+				child -= 1;
+				console.log('Unknown Not Absolute');
 			}
 		}
 
-		console.log(columnWrapper.children[child]);
-		console.log(columnWrapper.children[child-1]);
+		console.log('Final');
+		console.log(`Looking at: ${columnWrapper.children.length} - L: ${lastChild} C: ${child} - S: ${shift}`);
+		console.log('Matched line Predecessor');
+		console.log(columnWrapper.children[child-1]?.outerHTML.toString());
+		console.log('Matched line!');
+		console.log(columnWrapper.children[child]?.outerHTML.toString());
+		console.log(child);
 
 		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
 		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
