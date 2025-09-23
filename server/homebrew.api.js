@@ -8,10 +8,13 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { makePatches, applyPatches,
+	     stringifyPatches,
+		 parsePatch }                from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
-import { splitTextStyleAndMetadata, 
-		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
+import { splitTextStyleAndMetadata,
+		 brewSnippetsToJSON, debugTextMismatch,
+		 templatesToSnippet }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
 
@@ -194,7 +197,9 @@ const api = {
 		}
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
-		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
+		const templatesArray = templatesToSnippet('brew_templates', brew.templates, null, false).snippets;
+		metadata.snippets = snippetsArray?.length > 0 ? snippetsArray : undefined;
+		metadata.templates = templatesArray?.length > 0 ? templatesArray : undefined;
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
@@ -300,6 +305,7 @@ const api = {
 		let currentTheme;
 		const completeStyles   = [];
 		const completeSnippets = [];
+		const completeTemplates = [];
 		let themeName;
 		let themeAuthor;
 
@@ -322,6 +328,7 @@ const api = {
 
 				// If there is anything in the snippets or style members, append them to the appropriate array
 				if(currentTheme?.snippets) completeSnippets.push({ name: currentTheme.title, snippets: currentTheme.snippets });
+				if(currentTheme?.templates) completeTemplates.push({ name: currentTheme.title, templates: currentTheme.templates });
 				if(currentTheme?.style) completeStyles.push(`/* From Brew: ${req.protocol}://${req.get('host')}/share/${req.params.id} */\n\n${currentTheme.style}`);
 
 				req.params.id       = currentTheme.theme;
@@ -340,10 +347,11 @@ const api = {
 
 		const returnObj = {
 			// Reverse the order of the arrays so they are listed oldest parent to youngest child.
-			styles   : completeStyles.reverse(),
-			snippets : completeSnippets.reverse(),
-			name     : themeName,
-			author   : themeAuthor
+			styles    : completeStyles.reverse(),
+			snippets  : completeSnippets.reverse(),
+			templates : completeTemplates.reverse(),
+			name      : themeName,
+			author    : themeAuthor
 		};
 
 		res.setHeader('Content-Type', 'application/json');

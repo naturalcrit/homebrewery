@@ -1,8 +1,75 @@
+/* eslint-disable max-lines */
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
+const templatesToSnippet = (menuTitle, templates, themeBundle=null, full=true)=>{
+	const textSplit  = /^\\template/gm;
+	const mpAsSnippets = [];
+	// Templates from Themes first.
+	if(themeBundle?.length > 0) {
+		for (let themes of themeBundle) {
+			const pages = [];
+			if(themes.templates) {
+				for (let mp of themes.templates.split(textSplit)) {
+					if(mp.length>0){
+						const name = mp.split('\n')[0].trim();
+						pages.push({
+							name : name,
+							icon : '',
+							gen  : `\n\\page ${themes.name}:${name}\n`,
+							body : mp.split('\n').slice(1).join('\n')
+						});
+					}
+				}
+			}
+			if(pages.length > 0) {
+				mpAsSnippets.push({
+					name        : themes.name,
+					icon        : '',
+					gen         : '',
+					subsnippets : pages
+				});
+			}
+		}
+	}
+	// Local Templates
+	const pages = [];
+	if(templates){
+		for (let mp of templates.split(textSplit)) {
+			if(mp.length>0) {
+				const name = mp.split('\n')[0].trim();
+				pages.push({
+					name : name,
+					icon : '',
+					gen  : `\n\\page ${name}\n`,
+					body : mp.split('\n').slice(1).join('\n')
+				});
+			}
+		}
+	}
+	if(pages.length) {
+		mpAsSnippets.push({
+			name        : menuTitle,
+			icon        : '',
+			subsnippets : pages
+		});
+	}
+
+	const returnObj = {
+		snippets : mpAsSnippets
+	};
+
+	if(full) {
+		returnObj.groupName = 'Templates';
+		returnObj.icon = 'fas fa-pencil-alt';
+		returnObj.view = 'text';
+	}
+
+	return returnObj;
+};
+
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
 	const textSplit  = /^(\\snippet +.+\n)/gm;
 	const mpAsSnippets = [];
@@ -76,14 +143,22 @@ const yamlSnippetsToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let snippetsText = '';
-	
-	for (let snippet of yamlObj) {
-		for (let subSnippet of snippet.subsnippets) {
-			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
-		}
+	for (let subSnippet of yamlObj[0].subsnippets) {
+		snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}`;
 	}
 	return snippetsText;
 };
+
+const yamlTemplatesToText = (yamlObj)=>{
+	if(typeof yamlObj == 'string') return yamlObj;
+
+	let templateText = '';
+	for (let template of yamlObj[0].subsnippets) {
+		templateText = `${templateText}\\template ${template.name}\n${template.body || ''}`;
+	}
+	return templateText;
+};
+
 
 const splitTextStyleAndMetadata = (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
@@ -93,12 +168,13 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+		brew.templates = yamlTemplatesToText(_.pick(metadata, ['templates']).templates || '');
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
-		const index = brew.text.indexOf('\n```\n\n');
-		brew.style = brew.text.slice(7, index + 1);
-		brew.text = brew.text.slice(index + 6);
+		const index = brew.text.indexOf('```\n\n');
+		brew.style = brew.text.slice(7, index - 1);
+		brew.text = brew.text.slice(index + 5);
 	}
 
 	// Handle old brews that still have empty strings in the tags metadata
@@ -172,6 +248,8 @@ export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
+	templatesToSnippet,
+	// asTemplateMap,
 	brewSnippetsToJSON,
 	debugTextMismatch
 };

@@ -1,3 +1,5 @@
+/* eslint-disable max-depth */
+/* eslint-disable max-lines */
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 require('./brewRenderer.less');
 const React = require('react');
@@ -14,7 +16,7 @@ const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
 const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
 const Frame = require('react-frame-component').default;
 const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+const { printCurrentBrew, templatesToSnippet } = require('../../../shared/helpers.js');
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
@@ -86,7 +88,63 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
-let rawPages      = [];
+let rawPages        = [];
+let brewTemplates;
+
+
+// There is bound to be a more elegant way to do this. But this works for now.
+const getPageTemplates = (pages)=>{
+	const tempPages = [];
+	brewTemplates = [];
+	brewTemplates[1] = 'Blank';
+	pages.forEach((page, index)=>{
+		const firstLine = page.split('\n')[0];
+		if(firstLine.startsWith('\\page')) {
+			const firstLineClean = firstLine.slice(firstLine.startsWith('\\pagebreak') ? 10 : 5).trim();
+			if((firstLineClean.length > 0) || (brewTemplates.length > 0)) {
+				brewTemplates[ index ] = firstLineClean;
+			}
+			tempPages.push(page.slice(firstLine.length));
+		} else {
+			tempPages.push(page);
+		}
+	});
+	return tempPages;
+};
+const insertTemplate = (props, pageNumber)=>{
+	if(brewTemplates.length == 0) return ''; // No templates available.
+	let lookAt = pageNumber;
+	while ((lookAt > 0) && (typeof brewTemplates[lookAt] === 'undefined')) lookAt--;
+	const foundTemplate = lookAt > -1 ? brewTemplates[lookAt] : 'Blank';
+	if(typeof foundTemplate != 'undefined') {
+
+		const whichTemplate = foundTemplate.split(':');
+		let whichTheme = 0;
+
+		// If the user did not supply the Template's document source, assume the current document
+		// and insert it into the array.
+
+		if(whichTemplate.length != 2) {
+			whichTemplate[0] = props.title;
+			whichTemplate[1] = foundTemplate;
+		}
+
+		if((whichTemplate.length == 2) && (whichTemplate[0]?.length != 0)) {
+			if(! props?.templates?.length > 0) return '';
+			for (;whichTheme < props.templates.length; whichTheme++) {
+				if(props.templates[whichTheme].name == whichTemplate[0]) {
+					for (let temp=0; temp<props.templates[whichTheme]?.subsnippets?.length; temp++) {
+						if(props.templates[whichTheme].subsnippets[temp].name == whichTemplate[1]) {
+							return props.templates[whichTheme].subsnippets[temp].body;
+						}
+					}
+				}
+			}
+		}
+	}
+	return '';
+};
+
 
 const BrewRenderer = (props)=>{
 	props = {
@@ -134,7 +192,7 @@ const BrewRenderer = (props)=>{
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
 	} else {
-		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
+		rawPages = getPageTemplates(props.text.split(PAGEBREAK_REGEX_V3));
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
@@ -209,7 +267,7 @@ const BrewRenderer = (props)=>{
 			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 
-			const html = Markdown.render(pageText, index);
+			const html = Markdown.render(`${insertTemplate(props, index)}\n${pageText}`, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
