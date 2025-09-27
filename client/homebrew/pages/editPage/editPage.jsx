@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 import './editPage.less';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, use } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
@@ -38,6 +38,8 @@ import googleDriveIcon from '../../googleDrive.svg';
 const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
+
+const useLocalStorage = false;
 
 const EditPage = (props)=>{
 	props = {
@@ -113,41 +115,27 @@ const EditPage = (props)=>{
 		editorRef.current?.update();
 	};
 
-	const handleEditorViewPageChange = (pageNumber)=>{
-		setCurrentEditorViewPageNum(pageNumber);
-	};
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-	const handleEditorCursorPageChange = (pageNumber)=>{
-		setCurrentEditorCursorPageNum(pageNumber);
-	};
-
-	const handleBrewRendererPageChange = (pageNumber)=>{
-		setCurrentBrewRendererPageNum(pageNumber);
-	};
-
-	const handleTextChange = (text)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(text));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, text }));
-	};
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
 
-	const handleStyleChange = (style)=>{
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, style }));
-	};
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
 
-	const handleSnipChange = (snippet)=>{
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(snippet));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, snippets: snippet }));
-	};
-
-	const handleMetaChange = (metadata, field = undefined)=>{
-		if(field === 'theme' || field === 'renderer')
-			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
-
-		setCurrentBrew((prev)=>({ ...prev, ...metadata }));
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
@@ -380,17 +368,14 @@ const EditPage = (props)=>{
 					<Editor
 						ref={editorRef}
 						brew={currentBrew}
-						onTextChange={handleTextChange}
-						onStyleChange={handleStyleChange}
-						onSnipChange={handleSnipChange}
-						onMetaChange={handleMetaChange}
+						onBrewChange={handleBrewChange}
 						reportError={setError}
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
 						updateBrew={updateBrew}
-						onCursorPageChange={handleEditorCursorPageChange}
-						onViewPageChange={handleEditorViewPageChange}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
@@ -403,7 +388,7 @@ const EditPage = (props)=>{
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
-						onPageChange={handleBrewRendererPageChange}
+						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}

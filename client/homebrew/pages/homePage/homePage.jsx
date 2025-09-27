@@ -3,6 +3,7 @@ import './homePage.less';
 import React                           from 'react';
 import { useEffect, useState, useRef } from 'react';
 import request                         from '../../utils/request-middleware.js';
+import Markdown                        from 'naturalcrit/markdown.js';
 import { Meta }                        from 'vitreum/headtags';
 
 import Nav                             from 'naturalcrit/nav/nav.jsx';
@@ -21,6 +22,8 @@ import BrewRenderer                    from '../../brewRenderer/brewRenderer.jsx
 
 import { DEFAULT_BREW }                from '../../../../server/brewDefaults.js';
 
+const useLocalStorage = false;
+
 const HomePage =(props)=>{
 	props = {
 		brew : DEFAULT_BREW,
@@ -28,9 +31,10 @@ const HomePage =(props)=>{
     ...props
   };
 
-	const [brew                      , setBrew]                       = useState(props.brew);
+	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
 	const [welcomeText               , setWelcomeText]                = useState(props.brew.text);
 	const [error                     , setError]                      = useState(undefined);
+	const [HTMLErrors                , setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
 	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -40,12 +44,12 @@ const HomePage =(props)=>{
 	const editorRef = useRef(null);
 
 	useEffect(()=>{
-		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 	}, []);
 
 	const save = ()=>{
 		request.post('/api')
-			.send(brew)
+			.send(currentBrew)
 			.end((err, res)=>{
 				if(err) {
 					setError(err);
@@ -60,20 +64,27 @@ const HomePage =(props)=>{
 		editorRef.current.update();
 	};
 
-	const handleEditorViewPageChange = (pageNumber)=>{
-		setCurrentEditorViewPageNum(pageNumber);
-	};
-	
-	const handleEditorCursorPageChange = (pageNumber)=>{
-		setCurrentEditorCursorPageNum(pageNumber);
-	};
-	
-	const handleBrewRendererPageChange = (pageNumber)=>{
-		setCurrentBrewRendererPageNum(pageNumber);
-	};
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-	const handleTextChange = (text)=>{
-		setBrew((prevBrew) => ({ ...prevBrew, text }));
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
+
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
+
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const clearError = ()=>{
@@ -105,22 +116,22 @@ const HomePage =(props)=>{
 				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
 						ref={editorRef}
-						brew={brew}
-						onTextChange={handleTextChange}
-						renderer={brew.renderer}
+						brew={currentBrew}
+						onBrewChange={handleBrewChange}
+						renderer={currentBrew.renderer}
 						showEditButtons={false}
 						themeBundle={themeBundle}
-						onCursorPageChange={handleEditorCursorPageChange}
-						onViewPageChange={handleEditorViewPageChange}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={brew.text}
-						style={brew.style}
-						renderer={brew.renderer}
-						onPageChange={handleBrewRendererPageChange}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
@@ -128,7 +139,7 @@ const HomePage =(props)=>{
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${welcomeText !== brew.text ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${welcomeText !== currentBrew.text ? ' show' : ''}`} onClick={save}>
 				Save current <i className='fas fa-save' />
 			</div>
 
