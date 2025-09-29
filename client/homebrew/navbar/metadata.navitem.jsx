@@ -32,7 +32,7 @@ const MetadataNav = createClass({
 		return <>
 			{this.props.brew.authors.map((author, idx, arr)=>{
 				const spacer = arr.length - 1 == idx ? <></> : <span>, </span>;
-				return <span key={idx}><a className='userPageLink' href={`/user/${author}`}>{author}</a>{spacer}</span>;
+				return <span key={idx}><a className='userPageLink' href={`/user/${encodeURIComponent(author)}`}>{author}</a>{spacer}</span>;
 			})}
 		</>;
 	},
