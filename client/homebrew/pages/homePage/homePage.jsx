@@ -1,26 +1,30 @@
+/* eslint-disable max-lines */
 import './homePage.less';
 
-import React                           from 'react';
-import { useEffect, useState, useRef } from 'react';
-import request                         from '../../utils/request-middleware.js';
-import Markdown                        from 'naturalcrit/markdown.js';
-import { Meta }                        from 'vitreum/headtags';
+// Common imports
+import React, { useState, useEffect, useRef } from 'react';
+import request                                from '../../utils/request-middleware.js';
+import Markdown                               from 'naturalcrit/markdown.js';
 
-import Nav                             from 'naturalcrit/nav/nav.jsx';
-import Navbar                          from '../../navbar/navbar.jsx';
-import NewBrewItem                     from '../../navbar/newbrew.navitem.jsx';
-import HelpNavItem                     from '../../navbar/help.navitem.jsx';
-import VaultNavItem                    from '../../navbar/vault.navitem.jsx';
-import { both as RecentNavItem }       from '../../navbar/recent.navitem.jsx';
-import AccountNavItem                  from '../../navbar/account.navitem.jsx';
-import ErrorNavItem                    from '../../navbar/error-navitem.jsx';
-import { fetchThemeBundle }            from '../../../../shared/helpers.js';
+import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
-import SplitPane                       from 'client/components/splitPane/splitPane.jsx';
-import Editor                          from '../../editor/editor.jsx';
-import BrewRenderer                    from '../../brewRenderer/brewRenderer.jsx';
+import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import { DEFAULT_BREW }                from '../../../../server/brewDefaults.js';
+import Nav                       from 'naturalcrit/nav/nav.jsx';
+import Navbar                    from '../../navbar/navbar.jsx';
+import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '../../navbar/account.navitem.jsx';
+import ErrorNavItem              from '../../navbar/error-navitem.jsx';
+import HelpNavItem               from '../../navbar/help.navitem.jsx';
+import VaultNavItem              from '../../navbar/vault.navitem.jsx';
+import PrintNavItem              from '../../navbar/print.navitem.jsx';
+import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
+
+// Page specific imports
+import { Meta }                               from 'vitreum/headtags';
 
 const useLocalStorage = false;
 
@@ -45,6 +49,22 @@ const HomePage =(props)=>{
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey || e.metaKey)) return;
+			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 80) printCurrentBrew();
+			if([83, 80].includes(e.keyCode)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+		};
+
+		document.addEventListener('keydown', handleControlKeys);
+
+		return () => {
+			document.removeEventListener('keydown', handleControlKeys);
+		};
 	}, []);
 
 	const save = ()=>{
@@ -100,6 +120,7 @@ const HomePage =(props)=>{
 					null
 				}
 				<NewBrewItem />
+				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />

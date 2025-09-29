@@ -1,38 +1,38 @@
 /* eslint-disable max-lines */
 import './editPage.less';
 
-import React, { useState, useEffect, useRef, useCallback, use } from 'react';
+// Common imports
+import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
-import _                                 from 'lodash';;
-import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
-import { md5 }                           from 'hash-wasm';
-import { gzipSync, strToU8 }             from 'fflate';
-import { Meta }                          from 'vitreum/headtags';
+import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+
+import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import Nav                       from 'naturalcrit/nav/nav.jsx';
 import Navbar                    from '../../navbar/navbar.jsx';
 import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
 import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import ErrorNavItem              from '../../navbar/error-navitem.jsx';
 import HelpNavItem               from '../../navbar/help.navitem.jsx';
 import VaultNavItem              from '../../navbar/vault.navitem.jsx';
 import PrintNavItem              from '../../navbar/print.navitem.jsx';
 import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
-import SplitPane    from 'client/components/splitPane/splitPane.jsx';
-import Editor       from '../../editor/editor.jsx';
-import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
+// Page specific imports
+import { Meta }                          from 'vitreum/headtags';
+import _                                 from 'lodash';
+import { md5 }                           from 'hash-wasm';
+import { gzipSync, strToU8 }             from 'fflate';
+import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
+import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
-
-import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
-
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
-
 import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
@@ -344,11 +344,11 @@ const EditPage = (props)=>{
 						{renderSaveButton()}
 						{renderAutoSaveButton()}
 					</Nav.dropdown>}
-				<NewBrewItem/>
-				<HelpNavItem/>
-				<ShareNavItem brew={currentBrew} />
+				<NewBrewItem />
 				<PrintNavItem />
+				<HelpNavItem />
 				<VaultNavItem />
+				<ShareNavItem brew={currentBrew} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>
 			</Nav.section>
