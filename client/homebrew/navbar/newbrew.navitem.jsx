@@ -5,32 +5,44 @@ const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // 
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
-const METAKEY  = 'homebrewery-new-meta';
+const METAKEY = 'homebrewery-new-meta';
 
 const NewBrew = ()=>{
 	const handleFileChange = (e)=>{
 		const file = e.target.files[0];
-		if(file) {
-			const reader = new FileReader();
-			reader.onload = (e)=>{
-				const fileContent = e.target.result;
-				const newBrew = {
-					text  : fileContent,
-					style : ''
-				};
-				if(fileContent.startsWith('```metadata')) {
-					splitTextStyleAndMetadata(newBrew); // Modify newBrew directly
-					localStorage.setItem(BREWKEY, newBrew.text);
-					localStorage.setItem(STYLEKEY, newBrew.style);
-					localStorage.setItem(METAKEY, JSON.stringify(_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])));
-					window.location.href = '/new';
-				} else {
-					alert('This file is invalid, please, enter a valid file');
-				}
-			};
-			reader.readAsText(file);
-		}
+		if(!file) return;
+
+		const currentNew = localStorage.getItem(BREWKEY);
+		if(currentNew && !confirm(
+			`You have some text in the new brew space, if you load a file that text will be lost, are you sure you want to load the file?`
+		)) return;
+
+		const reader = new FileReader();
+		reader.onload = (e)=>{
+			const fileContent = e.target.result;
+			const newBrew = { text: fileContent, style: '' };
+
+			if(fileContent.startsWith('```metadata')) {
+				splitTextStyleAndMetadata(newBrew);
+				localStorage.setItem(BREWKEY, newBrew.text);
+				localStorage.setItem(STYLEKEY, newBrew.style);
+				localStorage.setItem(METAKEY, JSON.stringify(
+					_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])
+				));
+				window.location.href = '/new';
+				return;
+			}
+
+			const type = file.name.split('.').pop().toLowerCase();
+			
+			alert(`This file is invalid: ${!type ? "Missing file extension" :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
+
+
+			console.log(file);
+		};
+		reader.readAsText(file);
 	};
+
 
 	return (
 		<Nav.dropdown>
