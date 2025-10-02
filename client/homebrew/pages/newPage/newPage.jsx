@@ -23,7 +23,7 @@ import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '.
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
 
 const NewPage = (props) => {
 	props = {
@@ -67,6 +67,7 @@ const NewPage = (props) => {
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
 		}
 
+		const SAVEKEY = `${SAVEKEYPREFIX}${global.account?.username}`;
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);
