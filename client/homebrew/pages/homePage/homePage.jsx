@@ -26,6 +26,11 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 // Page specific imports
 import { Meta }                               from 'vitreum/headtags';
 
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
+const METAKEY  = 'homebrewery-new-meta';
+
 const useLocalStorage = false;
 
 const HomePage =(props)=>{

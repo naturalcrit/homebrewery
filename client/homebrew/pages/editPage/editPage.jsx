@@ -39,6 +39,11 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
+const METAKEY  = 'homebrewery-new-meta';
+
 const useLocalStorage = false;
 
 const EditPage = (props)=>{

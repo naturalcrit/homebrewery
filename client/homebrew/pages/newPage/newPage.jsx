@@ -30,7 +30,7 @@ const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const SNIPKEY  = 'homebrewery-new-snippets';
 const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEY  = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
 
 const useLocalStorage = true;
 
@@ -87,6 +87,7 @@ const NewPage = (props) => {
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
 		}
 
+		const SAVEKEY = `${SAVEKEYPREFIX}${global.account?.username}`;
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);

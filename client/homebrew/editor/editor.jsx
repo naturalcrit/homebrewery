@@ -40,8 +40,8 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onBrewChange  : ()=>{},
-			reportError   : ()=>{},
+			onBrewChange : ()=>{},
+			reportError  : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
