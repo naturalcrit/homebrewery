@@ -13,6 +13,7 @@ import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata, 
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+import dbCheck                       from './middleware/dbCheck.js';
 
 
 const router = express.Router();
@@ -530,11 +531,11 @@ const api = {
 	}
 };
 
-router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
-router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
-router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
-router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
+router.post('/api', checkClientVersion, dbCheck, asyncHandler(api.newBrew));
+router.put('/api/:id', checkClientVersion, dbCheck, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/update/:id', checkClientVersion, dbCheck, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.delete('/api/:id', checkClientVersion, dbCheck, asyncHandler(api.deleteBrew));
+router.get('/api/remove/:id', checkClientVersion, dbCheck, asyncHandler(api.deleteBrew));
+router.get('/api/theme/:renderer/:id', dbCheck, asyncHandler(api.getThemeBundle));
 
 export default api;

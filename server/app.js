@@ -32,7 +32,6 @@ import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 //==== Middleware Imports ====//
 import contentNegotiation from './middleware/content-negotiation.js';
-import dbCheck from './middleware/dbCheck.js';
 import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
@@ -50,7 +49,6 @@ const sanitizeBrew = (brew, accessType)=>{
 app.set('trust proxy', 1 /* number of proxies between user and server */);
 
 app.use('/', serveCompressedStaticAssets(`build`));
-app.use(dbCheck);
 app.use(contentNegotiation);
 app.use(bodyParser.json({ limit: '25mb' }));
 app.use(cookieParser());
