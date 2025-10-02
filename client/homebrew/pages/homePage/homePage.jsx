@@ -28,7 +28,7 @@ const HomePage =(props)=>{
     ...props
   };
 
-	const [brew                      , setBrew]                       = useState(props.brew);
+	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
 	const [welcomeText               , setWelcomeText]                = useState(props.brew.text);
 	const [error                     , setError]                      = useState(undefined);
 	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
@@ -40,12 +40,12 @@ const HomePage =(props)=>{
 	const editorRef = useRef(null);
 
 	useEffect(()=>{
-		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 	}, []);
 
 	const save = ()=>{
 		request.post('/api')
-			.send(brew)
+			.send(currentBrew)
 			.end((err, res)=>{
 				if(err) {
 					setError(err);
@@ -105,9 +105,9 @@ const HomePage =(props)=>{
 				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
 						ref={editorRef}
-						brew={brew}
 						onTextChange={handleTextChange}
-						renderer={brew.renderer}
+						brew={currentBrew}
+						renderer={currentBrew.renderer}
 						showEditButtons={false}
 						themeBundle={themeBundle}
 						onCursorPageChange={handleEditorCursorPageChange}
@@ -117,9 +117,9 @@ const HomePage =(props)=>{
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={brew.text}
-						style={brew.style}
-						renderer={brew.renderer}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
 						onPageChange={handleBrewRendererPageChange}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
@@ -128,7 +128,7 @@ const HomePage =(props)=>{
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${welcomeText !== brew.text ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${welcomeText !== currentBrew.text ? ' show' : ''}`} onClick={save}>
 				Save current <i className='fas fa-save' />
 			</div>
 
