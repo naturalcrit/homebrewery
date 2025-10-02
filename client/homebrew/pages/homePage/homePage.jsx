@@ -3,6 +3,7 @@ import './homePage.less';
 import React                           from 'react';
 import { useEffect, useState, useRef } from 'react';
 import request                         from '../../utils/request-middleware.js';
+import Markdown                        from 'naturalcrit/markdown.js';
 import { Meta }                        from 'vitreum/headtags';
 
 import Nav                             from 'naturalcrit/nav/nav.jsx';
@@ -21,6 +22,11 @@ import BrewRenderer                    from '../../brewRenderer/brewRenderer.jsx
 
 import { DEFAULT_BREW }                from '../../../../server/brewDefaults.js';
 
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
+const METAKEY  = 'homebrewery-new-meta';
+
 const HomePage =(props)=>{
 	props = {
 		brew : DEFAULT_BREW,
@@ -31,6 +37,7 @@ const HomePage =(props)=>{
 	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
 	const [welcomeText               , setWelcomeText]                = useState(props.brew.text);
 	const [error                     , setError]                      = useState(undefined);
+	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
 	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -38,6 +45,8 @@ const HomePage =(props)=>{
 	const [isSaving                  , setIsSaving]                   = useState(false);
 
 	const editorRef = useRef(null);
+
+	const useLocalStorage = false;
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -72,8 +81,27 @@ const HomePage =(props)=>{
 		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
-	const handleTextChange = (text)=>{
-		setBrew((prevBrew) => ({ ...prevBrew, text }));
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
+
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
+
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const clearError = ()=>{
@@ -105,8 +133,8 @@ const HomePage =(props)=>{
 				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
 						ref={editorRef}
-						onTextChange={handleTextChange}
 						brew={currentBrew}
+						onBrewChange={handleBrewChange}
 						renderer={currentBrew.renderer}
 						showEditButtons={false}
 						themeBundle={themeBundle}
