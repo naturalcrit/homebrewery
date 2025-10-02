@@ -22,6 +22,7 @@ import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '.
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
 const METAKEY  = 'homebrewery-new-meta';
 const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
 
@@ -42,6 +43,8 @@ const NewPage = (props) => {
 	const [themeBundle               , setThemeBundle               ] = useState({});
 
 	const editorRef = useRef(null);
+
+	const useLocalStorage = true;
 
 	useEffect(() => {
 		document.addEventListener('keydown', handleControlKeys);
@@ -109,40 +112,27 @@ const NewPage = (props) => {
 		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
-	const handleTextChange = (text)=>{
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+
 		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			HTMLErrors = Markdown.validate(text);
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
 
-		setHTMLErrors(HTMLErrors);
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, text }));
-		localStorage.setItem(BREWKEY, text);
-	};
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
 
-	const handleStyleChange = (style) => {
-		setCurrentBrew(prevBrew => ({ ...prevBrew, style }));
-		localStorage.setItem(STYLEKEY, style);
-	};
-
-	const handleSnipChange = (snippet)=>{
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			HTMLErrors = Markdown.validate(snippet);
-
-		setHTMLErrors(HTMLErrors);
-		setCurrentBrew((prevBrew) => ({ ...prevBrew, snippets: snippet }));
-	};
-
-	const handleMetaChange = (metadata, field = undefined) => {
-		if (field === 'theme' || field === 'renderer')
-			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
-
-		setCurrentBrew(prev => ({ ...prev, ...metadata }));
-		localStorage.setItem(METAKEY, JSON.stringify({
-			renderer : metadata.renderer,
-			theme    : metadata.theme,
-			lang     : metadata.lang
-		}));
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const save = async () => {
@@ -216,10 +206,7 @@ const NewPage = (props) => {
 					<Editor
 						ref={editorRef}
 						brew={currentBrew}
-						onTextChange={handleTextChange}
-						onStyleChange={handleStyleChange}
-						onMetaChange={handleMetaChange}
-						onSnipChange={handleSnipChange}
+						onBrewChange={handleBrewChange}
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
