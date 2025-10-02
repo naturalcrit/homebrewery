@@ -55,14 +55,11 @@ const Homebrew = (props)=>{
 
 	const backgroundObject = ()=>{
 		if(!isClient) return null;
-		if(config.deployment) {
-			return {
-				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${config.deployment}</text></svg>")`
-			};
-		} else if(config.local) {
-			return {
-				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>Local</text></svg>")`
-			};
+		if(config.deployment || config.local){
+  			const bgText = config.deployment || 'Local';
+  			return {
+    			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
+  			};
 		}
 		return null;
 	};
