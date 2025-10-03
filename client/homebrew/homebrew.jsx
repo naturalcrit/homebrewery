@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import 'core-js/es/string/to-well-formed.js'; //Polyfill for older browsers
 import './homebrew.less';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
 
 import HomePage    from './pages/homePage/homePage.jsx';
