@@ -40,11 +40,8 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onTextChange  : ()=>{},
-			onStyleChange : ()=>{},
-			onMetaChange  : ()=>{},
-			onSnipChange  : ()=>{},
-			reportError   : ()=>{},
+			onBrewChange : ()=>{},
+			reportError  : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
@@ -453,7 +450,7 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
-					onChange={this.props.onTextChange}
+					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
 					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
@@ -466,7 +463,7 @@ const Editor = createClass({
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-					onChange={this.props.onStyleChange}
+					onChange={this.props.onBrewChange('style')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
@@ -482,7 +479,7 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					themeBundle={this.props.themeBundle}
-					onChange={this.props.onMetaChange}
+					onChange={this.props.onBrewChange('metadata')}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>
 			</>;
@@ -496,7 +493,7 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.snippets}
-					onChange={this.props.onSnipChange}
+					onChange={this.props.onBrewChange('snippets')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}

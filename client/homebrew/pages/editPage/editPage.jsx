@@ -39,6 +39,11 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
+const METAKEY  = 'homebrewery-new-meta';
+
 const EditPage = (props)=>{
 	props = {
 		brew : DEFAULT_BREW_LOAD,
@@ -68,6 +73,8 @@ const EditPage = (props)=>{
 	const warnUnsavedTimeout = useRef(null);
 	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
+
+	const useLocalStorage = false;
 
 	useEffect(()=>{
 		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
@@ -125,29 +132,27 @@ const EditPage = (props)=>{
 		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
-	const handleTextChange = (text)=>{
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+
 		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(text));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, text }));
-	};
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
 
-	const handleStyleChange = (style)=>{
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, style }));
-	};
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
 
-	const handleSnipChange = (snippet)=>{
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(snippet));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, snippets: snippet }));
-	};
-
-	const handleMetaChange = (metadata, field = undefined)=>{
-		if(field === 'theme' || field === 'renderer')
-			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
-
-		setCurrentBrew((prev)=>({ ...prev, ...metadata }));
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
@@ -380,10 +385,7 @@ const EditPage = (props)=>{
 					<Editor
 						ref={editorRef}
 						brew={currentBrew}
-						onTextChange={handleTextChange}
-						onStyleChange={handleStyleChange}
-						onSnipChange={handleSnipChange}
-						onMetaChange={handleMetaChange}
+						onBrewChange={handleBrewChange}
 						reportError={setError}
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
