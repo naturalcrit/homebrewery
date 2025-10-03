@@ -41,12 +41,6 @@ const Homebrew = (props)=>{
 		brews
 	} = props;
 
-	const [isClient, setIsClient] = useState(false);
-
-	useEffect(()=>{
-		setIsClient(true);
-	}, []);
-
 	global.account       = account;
 	global.version       = version;
 	global.enable_v3     = enable_v3;
@@ -54,7 +48,6 @@ const Homebrew = (props)=>{
 	global.config        = config;
 
 	const backgroundObject = ()=>{
-		if(!isClient) return null;
 		if(config.deployment || config.local){
   			const bgText = config.deployment || 'Local';
   			return {
@@ -66,7 +59,7 @@ const Homebrew = (props)=>{
 
 	return (
 		<Router location={url}>
-			<div className={`homebrew${isClient && (config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
+			<div className={`homebrew${(config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
