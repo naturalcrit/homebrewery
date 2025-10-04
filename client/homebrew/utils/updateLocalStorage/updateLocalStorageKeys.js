@@ -10,11 +10,14 @@ const updateLocalStorage = function(){
 
 	const storage = window.localStorage;
 
+	const deleteKeys = storage?.getItem('HB_deleteKeys') != null;
+	console.log('DELETE KEYS:', deleteKeys);
+
 	Object.keys(localStorageKeyMap).forEach((key)=>{
 		if(storage[key] && !storage[localStorageKeyMap[key]]){
 			const data = storage.getItem(key);
 			storage.setItem(localStorageKeyMap[key], data);
-			// storage.removeItem(key);
+			if(deleteKeys) storage.removeItem(key);
 		}
 	});
 
