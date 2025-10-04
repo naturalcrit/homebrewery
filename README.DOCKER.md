@@ -49,7 +49,7 @@ Make an changes you need to `config/docker.json` then build the image. If it doe
 "web_port" : 8000,
 "enable_v3" : true,
 "mongodb_uri": "mongodb://172.17.0.2/homebrewery",
-"enable_themes" : true,
+"enable_themes" : true
 }
 ```
 
@@ -90,6 +90,13 @@ docker run --name homebrewery-mongodb -d --restart unless-stopped -v mongodata:/
 docker run --name homebrewery-app -d --restart unless-stopped -e NODE_ENV=docker -v $(pwd)/config/docker.json:/usr/src/app/config/docker.json -p 8000:8000 docker.io/library/homebrewery:latest
 ```
 
+**NOTE:** If you are running from the Windows command line, this will not work as `$(pwd)` is not valid syntax. Use this command instead:
+```shell
+# Make sure you run this in the homebrewery directory
+docker run --name homebrewery-app -d --restart unless-stopped -e NODE_ENV=docker -v %cd%/config/docker.json:/usr/src/app/config/docker.json -p 8000:8000 docker.io/library/homebrewery:latest
+```
+
+
 ## Updating the Image
 
 When Homebrewery code updates, your docker container will not automatically follow the changes. To do so you will need to rebuild your homebrewery image. 
@@ -115,5 +122,11 @@ Finally, rebuild and restart the homebrewery image.
 ```shell
 docker-compose build homebrewery
 docker run --name homebrewery-app -d --restart unless-stopped -e NODE_ENV=docker -v $(pwd)/config/docker.json:/usr/src/app/config/docker.json -p 8000:8000 docker.io/library/homebrewery:latest
+```
+
+**NOTE:** If you are running from the Windows command line, this will not work as `$(pwd)` is not valid syntax. Use this command instead:
+```shell
+# Make sure you run this in the homebrewery directory
+docker run --name homebrewery-app -d --restart unless-stopped -e NODE_ENV=docker -v %cd%/config/docker.json:/usr/src/app/config/docker.json -p 8000:8000 docker.io/library/homebrewery:latest
 ```
 
