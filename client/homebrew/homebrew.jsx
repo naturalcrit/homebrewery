@@ -50,8 +50,7 @@ const Homebrew = (props)=>{
 	global.config        = config;
 
 	const backgroundObject = ()=>{
-		if(!config.development) return null;
-		if(global.config.deployment || config.local){
+		if(global.config.deployment || (config.local && config.development)){
   			const bgText = global.config.deployment || 'Local';
   			return {
     			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
