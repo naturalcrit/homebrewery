@@ -5,6 +5,7 @@ import './homePage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -41,16 +42,18 @@ const HomePage =(props)=>{
   };
 
 	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
-	const [welcomeText               , setWelcomeText]                = useState(props.brew.text);
 	const [error                     , setError]                      = useState(undefined);
 	const [HTMLErrors                , setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
 	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle]                = useState({});
+	const [unsavedChanges            , setUnsavedChanges]             = useState(false);
 	const [isSaving                  , setIsSaving]                   = useState(false);
+	const [autoSaveEnabled           , setAutoSaveEnable]             = useState(false);
 
-	const editorRef = useRef(null);
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -84,6 +87,13 @@ const HomePage =(props)=>{
 				window.location = `/edit/${saved.editId}`;
 			});
 	};
+
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
@@ -165,7 +175,7 @@ const HomePage =(props)=>{
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${welcomeText !== currentBrew.text ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={save}>
 				Save current <i className='fas fa-save' />
 			</div>
 
