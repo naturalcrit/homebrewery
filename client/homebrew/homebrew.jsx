@@ -28,8 +28,6 @@ const Homebrew = (props)=>{
 		url = '',
 		version = '0.0.0',
 		account = null,
-		enable_v3 = false,
-		enable_themes,
 		config,
 		brew = {
 			title     : '',
@@ -46,8 +44,6 @@ const Homebrew = (props)=>{
 
 	global.account       = account;
 	global.version       = version;
-	global.enable_v3     = enable_v3;
-	global.enable_themes = enable_themes;
 	global.config        = config;
 
 	updateLocalStorage();
