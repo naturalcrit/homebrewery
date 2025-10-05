@@ -145,8 +145,8 @@ body { counter-reset : page-numbers 0; }
 	blockquote,table {
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
-		page-break-inside           : auto;
-		break-inside                : auto;
+		page-break-inside           : avoid;
+		break-inside                : avoid;
 	}
 	// Nested lists
 	ul ul,ol ol,ul ol,ol ul {
@@ -610,4 +610,18 @@ h6,
 		}
 	}
 	.toc.wide li { break-inside : auto; }
+}
+
+
+/**********************************
+Firefox endruns
+**********************************/
+
+@supports (-moz-user-select: none) {  // This section will only apply to Firefox; it's the only browser that supports `-mos-xyz...`
+  .page {
+    .blockquote, .table {
+      page-break-inside: auto;
+      break-inside: auto; 
+    }
+  }
 }
