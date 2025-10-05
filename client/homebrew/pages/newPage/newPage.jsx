@@ -1,30 +1,40 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/* eslint-disable max-lines */
 import './newPage.less';
 
+// Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
 
-import Nav                       from 'naturalcrit/nav/nav.jsx';
-import Navbar                    from '../../navbar/navbar.jsx';
-import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ErrorNavItem              from '../../navbar/error-navitem.jsx';
-import HelpNavItem               from '../../navbar/help.navitem.jsx';
-import PrintNavItem              from '../../navbar/print.navitem.jsx';
-import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
+import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
 import SplitPane    from 'client/components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+import Nav                       from 'naturalcrit/nav/nav.jsx';
+import Navbar                    from '../../navbar/navbar.jsx';
+import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '../../navbar/account.navitem.jsx';
+import ErrorNavItem              from '../../navbar/error-navitem.jsx';
+import HelpNavItem               from '../../navbar/help.navitem.jsx';
+import VaultNavItem              from '../../navbar/vault.navitem.jsx';
+import PrintNavItem              from '../../navbar/print.navitem.jsx';
+import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const SNIPKEY  = 'homebrewery-new-snippets';
-const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
+// Page specific imports
+import { Meta }                  from 'vitreum/headtags';
+
+
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const METAKEY  = 'HB_newPage_metadata';
+const SNIPKEY  = 'HB_newPage_snippets';
+const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
+
+
+const useLocalStorage = true;
 
 const NewPage = (props) => {
 	props = {
@@ -44,12 +54,21 @@ const NewPage = (props) => {
 
 	const editorRef = useRef(null);
 
-	const useLocalStorage = true;
-
 	useEffect(() => {
-		document.addEventListener('keydown', handleControlKeys);
 		loadBrew();
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey || e.metaKey)) return;
+			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 80) printCurrentBrew();
+			if([83, 80].includes(e.keyCode)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+		};
+
+		document.addEventListener('keydown', handleControlKeys);
 
 		return () => {
 			document.removeEventListener('keydown', handleControlKeys);
@@ -84,32 +103,8 @@ const NewPage = (props) => {
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
 
-	const handleControlKeys = (e) => {
-		if (!(e.ctrlKey || e.metaKey)) return;
-		const S_KEY = 83;
-		const P_KEY = 80;
-		if (e.keyCode === S_KEY) save();
-		if (e.keyCode === P_KEY) printCurrentBrew();
-		if (e.keyCode === S_KEY || e.keyCode === P_KEY) {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-	};
-
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
-	};
-
-	const handleEditorViewPageChange = (pageNumber)=>{
-		setCurrentEditorViewPageNum(pageNumber);
-	};
-	
-	const handleEditorCursorPageChange = (pageNumber)=>{
-		setCurrentEditorCursorPageNum(pageNumber);
-	};
-	
-	const handleBrewRendererPageChange = (pageNumber)=>{
-		setCurrentBrewRendererPageNum(pageNumber);
 	};
 
 	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
@@ -190,8 +185,10 @@ const NewPage = (props) => {
 				{error
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: renderSaveButton()}
+				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
+				<VaultNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>
@@ -210,8 +207,8 @@ const NewPage = (props) => {
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
-						onCursorPageChange={handleEditorCursorPageChange}
-						onViewPageChange={handleEditorViewPageChange}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
@@ -224,7 +221,7 @@ const NewPage = (props) => {
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
-						onPageChange={handleBrewRendererPageChange}
+						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
