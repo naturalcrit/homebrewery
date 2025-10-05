@@ -26,11 +26,13 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const SNIPKEY  = 'homebrewery-new-snippets';
-const METAKEY  = 'homebrewery-new-meta';
-const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
+
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const METAKEY  = 'HB_newPage_metadata';
+const SNIPKEY  = 'HB_newPage_snippets';
+const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
+
 
 const useLocalStorage = true;
 

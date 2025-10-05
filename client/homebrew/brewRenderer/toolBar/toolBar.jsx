@@ -9,6 +9,8 @@ import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anch
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
 
+const TOOLBAR_VISIBILITY = 'HB_renderer_toolbarVisibility';
+
 const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPages, headerState, setHeaderState })=>{
 
 	const [pageNum, setPageNum]     = useState(1);
@@ -21,8 +23,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	}, [visiblePages]);
 
 	useEffect(()=>{
-		const Visibility = localStorage.getItem('hb_toolbarVisibility');
-		if (Visibility) setToolsVisible(Visibility === 'true');
+		const Visibility = localStorage.getItem(TOOLBAR_VISIBILITY);
+		if(Visibility) setToolsVisible(Visibility === 'true');
 
 	}, []);
 
@@ -100,7 +102,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 			<div className='toggleButton'>
 				<button title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{
 					setToolsVisible(!toolsVisible);
-					localStorage.setItem('hb_toolbarVisibility', !toolsVisible);
+					localStorage.setItem(TOOLBAR_VISIBILITY, !toolsVisible);
 				}}><i className='fas fa-glasses' /></button>
 				<button title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}><i className='fas fa-rectangle-list' /></button>
 			</div>

@@ -39,10 +39,13 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const SNIPKEY  = 'homebrewery-new-snippets';
-const METAKEY  = 'homebrewery-new-meta';
+
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const SNIPKEY  = 'HB_newPage_snippets';
+const METAKEY  = 'HB_newPage_meta';
+
 
 const useLocalStorage = false;
 
@@ -77,7 +80,7 @@ const EditPage = (props)=>{
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
-		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
+		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(Markdown.validate(currentBrew.text));
@@ -319,7 +322,7 @@ const EditPage = (props)=>{
 	const toggleAutoSave = ()=>{
 		clearTimeout(warnUnsavedTimeout.current);
 		clearTimeout(saveTimeout.current);
-		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
+		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
 		setAutoSaveEnabled(!autoSaveEnabled);
 		setWarnUnsavedChanges(autoSaveEnabled);
 	};
