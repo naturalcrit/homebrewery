@@ -35,8 +35,11 @@ const disconnect = async ()=>{
 };
 
 const connect = async (config)=>{
-	return await Mongoose.connect(getMongoDBURL(config), { retryWrites: false })
-		.then(addListeners(Mongoose))
+	return await Mongoose.connect(getMongoDBURL(config), {
+		retryWrites : false,
+		autoIndex   : (config.get('local_environments').includes(config.get('node_env')))
+	})
+    .then(addListeners(Mongoose))
 		.catch((error)=>handleConnectionError(error));
 };
 

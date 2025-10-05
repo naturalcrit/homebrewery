@@ -24,6 +24,8 @@ const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
 
+const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
+
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
@@ -122,7 +124,7 @@ const BrewRenderer = (props)=>{
 
 	//useEffect to store or gather toolbar state from storage
 	useEffect(()=>{
-		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		const toolbarState = JSON.parse(window.localStorage.getItem(TOOLBAR_STATE_KEY));
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
@@ -284,7 +286,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
-		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
+		localStorage.setItem(TOOLBAR_STATE_KEY, JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {
