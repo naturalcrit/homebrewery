@@ -48,6 +48,7 @@ const Homebrew = (props)=>{
 	global.config        = config;
 
 	const backgroundObject = ()=>{
+		if(!config.development) return null;
 		if(config.deployment || config.local){
   			const bgText = config.deployment || 'Local';
   			return {
