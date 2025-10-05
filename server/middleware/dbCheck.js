@@ -7,7 +7,7 @@ export default (req, res, next)=>{
 
 	if(mongoose.connection.readyState == 1) return next();
 	throw {
-		HBErrorCode : 13,
+		HBErrorCode : '13',
 		name        : 'Database Connection Error',
 		message     : 'Unable to connect to database',
 		status      : mongoose.connection.readyState
