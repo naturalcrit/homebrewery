@@ -33,8 +33,8 @@ const METAKEY  = 'HB_newPage_metadata';
 const SNIPKEY  = 'HB_newPage_snippets';
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
-
 const useLocalStorage = true;
+const neverSaved      = true;
 
 const NewPage = (props) => {
 	props = {
@@ -96,6 +96,7 @@ const NewPage = (props) => {
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);
+		lastSavedBrew.current = brew;
 		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
 
 		localStorage.setItem(BREWKEY, brew.text);
@@ -169,15 +170,38 @@ const NewPage = (props) => {
 	};
 
 	const renderSaveButton = ()=>{
-		if(isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
-			</Nav.item>;
-		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={save}>
-				save
-			</Nav.item>;
-		}
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		// if(unsavedChanges && warnUnsavedChanges) {
+		// 	resetWarnUnsavedTimer();
+		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		// 	const text = elapsedTime === 0
+		// 		? 'Autosave is OFF.'
+		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+		// 					Reminder...
+		// 		<div className='errorContainer'>{text}</div>
+		// 	</Nav.item>;
+		// }
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
 	const clearError = ()=>{

@@ -33,6 +33,7 @@ const SNIPKEY  = 'homebrewery-new-snippets';
 const METAKEY  = 'homebrewery-new-meta';
 
 const useLocalStorage = false;
+const neverSaved      = true;
 
 const HomePage =(props)=>{
 	props = {
@@ -122,6 +123,41 @@ const HomePage =(props)=>{
 		}
 	};
 
+	const renderSaveButton = ()=>{
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		// if(unsavedChanges && warnUnsavedChanges) {
+		// 	resetWarnUnsavedTimer();
+		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		// 	const text = elapsedTime === 0
+		// 		? 'Autosave is OFF.'
+		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+		// 					Reminder...
+		// 		<div className='errorContainer'>{text}</div>
+		// 	</Nav.item>;
+		// }
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved</Nav.item>;
+	};
+
 	const clearError = ()=>{
 		setError(null);
 		setIsSaving(false);
@@ -130,10 +166,9 @@ const HomePage =(props)=>{
 	const renderNavbar = ()=>{
 		return <Navbar ver={props.ver}>
 			<Nav.section>
-				{error ?
-					<ErrorNavItem error={error} clearError={clearError}></ErrorNavItem> :
-					null
-				}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: renderSaveButton()}
 				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
