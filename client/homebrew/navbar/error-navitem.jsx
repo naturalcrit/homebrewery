@@ -112,6 +112,15 @@ const ErrorNavItem = ({ error = '', clearError })=>{
 		</Nav.item>;
 	}
 
+	if(HBErrorCode === '13') {
+		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			Oops!
+			<div className='errorContainer' onClick={clearError}>
+				Server has lost connection to the database.
+			</div>
+		</Nav.item>;
+	}
+
 	if(errorCode === 'ECONNABORTED') {
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
 			Oops!

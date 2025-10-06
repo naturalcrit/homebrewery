@@ -13,6 +13,7 @@ import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+import dbCheck                       from './middleware/dbCheck.js';
 
 
 const router = express.Router();
@@ -529,6 +530,8 @@ const api = {
 		res.status(204).send();
 	}
 };
+
+router.use(dbCheck);
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
