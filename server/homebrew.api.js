@@ -8,9 +8,9 @@ import Markdown                      from '../shared/naturalcrit/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
-import { splitTextStyleAndMetadata, 
+import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 
@@ -377,14 +377,14 @@ const api = {
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
 			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
 			if(patchedResult != brewFromClient.text)
-				throw("Patches did not apply cleanly, text mismatch detected");
+				throw ('Patches did not apply cleanly, text mismatch detected');
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
 			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				//patches : brewFromClient.patches,
-				brewId  : brewFromClient.editId || 'unknown',
-				error   : err
+				brewId : brewFromClient.editId || 'unknown',
+				error  : err
 			});
 			// While running in parallel, don't throw the error upstream.
 			// throw err; // rethrow to preserve the 500 behavior

@@ -2,9 +2,9 @@ require('./error-navitem.less');
 const React = require('react');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-const ErrorNavItem = ({error = '', clearError})=>{
+const ErrorNavItem = ({ error = '', clearError })=>{
 	const response    = error.response;
-	const errorCode   = error.code
+	const errorCode   = error.code;
 	const status      = response?.status;
 	const HBErrorCode = response?.body?.HBErrorCode;
 	const message     = response?.body?.message;
@@ -15,7 +15,7 @@ const ErrorNavItem = ({error = '', clearError})=>{
 		errMsg += `\`\`\`\n${error.stack}\n`;
 		errMsg += `${JSON.stringify(response?.error, null, '  ')}\n\`\`\``;
 		console.log(errMsg);
-	} catch (e){}
+	} catch {}
 
 	if(status === 409) {
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
