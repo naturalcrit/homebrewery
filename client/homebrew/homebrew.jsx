@@ -19,7 +19,6 @@ const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
 	const queryParams = Object.fromEntries(searchParams?.entries() || []);
-
 	return <Element {...rest} {...params} query={queryParams} />;
 };
 
@@ -50,11 +49,20 @@ const Homebrew = (props)=>{
 	global.enable_themes = enable_themes;
 	global.config        = config;
 
+	const backgroundObject = ()=>{
+		if(global.config.deployment || (config.local && config.development)){
+  			const bgText = global.config.deployment || 'Local';
+  			return {
+    			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
+  			};
+		}
+		return null;
+	};
 	updateLocalStorage();
 
 	return (
 		<Router location={url}>
-			<div className='homebrew'>
+			<div className={`homebrew${(config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
