@@ -39,8 +39,8 @@ const HomePage =(props)=>{
 	props = {
 		brew : DEFAULT_BREW,
 		ver  : '0.0.0',
-    ...props
-  };
+		...props
+	};
 
 	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
 	const [error                     , setError]                      = useState(undefined);
@@ -71,7 +71,7 @@ const HomePage =(props)=>{
 
 		document.addEventListener('keydown', handleControlKeys);
 
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
@@ -100,16 +100,16 @@ const HomePage =(props)=>{
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
-		if (subfield == 'renderer' || subfield == 'theme')
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
 			setHTMLErrors(Markdown.validate(value));
 
-		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
-		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
 
 		if(useLocalStorage) {
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
@@ -218,7 +218,7 @@ const HomePage =(props)=>{
 				Create your own <i className='fas fa-magic' />
 			</a>
 		</div>
-	)
+	);
 };
 
 module.exports = HomePage;

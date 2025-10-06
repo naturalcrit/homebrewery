@@ -49,7 +49,7 @@ const cleanUrl = function (sanitize, base, href) {
 			prot = decodeURIComponent(unescape(href))
         .replace(nonWordAndColonTest, '')
         .toLowerCase();
-		} catch (e) {
+		} catch {
 			return null;
 		}
 		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
@@ -58,7 +58,7 @@ const cleanUrl = function (sanitize, base, href) {
 	}
 	try {
 		href = encodeURI(href).replace(/%25/g, '%');
-	} catch (e) {
+	} catch {
 		return null;
 	}
 	return href;
