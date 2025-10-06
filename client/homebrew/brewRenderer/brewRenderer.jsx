@@ -295,12 +295,6 @@ const BrewRenderer = (props)=>{
 		rowGap    : `${displayOptions.rowGap}px`
 	};
 
-	const styleObject = {};
-
-	if(global.config.deployment) {
-		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
-	}
-
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
@@ -329,10 +323,9 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={ styleObject }
 				>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}

@@ -5,6 +5,7 @@ import './newPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -26,15 +27,14 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
 
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const METAKEY  = 'HB_newPage_metadata';
 const SNIPKEY  = 'HB_newPage_snippets';
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
-
 const useLocalStorage = true;
+const neverSaved      = true;
 
 const NewPage = (props) => {
 	props = {
@@ -51,8 +51,11 @@ const NewPage = (props) => {
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle               ] = useState({});
+	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
+	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(false);
 
-	const editorRef = useRef(null);
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	useEffect(() => {
 		loadBrew();
@@ -93,6 +96,7 @@ const NewPage = (props) => {
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);
+		lastSavedBrew.current = brew;
 		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
 
 		localStorage.setItem(BREWKEY, brew.text);
@@ -102,6 +106,13 @@ const NewPage = (props) => {
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
+
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
@@ -159,15 +170,38 @@ const NewPage = (props) => {
 	};
 
 	const renderSaveButton = ()=>{
-		if(isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
-			</Nav.item>;
-		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={save}>
-				save
-			</Nav.item>;
-		}
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		// if(unsavedChanges && warnUnsavedChanges) {
+		// 	resetWarnUnsavedTimer();
+		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		// 	const text = elapsedTime === 0
+		// 		? 'Autosave is OFF.'
+		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+		// 					Reminder...
+		// 		<div className='errorContainer'>{text}</div>
+		// 	</Nav.item>;
+		// }
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
 	const clearError = ()=>{

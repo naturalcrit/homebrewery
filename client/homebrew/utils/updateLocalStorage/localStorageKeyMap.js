@@ -26,7 +26,7 @@ const getLocalStorageMap = function(){
 
 	if(global?.account?.username){
 		const username = global.account.username;
-		 localStorageMap[`HOMEBREWERY-DEFAULT-SAVE-LOCATION-${username}`] = `HB_editor_defaultSave_${username}`;
+		localStorageMap[`HOMEBREWERY-DEFAULT-SAVE-LOCATION-${username}`] = `HB_editor_defaultSave_${username}`;
 	}
 
 	return localStorageMap;

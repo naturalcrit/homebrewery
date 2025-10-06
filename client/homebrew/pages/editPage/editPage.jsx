@@ -5,6 +5,7 @@ import './editPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -25,7 +26,6 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
 // Page specific imports
 import { Meta }                          from 'vitreum/headtags';
-import _                                 from 'lodash';
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
@@ -46,8 +46,8 @@ const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
 const METAKEY  = 'HB_newPage_meta';
 
-
 const useLocalStorage = false;
+const neverSaved			= false;
 
 const EditPage = (props)=>{
 	props = {
@@ -309,14 +309,18 @@ const EditPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved.</Nav.item>;
+		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
 	const toggleAutoSave = ()=>{
