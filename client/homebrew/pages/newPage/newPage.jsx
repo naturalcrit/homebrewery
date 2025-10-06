@@ -1,275 +1,239 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
-require('./newPage.less');
-const React = require('react');
-const createClass = require('create-react-class');
-import request from '../../utils/request-middleware.js';
+import './newPage.less';
 
-import Markdown from 'naturalcrit/markdown.js';
+import React, { useState, useEffect, useRef } from 'react';
+import request                                from '../../utils/request-middleware.js';
+import Markdown                               from 'naturalcrit/markdown.js';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
+import Nav                       from 'naturalcrit/nav/nav.jsx';
+import Navbar                    from '../../navbar/navbar.jsx';
+import AccountNavItem            from '../../navbar/account.navitem.jsx';
+import ErrorNavItem              from '../../navbar/error-navitem.jsx';
+import HelpNavItem               from '../../navbar/help.navitem.jsx';
+import PrintNavItem              from '../../navbar/print.navitem.jsx';
+import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
-const SplitPane = require('client/components/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
 const METAKEY  = 'homebrewery-new-meta';
-let SAVEKEY;
+const SAVEKEYPREFIX  = 'HOMEBREWERY-DEFAULT-SAVE-LOCATION-';
 
+const NewPage = (props) => {
+	props = {
+		brew: DEFAULT_BREW,
+		...props
+	};
 
-const NewPage = createClass({
-	displayName     : 'NewPage',
-	getDefaultProps : function() {
-		return {
-			brew : DEFAULT_BREW
+	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
+	const [isSaving                  , setIsSaving                  ] = useState(false);
+	const [saveGoogle                , setSaveGoogle                ] = useState(global.account?.googleId ? true : false);
+	const [error                     , setError                     ] = useState(null);
+	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum  ] = useState(1);
+	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
+	const [themeBundle               , setThemeBundle               ] = useState({});
+
+	const editorRef = useRef(null);
+
+	const useLocalStorage = true;
+
+	useEffect(() => {
+		document.addEventListener('keydown', handleControlKeys);
+		loadBrew();
+		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		return () => {
+			document.removeEventListener('keydown', handleControlKeys);
 		};
-	},
+	}, []);
 
-	getInitialState : function() {
-		const brew = this.props.brew;
-
-		return {
-			brew                       : brew,
-			isSaving                   : false,
-			saveGoogle                 : (global.account && global.account.googleId ? true : false),
-			error                      : null,
-			htmlErrors                 : Markdown.validate(brew.text),
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
-		};
-	},
-
-	editor : React.createRef(null),
-
-	componentDidMount : function() {
-		document.addEventListener('keydown', this.handleControlKeys);
-
-		const brew = this.state.brew;
-
-		if(!this.props.brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
+	const loadBrew = ()=>{
+		const brew = { ...currentBrew };
+		if(!brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
 			const brewStorage  = localStorage.getItem(BREWKEY);
 			const styleStorage = localStorage.getItem(STYLEKEY);
-			const metaStorage = JSON.parse(localStorage.getItem(METAKEY));
+			const metaStorage  = JSON.parse(localStorage.getItem(METAKEY));
 
-			brew.text  = brewStorage  ?? brew.text;
-			brew.style = styleStorage ?? brew.style;
-			// brew.title = metaStorage?.title || this.state.brew.title;
-			// brew.description = metaStorage?.description || this.state.brew.description;
+			brew.text     = brewStorage           ?? brew.text;
+			brew.style    = styleStorage          ?? brew.style;
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
 		}
 
-		SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${global.account?.username || ''}`;
+		const SAVEKEY = `${SAVEKEYPREFIX}${global.account?.username}`;
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
-		this.setState({
-			brew       : brew,
-			saveGoogle : (saveStorage == 'GOOGLE-DRIVE' && this.state.saveGoogle)
-		});
-
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+		setCurrentBrew(brew);
+		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
 
 		localStorage.setItem(BREWKEY, brew.text);
 		if(brew.style)
 			localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ 'renderer': brew.renderer, 'theme': brew.theme, 'lang': brew.lang }));
-		if(window.location.pathname != '/new') {
+		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
+		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
-		}
-	},
-	componentWillUnmount : function() {
-		document.removeEventListener('keydown', this.handleControlKeys);
-	},
+	};
 
-	handleControlKeys : function(e){
-		if(!(e.ctrlKey || e.metaKey)) return;
+	const handleControlKeys = (e) => {
+		if (!(e.ctrlKey || e.metaKey)) return;
 		const S_KEY = 83;
 		const P_KEY = 80;
-		if(e.keyCode == S_KEY) this.save();
-		if(e.keyCode == P_KEY) printCurrentBrew();
-		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
-			e.stopPropagation();
+		if (e.keyCode === S_KEY) save();
+		if (e.keyCode === P_KEY) printCurrentBrew();
+		if (e.keyCode === S_KEY || e.keyCode === P_KEY) {
 			e.preventDefault();
+			e.stopPropagation();
 		}
-	},
+	};
 
-	handleSplitMove : function(){
-		this.editor.current.update();
-	},
+	const handleSplitMove = ()=>{
+		editorRef.current.update();
+	};
 
-	handleEditorViewPageChange : function(pageNumber){
-		this.setState({ currentEditorViewPageNum: pageNumber });
-	},
+	const handleEditorViewPageChange = (pageNumber)=>{
+		setCurrentEditorViewPageNum(pageNumber);
+	};
+	
+	const handleEditorCursorPageChange = (pageNumber)=>{
+		setCurrentEditorCursorPageNum(pageNumber);
+	};
+	
+	const handleBrewRendererPageChange = (pageNumber)=>{
+		setCurrentBrewRendererPageNum(pageNumber);
+	};
 
-	handleEditorCursorPageChange : function(pageNumber){
-		this.setState({ currentEditorCursorPageNum: pageNumber });
-	},
+	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
+		if (subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-	handleBrewRendererPageChange : function(pageNumber){
-		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
 
-	handleTextChange : function(text){
-		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
+		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
+		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
 
-		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			htmlErrors : htmlErrors,
-		}));
-		localStorage.setItem(BREWKEY, text);
-	},
-
-	handleStyleChange : function(style){
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, style: style },
-		}));
-		localStorage.setItem(STYLEKEY, style);
-	},
-
-	handleSnipChange : function(snippet){
-		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
-
-		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, snippets: snippet },
-			htmlErrors : htmlErrors,
-		}), ()=>{if(this.state.autoSave) this.trySave();});
-	},
-
-	handleMetaChange : function(metadata, field=undefined){
-		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
-
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, ...metadata },
-		}), ()=>{
-			localStorage.setItem(METAKEY, JSON.stringify({
-				// 'title'       : this.state.brew.title,
-				// 'description' : this.state.brew.description,
-				'renderer' : this.state.brew.renderer,
-				'theme'    : this.state.brew.theme,
-				'lang'     : this.state.brew.lang
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
 			}));
-		});
-		;
-	},
-
-	save : async function(){
-		this.setState({
-			isSaving : true
-		});
-
-		let brew = this.state.brew;
-		// Split out CSS to Style if CSS codefence exists
-		if(brew.text.startsWith('```css') && brew.text.indexOf('```\n\n') > 0) {
-			const index = brew.text.indexOf('```\n\n');
-			brew.style = `${brew.style ? `${brew.style}\n` : ''}${brew.text.slice(7, index - 1)}`;
-			brew.text = brew.text.slice(index + 5);
 		}
+	};
 
-		brew.pageCount=((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
+	const save = async () => {
+  	setIsSaving(true);
+
+		let updatedBrew = { ...currentBrew };
+		splitTextStyleAndMetadata(updatedBrew);
+
+		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
+		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
+
 		const res = await request
-			.post(`/api${this.state.saveGoogle ? '?saveToGoogle=true' : ''}`)
-			.send(brew)
-			.catch((err)=>{
-				this.setState({ isSaving: false, error: err });
+			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.send(updatedBrew)
+			.catch((err) => {
+				setIsSaving(false);
+				setError(err);
 			});
-		if(!res) return;
 
-		brew = res.body;
+		setIsSaving(false)
+		if (!res) return;
+
+		const savedBrew = res.body;
+
 		localStorage.removeItem(BREWKEY);
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
-		window.location = `/edit/${brew.editId}`;
-	},
+		window.location = `/edit/${savedBrew.editId}`;
+	};
 
-	renderSaveButton : function(){
-		if(this.state.isSaving){
+	const renderSaveButton = ()=>{
+		if(isSaving){
 			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
 				save...
 			</Nav.item>;
 		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={this.save}>
+			return <Nav.item icon='fas fa-save' className='save' onClick={save}>
 				save
 			</Nav.item>;
 		}
-	},
+	};
 
-	renderNavbar : function(){
-		return <Navbar>
+	const clearError = ()=>{
+		setError(null);
+		setIsSaving(false);
+	};
 
+	const renderNavbar = () => (
+		<Navbar>
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
+				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					this.renderSaveButton()
-				}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: renderSaveButton()}
 				<PrintNavItem />
 				<HelpNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>
-		</Navbar>;
-	},
+		</Navbar>
+	);
 
-	render : function(){
-		return <div className='newPage sitePage'>
-			{this.renderNavbar()}
+	return (
+			<div className='newPage sitePage'>
+			{renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onMetaChange={this.handleMetaChange}
-						onSnipChange={this.handleSnipChange}
-						renderer={this.state.brew.renderer}
-						userThemes={this.props.userThemes}
-						themeBundle={this.state.themeBundle}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						ref={editorRef}
+						brew={currentBrew}
+						onBrewChange={handleBrewChange}
+						renderer={currentBrew.renderer}
+						userThemes={props.userThemes}
+						themeBundle={themeBundle}
+						onCursorPageChange={handleEditorCursorPageChange}
+						onViewPageChange={handleEditorViewPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						theme={currentBrew.theme}
+						themeBundle={themeBundle}
+						errors={HTMLErrors}
+						lang={currentBrew.lang}
+						onPageChange={handleBrewRendererPageChange}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = NewPage;

@@ -1,0 +1,38 @@
+@import (less) './themes/fonts/5e/fonts.less';
+@import (less) './themes/assets/assets.less';
+
+:root {
+	//Colors
+	--HB_Color_Background            : #FFFFFF; // White
+	--HB_Color_WatercolorStain       : #000000; // Black
+}
+
+.page {
+	font-family: Cambria,Georgia,serif;
+	font-size: 14px;
+	h1, h2, h3, h4 {
+  		font-variant: small-caps;
+  		font-weight: normal;
+	}
+	h1 {
+		column-span: all;
+		-webkit-column-span: all;
+		font-size: 40px;
+	}
+	h2 {
+		font-size: 26px;
+	}
+	h3 {
+		font-size: 20px;
+		border-bottom: 2px solid black;
+	}
+	h4 {
+		font-size: 18px;
+	}
+	h5 {
+		font-size: 16px;
+	}
+	h6 {
+		font-size: 14px;
+	}
+}
