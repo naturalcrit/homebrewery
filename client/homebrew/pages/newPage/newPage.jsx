@@ -36,9 +36,9 @@ const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 const useLocalStorage = true;
 const neverSaved      = true;
 
-const NewPage = (props) => {
+const NewPage = (props)=>{
 	props = {
-		brew: DEFAULT_BREW,
+		brew : DEFAULT_BREW,
 		...props
 	};
 
@@ -57,7 +57,7 @@ const NewPage = (props) => {
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
-	useEffect(() => {
+	useEffect(()=>{
 		loadBrew();
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
@@ -73,7 +73,7 @@ const NewPage = (props) => {
 
 		document.addEventListener('keydown', handleControlKeys);
 
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
@@ -118,16 +118,16 @@ const NewPage = (props) => {
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
-		if (subfield == 'renderer' || subfield == 'theme')
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
 			setHTMLErrors(Markdown.validate(value));
 
-		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
-		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
 
 		if(useLocalStorage) {
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
@@ -141,10 +141,10 @@ const NewPage = (props) => {
 		}
 	};
 
-	const save = async () => {
+	const save = async ()=>{
   	setIsSaving(true);
 
-		let updatedBrew = { ...currentBrew };
+		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
 		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
@@ -153,13 +153,13 @@ const NewPage = (props) => {
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(updatedBrew)
-			.catch((err) => {
+			.catch((err)=>{
 				setIsSaving(false);
 				setError(err);
 			});
 
-		setIsSaving(false)
-		if (!res) return;
+		setIsSaving(false);
+		if(!res) return;
 
 		const savedBrew = res.body;
 
@@ -209,7 +209,7 @@ const NewPage = (props) => {
 		setIsSaving(false);
 	};
 
-	const renderNavbar = () => (
+	const renderNavbar = ()=>(
 		<Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
@@ -230,7 +230,7 @@ const NewPage = (props) => {
 	);
 
 	return (
-			<div className='newPage sitePage'>
+		<div className='newPage sitePage'>
 			{renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>

@@ -15,7 +15,7 @@ const ErrorNavItem = ({ error = '', clearError })=>{
 		errMsg += `\`\`\`\n${error.stack}\n`;
 		errMsg += `${JSON.stringify(response?.error, null, '  ')}\n\`\`\``;
 		console.log(errMsg);
-	} catch (e){}
+	} catch {}
 
 	if(status === 409) {
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
