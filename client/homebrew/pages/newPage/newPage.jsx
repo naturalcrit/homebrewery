@@ -5,6 +5,7 @@ import './newPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -25,7 +26,6 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
-
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
@@ -51,8 +51,11 @@ const NewPage = (props) => {
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle               ] = useState({});
+	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
+	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(false);
 
-	const editorRef = useRef(null);
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	useEffect(() => {
 		loadBrew();
@@ -102,6 +105,13 @@ const NewPage = (props) => {
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
+
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();

@@ -5,6 +5,7 @@ import './editPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -25,7 +26,6 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
 // Page specific imports
 import { Meta }                          from 'vitreum/headtags';
-import _                                 from 'lodash';
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
