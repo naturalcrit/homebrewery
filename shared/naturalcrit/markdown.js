@@ -390,6 +390,153 @@ const mustacheInjectBlock = {
 	}
 };
 
+const indexesDuplicates = (indexEntry)=>{
+	let count = 0;
+	for (const ie of indexes) {
+		if((ie.topic === indexEntry.topic) && (ie.subtopic === indexEntry.subtopic) && (ie.index === indexEntry.index)) {
+			count++;
+		}
+	}
+	indexes.push({ ...indexEntry });
+	return count == 0 ? '' : count;
+};
+
+const indexGlossarySplit=(src, isIndex=true)=>{
+	// Because the Index and Glossary splitting is virtually identical aside from the delimiters between
+	// a topic and subtopic or term and definition I am combining this into a single function.
+	let listName, leftSide, rightSide;
+	const nameSplitRegex = /(?<!\\):/;
+	const leftRightRegex = isIndex ? /(?<!\\)\// : /(?<!\\)\/\//;
+
+	let leftRight = [];
+	// Check to see if a list name has been provided.
+	// If not, set a default based on isIndex.
+	if(src.search(nameSplitRegex) < 0){
+		leftRight[1] = src.trim();
+		listName = isIndex ? 'Index:' : 'Glossary:';
+	} else {
+		leftRight = src.split(nameSplitRegex);
+		listName = leftRight[0].replace('\\:', ':').trim();
+		if(!leftRight[1]?.trim()>0) {
+			leftRight.splice(1, 1);
+		}
+		leftRight[1] = leftRight[1]?.trim();
+	}
+
+	// Make certain we have what should be Index/Glossary definition left over.
+	if(leftRight[1]) {
+		// If we find the left/right split indicator, split the string and clean up.
+		if(leftRight[1].search(leftRightRegex) !== -1){
+			const leftRightSplit = leftRight[1]?.split(leftRightRegex);
+			leftSide = leftRightSplit[0].trim();
+			if(leftRightSplit[1]) { leftRightSplit[1] = leftRightSplit[1].trim(); }
+			if(leftRightSplit[1]?.length>0) {
+				rightSide = leftRightSplit[1].trim();
+			}
+		} else if(isIndex) {
+			// If we *do not* have a split indicator, and this is an index (isIndex)
+			// then it is an entry without a subtopic.
+			leftSide = leftRight[1];
+		}
+	}
+
+	// Check for a left side ( subtopic or glossary definition )
+	// if one was found, return the object block.
+	if(leftSide?.length>0) {
+		return { listName: listName, leftSide: leftSide, rightSide: rightSide };
+	} else {
+		return undefined;
+	}
+
+};
+
+const indexAnchors = {
+	name  : 'indexAnchor',
+	level : 'block',
+	start(src) {return src.match(/^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/)?.index;}, // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/gmy;
+
+		const indexEntry = {};
+
+		let srcMatch;
+		while (srcMatch = inlineRegex.exec(src)){
+			const crossReferenceSplit = /(?<!\\)\|/g;
+
+			const crossReference = srcMatch[0].split(crossReferenceSplit);
+			let entryMatch = undefined;
+			if((crossReference[0][1] !== '#') && (crossReference[0][1] !== ' ')) {
+
+				entryMatch = indexGlossarySplit(crossReference[0].slice(1));
+			}
+			if(!entryMatch) { return; }
+			console.log(entryMatch);
+			indexEntry.subtopic = entryMatch?.rightSide ? entryMatch.rightSide : undefined;
+			indexEntry.topic = entryMatch.leftSide;
+			indexEntry.index = entryMatch.listName;
+			indexEntry.instance = indexesDuplicates(indexEntry);
+			if(crossReference.length > 1) {
+				indexEntry.crossReference = true;
+			}
+			return {
+				type       : 'indexAnchor',
+				text       : src,
+				raw        : srcMatch[0],
+				pageNumber : globalPageNumber,
+				indexEntry : indexEntry
+			};
+		}
+	},
+	renderer(token) {
+		if(!token.indexEntry?.crossReference) {
+			if(token.indexEntry?.subtopic) {
+				// This is a Subtopic entry
+				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
+			} else {
+				// This is a Topic entry
+				console.log(token);
+				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
+			}
+		}
+		return '';
+	}
+};
+
+const justifiedParagraphClasses = [];
+justifiedParagraphClasses[2] = 'Left';
+justifiedParagraphClasses[4] = 'Right';
+justifiedParagraphClasses[6] = 'Center';
+
+const justifiedParagraphs = {
+	name  : 'justifiedParagraphs',
+	level : 'block',
+	start(src) {
+		return src.match(/\n(?:-:|:-|-:) {1}/m)?.index;
+	},  // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const regex  = /^(((:-))|((-:))|((:-:))) .+(\n(([^\n].*\n)*(\n|$))|$)/ygm;
+		const match = regex.exec(src);
+		if(match?.length) {
+			let whichJustify;
+			if(match[2]?.length) whichJustify = 2;
+			if(match[4]?.length) whichJustify = 4;
+			if(match[6]?.length) whichJustify = 6;
+			return {
+				type   : 'justifiedParagraphs', // Should match "name" above
+				raw    : match[0],     // Text to consume from the source
+				length : match[whichJustify].length,
+				text   : match[0].slice(match[whichJustify].length),
+				class  : justifiedParagraphClasses[whichJustify],
+				tokens : this.lexer.inlineTokens(match[0].slice(match[whichJustify].length + 1))
+			};
+		}
+	},
+	renderer(token) {
+		return `<p align="${token.class}">${this.parser.parseInline(token.tokens)}</p>`;
+	}
+
+};
+
 const forcedParagraphBreaks = {
 	name  : 'hardBreaks',
 	level : 'block',
@@ -684,6 +831,7 @@ Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mu
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
+Marked.use({ extensions: [indexAnchors] });
 Marked.use(MarkedNonbreakingSpaces());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
@@ -808,6 +956,8 @@ const mergeHTMLTags = (originalTags, newTags)=>{
 const globalVarsList    = {};
 let varsQueue       = [];
 let globalPageNumber = 0;
+let indexes = [];
+
 
 const Markdown = {
 	marked : Marked,

@@ -231,6 +231,15 @@ const Editor = createClass({
 							}
 						}
 
+						// Rich Indexes
+						if(line.includes('@[')){
+							const regex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
+							let match;
+							while ((match = regex.exec(line)) != null){
+								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) - 3 }, { line: lineNumber, ch: 1 }, { className: 'cm-image cm-image-marker' });
+							}
+						}
+
 						// Subscript & Superscript
 						if(line.includes('^')) {
 							let startIndex = line.indexOf('^');
