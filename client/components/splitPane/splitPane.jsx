@@ -86,7 +86,7 @@ const SplitPane = (props)=>{
 
 	return (
 		<div className='splitPane' onPointerMove={handleMove} onPointerUp={handleUp}>
-			<Pane width={dividerPos} isDragging={isDragging} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
+			<Pane width={dividerPos} moveBrew={moveBrew} moveSource={moveSource} liveScroll={liveScroll} setMoveArrows={setShowMoveArrows}>
 				{props.children[0]}
 			</Pane>
 			{renderDivider}
@@ -102,7 +102,7 @@ const Pane = ({ width, children, isDragging, moveBrew, moveSource, liveScroll, s
 
 	return (
 		<div className='pane' style={styles}>
-			{React.cloneElement(children, { moveBrew, moveSource, liveScroll, isDragging, setMoveArrows })}
+			{React.cloneElement(children, { moveBrew, moveSource, liveScroll, setMoveArrows })}
 		</div>
 	);
 };
