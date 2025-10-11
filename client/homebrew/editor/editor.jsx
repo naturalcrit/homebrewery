@@ -231,7 +231,7 @@ const Editor = createClass({
 							}
 						}
 
-						// Rich Indexes
+						// Snippet Variables
 						if(line.includes('@[')){
 							const regex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
 							let match;
