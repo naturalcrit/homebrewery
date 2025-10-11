@@ -136,6 +136,12 @@ module.exports = [
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
 			},
 			{
+				name         : 'Rich Index',
+				icon         : 'fas fa-indent',
+				gen          : richIndexGen,
+				experimental : true
+			},
+			{
 				name : 'Homebrewery Credit',
 				icon : 'fas fa-dice-d20',
 				gen  : function(){
