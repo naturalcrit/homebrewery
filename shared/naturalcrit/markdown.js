@@ -583,7 +583,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 
 		try {
 			return mathParser.evaluate(replacedLabel);
-		} catch (error) {
+		} catch {
 			return undefined;		// Return undefined if invalid math result
 		}
 	}

@@ -7,7 +7,9 @@ const moment      = require('moment');
 
 const BrewItem    = require('./brewItem/brewItem.jsx');
 
-const USERPAGE_KEY_PREFIX = 'HOMEBREWERY-LISTPAGE';
+const USERPAGE_SORT_DIR = 'HB_listPage_sortDir';
+const USERPAGE_SORT_TYPE = 'HB_listPage_sortType';
+const USERPAGE_GROUP_VISIBILITY_PREFIX = 'HB_listPage_visibility_group';
 
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
@@ -50,12 +52,12 @@ const ListPage = createClass({
 
 		// LOAD FROM LOCAL STORAGE
 		if(typeof window !== 'undefined') {
-			const newSortType = (this.state.sortType ?? (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-SORTTYPE`) || DEFAULT_SORT_TYPE));
-			const newSortDir = (this.state.sortDir ?? (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-SORTDIR`) || DEFAULT_SORT_DIR));
+			const newSortType = (this.state.sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE));
+			const newSortDir = (this.state.sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR));
 			this.updateUrl(this.state.filterString, newSortType, newSortDir);
 
 			const brewCollection = this.props.brewCollection.map((brewGroup)=>{
-				brewGroup.visible = (localStorage.getItem(`${USERPAGE_KEY_PREFIX}-VISIBILITY-${brewGroup.class}`) ?? 'true')=='true';
+				brewGroup.visible = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true')=='true';
 				return brewGroup;
 			});
 
@@ -73,10 +75,10 @@ const ListPage = createClass({
 
 	saveToLocalStorage : function() {
 		this.state.brewCollection.map((brewGroup)=>{
-			localStorage.setItem(`${USERPAGE_KEY_PREFIX}-VISIBILITY-${brewGroup.class}`, `${brewGroup.visible}`);
+			localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`, `${brewGroup.visible}`);
 		});
-		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTTYPE`, this.state.sortType);
-		localStorage.setItem(`${USERPAGE_KEY_PREFIX}-SORTDIR`, this.state.sortDir);
+		localStorage.setItem(USERPAGE_SORT_TYPE, this.state.sortType);
+		localStorage.setItem(USERPAGE_SORT_DIR, this.state.sortDir);
 	},
 
 	renderBrews : function(brews){

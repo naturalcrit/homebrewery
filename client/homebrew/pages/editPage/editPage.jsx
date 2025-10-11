@@ -1,43 +1,53 @@
 /* eslint-disable max-lines */
 import './editPage.less';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+// Common imports
+import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
-import _                                 from 'lodash';;
-import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
-import { md5 }                           from 'hash-wasm';
-import { gzipSync, strToU8 }             from 'fflate';
-import { Meta }                          from 'vitreum/headtags';
+import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+
+import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import Nav                       from 'naturalcrit/nav/nav.jsx';
 import Navbar                    from '../../navbar/navbar.jsx';
 import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
 import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import ErrorNavItem              from '../../navbar/error-navitem.jsx';
 import HelpNavItem               from '../../navbar/help.navitem.jsx';
 import VaultNavItem              from '../../navbar/vault.navitem.jsx';
 import PrintNavItem              from '../../navbar/print.navitem.jsx';
 import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 
-import SplitPane    from 'client/components/splitPane/splitPane.jsx';
-import Editor       from '../../editor/editor.jsx';
-import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
+// Page specific imports
+import { Meta }                          from 'vitreum/headtags';
+import { md5 }                           from 'hash-wasm';
+import { gzipSync, strToU8 }             from 'fflate';
+import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
+import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
-
-import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
-
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
-
 import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
+
+
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const SNIPKEY  = 'HB_newPage_snippets';
+const METAKEY  = 'HB_newPage_meta';
+
+const useLocalStorage = false;
+const neverSaved			= false;
 
 const EditPage = (props)=>{
 	props = {
@@ -70,7 +80,7 @@ const EditPage = (props)=>{
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
-		const autoSavePref = JSON.parse(localStorage.getItem('AUTOSAVE_ON') ?? true);
+		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(Markdown.validate(currentBrew.text));
@@ -113,41 +123,27 @@ const EditPage = (props)=>{
 		editorRef.current?.update();
 	};
 
-	const handleEditorViewPageChange = (pageNumber)=>{
-		setCurrentEditorViewPageNum(pageNumber);
-	};
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-	const handleEditorCursorPageChange = (pageNumber)=>{
-		setCurrentEditorCursorPageNum(pageNumber);
-	};
-
-	const handleBrewRendererPageChange = (pageNumber)=>{
-		setCurrentBrewRendererPageNum(pageNumber);
-	};
-
-	const handleTextChange = (text)=>{
 		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(text));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, text }));
-	};
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
 
-	const handleStyleChange = (style)=>{
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, style }));
-	};
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
 
-	const handleSnipChange = (snippet)=>{
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length)
-			setHTMLErrors(Markdown.validate(snippet));
-		setCurrentBrew((prevBrew)=>({ ...prevBrew, snippets: snippet }));
-	};
-
-	const handleMetaChange = (metadata, field = undefined)=>{
-		if(field === 'theme' || field === 'renderer')
-			fetchThemeBundle(setError, setThemeBundle, metadata.renderer, metadata.theme);
-
-		setCurrentBrew((prev)=>({ ...prev, ...metadata }));
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
 	};
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
@@ -313,20 +309,24 @@ const EditPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
+			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved.</Nav.item>;
+		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
 	const toggleAutoSave = ()=>{
 		clearTimeout(warnUnsavedTimeout.current);
 		clearTimeout(saveTimeout.current);
-		localStorage.setItem('AUTOSAVE_ON', JSON.stringify(!autoSaveEnabled));
+		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
 		setAutoSaveEnabled(!autoSaveEnabled);
 		setWarnUnsavedChanges(autoSaveEnabled);
 	};
@@ -356,11 +356,11 @@ const EditPage = (props)=>{
 						{renderSaveButton()}
 						{renderAutoSaveButton()}
 					</Nav.dropdown>}
-				<NewBrewItem/>
-				<HelpNavItem/>
-				<ShareNavItem brew={currentBrew} />
+				<NewBrewItem />
 				<PrintNavItem />
+				<HelpNavItem />
 				<VaultNavItem />
+				<ShareNavItem brew={currentBrew} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>
 			</Nav.section>
@@ -380,17 +380,14 @@ const EditPage = (props)=>{
 					<Editor
 						ref={editorRef}
 						brew={currentBrew}
-						onTextChange={handleTextChange}
-						onStyleChange={handleStyleChange}
-						onSnipChange={handleSnipChange}
-						onMetaChange={handleMetaChange}
+						onBrewChange={handleBrewChange}
 						reportError={setError}
 						renderer={currentBrew.renderer}
 						userThemes={props.userThemes}
 						themeBundle={themeBundle}
 						updateBrew={updateBrew}
-						onCursorPageChange={handleEditorCursorPageChange}
-						onViewPageChange={handleEditorViewPageChange}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
@@ -403,7 +400,7 @@ const EditPage = (props)=>{
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
-						onPageChange={handleBrewRendererPageChange}
+						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
