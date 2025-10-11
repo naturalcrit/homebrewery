@@ -470,7 +470,6 @@ const indexAnchors = {
 				entryMatch = indexGlossarySplit(crossReference[0].slice(1));
 			}
 			if(!entryMatch) { return; }
-			console.log(entryMatch);
 			indexEntry.subtopic = entryMatch?.rightSide ? entryMatch.rightSide : undefined;
 			indexEntry.topic = entryMatch.leftSide;
 			indexEntry.index = entryMatch.listName;
@@ -494,7 +493,6 @@ const indexAnchors = {
 				return `<a id="p${token.pageNumber}_${token.indexEntry.subtopic.replace(/\s/g, '').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-subtopic="${token.indexEntry.subtopic}" data-index="${token.indexEntry.index}"></a>`;
 			} else {
 				// This is a Topic entry
-				console.log(token);
 				return `<a id="p${token.pageNumber}_${token.indexEntry.topic.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}${token.indexEntry.instance}" data-topic="${token.indexEntry.topic}" data-index="${token.indexEntry.index}"></a>`;
 			}
 		}

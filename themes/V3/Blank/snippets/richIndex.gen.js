@@ -303,9 +303,15 @@ module.exports = function (props) {
 			resultIndexes +=dedent`
 			{{index,wide
 			##### ${indexName}
+
 			${markdown}
 			}}
 			\page
+
 			`;
 			resultIndexes += '\n';
-	
+		}
+	};
+
+	return resultIndexes;
+};
