@@ -2,9 +2,9 @@ require('./error-navitem.less');
 const React = require('react');
 const Nav = require('naturalcrit/nav/nav.jsx');
 
-const ErrorNavItem = ({error = '', clearError})=>{
+const ErrorNavItem = ({ error = '', clearError })=>{
 	const response    = error.response;
-	const errorCode   = error.code
+	const errorCode   = error.code;
 	const status      = response?.status;
 	const HBErrorCode = response?.body?.HBErrorCode;
 	const message     = response?.body?.message;
@@ -15,7 +15,7 @@ const ErrorNavItem = ({error = '', clearError})=>{
 		errMsg += `\`\`\`\n${error.stack}\n`;
 		errMsg += `${JSON.stringify(response?.error, null, '  ')}\n\`\`\``;
 		console.log(errMsg);
-	} catch (e){}
+	} catch {}
 
 	if(status === 409) {
 		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
@@ -108,6 +108,15 @@ const ErrorNavItem = ({error = '', clearError})=>{
 				theme. Verify that
 				brew <a className='lowercase' target='_blank' rel='noopener noreferrer' href={`/share/${response.body.brewId}`}>
 					{response.body.brewId}</a> has the <span className='lowercase'>meta:theme</span> tag!
+			</div>
+		</Nav.item>;
+	}
+
+	if(HBErrorCode === '13') {
+		return <Nav.item className='save error' icon='fas fa-exclamation-triangle'>
+			Oops!
+			<div className='errorContainer' onClick={clearError}>
+				Server has lost connection to the database.
 			</div>
 		</Nav.item>;
 	}

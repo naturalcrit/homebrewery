@@ -5,6 +5,7 @@ import './newPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import Markdown                               from 'naturalcrit/markdown.js';
+import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
@@ -26,19 +27,18 @@ import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
 
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const METAKEY  = 'HB_newPage_metadata';
 const SNIPKEY  = 'HB_newPage_snippets';
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
-
 const useLocalStorage = true;
+const neverSaved      = true;
 
-const NewPage = (props) => {
+const NewPage = (props)=>{
 	props = {
-		brew: DEFAULT_BREW,
+		brew : DEFAULT_BREW,
 		...props
 	};
 
@@ -51,10 +51,13 @@ const NewPage = (props) => {
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle               , setThemeBundle               ] = useState({});
+	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
+	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(false);
 
-	const editorRef = useRef(null);
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
-	useEffect(() => {
+	useEffect(()=>{
 		loadBrew();
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
@@ -70,7 +73,7 @@ const NewPage = (props) => {
 
 		document.addEventListener('keydown', handleControlKeys);
 
-		return () => {
+		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
@@ -93,6 +96,7 @@ const NewPage = (props) => {
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);
+		lastSavedBrew.current = brew;
 		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
 
 		localStorage.setItem(BREWKEY, brew.text);
@@ -103,20 +107,27 @@ const NewPage = (props) => {
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
 
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
+
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field) => (value, subfield) => {	//'text', 'style', 'snippets', 'metadata'
-		if (subfield == 'renderer' || subfield == 'theme')
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
 			setHTMLErrors(Markdown.validate(value));
 
-		if(field == 'metadata') setCurrentBrew(prev => ({ ...prev, ...value }));
-		else                    setCurrentBrew(prev => ({ ...prev, [field]: value }));
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
 
 		if(useLocalStorage) {
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
@@ -130,10 +141,10 @@ const NewPage = (props) => {
 		}
 	};
 
-	const save = async () => {
+	const save = async ()=>{
   	setIsSaving(true);
 
-		let updatedBrew = { ...currentBrew };
+		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
 		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
@@ -142,13 +153,13 @@ const NewPage = (props) => {
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(updatedBrew)
-			.catch((err) => {
+			.catch((err)=>{
 				setIsSaving(false);
 				setError(err);
 			});
 
-		setIsSaving(false)
-		if (!res) return;
+		setIsSaving(false);
+		if(!res) return;
 
 		const savedBrew = res.body;
 
@@ -159,15 +170,38 @@ const NewPage = (props) => {
 	};
 
 	const renderSaveButton = ()=>{
-		if(isSaving){
-			return <Nav.item icon='fas fa-spinner fa-spin' className='save'>
-				save...
-			</Nav.item>;
-		} else {
-			return <Nav.item icon='fas fa-save' className='save' onClick={save}>
-				save
-			</Nav.item>;
-		}
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		// if(unsavedChanges && warnUnsavedChanges) {
+		// 	resetWarnUnsavedTimer();
+		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		// 	const text = elapsedTime === 0
+		// 		? 'Autosave is OFF.'
+		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+		// 					Reminder...
+		// 		<div className='errorContainer'>{text}</div>
+		// 	</Nav.item>;
+		// }
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
 	const clearError = ()=>{
@@ -175,7 +209,7 @@ const NewPage = (props) => {
 		setIsSaving(false);
 	};
 
-	const renderNavbar = () => (
+	const renderNavbar = ()=>(
 		<Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
@@ -196,7 +230,7 @@ const NewPage = (props) => {
 	);
 
 	return (
-			<div className='newPage sitePage'>
+		<div className='newPage sitePage'>
 			{renderNavbar()}
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>

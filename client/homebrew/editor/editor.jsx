@@ -325,10 +325,10 @@ const Editor = createClass({
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+		
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
+			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
@@ -369,8 +369,8 @@ const Editor = createClass({
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
