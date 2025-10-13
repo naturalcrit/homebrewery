@@ -47,9 +47,7 @@ Make an changes you need to `config/docker.json` then build the image. If it doe
 "naturalcrit_url" : "local.naturalcrit.com:8010",
 "secret" : "secret",
 "web_port" : 8000,
-"enable_v3" : true,
 "mongodb_uri": "mongodb://172.17.0.2/homebrewery",
-"enable_themes" : true
 }
 ```
 
