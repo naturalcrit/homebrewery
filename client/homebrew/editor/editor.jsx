@@ -10,7 +10,7 @@ const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
-const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+const EDITOR_THEME_KEY = 'HB_editor_theme';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
@@ -140,7 +140,7 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
-		
+
 		this.setState({
 			view : newView
 		}, ()=>{
@@ -325,10 +325,10 @@ const Editor = createClass({
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+		
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
+			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
@@ -369,8 +369,8 @@ const Editor = createClass({
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
@@ -409,7 +409,6 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.codeEditor.current?.updateSize();
 		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
 		if(snipHeight !== this.state.snippetbarHeight)
 			this.setState({ snippetbarHeight: snipHeight });
