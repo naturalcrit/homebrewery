@@ -231,12 +231,12 @@ const Editor = createClass({
 							}
 						}
 
-						// Snippet Variables
-						if(line.includes('@[')){
-							const regex = /@\[((?:\\.|[^\[\]\\^@^\)])*)\]\(((?:\\.|[^\[\]\\^@^\)])*)\)/ym;
+						// Index Markers
+						if(line.startsWith('#')){
+							const regex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?/my;
 							let match;
 							while ((match = regex.exec(line)) != null){
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[0]) - 3 }, { line: lineNumber, ch: 1 }, { className: 'cm-image cm-image-marker' });
+								codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: line.length }, { className: 'interactiveIndex' });
 							}
 						}
 
