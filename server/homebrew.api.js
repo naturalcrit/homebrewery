@@ -481,7 +481,7 @@ const api = {
 				await HomebrewModel.deleteOne({ editId: id });
 				return next();
 			}
-			return next();
+			throw(err);
 		}
 
 		let brew = req.brew;
