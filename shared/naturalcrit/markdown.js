@@ -444,7 +444,7 @@ const replaceVar = function(input, hoist=false, allowUnresolved=false) {
 
 		try {
 			return mathParser.evaluate(replacedLabel);
-		} catch (error) {
+		} catch {
 			return undefined;		// Return undefined if invalid math result
 		}
 	}
@@ -689,7 +689,7 @@ const tableTerminators = [
 
 Marked.use(MarkedVariables());
 Marked.use(MarkedDefinitionLists());
-Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
