@@ -9,6 +9,7 @@ const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
 const LicenseGen 			    = require('./snippets/license.gen.js');
 const LicenseGenAelf            = require('./snippets/licenseAELF.js');
 const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
+const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
 const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
 const indexGen                  = require('./snippets/index.gen.js');
 
@@ -401,6 +402,18 @@ module.exports = [
 
 				]
 			},
+					{
+						name : "Traveller's Aid Society",
+						subsnippets : [
+							{
+								name : "Legal Statement",
+								gen  : LicenseMongoosePublishing.TASLegal,
+							}
+						]
+					}
+
+				]
+			},
 			{
 				name        : 'GNU',
 				icon        : 'fas fa-w',
@@ -442,6 +455,34 @@ module.exports = [
 				name : 'MIT License',
 				icon : 'fas fa-mit',
 				gen  : LicenseGen.mit,
+			},
+
+			{
+				name        : 'Mongoose Publishing Fair Use',
+				icon        : 'fas fa-mongoosepub',
+				subsnippets : [
+					{
+						name : 'Long Form Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseLong,
+					},
+					{
+						name : 'Traveller Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTraveller,
+					},
+					{
+						name : '2300 AD Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUse2300AD,
+					},
+					{
+						name : 'Twilight 2000 Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTwilight2000,
+					},
+
+				]
 			},
 
 			{
