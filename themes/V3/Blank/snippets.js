@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-const dedent                    = require('dedent-tabs').default;
 const WatercolorGen 			= require('./snippets/watercolor.gen.js');
 const ImageMaskGen              = require('./snippets/imageMask.gen.js');
 const FooterGen                 = require('./snippets/footer.gen.js');
@@ -10,6 +9,7 @@ const LicenseGen 			    = require('./snippets/license.gen.js');
 const LicenseGenAelf            = require('./snippets/licenseAELF.js');
 const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
 const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
+const dedent                    = require('dedent-tabs').default;
 const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
 const indexGen                  = require('./snippets/index.gen.js');
 
@@ -367,41 +367,33 @@ module.exports = [
 						subsnippets : [
 
 							{
-								name: "General",
+								name: "Required Text",
 								subsnippets : [
 							
 									{
-										name : "Colophon",
+										name : "heroForgeHeroKidsCreatorsGuildColophon",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
 									},
 
 									{
-										name : "Cover",
-										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
-									},
-
-								]
-							},
-							{
-								name: "Super Kids",
-								subsnippets : [
-							
-									{
-										name : "Colophon",
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
 									},
 
 									{
-										name : "Cover",
+										name : "heroForgeHeroKidsCreatorsGuildCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
 									},
 								]
 							}
 						]
-					}
+					},
 
-				]
-			},
 					{
 						name : "Traveller's Aid Society",
 						subsnippets : [
@@ -910,5 +902,4 @@ module.exports = [
 		]
 	},
 ];
-
 
