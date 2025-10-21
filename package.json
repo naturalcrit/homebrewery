@@ -89,7 +89,7 @@
     "@babel/preset-react": "^7.27.1",
     "@babel/runtime": "^7.28.4",
     "@dmsnell/diff-match-patch": "^1.1.0",
-    "@googleapis/drive": "^18.0.0",
+    "@googleapis/drive": "^19.1.0",
     "@sanity/diff-match-patch": "^3.2.0",
     "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
