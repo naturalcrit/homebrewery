@@ -464,12 +464,12 @@ module.exports = [
 						gen  : LicenseMongoosePublishing.fairUseTraveller,
 					},
 					{
-						name : '2300 AD Fair Use',
+						name : '2300AD Fair Use',
 						icon : null,
 						gen  : LicenseMongoosePublishing.fairUse2300AD,
 					},
 					{
-						name : 'Twilight 2000 Fair Use',
+						name : 'Twilight: 2000 Fair Use',
 						icon : null,
 						gen  : LicenseMongoosePublishing.fairUseTwilight2000,
 					},
