@@ -395,7 +395,7 @@ module.exports = [
 					},
 
 					{
-						name : "Traveller's Aid Society",
+						name : "Travellers' Aid Society",
 						subsnippets : [
 							{
 								name : "Legal Statement",
