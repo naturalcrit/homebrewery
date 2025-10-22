@@ -102,10 +102,10 @@ module.exports = {
 	},
 	// Verify Logo redistribution
 	greenRoninAgeCreatorsAllianceCover                : `Requires the \[Game Title\] Rulebook from Green Ronin Publishing for use.`,
-	greenRoninAgeCreatorsAllianceLogo                 : `![Age Creators Alliance](/themes/assets/license_logos/AGECreatorsAlliance.png)`,
-	greenRoninAgeCreatorsAllianceBlueRoseLogo         : `![Age Creators Alliance](/themes/assets/license_logos/BRAGECreatorsAlliance.png)`,
-	greenRoninAgeCreatorsAllianceFantasyAgeCompatible : `![Fantasy AGE Compatible](/themes/assets/license_logos/FantasyAgeCompatible.png)`,
-	greenRoninAgeCreatorsAllianceModernAGECompatible  : `![Modern AGE Compatible](/themes/assets/license_logos/ModernAGECompatabile.png)`,
+	greenRoninAgeCreatorsAllianceLogo                 : `![Age Creators Alliance](/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_General-Compatibility-Logo.png)`,
+	greenRoninAgeCreatorsAllianceBlueRoseLogo         : `![Age Creators Alliance](/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Blue-Rose-Logo.png)`,
+	greenRoninAgeCreatorsAllianceFantasyAgeCompatible : `![Fantasy AGE Compatible](/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Fantasy-AGE-Compatibility-Logo.png)`,
+	greenRoninAgeCreatorsAllianceModernAGECompatible  : `![Modern AGE Compatible](/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Modern-AGE-Compatibility-Logo.png)`,
 	// Green Ronin's Chronicle - Verify Art and Access
 	greenRoninChronicleSystemGuildColophon            : function() {
 		return dedent`
@@ -180,10 +180,10 @@ module.exports = {
 		`;
 	},
 	// Verify Logo redistribution
-	monteCookLogoDarkLarge              : `![Cypher System Compatible](/themes/assets/license_logos/CSCDarkLarge.png)`,
-	monteCookLogoDarkSmall              : `![Cypher System Compatible](/themes/assets/license_logos/CSCDarkSmall.png)`,
-	monteCookLogoLightLarge             : `![Cypher System Compatible](/themes/assets/license_logos/CSCLightLarge.png)`,
-	monteCookLogoLightSmall             : `![Cypher System Compatible](/themes/assets/license_logos/CSCLightSmall.png)`,
+	monteCookLogoDarkLarge              : `![Cypher System Compatible](/assets/license_logos/CSCDarkLarge.png)`,
+	monteCookLogoDarkSmall              : `![Cypher System Compatible](/assets/license_logos/CSCDarkSmall.png)`,
+	monteCookLogoLightLarge             : `![Cypher System Compatible](/assets/license_logos/CSCLightLarge.png)`,
+	monteCookLogoLightSmall             : `![Cypher System Compatible](/assets/license_logos/CSCLightSmall.png)`,
 	// Onyx Path Canis Minor - Verify logos and access
 	onyxPathCanisMinorColophon : function () {
 		return dedent`
