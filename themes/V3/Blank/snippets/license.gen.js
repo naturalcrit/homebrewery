@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
 const dedent = require('dedent');
 
 // Small and one-off licenses
@@ -50,10 +49,10 @@ module.exports = {
 	ccbyncsaBadge    : `![CC BY-NC-SA](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-sa.svg)`,
 	ccbyndBadge      : `![CC BY-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nd.svg)`,
 	ccbyncndBadge    : `![CC BY-NC-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-nd.svg)`,
-	shadowDarkNotice : `\[Product Name]\ is an independent product published under the Shadowdark RPG Third-Party License and is not affiliated with The Arcane Library, LLC. Shadowdark RPG © 2023 The Arcane Library, LLC.`,
-	shadowDarkBlack  : `![Shadowdark Black Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_Black.png){width:200px}`,
-	shadowDarkWhite  : `![Shadowdark White Logo](/assets/license_logos/Third_Party_Shadowdark_Logo_White.png){width:200px}`,
-	bladesDarkNotice : `This work is based on Blades in the Dark \(found at (http://www.bladesinthedark.com/)\), product of One Seven Design, developed and authored by John Harper, and licensed for our use under the Creative Commons Attribution 3.0 Unported license \(http://creativecommons.org/licenses/by/3.0/\).`,
-	bladesDarkLogo   : `![Forged in the Dark](/assets/license_logos/forged_in_the_dark_logo2_0.png)`,
+	shadowDarkNotice : `\[Product Name]\ is an independent product published under the Shadowdark RPG Third-Party License and is not affiliated with The Arcane Library, LLC. Shadowdark RPG © 2023 The Arcane Library, LLC.\n`,
+	shadowDarkBlack  : `![Shadowdark Black Logo](/assets/license_logos/The-Arcane-Library_Third-Party-License_Black.png){width:200px}`,
+	shadowDarkWhite  : `![Shadowdark White Logo](/assets/license_logos/The-Arcane-Library_Third-Party-License_White.png){width:200px}`,
+	bladesDarkNotice : `This work is based on Blades in the Dark \(found at (http://www.bladesinthedark.com/)\), product of One Seven Design, developed and authored by John Harper, and licensed for our use under the Creative Commons Attribution 3.0 Unported license \(http://creativecommons.org/licenses/by/3.0/\).\n`,
+	bladesDarkLogo   : `![Forged in the Dark](/assets/license_logos/Evil-Hat_Forged-In-The-Dark_Logo-V2.png)`,
 	bladesDarkLogoAttribution : `*Blades in the Dark^tm^ is a trademark of One Seven Design. The Forged in the Dark Logo is © One Seven Design, and is used with permission.*`
 };

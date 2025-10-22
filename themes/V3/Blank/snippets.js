@@ -456,7 +456,7 @@ module.exports = [
 				icon        : 'fab fa-shadowdark',
 				subsnippets : [
 					{
-						name        : 'Icons',
+						name        : 'Logos',
 						icon        : 'fas fa-image',
 						subsnippets : [
 							{

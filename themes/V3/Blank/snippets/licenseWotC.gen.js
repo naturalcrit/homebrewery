@@ -1,5 +1,4 @@
 /* eslint-disable max-lines */
-const _ = require('lodash');
 const dedent = require('dedent');
 
 module.exports = {
