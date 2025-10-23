@@ -437,6 +437,38 @@ module.exports = [
 					},
 				]
 			},
+			{
+				name        : 'Icons',
+				icon        : 'fas fa-i',
+				subsnippets : [
+					{
+						name        : 'Text Declarations',
+						icon        : null,
+						subsnippets : [
+							{
+								name : 'Compatibility',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.iconsCompatibility,
+							},
+							{
+								name : 'Section 15',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.icondsSection15,
+							},
+							{
+								name : 'Trademark',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.iconsTrademark,
+							},
+						]
+					},
+					{
+						name : 'Compatibility Logo',
+						icon : 'fas fa-i',
+						gen	 : LicenseGen.iconsCompatibilityLogo
+					}
+				]
+			},
 
 			{
 				name : 'MIT License',
