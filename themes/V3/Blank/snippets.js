@@ -228,26 +228,6 @@ module.exports = [
 				]
 			},
 			{
-				name        : 'Forged in the Dark',
-				subsnippets : [
-					{
-						name : 'Logo',
-						icon : 'fas fa-image',
-						gen  : LicenseGen.bladesDarkLogo
-					},
-					{
-						name : 'Logo Attribution',
-						icon : 'fas fa-legal',
-						gen  : LicenseGen.bladesDarkLogoAttribution
-					},
-					{
-						name : 'Attribution Statement',
-						icon : 'fas fa-legal',
-						gen  : LicenseGen.bladesDarkNotice
-					},
-				],
-			},
-			{
 				name        : 'Creative Commons',
 				icon        : 'fab fa-creative-commons',
 				subsnippets : [
@@ -351,16 +331,6 @@ module.exports = [
 				name  : 'DTRPG Community Content',
 				incon : 'fab fa-dtrpg',
 				subsnippets : [
-					{
-						name : "Starforgers Guild Colophon",
-						gen	 : LicenseDTTRPGGCC.alligatorAlleyEntertainmentStarforgersGuildColophon,
-					},
-
-					{
-						name : "Hall of Champions Colophon",
-						gen	 : LicenseDTTRPGGCC.dojHallofChampionsColophon,
-					},
-
 					{
 						name : "Hero Kid\'s Creators Guild",
 						subsnippets : [
