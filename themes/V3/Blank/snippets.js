@@ -332,6 +332,55 @@ module.exports = [
 				incon : 'fab fa-dtrpg',
 				subsnippets : [
 					{
+						name : "Chronicle System Guild Colophon",
+						gen	 : LicenseDTTRPGGCC.greenRoninChronicleSystemGuildColophon,
+					},
+
+					{
+						name : 'Green Ronin\'s Age Creator\'s Alliance',
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceColophon,
+									},
+
+									{
+										name : "Cover",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceCover,
+									},
+								]
+							},
+							{
+								name : "Logos",
+								subsnippets : [
+									{
+										name : "Age",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceLogo,
+									},
+
+									{
+										name : "Blue Rose",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceBlueRoseLogo,
+									},
+
+									{
+										name : "Fantasy Age Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceFantasyAgeCompatible,
+									},
+
+									{
+										name : "Modern AGE Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceModernAGECompatible,
+									},
+								]
+							}
+						]
+					},
+
+					{
 						name : "Hero Kid\'s Creators Guild",
 						subsnippets : [
 
@@ -367,8 +416,31 @@ module.exports = [
 								]
 							}
 						]
-					}
+					},
+					{
+						name : "Super-Powered by M&M",
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMColophon,
+									},
 
+									{
+										name : "Cover",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMCover,
+									},
+
+									{
+										name : "Section 15",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMSection15,
+									},
+								]
+							}
+						]
+					},
 				]
 			},
 			{
