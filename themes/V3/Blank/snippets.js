@@ -1,6 +1,5 @@
 /* eslint-disable max-lines */
 
-const dedent                    = require('dedent-tabs').default;
 const WatercolorGen 			= require('./snippets/watercolor.gen.js');
 const ImageMaskGen              = require('./snippets/imageMask.gen.js');
 const FooterGen                 = require('./snippets/footer.gen.js');
@@ -9,6 +8,8 @@ const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
 const LicenseGen 			    = require('./snippets/license.gen.js');
 const LicenseGenAelf            = require('./snippets/licenseAELF.js');
 const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
+const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
+const dedent                    = require('dedent-tabs').default;
 const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
 const indexGen                  = require('./snippets/index.gen.js');
 
@@ -385,38 +386,43 @@ module.exports = [
 						subsnippets : [
 
 							{
-								name: "General",
+								name: "Required Text",
 								subsnippets : [
 							
 									{
-										name : "Colophon",
+										name : "heroForgeHeroKidsCreatorsGuildColophon",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
 									},
 
 									{
-										name : "Cover",
-										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
-									},
-
-								]
-							},
-							{
-								name: "Super Kids",
-								subsnippets : [
-							
-									{
-										name : "Colophon",
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
 									},
 
 									{
-										name : "Cover",
+										name : "heroForgeHeroKidsCreatorsGuildCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
 									},
 								]
 							}
 						]
 					},
+
+					{
+						name : "Travellers' Aid Society",
+						subsnippets : [
+							{
+								name : "Legal Statement",
+								gen  : LicenseMongoosePublishing.TASLegal,
+							}
+						]
+					},
+          
 					{
 						name : "Super-Powered by M&M",
 						subsnippets : [
@@ -516,6 +522,34 @@ module.exports = [
 				name : 'MIT License',
 				icon : 'fas fa-mit',
 				gen  : LicenseGen.mit,
+			},
+
+			{
+				name        : 'Mongoose Publishing Fair Use',
+				icon        : 'fas fa-mongoosepub',
+				subsnippets : [
+					{
+						name : 'Long Form Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseLong,
+					},
+					{
+						name : 'Traveller Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTraveller,
+					},
+					{
+						name : '2300AD Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUse2300AD,
+					},
+					{
+						name : 'Twilight: 2000 Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTwilight2000,
+					},
+
+				]
 			},
 
 			{
@@ -943,5 +977,4 @@ module.exports = [
 		]
 	},
 ];
-
 
