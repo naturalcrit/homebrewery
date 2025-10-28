@@ -88,6 +88,9 @@ jobs:
       - run:
           name: Test - Content Negotiation
           command: npm run test:content-negotiation
+      - run:
+          name: Test - Build Docker image
+          command: DOCKERID=circliciTest npm run docker:build
 
 workflows:
   build_and_test:

@@ -44,7 +44,9 @@
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
-    "start": "node --experimental-require-module server.js"
+    "start": "node --experimental-require-module server.js",
+    "docker:build": "docker build -t ${DOCKERID}/homebrewery:$npm_package_version .",
+    "docker:publish": "docker login && docker push  ${DOCKERID}/homebrewery:$npm_package_version"
   },
   "author": "stolksdorf",
   "license": "MIT",
