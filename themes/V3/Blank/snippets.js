@@ -1,12 +1,18 @@
 /* eslint-disable max-lines */
 
-const WatercolorGen = require('./snippets/watercolor.gen.js');
-const ImageMaskGen  = require('./snippets/imageMask.gen.js');
-const FooterGen     = require('./snippets/footer.gen.js');
-const dedent        = require('dedent-tabs').default;
-const richIndexGen  = require('./snippets/richIndex.gen.js');
-const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const indexGen           = require('./snippets/index.gen.js');
+const WatercolorGen 			= require('./snippets/watercolor.gen.js');
+const ImageMaskGen  			= require('./snippets/imageMask.gen.js');
+const FooterGen     			= require('./snippets/footer.gen.js');
+const dedent        			= require('dedent-tabs').default;
+const richIndexGen  			= require('./snippets/richIndex.gen.js');
+const TableOfContentsGen 		= require('./snippets/tableOfContents.gen.js');
+const indexGen           		= require('./snippets/index.gen.js');
+const LicenseGenWotC            = require('./snippets/licenseWotC.gen.js');
+const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
+const LicenseGen 			    = require('./snippets/license.gen.js');
+const LicenseGenAelf            = require('./snippets/licenseAELF.js');
+const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
+const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
 
 module.exports = [
 
@@ -205,6 +211,412 @@ module.exports = [
 		]
 	},
 	{
+		groupName : 'License',
+		icon      : 'fas fa-copyright',
+		view      : 'text',
+		snippets  : [
+			{
+				name : 'AELF',
+				subsnippets : [
+					{
+						name : 'Title Page Declaration',
+						icon : 'fas fa-sticky-note',
+						gen  : LicenseGenAelf.aelfTitleNotice
+					},
+					{
+						name : 'Legal Declaration',
+						icon : 'fas fa-sticky-note',
+						gen  : LicenseGenAelf.aelfLegalNotice
+					},
+					{
+						name : 'AELF License',
+						icon : 'fas fa-legal',
+						gen  : LicenseGenAelf.aelf10a
+					}
+				]
+			},
+			{
+				name        : 'Creative Commons',
+				icon        : 'fab fa-creative-commons',
+				subsnippets : [
+					{
+						name        : 'Text Declarations',
+						icon        : 'fab fa-creative-commons',
+						subsnippets : [
+							{
+								name : 'CC0 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.cczero,
+							},
+
+							{
+								name : 'CC-BY-4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccby,
+							},
+
+							{
+								name : 'CC-BY-SA 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbysa,
+							},
+
+							{
+								name : 'CC-BY-NC 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbync,
+							},
+
+							{
+								name : 'CC-BY-NC-SA 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyncsa,
+							},
+
+							{
+								name : 'CC-BY-ND 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbynd,
+							},
+
+							{
+								name : 'CC-BY-NC-ND 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyncnd,
+							},
+						]
+					},
+					{
+						name        : 'Badges',
+						icon        : 'fab fa-creative-commons',
+						subsnippets : [
+							{
+								name : 'CC0 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.cczeroBadge,
+							},
+
+							{
+								name : 'CC-BY-4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyBadge,
+							},
+
+							{
+								name : 'CC-BY-SA 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbysaBadge,
+							},
+
+							{
+								name : 'CC-BY-NC 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyncBadge,
+							},
+
+							{
+								name : 'CC-BY-NC-SA 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyncsaBadge,
+							},
+
+							{
+								name : 'CC-BY-ND 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyndBadge,
+							},
+
+							{
+								name : 'CC-BY-NC-ND 4.0',
+								icon : 'fab fa-creative-commons',
+								gen	 : LicenseGen.ccbyncndBadge,
+							},
+						]
+					},
+				]
+			},
+			{
+				name  : 'DTRPG Community Content',
+				incon : 'fab fa-dtrpg',
+				subsnippets : [
+					{
+						name : "Chronicle System Guild Colophon",
+						gen	 : LicenseDTTRPGGCC.greenRoninChronicleSystemGuildColophon,
+					},
+
+					{
+						name : 'Green Ronin\'s Age Creator\'s Alliance',
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceColophon,
+									},
+
+									{
+										name : "Cover",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceCover,
+									},
+								]
+							},
+							{
+								name : "Logos",
+								subsnippets : [
+									{
+										name : "Age",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceLogo,
+									},
+
+									{
+										name : "Blue Rose",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceBlueRoseLogo,
+									},
+
+									{
+										name : "Fantasy Age Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceFantasyAgeCompatible,
+									},
+
+									{
+										name : "Modern AGE Compatible",
+										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceModernAGECompatible,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Hero Kid\'s Creators Guild",
+						subsnippets : [
+
+							{
+								name: "Required Text",
+								subsnippets : [
+							
+									{
+										name : "heroForgeHeroKidsCreatorsGuildColophon",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
+									},
+
+									{
+										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
+										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
+									},
+								]
+							}
+						]
+					},
+
+					{
+						name : "Travellers' Aid Society",
+						subsnippets : [
+							{
+								name : "Legal Statement",
+								gen  : LicenseMongoosePublishing.TASLegal,
+							}
+						]
+					},
+          
+					{
+						name : "Super-Powered by M&M",
+						subsnippets : [
+							{
+								name : "Required Text",
+								subsnippets : [
+									{
+										name : "Colophon",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMColophon,
+									},
+
+									{
+										name : "Cover",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMCover,
+									},
+
+									{
+										name : "Section 15",
+										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMSection15,
+									},
+								]
+							}
+						]
+					},
+				]
+			},
+			{
+				name        : 'GNU',
+				icon        : 'fas fa-w',
+				subsnippets : [
+
+					{
+						name : 'GNU Free Documentation License',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdl,
+					},
+
+					{
+						name : 'GNU FDL Title Page',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdltitle,
+					},
+
+					{
+						name : 'GNU FDL Title Page w/alterations',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gfdltitleinvariant,
+					},
+
+					{
+						name : 'GNU General Public License v3',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gpl3,
+					},
+
+					{
+						name : 'GNU GPLv3 Title Page',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenGNU.gpl3title,
+					},
+				]
+			},
+			{
+				name        : 'Icons',
+				icon        : 'fas fa-i',
+				subsnippets : [
+					{
+						name        : 'Text Declarations',
+						icon        : null,
+						subsnippets : [
+							{
+								name : 'Compatibility',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.iconsCompatibility,
+							},
+							{
+								name : 'Section 15',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.icondsSection15,
+							},
+							{
+								name : 'Trademark',
+								icon : 'fas fa-i',
+								gen	 : LicenseGen.iconsTrademark,
+							},
+						]
+					},
+					{
+						name : 'Compatibility Logo',
+						icon : 'fas fa-i',
+						gen	 : LicenseGen.iconsCompatibilityLogo
+					}
+				]
+			},
+
+			{
+				name : 'MIT License',
+				icon : 'fas fa-mit',
+				gen  : LicenseGen.mit,
+			},
+
+			{
+				name        : 'Mongoose Publishing Fair Use',
+				icon        : 'fas fa-mongoosepub',
+				subsnippets : [
+					{
+						name : 'Long Form Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseLong,
+					},
+					{
+						name : 'Traveller Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTraveller,
+					},
+					{
+						name : '2300AD Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUse2300AD,
+					},
+					{
+						name : 'Twilight: 2000 Fair Use',
+						icon : null,
+						gen  : LicenseMongoosePublishing.fairUseTwilight2000,
+					},
+
+				]
+			},
+
+			{
+				name : 'ORC Notice',
+				icon : 'fas fa-Paizo',
+				gen	 : LicenseGen.orc1,
+			},
+
+
+			{
+				name        : 'Shadowdark',
+				icon        : 'fab fa-shadowdark',
+				subsnippets : [
+					{
+						name        : 'Logos',
+						icon        : 'fas fa-image',
+						subsnippets : [
+							{
+								name : 'Compatibility Logo - Black',
+								icon : 'fas fa-image',
+								gen  : LicenseGen.shadowDarkBlack
+							},
+							{
+								name : 'Compatibility Logo - White',
+								icon : 'fas fa-image',
+								gen  : LicenseGen.shadowDarkWhite
+							}
+						]
+					},
+					{
+						name : 'License Statement',
+						icon : 'fas fa-alt',
+						gen  : LicenseGen.shadowDarkNotice
+					}
+
+				]
+
+			},
+
+			{
+				name        : 'Wizards of the Coast',
+				icon        : 'fab fa-wizards-of-the-coast',
+				subsnippets : [
+
+					{
+						name : 'OGL 1.0 A',
+						icon : 'fab fa-wizards-of-the-coast',
+						gen	 : LicenseGenWotC.ogl1a,
+					},
+
+					{
+						name : 'WoTC Fan Content Policy',
+						icon : 'fas fa-w',
+						gen	 : LicenseGenWotC.fcp,
+					},
+				]
+			},
+		]
+	},
+	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
 		view      : 'style',
@@ -216,7 +628,6 @@ module.exports = [
 			}
 		]
 	},
-
 	/*********************** IMAGES *******************/
 	{
 		groupName : 'Images',
@@ -573,3 +984,4 @@ module.exports = [
 		]
 	},
 ];
+
