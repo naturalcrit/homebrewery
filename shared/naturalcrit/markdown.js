@@ -8,10 +8,9 @@ import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
-	    setMarkedVarPage,
-		setMarkedVariable,
-		getMarkedVariable,
-		clearMarkedVarsQueue }  from 'marked-variables';
+				setMarkedVariablePage,
+				setMarkedVariable,
+				getMarkedVariable }  from 'marked-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
@@ -479,16 +478,14 @@ const mergeHTMLTags = (originalTags, newTags)=>{
 const Markdown = {
 	marked : Marked,
 	render : (rawBrewText, pageNumber=0)=>{
-		const lastPageNumber = pageNumber > 0 ? getMarkedVariable(pageNumber - 1, 'HB_pageNumber') : 0;
-		setMarkedVarPage(pageNumber);
-		clearMarkedVarsQueue();
-		setMarkedVariable(pageNumber, 							//Reset global links for current page, to ensure values are parsed in order
-			'HB_pageNumber',									//Add document variables for this page
-			!isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber
-		);
-		if(pageNumber==0) {
-			MarkedGFMResetHeadingIDs();
-		}
+		setMarkedVariablePage(pageNumber);
+
+		const lastPageNumber = pageNumber > 0 ? getMarkedVariable('HB_pageNumber', pageNumber - 1) : 0;
+		setMarkedVariable('HB_pageNumber',  //Add document variables for this page
+			!isNaN(Number(lastPageNumber)) ? Number(lastPageNumber) + 1 : lastPageNumber,
+			pageNumber);
+
+		if(pageNumber==0) MarkedGFMResetHeadingIDs();
 
 		rawBrewText = rawBrewText.replace(/^\\column(?:break)?$/gm, `\n<div class='columnSplit'></div>\n`);
 
