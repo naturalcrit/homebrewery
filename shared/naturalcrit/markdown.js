@@ -97,7 +97,7 @@ const mustacheSpans = {
 	start(src) { return src.match(/{{[^{]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeSpan = /^{{[^\n]*}}/;               // Regex for the complete token
-		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
+		const inlineRegex = /{{(?=((?:[:=](?:"['\w,\-+*/()#%=?.&:!@$^;:\[\]_= ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1 *|}}/g;
 		const match = completeSpan.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -154,7 +154,7 @@ const mustacheDivs = {
 	start(src) { return src.match(/\n *{{[^{]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
 		const completeBlock = /^ *{{[^\n}]* *\n.*\n *}}/s;                // Regex for the complete token
-		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
+		const blockRegex = /^ *{{(?=((?:[:=](?:"['\w,\-+*/()#%=?.&:!@$^;:\[\]_= ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1 *$|^ *}}$/gm;
 		const match = completeBlock.exec(src);
 		if(match) {
 			//Find closing delimiter
@@ -209,7 +209,7 @@ const mustacheInjectInline = {
 	level : 'inline',
 	start(src) { return src.match(/ *{[^{\n]/)?.index; },  // Hint to Marked.js to stop and check for a match
 	tokenizer(src, tokens) {
-		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/g;
+		const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?.&:!@$^;:\[\]_= ]*"|[\w\-()#%.]*)|[^"=':{}\s]*)*))\1}/g;
 		const match = inlineRegex.exec(src);
 		if(match) {
 			const lastToken = tokens[tokens.length - 1];
@@ -255,7 +255,7 @@ const mustacheInjectBlock = {
 		level : 'block',
 		start(src) { return src.match(/\n *{[^{\n]/m)?.index; },  // Hint to Marked.js to stop and check for a match
 		tokenizer(src, tokens) {
-			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?. ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
+			const inlineRegex = /^ *{(?=((?:[:=](?:"['\w,\-+*/()#%=?.&:!@$^;:\[\]_= ]*"|[\w\-+*/()#%.]*)|[^"=':{}\s]*)*))\1}/ym;
 			const match = inlineRegex.exec(src);
 			if(match) {
 				const lastToken = tokens[tokens.length - 1];
@@ -350,7 +350,7 @@ const tableTerminators = [
 
 Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
-Marked.use({ extensions : [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());

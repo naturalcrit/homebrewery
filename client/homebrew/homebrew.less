@@ -1,12 +1,14 @@
 @import 'naturalcrit/styles/core.less';
 .homebrew {
 	height : 100%;
+	background-color:@steel;
+	&.deployment { background-color : darkred; }
+
 	.sitePage {
 		display          : flex;
 		flex-direction   : column;
 		height           : 100%;
 		overflow-y       : hidden;
-		background-color : @steel;
 		.content {
 			position   : relative;
 			flex       : auto;
