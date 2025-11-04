@@ -3,7 +3,7 @@ const React = require('react');
 const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const Navbar = require('../../navbar/navbar.jsx');
 const MetadataNav = require('../../navbar/metadata.navitem.jsx');
 const PrintNavItem = require('../../navbar/print.navitem.jsx');

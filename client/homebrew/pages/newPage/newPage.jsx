@@ -14,7 +14,7 @@ import SplitPane    from 'client/components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from 'naturalcrit/nav/nav.jsx';
+import Nav                       from 'client/homebrew/navbar/nav.jsx';
 import Navbar                    from '../../navbar/navbar.jsx';
 import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
 import AccountNavItem            from '../../navbar/account.navitem.jsx';
