@@ -1,0 +1,80 @@
+.newBrewPopup {
+	position: relative;
+	background: #282828;
+	border: unset;
+	display: grid;
+	grid-template-rows: 50px 1fr;
+	padding: 0;
+	color: #ddd;
+	border-radius: 10px;
+	box-shadow: 1px 0 14px black;
+
+	nav {
+		padding: 10px;
+		padding-right:100px;
+		padding-left:50px;
+		background: #333;
+	}
+
+	.content {
+		display: grid;
+		grid-template-columns: 1fr 200px;
+		height:100% !important;
+
+		.templates {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			padding: 50px;
+			gap:10px;
+			box-shadow: inset 0 0 20px rgba(0,0,0,0.62);
+
+			.template {
+				width: 100px;
+				height: 150px;
+				display: flex;
+				flex-direction: column;
+				text-align:center;
+				gap:10px;
+
+				.image {
+					width: 100px;
+					height: 100px;
+					background-color:#444;
+				}
+
+			}
+
+		}
+
+		.metadataPanel {
+			height:100%;
+			background-color: #555;
+			padding:25px;
+			
+			.fieldGroup {
+				display:grid;
+				grid-template-columns:50px 1fr;
+			}
+		}
+	}
+	.dismiss {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		width:50px;
+		height:50px;
+		z-index:10;
+		display:grid;
+		place-items:center;
+	}
+	
+	input {
+		color:white;
+		background-color:#333;
+		border-radius:5px;
+		outline:1px solid #777;
+		border:unset;
+		box-shadow: inset 0 0 5px rgba(0,0,0,0.62);
+		width:100%;
+	}
+}
