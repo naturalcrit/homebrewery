@@ -58,13 +58,14 @@ const NewBrew = ()=>{
 			color='purple'
 			icon='fa-solid fa-plus-square'
 			onClick={()=>{ setOpen(true);}}>
-                new
+				new
 
 		</Nav.item>
-		{open && <Dialog blocking className='newBrewPopup' closeText={DISMISS_BUTTON} >
-          			<NewDocumentForm/>
-        		</Dialog>
+		{open && <Dialog blocking className='newBrewPopup' closeText={DISMISS_BUTTON} callbackFn={()=>{setOpen(false);}}>
+					<NewDocumentForm/>
+				</Dialog>
 		}
+
 	</>;
 };
 
