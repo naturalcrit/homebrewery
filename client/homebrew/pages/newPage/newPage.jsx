@@ -14,15 +14,15 @@ import SplitPane    from 'client/components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from 'naturalcrit/nav/nav.jsx';
-import Navbar                    from '../../navbar/navbar.jsx';
-import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ErrorNavItem              from '../../navbar/error-navitem.jsx';
-import HelpNavItem               from '../../navbar/help.navitem.jsx';
-import VaultNavItem              from '../../navbar/vault.navitem.jsx';
-import PrintNavItem              from '../../navbar/print.navitem.jsx';
-import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
+import Nav                       from 'client/homebrew/navbar/nav.jsx';
+import Navbar                    from 'client/homebrew/navbar/navbar.jsx';
+import NewBrewItem               from 'client/homebrew/navbar/newbrew.navitem.jsx';
+import AccountNavItem            from 'client/homebrew/navbar/account.navitem.jsx';
+import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx';
+import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
+import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
+import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
+import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
 
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
@@ -56,6 +56,10 @@ const NewPage = (props)=>{
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	// const saveTimeout        = useRef(null);
+	// const warnUnsavedTimeout = useRef(null);
+	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
 		loadBrew();
@@ -114,6 +118,11 @@ const NewPage = (props)=>{
 		if(autoSaveEnabled) trySave(false, hasChange);
 	}, [currentBrew]);
 
+	useEffect(()=>{
+		trySaveRef.current = trySave;
+		unsavedChangesRef.current = unsavedChanges;
+	});
+
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
 	};
@@ -141,7 +150,7 @@ const NewPage = (props)=>{
 		}
 	};
 
-	const save = async ()=>{
+	const trySave = async ()=>{
   	setIsSaving(true);
 
 		const updatedBrew = { ...currentBrew };
@@ -190,7 +199,7 @@ const NewPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save' onClick={trySave} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
