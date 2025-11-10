@@ -264,26 +264,6 @@ const GoogleActions = {
 		return obj.data.id;
 	},
 
-	checkPermissions : async (auth, brew)=>{
-		if(!brew?.googleId) return;
-		const drive = googleDrive.drive({ version: 'v3', auth });
-
-		try {
-			const driveData = await drive.permissions.list({ fileId: brew.googleId });
-			const permissionsList = driveData?.data?.permissions;
-
-			if(permissionsList.some((permission)=>{
-				return permission.id == 'anyoneWithLink' && permission.role == 'writer';
-			})){
-				return 1;
-			};
-		} catch (err) {
-			return err.code;
-		}
-
-		return 999;
-	},
-
 	getGoogleBrew : async (auth = defaultAuth, id, accessId, accessType)=>{
 		const drive = googleDrive.drive({ version: 'v3', auth: auth });
 
