@@ -4,7 +4,7 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from 'naturalcrit/markdown.js';
+import Markdown                               from 'markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
