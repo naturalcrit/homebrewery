@@ -56,6 +56,10 @@ const NewPage = (props)=>{
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	// const saveTimeout        = useRef(null);
+	// const warnUnsavedTimeout = useRef(null);
+	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
 		loadBrew();
@@ -114,6 +118,11 @@ const NewPage = (props)=>{
 		if(autoSaveEnabled) trySave(false, hasChange);
 	}, [currentBrew]);
 
+	useEffect(()=>{
+		trySaveRef.current = trySave;
+		unsavedChangesRef.current = unsavedChanges;
+	});
+
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
 	};
@@ -141,7 +150,7 @@ const NewPage = (props)=>{
 		}
 	};
 
-	const save = async ()=>{
+	const trySave = async ()=>{
   	setIsSaving(true);
 
 		const updatedBrew = { ...currentBrew };
@@ -190,7 +199,7 @@ const NewPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save' onClick={trySave} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
