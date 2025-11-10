@@ -5,13 +5,13 @@ const _ = require('lodash');
 const ListPage = require('../basePages/listPage/listPage.jsx');
 
 const Nav = require('client/homebrew/navbar/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const VaultNavitem = require('../../navbar/vault.navitem.jsx');
+const Navbar = require('client/homebrew/navbar/navbar.jsx');
+const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
+const Account = require('client/homebrew/navbar/account.navitem.jsx');
+const NewBrew = require('client/homebrew/navbar/newbrew.navitem.jsx');
+const HelpNavItem = require('client/homebrew/navbar/help.navitem.jsx');
+const ErrorNavItem = require('client/homebrew/navbar/error-navitem.jsx');
+const VaultNavitem = require('client/homebrew/navbar/vault.navitem.jsx');
 
 const UserPage = (props)=>{
 	props = {

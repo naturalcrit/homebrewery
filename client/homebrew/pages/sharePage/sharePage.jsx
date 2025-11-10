@@ -4,11 +4,11 @@ const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
 const Nav = require('client/homebrew/navbar/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const MetadataNav = require('../../navbar/metadata.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
+const Navbar = require('client/homebrew/navbar/navbar.jsx');
+const MetadataNav = require('client/homebrew/navbar/metadata.navitem.jsx');
+const PrintNavItem = require('client/homebrew/navbar/print.navitem.jsx');
+const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
+const Account = require('client/homebrew/navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
