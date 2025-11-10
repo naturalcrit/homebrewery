@@ -207,8 +207,6 @@ const MetadataEditor = createClass({
 	},
 
 	renderThemeDropdown : function(){
-		if(!global.enable_themes) return;
-
 		const mergedThemes = _.merge(Themes, this.props.userThemes);
 
 		const listThemes = (renderer)=>{
@@ -307,8 +305,6 @@ const MetadataEditor = createClass({
 	},
 
 	renderRenderOptions : function(){
-		if(!global.enable_v3) return;
-
 		return <div className='field systems'>
 			<label>Renderer</label>
 			<div className='value'>

@@ -1,4 +1,4 @@
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 const dedent = require('dedent-tabs').default;
 
 // Marked.js adds line returns after closing tags on some default tokens.

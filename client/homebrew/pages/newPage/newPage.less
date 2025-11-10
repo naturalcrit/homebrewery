@@ -1,6 +1,12 @@
 .newPage {
 	.navItem.save {
+		.fadeInRight();
+		.transition(opacity);
 		background-color : @orange;
 		&:hover { background-color : @green; }
+		&.neverSaved {
+			.fadeOutRight();
+			opacity: 0;
+		}
 	}
 }

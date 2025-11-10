@@ -18,7 +18,7 @@ module.exports = {
 			try {
 				Boolean(new URL(value));
 				return null;
-			} catch (e) {
+			} catch {
 				return 'Must be a valid URL';
 			}
 		}

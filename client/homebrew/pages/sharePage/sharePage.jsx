@@ -17,15 +17,11 @@ const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpe
 const SharePage = (props)=>{
 	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
 
-	const [state, setState] = useState({
-		themeBundle                : {},
-		currentBrewRendererPageNum : 1,
-	});
+	const [themeBundle,                setThemeBundle]                = useState({});
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
 	const handleBrewRendererPageChange = useCallback((pageNumber)=>{
-		setState((prevState)=>({
-			currentBrewRendererPageNum : pageNumber,
-			...prevState }));
+		setCurrentBrewRendererPageNum(pageNumber);
 	}, []);
 
 	const handleControlKeys = (e)=>{
@@ -40,11 +36,7 @@ const SharePage = (props)=>{
 
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(
-			{ setState },
-			brew.renderer,
-			brew.theme
-		);
+		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
@@ -114,9 +106,9 @@ const SharePage = (props)=>{
 					lang={brew.lang}
 					renderer={brew.renderer}
 					theme={brew.theme}
-					themeBundle={state.themeBundle}
+					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}
-					currentBrewRendererPageNum={state.currentBrewRendererPageNum}
+					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>

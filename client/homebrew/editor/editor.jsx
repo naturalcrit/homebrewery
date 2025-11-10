@@ -4,15 +4,15 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
-import Markdown from '../../../shared/naturalcrit/markdown.js';
+import Markdown from '../../../shared/markdown.js';
 
 const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
-const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -40,11 +40,8 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onTextChange  : ()=>{},
-			onStyleChange : ()=>{},
-			onMetaChange  : ()=>{},
-			onSnipChange  : ()=>{},
-			reportError   : ()=>{},
+			onBrewChange : ()=>{},
+			reportError  : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
@@ -143,7 +140,7 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
-		
+
 		this.setState({
 			view : newView
 		}, ()=>{
@@ -328,10 +325,10 @@ const Editor = createClass({
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+		
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
+			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
@@ -372,8 +369,8 @@ const Editor = createClass({
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
@@ -412,7 +409,6 @@ const Editor = createClass({
 
 	//Called when there are changes to the editor's dimensions
 	update : function(){
-		this.codeEditor.current?.updateSize();
 		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
 		if(snipHeight !== this.state.snippetbarHeight)
 			this.setState({ snippetbarHeight: snipHeight });
@@ -438,7 +434,7 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
-					onChange={this.props.onTextChange}
+					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
 					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
@@ -451,7 +447,7 @@ const Editor = createClass({
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-					onChange={this.props.onStyleChange}
+					onChange={this.props.onBrewChange('style')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
@@ -467,7 +463,7 @@ const Editor = createClass({
 				<MetadataEditor
 					metadata={this.props.brew}
 					themeBundle={this.props.themeBundle}
-					onChange={this.props.onMetaChange}
+					onChange={this.props.onBrewChange('metadata')}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>
 			</>;
@@ -481,7 +477,7 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.snippets}
-					onChange={this.props.onSnipChange}
+					onChange={this.props.onBrewChange('snippets')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
