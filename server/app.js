@@ -334,7 +334,7 @@ app.get('/user/:username', dbCheck, async (req, res, next)=>{
 			}
 
 			//Remaining unstubbed google brews display current user as author
-			googleBrews = googleBrews.map(async (brew)=>({ ...brew, authors: [req.account.username] }));
+			googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
 			brews = _.concat(brews, googleBrews);
 		}
 	}
