@@ -1,6 +1,6 @@
 const React = require('react');
 const _ = require('lodash');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
 
 const BREWKEY  = 'homebrewery-new';
