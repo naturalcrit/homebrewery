@@ -119,6 +119,10 @@ const EditPage = (props)=>{
 		if(autoSaveEnabled) trySave(false, hasChange);
 	}, [currentBrew]);
 
+	useEffect(()=>{
+		trySave(true);
+	}, [saveGoogle]);
+
 	const handleSplitMove = ()=>{
 		editorRef.current?.update();
 	};
@@ -179,7 +183,6 @@ const EditPage = (props)=>{
 	const toggleGoogleStorage = ()=>{
 		setSaveGoogle((prev)=>!prev);
 		setError(null);
-		trySave(true);
 	};
 
 	const trySave = (immediate = false, hasChanges = true)=>{
