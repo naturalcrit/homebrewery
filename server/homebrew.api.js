@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import { model as HomebrewModel }    from './homebrew.model.js';
+import { model as HomebrewModel, folderModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -529,6 +529,26 @@ const api = {
 		}
 
 		res.status(204).send();
+	},
+	attachParents : (folders)=>{
+		// Walk List
+		for (const folder of folders) {
+			// Walk inner
+			for (const innerFolder of folders) {
+				if(folder.childFolders.includes(innerFolder.folderId)) innerFolder.parentFolder = folder.folderId;
+			}
+		}
+	},
+	getFolders : ()=>{
+		// Create middleware with the accessType passed in as part of the scope
+		return async (req, res, next)=>{
+			// Get relevant IDs for the brew
+			let folderSlug = req.params.slug;
+			let userFolders = await folderModel.get({ owner: req.params.owner });
+			api.attachParents(userFolders);
+			req.folders = userFolders;
+			next();
+		};
 	}
 };
 
@@ -540,5 +560,6 @@ router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
+router.get('/api/:owner/:slug', asyncHandler(api.getFolders));
 
 export default api;
