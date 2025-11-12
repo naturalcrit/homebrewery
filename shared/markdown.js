@@ -16,10 +16,10 @@ import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHead
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
-import diceFont      from '../../themes/fonts/iconFonts/diceFont.js';
-import elderberryInn from '../../themes/fonts/iconFonts/elderberryInn.js';
-import gameIcons     from '../../themes/fonts/iconFonts/gameIcons.js';
-import fontAwesome   from '../../themes/fonts/iconFonts/fontAwesome.js';
+import diceFont      from '../themes/fonts/iconFonts/diceFont.js';
+import elderberryInn from '../themes/fonts/iconFonts/elderberryInn.js';
+import gameIcons     from '../themes/fonts/iconFonts/gameIcons.js';
+import fontAwesome   from '../themes/fonts/iconFonts/fontAwesome.js';
 
 const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
