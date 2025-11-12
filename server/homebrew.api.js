@@ -4,15 +4,16 @@ import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
-import Markdown                      from '../shared/naturalcrit/markdown.js';
+import Markdown                      from '../shared/markdown.js';
 import yaml                          from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
-import { splitTextStyleAndMetadata, 
+import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+import dbCheck                       from './middleware/dbCheck.js';
 
 
 const router = express.Router();
@@ -374,14 +375,14 @@ const api = {
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
 			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
 			if(patchedResult != brewFromClient.text)
-				throw("Patches did not apply cleanly, text mismatch detected");
+				throw ('Patches did not apply cleanly, text mismatch detected');
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
 			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				//patches : brewFromClient.patches,
-				brewId  : brewFromClient.editId || 'unknown',
-				error   : err
+				brewId : brewFromClient.editId || 'unknown',
+				error  : err
 			});
 			// While running in parallel, don't throw the error upstream.
 			// throw err; // rethrow to preserve the 500 behavior
@@ -477,6 +478,7 @@ const api = {
 				await HomebrewModel.deleteOne({ editId: id });
 				return next();
 			}
+			throw(err);
 		}
 
 		let brew = req.brew;
@@ -526,6 +528,8 @@ const api = {
 		res.status(204).send();
 	}
 };
+
+router.use(dbCheck);
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));

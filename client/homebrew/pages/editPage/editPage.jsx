@@ -1,529 +1,415 @@
 /* eslint-disable max-lines */
-require('./editPage.less');
-const React = require('react');
-const _ = require('lodash');
-const createClass = require('create-react-class');
-import {makePatches, applyPatches, stringifyPatches, parsePatches} from '@sanity/diff-match-patch';
-import { md5 } from 'hash-wasm';
-import { gzipSync, strToU8 } from 'fflate';
+import './editPage.less';
 
-import request from '../../utils/request-middleware.js';
-const { Meta } = require('vitreum/headtags');
+// Common imports
+import React, { useState, useEffect, useRef } from 'react';
+import request                                from '../../utils/request-middleware.js';
+import Markdown                               from 'markdown.js';
+import _                                      from 'lodash';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const Account = require('../../navbar/account.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
+import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+import Nav                       from 'client/homebrew/navbar/nav.jsx';
+import Navbar                    from 'client/homebrew/navbar/navbar.jsx';
+import NewBrewItem               from 'client/homebrew/navbar/newbrew.navitem.jsx';
+import AccountNavItem            from 'client/homebrew/navbar/account.navitem.jsx';
+import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx';
+import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
+import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
+import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
+import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
 
-const LockNotification = require('./lockNotification/lockNotification.jsx');
+// Page specific imports
+import { Meta }                          from 'vitreum/headtags';
+import { md5 }                           from 'hash-wasm';
+import { gzipSync, strToU8 }             from 'fflate';
+import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
-import Markdown from 'naturalcrit/markdown.js';
-
-const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
-
+import ShareNavItem              from 'client/homebrew/navbar/share.navitem.jsx';
+import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
-
-const googleDriveIcon = require('../../googleDrive.svg');
+import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
+const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-const EditPage = createClass({
-	displayName     : 'EditPage',
-	getDefaultProps : function() {
-		return {
-			brew : DEFAULT_BREW_LOAD
-		};
-	},
 
-	getInitialState : function() {
-		return {
-			brew                       : this.props.brew,
-			isSaving                   : false,
-			unsavedChanges             : false,
-			alertTrashedGoogleBrew     : this.props.brew.trashed,
-			alertLoginToTransfer       : false,
-			saveGoogle                 : this.props.brew.googleId ? true : false,
-			confirmGoogleTransfer      : false,
-			error                      : null,
-			htmlErrors                 : Markdown.validate(this.props.brew.text),
-			url                        : '',
-			autoSave                   : true,
-			autoSaveWarning            : false,
-			unsavedTime                : new Date(),
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			displayLockMessage         : this.props.brew.lock || false,
-			themeBundle                : {}
-		};
-	},
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const SNIPKEY  = 'HB_newPage_snippets';
+const METAKEY  = 'HB_newPage_meta';
 
-	editor    : React.createRef(null),
-	savedBrew : null,
+const useLocalStorage = false;
+const neverSaved			= false;
 
-	componentDidMount : function(){
-		this.setState({
-			url : window.location.href
-		});
+const EditPage = (props)=>{
+	props = {
+		brew : DEFAULT_BREW_LOAD,
+		...props
+	};
 
-		this.savedBrew = JSON.parse(JSON.stringify(this.props.brew)); //Deep copy
+	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
+	const [isSaving                  , setIsSaving                  ] = useState(false);
+	const [lastSavedTime             , setLastSavedTime             ] = useState(new Date());
+  const [saveGoogle                , setSaveGoogle                ] = useState(!!props.brew.googleId);
+	const [error                     , setError                     ] = useState(null);
+	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum  ] = useState(1);
+	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
+	const [themeBundle               , setThemeBundle               ] = useState({});
+	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
+	const [alertTrashedGoogleBrew    , setAlertTrashedGoogleBrew    ] = useState(props.brew.trashed);
+	const [alertLoginToTransfer      , setAlertLoginToTransfer      ] = useState(false);
+	const [confirmGoogleTransfer     , setConfirmGoogleTransfer     ] = useState(false);
+	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(true);
+	const [warnUnsavedChanges        , setWarnUnsavedChanges        ] = useState(true);
 
-		this.setState({ autoSave: JSON.parse(localStorage.getItem('AUTOSAVE_ON')) ?? true }, ()=>{
-			if(this.state.autoSave){
-				this.trySave();
-			} else {
-				this.setState({ autoSaveWarning: true });
+	const editorRef          = useRef(null);
+	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
+	const saveTimeout        = useRef(null);
+	const warnUnsavedTimeout = useRef(null);
+	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
+
+	useEffect(()=>{
+		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+		setAutoSaveEnabled(autoSavePref);
+		setWarnUnsavedChanges(!autoSavePref);
+		setHTMLErrors(Markdown.validate(currentBrew.text));
+		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey || e.metaKey)) return;
+			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 80) printCurrentBrew();
+			if([83, 80].includes(e.keyCode)) {
+				e.stopPropagation();
+				e.preventDefault();
 			}
-		});
+		};
 
+		document.addEventListener('keydown', handleControlKeys);
 		window.onbeforeunload = ()=>{
-			if(this.state.isSaving || this.state.unsavedChanges){
+			if(unsavedChangesRef.current)
 				return 'You have unsaved changes!';
-			}
 		};
+		return ()=>{
+			document.removeEventListener('keydown', handleControlKeys);
+			window.onBeforeUnload = null;
+		};
+	}, []);
 
-		this.setState((prevState)=>({
-			htmlErrors : Markdown.validate(prevState.brew.text)
-		}));
+	useEffect(()=>{
+		trySaveRef.current = trySave;
+		unsavedChangesRef.current = unsavedChanges;
+	});
 
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
 
-		document.addEventListener('keydown', this.handleControlKeys);
-	},
-	componentWillUnmount : function() {
-		window.onbeforeunload = function(){};
-		document.removeEventListener('keydown', this.handleControlKeys);
-	},
-	componentDidUpdate : function(){
-		const hasChange = this.hasChanges();
-		if(this.state.unsavedChanges != hasChange){
-			this.setState({
-				unsavedChanges : hasChange
-			});
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
+
+	const handleSplitMove = ()=>{
+		editorRef.current?.update();
+	};
+
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
+
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
+
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
 		}
-	},
+	};
 
-	handleControlKeys : function(e){
-		if(!(e.ctrlKey || e.metaKey)) return;
-		const S_KEY = 83;
-		const P_KEY = 80;
-		if(e.keyCode == S_KEY) this.trySave(true);
-		if(e.keyCode == P_KEY) printCurrentBrew();
-		if(e.keyCode == P_KEY || e.keyCode == S_KEY){
-			e.stopPropagation();
-			e.preventDefault();
-		}
-	},
+	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
+		...prevBrew,
+		style    : newData.style,
+		text     : newData.text,
+		snippets : newData.snippets
+	}));
 
-	handleSplitMove : function(){
-		this.editor.current.update();
-	},
+	const resetWarnUnsavedTimer = ()=>{
+		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		clearTimeout(warnUnsavedTimeout.current);
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
+	};
 
-	handleEditorViewPageChange : function(pageNumber){
-		this.setState({ currentEditorViewPageNum: pageNumber });
-	},
-
-	handleEditorCursorPageChange : function(pageNumber){
-		this.setState({ currentEditorCursorPageNum: pageNumber });
-	},
-
-	handleBrewRendererPageChange : function(pageNumber){
-		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
-
-	handleTextChange : function(text){
-		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(text);
-
-		this.setState((prevState)=>({
-			brew       : { ...prevState.brew, text: text },
-			htmlErrors : htmlErrors,
-		}), ()=>{if(this.state.autoSave) this.trySave();});
-	},
-
-	handleSnipChange : function(snippet){
-		//If there are errors, run the validator on every change to give quick feedback
-		let htmlErrors = this.state.htmlErrors;
-		if(htmlErrors.length) htmlErrors = Markdown.validate(snippet);
-
-		this.setState((prevState)=>({
-			brew           : { ...prevState.brew, snippets: snippet },
-			unsavedChanges : true,
-			htmlErrors     : htmlErrors,
-		}), ()=>{if(this.state.autoSave) this.trySave();});
-	},
-
-	handleStyleChange : function(style){
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, style: style }
-		}), ()=>{if(this.state.autoSave) this.trySave();});
-	},
-
-	handleMetaChange : function(metadata, field=undefined){
-		if(field == 'theme' || field == 'renderer')	// Fetch theme bundle only if theme or renderer was changed
-			fetchThemeBundle(this, metadata.renderer, metadata.theme);
-
-		this.setState((prevState)=>({
-			brew : {
-				...prevState.brew,
-				...metadata
-			}
-		}), ()=>{if(this.state.autoSave) this.trySave();});
-	},
-
-	hasChanges : function(){
-		return !_.isEqual(this.state.brew, this.savedBrew);
-	},
-
-	updateBrew : function(newData){
-		this.setState((prevState)=>({
-			brew : {
-				...prevState.brew,
-				style    : newData.style,
-				text     : newData.text,
-				snippets : newData.snippets
-			}
-		}));
-	},
-
-	trySave : function(immediate=false){
-		if(!this.debounceSave) this.debounceSave = _.debounce(this.save, SAVE_TIMEOUT);
-		if(this.state.isSaving)
-			return;
-
-		if(immediate) {
-			this.debounceSave();
-			this.debounceSave.flush();
-			return;
-		}
-		
-		if(this.hasChanges())
-			this.debounceSave();
-		else
-			this.debounceSave.cancel();
-	},
-
-	handleGoogleClick : function(){
+	const handleGoogleClick = ()=>{
 		if(!global.account?.googleId) {
-			this.setState({
-				alertLoginToTransfer : true
-			});
+			setAlertLoginToTransfer(true);
 			return;
 		}
-		this.setState((prevState)=>({
-			confirmGoogleTransfer : !prevState.confirmGoogleTransfer
-		}));
-		this.setState({
-			error    : null
-		});
-	},
 
-	closeAlerts : function(event){
-		event.stopPropagation();	//Only handle click once so alert doesn't reopen
-		this.setState({
-			alertTrashedGoogleBrew : false,
-			alertLoginToTransfer   : false,
-			confirmGoogleTransfer  : false
-		});
-	},
+		setConfirmGoogleTransfer((prev)=>!prev);
+		setError(null);
+	};
 
-	toggleGoogleStorage : function(){
-		this.setState((prevState)=>({
-			saveGoogle : !prevState.saveGoogle,
-			error      : null
-		}), ()=>this.trySave(true));
-	},
+	const closeAlerts = (e)=>{
+		e.stopPropagation(); //Only handle click once so alert doesn't reopen
+		setAlertTrashedGoogleBrew(false);
+		setAlertLoginToTransfer(false);
+		setConfirmGoogleTransfer(false);
+	};
 
-	save : async function(){
-		if(this.debounceSave && this.debounceSave.cancel) this.debounceSave.cancel();
+	const toggleGoogleStorage = ()=>{
+		setSaveGoogle((prev)=>!prev);
+		setError(null);
+		trySave(true);
+	};
 
-		const brewState       = this.state.brew; // freeze the current state
-		const preSaveSnapshot = { ...brewState };
+	const trySave = (immediate = false, hasChanges = true)=>{
+		clearTimeout(saveTimeout.current);
+		if(isSaving) return;
+		if(!hasChanges && !immediate) return;
+		const newTimeout = immediate ? 0 : SAVE_TIMEOUT;
 
-		this.setState((prevState)=>({
-			isSaving   : true,
-			error      : null,
-			htmlErrors : Markdown.validate(prevState.brew.text)
-		}));
+		saveTimeout.current = setTimeout(async ()=>{
+			setIsSaving(true);
+			setError(null);
+			await save(currentBrew, saveGoogle)
+			.catch((err)=>{
+				setError(err);
+			});
+			setIsSaving(false);
+			setLastSavedTime(new Date());
+			if(!autoSaveEnabled) resetWarnUnsavedTimer();
+		}, newTimeout);
+	};
 
-		await updateHistory(this.state.brew).catch(console.error);
+	const save = async (brew, saveToGoogle)=>{
+		setHTMLErrors(Markdown.validate(brew.text));
+
+		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
 		//Prepare content to send to server
-		const brew          = { ...brewState };
-		brew.text           = brew.text.normalize('NFC');
-		this.savedBrew.text = this.savedBrew.text.normalize('NFC');
-		brew.pageCount      = ((brew.renderer=='legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1;
-		brew.patches        = stringifyPatches(makePatches(encodeURI(this.savedBrew.text), encodeURI(brew.text)));
-		brew.hash           = await md5(this.savedBrew.text);
-		//brew.text           = undefined; - Temporary parallel path
-		brew.textBin        = undefined;
+		const brewToSave = {
+			...brew,
+			text      : brew.text.normalize('NFC'),
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
+			patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
+			hash      : await md5(lastSavedBrew.current.text),
+			textBin   : undefined,
+			version   : lastSavedBrew.current.version
+		};
 
-		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
+		const compressedBrew = gzipSync(strToU8(JSON.stringify(brewToSave)));
+		const transfer = saveToGoogle === _.isNil(brew.googleId);
+		const params = transfer ? `?${saveToGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : '';
 
-		const transfer = this.state.saveGoogle == _.isNil(this.state.brew.googleId);
-		const params = `${transfer ? `?${this.state.saveGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : ''}`;
 		const res = await request
-			.put(`/api/update/${brew.editId}${params}`)
+			.put(`/api/update/${brewToSave.editId}${params}`)
 			.set('Content-Encoding', 'gzip')
 			.set('Content-Type', 'application/json')
 			.send(compressedBrew)
 			.catch((err)=>{
-				console.log('Error Updating Local Brew');
-				this.setState({ error: err });
+				console.error('Error Updating Local Brew');
+				setError(err);
 			});
 		if(!res) return;
 
-		this.savedBrew = {
-			...preSaveSnapshot,
-			googleId : res.body.googleId ? res.body.googleId : null,
-			editId 	 : res.body.editId,
+		const updatedFields = {
+			googleId : res.body.googleId ?? null,
+			editId   : res.body.editId,
 			shareId  : res.body.shareId,
 			version  : res.body.version
 		};
 
-		this.setState((prevState) => ({
-			brew: {
-				...prevState.brew,
-				googleId : res.body.googleId ? res.body.googleId : null,
-				editId 	 : res.body.editId,
-				shareId  : res.body.shareId,
-				version  : res.body.version
-			},
-			isSaving    : false,
-			unsavedTime : new Date()
-		}), ()=>{
-			this.setState({ unsavedChanges : this.hasChanges() });
-		});
+		lastSavedBrew.current = {
+			...brew,
+			...updatedFields
+		};
 
-		history.replaceState(null, null, `/edit/${this.savedBrew.editId}`);
-	},
+		setCurrentBrew((prevBrew)=>({
+			...prevBrew,
+			...updatedFields
+		}));
 
-	renderGoogleDriveIcon : function(){
-		return <Nav.item className='googleDriveStorage' onClick={this.handleGoogleClick}>
-			<img src={googleDriveIcon} className={this.state.saveGoogle ? '' : 'inactive'} alt='Google Drive icon'/>
+		history.replaceState(null, null, `/edit/${res.body.editId}`);
+	};
 
-			{this.state.confirmGoogleTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					{ this.state.saveGoogle
-						?	`Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?`
-						: `Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?`
-					}
+	const renderGoogleDriveIcon = ()=>(
+		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
+			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
+
+			{confirmGoogleTransfer && (
+				<div className='errorContainer' onClick={closeAlerts}>
+					{saveGoogle
+						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
+						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
 					<br />
-					<div className='confirm' onClick={this.toggleGoogleStorage}>
-						Yes
-					</div>
-					<div className='deny'>
-						No
-					</div>
+					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
+					<div className='deny'>                                  No  </div>
 				</div>
-			}
+			)}
 
-			{this.state.alertLoginToTransfer &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-					You must be signed in to a Google account to transfer
-					between the homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer'
-						href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`}>
-						<div className='confirm'>
-							Sign In
-						</div>
+			{alertLoginToTransfer && (
+				<div className='errorContainer' onClick={closeAlerts}>
+					You must be signed in to a Google account to transfer between the homebrewery and Google Drive!
+					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+						<div className='confirm'> Sign In </div>
 					</a>
-					<div className='deny'>
-						Not Now
-					</div>
+					<div className='deny'>      Not Now </div>
 				</div>
-			}
+			)}
 
-			{this.state.alertTrashedGoogleBrew &&
-				<div className='errorContainer' onClick={this.closeAlerts}>
-				This brew is currently in your Trash folder on Google Drive!<br />If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'>
-						OK
-					</div>
+			{alertTrashedGoogleBrew && (
+				<div className='errorContainer' onClick={closeAlerts}>
+					This brew is currently in your Trash folder on Google Drive!<br />
+					If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm'> OK </div>
 				</div>
-			}
-		</Nav.item>;
-	},
+			)}
+		</Nav.item>
+	);
 
-	renderSaveButton : function(){
-
+	const renderSaveButton = ()=>{
 		// #1 - Currently saving, show SAVING
-		if(this.state.isSaving){
+		if(isSaving)
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-		}
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(this.state.unsavedChanges && this.state.autoSaveWarning){
-			this.setAutosaveWarning();
-			const elapsedTime = Math.round((new Date() - this.state.unsavedTime) / 1000 / 60);
-			const text = elapsedTime == 0 ? 'Autosave is OFF.' : `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+		if(unsavedChanges && warnUnsavedChanges) {
+			resetWarnUnsavedTimer();
+			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+			const text = elapsedTime === 0
+				? 'Autosave is OFF.'
+				: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-			Reminder...
-				<div className='errorContainer'>
-					{text}
-				</div>
+							Reminder...
+				<div className='errorContainer'>{text}</div>
 			</Nav.item>;
 		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		// Use trySave(true) instead of save() to use debounced save function
-		if(this.state.unsavedChanges){
-			return <Nav.item className='save' onClick={()=>this.trySave(true)} color='blue' icon='fas fa-save'>Save Now</Nav.item>;
-		}
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(this.state.autoSave){
-			return <Nav.item className='save saved'>auto-saved.</Nav.item>;
-		}
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
 		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved.</Nav.item>;
-	},
+		return <Nav.item className='save saved'>saved</Nav.item>;
+	};
 
-	handleAutoSave : function(){
-		if(this.warningTimer) clearTimeout(this.warningTimer);
-		this.setState((prevState)=>({
-			autoSave        : !prevState.autoSave,
-			autoSaveWarning : prevState.autoSave
-		}), ()=>{
-			localStorage.setItem('AUTOSAVE_ON', JSON.stringify(this.state.autoSave));
-		});
-	},
+	const toggleAutoSave = ()=>{
+		clearTimeout(warnUnsavedTimeout.current);
+		clearTimeout(saveTimeout.current);
+		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
+		setAutoSaveEnabled(!autoSaveEnabled);
+		setWarnUnsavedChanges(autoSaveEnabled);
+	};
 
-	setAutosaveWarning : function(){
-		setTimeout(()=>this.setState({ autoSaveWarning: false }), 4000);                           // 4 seconds to display
-		this.warningTimer = setTimeout(()=>{this.setState({ autoSaveWarning: true });}, 900000);   // 15 minutes between warnings
-		this.warningTimer;
-	},
+	const renderAutoSaveButton = ()=>(
+		<Nav.item onClick={toggleAutoSave}>
+			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>
+	);
 
-	errorReported : function(error) {
-		this.setState({
-			error
-		});
-	},
+	const clearError = ()=>{
+		setError(null);
+		setIsSaving(false);
+	};
 
-	renderAutoSaveButton : function(){
-		return <Nav.item onClick={this.handleAutoSave}>
-			Autosave <i className={this.state.autoSave ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
-		</Nav.item>;
-	},
-
-	processShareId : function() {
-		return this.state.brew.googleId && !this.state.brew.stubbed ?
-					 this.state.brew.googleId + this.state.brew.shareId :
-					 this.state.brew.shareId;
-	},
-
-	getRedditLink : function(){
-
-		const shareLink = this.processShareId();
-		const systems = this.props.brew.systems.length > 0 ? ` [${this.props.brew.systems.join(' - ')}]` : '';
-		const title = `${this.props.brew.title} ${systems}`;
-		const text = `Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
-
-**[Homebrewery Link](${global.config.baseUrl}/share/${shareLink})**`;
-
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(title.toWellFormed())}&text=${encodeURIComponent(text)}`;
-	},
-
-	renderNavbar : function(){
-		const shareLink = this.processShareId();
-
+	const renderNavbar = ()=>{
 		return <Navbar>
 			<Nav.section>
-				<Nav.item className='brewTitle'>{this.state.brew.title}</Nav.item>
+				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
 			</Nav.section>
 
 			<Nav.section>
-				{this.renderGoogleDriveIcon()}
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					<Nav.dropdown className='save-menu'>
-						{this.renderSaveButton()}
-						{this.renderAutoSaveButton()}
-					</Nav.dropdown>
-				}
-				<NewBrew />
-				<HelpNavItem/>
-				<Nav.dropdown>
-					<Nav.item color='teal' icon='fas fa-share-alt'>
-						share
-					</Nav.item>
-					<Nav.item color='blue' href={`/share/${shareLink}`}>
-						view
-					</Nav.item>
-					<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${shareLink}`);}}>
-						copy url
-					</Nav.item>
-					<Nav.item color='blue' href={this.getRedditLink()} newTab={true} rel='noopener noreferrer'>
-						post to reddit
-					</Nav.item>
-				</Nav.dropdown>
+				{renderGoogleDriveIcon()}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: <Nav.dropdown className='save-menu'>
+						{renderSaveButton()}
+						{renderAutoSaveButton()}
+					</Nav.dropdown>}
+				<NewBrewItem />
 				<PrintNavItem />
+				<HelpNavItem />
 				<VaultNavItem />
-				<RecentNavItem brew={this.state.brew} storageKey='edit' />
-				<Account />
+				<ShareNavItem brew={currentBrew} />
+				<RecentNavItem brew={currentBrew} storageKey='edit' />
+				<AccountNavItem/>
 			</Nav.section>
-
 		</Navbar>;
-	},
+	};
 
-	render : function(){
-		return <div className='editPage sitePage'>
+	return (
+		<div className='editPage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{this.renderNavbar()}
 
-			{this.props.brew.lock && <LockNotification shareId={this.props.brew.shareId} message={this.props.brew.lock.editMessage} reviewRequested={this.props.brew.lock.reviewRequested} />}
+			{renderNavbar()}
+
+			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
+
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						onStyleChange={this.handleStyleChange}
-						onSnipChange={this.handleSnipChange}
-						onMetaChange={this.handleMetaChange}
-						reportError={this.errorReported}
-						renderer={this.state.brew.renderer}
-						userThemes={this.props.userThemes}
-						themeBundle={this.state.themeBundle}
-						updateBrew={this.updateBrew}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						ref={editorRef}
+						brew={currentBrew}
+						onBrewChange={handleBrewChange}
+						reportError={setError}
+						renderer={currentBrew.renderer}
+						userThemes={props.userThemes}
+						themeBundle={themeBundle}
+						updateBrew={updateBrew}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						theme={this.state.brew.theme}
-						themeBundle={this.state.themeBundle}
-						errors={this.state.htmlErrors}
-						lang={this.state.brew.lang}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						theme={currentBrew.theme}
+						themeBundle={themeBundle}
+						errors={HTMLErrors}
+						lang={currentBrew.lang}
+						onPageChange={setCurrentBrewRendererPageNum}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>
 			</div>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
 module.exports = EditPage;
