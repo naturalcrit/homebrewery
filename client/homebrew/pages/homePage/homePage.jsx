@@ -53,8 +53,9 @@ const HomePage =(props)=>{
 	const [isSaving                  , setIsSaving]                   = useState(false);
 	const [autoSaveEnabled           , setAutoSaveEnable]             = useState(false);
 
-	const editorRef     = useRef(null);
-	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	const editorRef         = useRef(null);
+	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const unsavedChangesRef = useRef(unsavedChanges);
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -69,12 +70,27 @@ const HomePage =(props)=>{
 			}
 		};
 
+		const handleBeforeUnload = (e)=>{
+			if(unsavedChangesRef.current) {
+				e.preventDefault();
+				e.returnValue = '';
+				return '';
+			}
+		};
+		
+		window.addEventListener('beforeunload', handleBeforeUnload);
+
 		document.addEventListener('keydown', handleControlKeys);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.removeEventListener('beforeunload', handleBeforeUnload);
 		};
 	}, []);
+
+	useEffect(()=>{
+		unsavedChangesRef.current = unsavedChanges;
+	}, [unsavedChanges]);
 
 	const save = ()=>{
 		request.post('/api')
