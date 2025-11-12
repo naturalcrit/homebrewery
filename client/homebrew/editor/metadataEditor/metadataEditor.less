@@ -162,19 +162,34 @@
 		}
 	}
 	.authors.field {
-		.list > .tag:first-child {
-			position:relative;
-			
+		.tag.owner {
+			position: relative;
+			background-color:@silverLight;
+			min-width:25px;
+			display:grid;
+			place-items:center;
+			font-weight: 900;
+
 			&::after {
-				content:'';
-				position:absolute;
-				border-radius:inherit;
-				inset:-1px;
-				border: 2px solid goldenrod;
+				content: "\f521";
+				font-family: "Font Awesome 6 Free";
+				color:gold;
+				position: absolute;
+				top: 0;
+				left: 50%;
+				width:15px;
+				height:15px;
+				translate:-50% -90%;
 			}
 		}
-		button {color:#B00;}
-		.value { line-height : 1.5em; }
+		button {
+			color:@redLight;
+		}
+
+		a {
+			color:black;
+
+		}
 	}
 
 	.themes.field {
@@ -277,9 +292,9 @@
 		}
 
 		.tag {
-			padding          : 0.3em;
+			padding          : 0.35em;
 			margin           : 2px;
-			font-size        : 0.9em;
+			font-size        : 0.95em;
 			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 

@@ -47,7 +47,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
-			isOwner : global.account?.username && global.account?.username === this.props.metadata?.authors[0],
+			isOwner       : global.account?.username && global.account?.username === this.props.metadata?.authors[0],
 			showThumbnail : true
 		};
 	},
@@ -158,11 +158,11 @@ const MetadataEditor = createClass({
 	},
 
 	handleDeleteAuthor : function(author){
-		if(!confirm('Are you sure you want to delete this author? They will lose all edit access to this brew.')) return;
+		if(!confirm('Are you sure you want to remove this author? They will lose all edit access to this brew, and it will dissapear from their userpage.')) return;
 		if(!this.props.metadata.authors.includes(author)) return;
 		this.props.onChange({
     		...this.props.metadata,
-    		authors: this.props.metadata.authors.filter(a => a !== author)
+    		authors : this.props.metadata.authors.filter((a)=>a !== author)
 		});
 	},
 
@@ -219,23 +219,34 @@ const MetadataEditor = createClass({
 		);
 		return (
 			<div className='field authors'>
-				<label>authors</label>
+				<label>Authors</label>
 				<ul className='list'>
-					{authors.map((author, i)=>(
-						<li className='tag' key={i}>{author}
-							{i>0 &&
-							<button
+					{authors.length > 0 && (
+						<li className='tag owner' title='Owner'>
+							<a href={`/user/${authors[0]}`} className='author-link'>
+								{authors[0]}
+							</a>
+						</li>
+					)}
+
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<li className='tag author' key={i + 1} title='Author'>
+        					<a href={`/user/${author}`} className='author-link'>
+        						{author}
+        					</a>
+        					<button
 								onClick={()=>this.handleDeleteAuthor(author)}
 								className='delete'
-								title={`Remove ${author} as an`}
-							>
-								<i className='fa fa-times fa-fw'/>
-							</button>}
-						</li>
-					))}
+								title={`Remove ${author} as an author`}
+        					>
+        						<i className='fa fa-times fa-fw' />
+        					</button>
+        				</li>
+        			))}
 				</ul>
 			</div>
 		);
+
 	},
 
 	renderThemeDropdown : function(){
