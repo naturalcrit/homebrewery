@@ -1,13 +1,22 @@
 const React = require('react');
+const { useState } = React;
+
 const _ = require('lodash');
 const Nav = require('client/homebrew/navbar/nav.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
+import Dialog from '../../components/dialog.jsx';
+import { NewDocumentForm } from '../../components/newDocumentForm.jsx';
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';
 const METAKEY = 'homebrewery-new-meta';
 
+const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
+
 const NewBrew = ()=>{
+
+	const [open, setOpen] = useState(false);
+
 	const handleFileChange = (e)=>{
 		const file = e.target.files[0];
 		if(!file) return;
@@ -43,15 +52,24 @@ const NewBrew = ()=>{
 		reader.readAsText(file);
 	};
 
+	return <>
+		<Nav.item
+			className='new'
+			color='purple'
+			icon='fa-solid fa-plus-square'
+			onClick={()=>{ setOpen(true);}}>
+				new
 
-	return (
-		<Nav.dropdown>
-			<Nav.item
-				className='new'
-				color='purple'
-				icon='fa-solid fa-plus-square'>
-                new
-			</Nav.item>
+		</Nav.item>
+		{open && <Dialog blocking className='newBrewPopup' closeText={DISMISS_BUTTON} callbackFn={()=>{setOpen(false);}}>
+					<NewDocumentForm/>
+				</Dialog>
+		}
+
+	</>;
+};
+
+/*
 			<Nav.item
 				className='fromBlank'
 				href='/new'
@@ -60,7 +78,6 @@ const NewBrew = ()=>{
 				icon='fa-solid fa-file'>
                 from blank
 			</Nav.item>
-
 			<Nav.item
 				className='fromFile'
 				color='purple'
@@ -69,8 +86,7 @@ const NewBrew = ()=>{
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
                 from file
 			</Nav.item>
-		</Nav.dropdown>
-	);
-};
+			*/
+
 
 module.exports = NewBrew;

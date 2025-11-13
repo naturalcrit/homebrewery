@@ -2,7 +2,7 @@
 import React from 'react';
 const { useRef, useEffect } = React;
 
-function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, ...rest }) {
+function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, callbackFn = ()=>{}, ...rest }) {
 	const dialogRef = useRef(null);
 
 	useEffect(()=>{
@@ -15,6 +15,7 @@ function Dialog({ dismisskeys = [], closeText = 'Close', blocking = false, ...re
 				localStorage.setItem(key, 'true');
 			}
 		});
+		callbackFn();
 		dialogRef.current?.close();
 	};
 

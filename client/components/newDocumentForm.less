@@ -1,0 +1,98 @@
+.newBrewPopup {
+	position: relative;
+	background: #282828;
+	border: unset;
+	display: grid;
+	grid-template-rows: 50px 1fr;
+	padding: 0;
+	color: #ddd;
+	border-radius: 10px;
+	box-shadow: 1px 0 14px black;
+
+	.popupTabs {
+		padding: 10px;
+		padding-right:100px;
+		padding-left:50px;
+		background: #333;
+		display: flex;
+		justify-content: space-evenly;
+	}
+
+	.content {
+		display: grid;
+		grid-template-columns: 1fr 200px;
+		height:100% !important;
+
+		.templates {
+			display: grid;
+			grid-template-columns: repeat(5, 1fr);
+			padding: 50px;
+			gap:30px;
+			box-shadow: inset 0 0 20px rgba(0,0,0,0.62);
+
+			.template {
+				width: 100px;
+				display: flex;
+				flex-direction: column;
+				text-align:center;
+				align-items: center;
+				gap:10px;
+
+				.image {
+					background-color:#444;
+					border:2px solid #777;
+					border-radius:2px;
+					display:grid;
+					place-items:center;
+					padding:10px;
+					font-size:12px;
+				}
+
+			}
+
+		}
+
+		.metadataPanel {
+			height:100%;
+			background-color: #555;
+			padding:25px;
+			
+			.field {
+				display:grid;
+				grid-template-columns:50px 1fr;
+			}
+
+			#newButton {
+					.colorButton(@green);
+					position : absolute;
+					right    : 10px;
+					bottom   : 10px;
+
+					i {
+						margin-left         : 10px;
+						animation-duration  : 1000s;
+					}
+			}
+		}
+	}
+	.dismiss {
+		position: absolute;
+		top: 0px;
+		right: 0px;
+		width:50px;
+		height:50px;
+		z-index:10;
+		display:grid;
+		place-items:center;
+	}
+	
+	input, textarea {
+		color:white;
+		background-color:#333;
+		border-radius:5px;
+		outline:1px solid #777;
+		border:unset;
+		box-shadow: inset 0 0 5px rgba(0,0,0,0.62);
+		width:100%;
+	}
+}
