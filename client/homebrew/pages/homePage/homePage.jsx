@@ -78,13 +78,15 @@ const HomePage =(props)=>{
 			}
 		};
 		
-		window.addEventListener('beforeunload', handleBeforeUnload);
+		const previousBeforeUnload = window.onbeforeunload;
+
+		window.onbeforeunload = handleBeforeUnload;
 
 		document.addEventListener('keydown', handleControlKeys);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.removeEventListener('beforeunload', handleBeforeUnload);
+			window.onbeforeunload = previousBeforeUnload;
 		};
 	}, []);
 
