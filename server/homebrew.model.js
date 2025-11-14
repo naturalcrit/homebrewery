@@ -7,29 +7,29 @@ import zlib       from 'zlib';
 const HomebrewSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
 	editId    : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
-	googleId  : { type: String },
-	title     : { type: String, default: '' },
+	googleId  : { type: String, index: true },
+	title     : { type: String, default: '', index: true },
 	text      : { type: String, default: '' },
 	textBin   : { type: Buffer },
-	pageCount : { type: Number, default: 1 },
+	pageCount : { type: Number, default: 1, index: true },
 
 	description    : { type: String, default: '' },
-	tags           : [String],
+	tags           : { type: [String], index: true },
 	systems        : [String],
-	lang           : { type: String, default: 'en' },
-	renderer       : { type: String, default: '' },
-	authors        : [String],
+	lang           : { type: String, default: 'en', index: true },
+	renderer       : { type: String, default: '', index: true },
+	authors        : { type: [String], index: true },
 	invitedAuthors : [String],
-	published      : { type: Boolean, default: false },
-	thumbnail      : { type: String, default: '' },
+	published      : { type: Boolean, default: false, index: true },
+	thumbnail      : { type: String, default: '', index: true },
 
-	createdAt  : { type: Date, default: Date.now },
-	updatedAt  : { type: Date, default: Date.now },
-	lastViewed : { type: Date, default: Date.now },
+	createdAt  : { type: Date, default: Date.now, index: true },
+	updatedAt  : { type: Date, default: Date.now, index: true },
+	lastViewed : { type: Date, default: Date.now, index: true },
 	views      : { type: Number, default: 0 },
-	version    : { type: Number, default: 1 },
+	version    : { type: Number, default: 1, index: true },
 
-	lock : { type: Object }
+	lock : { type: Object, index: true }
 }, { versionKey: false });
 
 HomebrewSchema.statics.increaseView = async function(query) {
@@ -42,6 +42,8 @@ HomebrewSchema.statics.increaseView = async function(query) {
 	});
 	return brew;
 };
+
+// STATIC FUNCTIONS
 
 HomebrewSchema.statics.get = async function(query, fields=null){
 	const brew = await Homebrew.findOne(query, fields).orFail()
@@ -62,6 +64,15 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
 };
+
+// INDEXES
+
+HomebrewSchema.index({ updatedAt: -1, lastViewed: -1 });
+HomebrewSchema.index({ published: 1, title: 'text' });
+
+HomebrewSchema.index({ lock: 1, sparse: true });
+HomebrewSchema.path('lock.reviewRequested').index({ sparse: true });
+
 
 const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 

@@ -1,6 +1,6 @@
 const React = require('react');
 const _ = require('lodash');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
 
 const BREWKEY  = 'homebrewery-new';
@@ -34,8 +34,8 @@ const NewBrew = ()=>{
 			}
 
 			const type = file.name.split('.').pop().toLowerCase();
-			
-			alert(`This file is invalid: ${!type ? "Missing file extension" :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
+
+			alert(`This file is invalid: ${!type ? 'Missing file extension' :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
 
 
 			console.log(file);

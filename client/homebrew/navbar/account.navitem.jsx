@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const request = require('superagent');
 
 const Account = createClass({

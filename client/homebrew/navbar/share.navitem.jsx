@@ -1,23 +1,23 @@
 import React from 'react';
 import dedent from 'dedent-tabs';
-import Nav from 'naturalcrit/nav/nav.jsx';
+import Nav from 'client/homebrew/navbar/nav.jsx';
 
-	const getShareId = (brew)=>(
-		brew.googleId && !brew.stubbed
-			? brew.googleId + brew.shareId
-			: brew.shareId
-	);
+const getShareId = (brew)=>(
+	brew.googleId && !brew.stubbed
+		? brew.googleId + brew.shareId
+		: brew.shareId
+);
 
-	const getRedditLink = (brew)=>{
-		const text = dedent`
+const getRedditLink = (brew)=>{
+	const text = dedent`
 			Hey guys! I've been working on this homebrew. I'd love your feedback. Check it out.
 
 			**[Homebrewery Link](${global.config.baseUrl}/share/${getShareId(brew)})**`;
 
-		return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
-	};
+	return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
+};
 
-export default ({brew}) => (
+export default ({ brew })=>(
 	<Nav.dropdown>
 		<Nav.item color='teal' icon='fas fa-share-alt'>
 			share

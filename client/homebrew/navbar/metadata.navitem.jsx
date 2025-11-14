@@ -2,7 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
 
 const MetadataNav = createClass({

@@ -1,6 +1,6 @@
 
 
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 describe('Inline Definition Lists', ()=>{
 	test('No Term 1 Definition', function() {

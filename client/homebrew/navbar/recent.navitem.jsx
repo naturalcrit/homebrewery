@@ -3,10 +3,10 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
-const EDIT_KEY = 'homebrewery-recently-edited';
-const VIEW_KEY = 'homebrewery-recently-viewed';
+const EDIT_KEY = 'HB_nav_recentlyEdited';
+const VIEW_KEY = 'HB_nav_recentlyViewed';
 
 
 const RecentItems = createClass({
