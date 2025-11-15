@@ -243,7 +243,7 @@ const GoogleActions = {
 				fields : 'id',
 			})
 			.catch((err)=>{
-				console.log('Error updating permissions on Google Drive file');
+				console.log('Error adding Service Account permissions on Google Drive file');
 				console.error(err);
 			});
 		}
@@ -257,7 +257,7 @@ const GoogleActions = {
 			fields : 'id',
 		})
 		.catch((err)=>{
-			console.log('Error updating permissions');
+			console.log('Error adding "Anyone" permissions on Google Drive file');
 			console.error(err);
 		});
 
