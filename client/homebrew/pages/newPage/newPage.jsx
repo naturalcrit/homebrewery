@@ -228,6 +228,7 @@ const NewPage = (props)=>{
 				{error
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: renderSaveButton()}
+				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
