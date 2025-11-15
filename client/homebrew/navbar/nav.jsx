@@ -5,7 +5,7 @@ const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
-const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+const NaturalCritIcon = require('client/components/svg/naturalcrit-d20.svg.jsx');
 
 const Nav = {
 	base : createClass({

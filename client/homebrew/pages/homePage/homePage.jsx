@@ -4,7 +4,7 @@ import './homePage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from 'naturalcrit/markdown.js';
+import Markdown                               from 'markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -14,15 +14,15 @@ import SplitPane    from 'client/components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from 'naturalcrit/nav/nav.jsx';
-import Navbar                    from '../../navbar/navbar.jsx';
-import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ErrorNavItem              from '../../navbar/error-navitem.jsx';
-import HelpNavItem               from '../../navbar/help.navitem.jsx';
-import VaultNavItem              from '../../navbar/vault.navitem.jsx';
-import PrintNavItem              from '../../navbar/print.navitem.jsx';
-import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
+import Nav                       from 'client/homebrew/navbar/nav.jsx';
+import Navbar                    from 'client/homebrew/navbar/navbar.jsx';
+import NewBrewItem               from 'client/homebrew/navbar/newbrew.navitem.jsx';
+import AccountNavItem            from 'client/homebrew/navbar/account.navitem.jsx';
+import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx';
+import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
+import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
+import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
+import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
 
 // Page specific imports
 import { Meta }                               from 'vitreum/headtags';
@@ -53,8 +53,9 @@ const HomePage =(props)=>{
 	const [isSaving                  , setIsSaving]                   = useState(false);
 	const [autoSaveEnabled           , setAutoSaveEnable]             = useState(false);
 
-	const editorRef     = useRef(null);
-	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	const editorRef         = useRef(null);
+	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const unsavedChangesRef = useRef(unsavedChanges);
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -70,11 +71,19 @@ const HomePage =(props)=>{
 		};
 
 		document.addEventListener('keydown', handleControlKeys);
-
+		window.onbeforeunload = ()=>{
+			if(unsavedChangesRef.current)
+				return 'You have unsaved changes!';
+		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.onbeforeunload = null;
 		};
 	}, []);
+
+	useEffect(()=>{
+		unsavedChangesRef.current = unsavedChanges;
+	}, [unsavedChanges]);
 
 	const save = ()=>{
 		request.post('/api')

@@ -4,9 +4,9 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
-import Markdown from '../../../shared/naturalcrit/markdown.js';
+import Markdown from '../../../shared/markdown.js';
 
-const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+const CodeEditor = require('client/components/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
