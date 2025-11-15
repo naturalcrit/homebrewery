@@ -243,7 +243,7 @@ const GoogleActions = {
 				fields : 'id',
 			})
 			.catch((err)=>{
-				console.log('Error updating permissions');
+				console.log('Error updating permissions on Google Drive file');
 				console.error(err);
 			});
 		}
