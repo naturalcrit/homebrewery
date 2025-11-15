@@ -249,10 +249,8 @@ const GoogleActions = {
 		}
 
 		await drive.permissions.create({
-			resource : {
-				type : 'anyone',
-				role : 'writer'
-			},
+			resource : { type : 'anyone',
+			             role : 'writer' },
 			fileId : obj.data.id,
 			fields : 'id',
 		})
