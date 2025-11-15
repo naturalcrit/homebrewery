@@ -47,6 +47,7 @@ const MetadataEditor = createClass({
 
 	getInitialState : function(){
 		return {
+			isOwner       : global.account?.username && global.account?.username === this.props.metadata?.authors[0],
 			showThumbnail : true
 		};
 	},
@@ -156,6 +157,15 @@ const MetadataEditor = createClass({
 			});
 	},
 
+	handleDeleteAuthor : function(author){
+		if(!confirm('Are you sure you want to remove this author? They will lose all edit access to this brew, and it will dissapear from their userpage.')) return;
+		if(!this.props.metadata.authors.includes(author)) return;
+		this.props.onChange({
+    		...this.props.metadata,
+    		authors : this.props.metadata.authors.filter((a)=>a !== author)
+		});
+	},
+
 	renderSystems : function(){
 		return _.map(SYSTEMS, (val)=>{
 			return <label key={val}>
@@ -194,16 +204,54 @@ const MetadataEditor = createClass({
 	},
 
 	renderAuthors : function(){
-		let text = 'None.';
-		if(this.props.metadata.authors && this.props.metadata.authors.length){
-			text = this.props.metadata.authors.join(', ');
-		}
-		return <div className='field authors'>
-			<label>authors</label>
-			<div className='value'>
-				{text}
+		const authors = this.props.metadata.authors;
+		if(!this.state.isOwner || authors.length < 2) return (
+			<div className='field authors'>
+				<label>authors</label>
+				<div className='value'>
+					{authors.length > 0 && (
+						<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}{authors.length > 1 && ', '}
+						</a>
+					)}
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
+        					{author}{i+2 < authors.length && ', '}
+        				</a>
+        			))}
+				</div>
 			</div>
-		</div>;
+		);
+		return (
+			<div className='field authors'>
+				<label>Authors</label>
+				<ul className='list'>
+					{authors.length > 0 && (
+						<li className='tag owner' title='Owner'>
+							<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}
+							</a>
+						</li>
+					)}
+
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<li className='tag author' key={i + 1} title='Author'>
+        					<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${authors[0]}'s profile in a new tab`}>
+        						{author}
+        					</a>
+        					<button
+								onClick={()=>this.handleDeleteAuthor(author)}
+								className='delete'
+								title={`Remove ${author} as an author`}
+        					>
+        						<i className='fa fa-times fa-fw' />
+        					</button>
+        				</li>
+        			))}
+				</ul>
+			</div>
+		);
+
 	},
 
 	renderThemeDropdown : function(){
