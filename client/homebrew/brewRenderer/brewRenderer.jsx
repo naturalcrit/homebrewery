@@ -4,8 +4,8 @@ const React = require('react');
 const { useState, useRef, useMemo, useEffect } = React;
 const _ = require('lodash');
 
-const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-import Markdown from 'naturalcrit/markdown.js';
+const MarkdownLegacy = require('markdownLegacy.js');
+import Markdown from 'markdown.js';
 const ErrorBar = require('./errorBar/errorBar.jsx');
 const ToolBar  = require('./toolBar/toolBar.jsx');
 

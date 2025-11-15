@@ -143,7 +143,7 @@ const BrewItem = ({
 								<span title="Username contained an email address; hidden to protect user's privacy">
 									{author}
 								</span>
-							) : (<a href={`/user/${author}`}>{author}</a>)}
+							) : (<a href={`/user/${encodeURIComponent(author)}`}>{author}</a>)}
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}

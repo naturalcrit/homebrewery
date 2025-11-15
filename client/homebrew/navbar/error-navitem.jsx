@@ -1,6 +1,6 @@
 require('./error-navitem.less');
 const React = require('react');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
 const ErrorNavItem = ({ error = '', clearError })=>{
 	const response    = error.response;
