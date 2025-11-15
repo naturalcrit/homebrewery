@@ -143,6 +143,7 @@ Fixes issue [#2963](https://github.com/naturalcrit/homebrewery/issues/2963)
 * [x] Fixed edge case crash on admin page
 }}
 
+\page
 
 ### Wednesday 7/09/2025 - v3.19.3
 
