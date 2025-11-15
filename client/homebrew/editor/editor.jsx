@@ -421,6 +421,9 @@ const Editor = createClass({
 		}
 	},
 
+	//Called when there are changes to the editor's dimensions
+	update : function(){},
+
 	updateEditorTheme : function(newTheme){
 		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
 		this.setState({
