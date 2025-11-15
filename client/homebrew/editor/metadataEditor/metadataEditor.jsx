@@ -205,15 +205,20 @@ const MetadataEditor = createClass({
 
 	renderAuthors : function(){
 		const authors = this.props.metadata.authors;
-		let text = 'None.';
-		if(authors && authors.length){
-			text = authors.join(', ');
-		}
 		if(!this.state.isOwner || authors.length < 2) return (
 			<div className='field authors'>
 				<label>authors</label>
 				<div className='value'>
-					{text}
+					{authors.length > 0 && (
+						<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}{authors.length > 1 && ', '}
+						</a>
+					)}
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
+        					{author}{i+2 < authors.length && ', '}
+        				</a>
+        			))}
 				</div>
 			</div>
 		);
@@ -223,7 +228,7 @@ const MetadataEditor = createClass({
 				<ul className='list'>
 					{authors.length > 0 && (
 						<li className='tag owner' title='Owner'>
-							<a href={`/user/${authors[0]}`} className='author-link'>
+							<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
 								{authors[0]}
 							</a>
 						</li>
@@ -231,7 +236,7 @@ const MetadataEditor = createClass({
 
 					{authors.length > 1 && authors.slice(1).map((author, i)=>(
         				<li className='tag author' key={i + 1} title='Author'>
-        					<a href={`/user/${author}`} className='author-link'>
+        					<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${authors[0]}'s profile in a new tab`}>
         						{author}
         					</a>
         					<button

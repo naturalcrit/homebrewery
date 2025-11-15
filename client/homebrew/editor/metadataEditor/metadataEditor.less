@@ -162,33 +162,44 @@
 		}
 	}
 	.authors.field {
-		.tag.owner {
-			position: relative;
-			background-color:@silverLight;
-			min-width:25px;
-			display:grid;
-			place-items:center;
-			font-weight: 900;
+		.tag {
+			font-weight:300;
+			transition:background-color 0.2s;
 
-			&::after {
-				content: "\f521";
-				font-family: "Font Awesome 6 Free";
-				color:gold;
-				position: absolute;
-				top: 0;
-				left: 50%;
-				width:15px;
-				height:15px;
-				translate:-50% -90%;
+			&.owner {
+				position: relative;
+				background-color:@silverLight;
+				min-width:25px;
+				display:grid;
+				place-items:center;
+				font-weight: 900;
+
+				&::after {
+					content: "\f521";
+					font-family: "Font Awesome 6 Free";
+					color:gold;
+					position: absolute;
+					top: 0;
+					left: 0;
+					width:15px;
+					height:15px;
+					rotate:-45deg;
+					translate:-50% -50%;
+				}
 			}
-		}
-		button {
-			color:@redLight;
-		}
+			&:has(button:hover) {
+				background:#d97d7d;
+			}
 
+			button {
+				color:@red;
+			}
+
+		
+		}
 		a {
 			color:black;
-
+			text-decoration:unset;
 		}
 	}
 
