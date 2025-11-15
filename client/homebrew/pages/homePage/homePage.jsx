@@ -70,23 +70,14 @@ const HomePage =(props)=>{
 			}
 		};
 
-		const handleBeforeUnload = (e)=>{
-			if(unsavedChangesRef.current) {
-				e.preventDefault();
-				e.returnValue = '';
-				return '';
-			}
-		};
-		
-		const previousBeforeUnload = window.onbeforeunload;
-
-		window.onbeforeunload = handleBeforeUnload;
-
 		document.addEventListener('keydown', handleControlKeys);
-
+		window.onbeforeunload = ()=>{
+			if(unsavedChangesRef.current)
+				return 'You have unsaved changes!';
+		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.onbeforeunload = previousBeforeUnload;
+			window.onbeforeunload = null;
 		};
 	}, []);
 
