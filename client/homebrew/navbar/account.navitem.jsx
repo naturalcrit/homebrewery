@@ -1,6 +1,6 @@
 const React = require('react');
 const createClass = require('create-react-class');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const request = require('superagent');
 
 const Account = createClass({
@@ -70,7 +70,7 @@ const Account = createClass({
 					{global.account.username}
 				</Nav.item>
 				<Nav.item
-					href={`/user/${encodeURI(global.account.username)}`}
+					href={`/user/${encodeURIComponent(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'
 				>
