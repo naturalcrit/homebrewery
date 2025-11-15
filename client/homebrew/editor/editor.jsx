@@ -58,7 +58,6 @@ const Editor = createClass({
 		return {
 			editorTheme      : this.props.editorTheme,
 			view             : 'text', //'text', 'style', 'meta', 'snippet'
-			snippetbarHeight : 25
 		};
 	},
 
@@ -85,7 +84,18 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
+  		const snippetBar = document.querySelector('.editor > .snippetBar');
+  		if (!snippetBar) return;
+
+  		this.resizeObserver = new ResizeObserver(entries => {
+    		// throttle/debounce inside if you like
+    		const h = snippetBar.offsetHeight;
+				const editor = document.querySelector('.editor .codeEditor');
+				if (!editor) return;
+				editor.style.height = `calc(100% - ${h}px)`;
+  		});
+
+  		this.resizeObserver.observe(snippetBar);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -106,6 +116,10 @@ const Editor = createClass({
 				this.brewJump(this.props.currentEditorCursorPageNum, false);
 			}
 		}
+	},
+
+	componentWillUnmount() {
+  		if (this.resizeObserver) this.resizeObserver.disconnect();
 	},
 
 	handleControlKeys : function(e){
@@ -407,13 +421,6 @@ const Editor = createClass({
 		}
 	},
 
-	//Called when there are changes to the editor's dimensions
-	update : function(){
-		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
-		if(snipHeight !== this.state.snippetbarHeight)
-			this.setState({ snippetbarHeight: snipHeight });
-	},
-
 	updateEditorTheme : function(newTheme){
 		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
 		this.setState({
@@ -437,7 +444,7 @@ const Editor = createClass({
 					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% - 26px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -451,7 +458,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% - 26px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -468,7 +475,6 @@ const Editor = createClass({
 					userThemes={this.props.userThemes}/>
 			</>;
 		}
-
 		if(this.isSnip()){
 			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
 			return <>
@@ -481,7 +487,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% - 26px)` }} />
 			</>;
 		}
 	},
