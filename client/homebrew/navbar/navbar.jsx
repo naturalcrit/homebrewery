@@ -2,7 +2,7 @@ require('./navbar.less');
 const React = require('react');
 const createClass = require('create-react-class');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const PatreonNavItem = require('./patreon.navitem.jsx');
 
 const Navbar = createClass({
