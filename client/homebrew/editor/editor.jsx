@@ -58,6 +58,7 @@ const Editor = createClass({
 		return {
 			editorTheme      : this.props.editorTheme,
 			view             : 'text', //'text', 'style', 'meta', 'snippet'
+			snippetBarHeight : 26,
 		};
 	},
 
@@ -88,11 +89,9 @@ const Editor = createClass({
   		if (!snippetBar) return;
 
   		this.resizeObserver = new ResizeObserver(entries => {
-    		// throttle/debounce inside if you like
-    		const h = snippetBar.offsetHeight;
-				const editor = document.querySelector('.editor .codeEditor');
-				if (!editor) return;
-				editor.style.height = `calc(100% - ${h}px)`;
+			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
+			this.setState({ snippetbarHeight: height });
+			console.log('setting state to ', height );
   		});
 
   		this.resizeObserver.observe(snippetBar);
@@ -437,6 +436,7 @@ const Editor = createClass({
 	},
 
 	renderEditor : function(){
+		console.log('state at rendering is: ',this.state.snippetBarHeight);
 		if(this.isText()){
 			return <>
 				<CodeEditor key='codeEditor'
@@ -447,7 +447,7 @@ const Editor = createClass({
 					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - 26px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -461,7 +461,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - 26px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -490,7 +490,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - 26px)` }} />
+					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 	},
