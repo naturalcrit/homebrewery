@@ -7,6 +7,9 @@ const dedent = require('dedent-tabs').default;
 import Markdown from '../../../shared/markdown.js';
 
 const CodeEditor = require('client/components/codeEditor/codeEditor.jsx');
+import CodeEditorV6 from 'client/components/codeEditor/codeEditorV6.jsx';
+
+const USE_CM6 = global?.config?.enable_CM6 === true;
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
@@ -62,8 +65,34 @@ const Editor = createClass({
 		};
 	},
 
-	editor     : React.createRef(null),
-	codeEditor : React.createRef(null),
+	editor       : React.createRef(null),
+	codeEditor   : React.createRef(null),
+	codeEditorV6 : React.createRef(null),
+
+	getActiveEditor : function(){
+		return USE_CM6 ? this.codeEditorV6.current : this.codeEditor.current;
+	},
+
+	focusActiveEditor : function(){
+		const editor = this.getActiveEditor();
+		if(!editor) return;
+		if(USE_CM6) editor.focus?.();
+		else editor.codeMirror?.focus();
+	},
+
+	handleCM6SelectionChange : function(view){
+		if(!USE_CM6 || !view) return;
+		const { head } = view.state.selection.main;
+		const lineInfo = view.state.doc.lineAt(head);
+		this.updateCurrentCursorPage({ line: lineInfo.number - 1 });
+	},
+
+	handleCM6Scroll : function(){
+		if(!USE_CM6) return;
+		const topLine = this.codeEditorV6.current?.getTopVisibleLine?.();
+		if(topLine == null) return;
+		this.updateCurrentViewPage(topLine);
+	},
 
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
@@ -76,8 +105,10 @@ const Editor = createClass({
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
-		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
+		if(!USE_CM6) {
+			this.codeEditor.current?.codeMirror?.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
+			this.codeEditor.current?.codeMirror?.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
+		}
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -90,7 +121,7 @@ const Editor = createClass({
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
-		this.highlightCustomMarkdown();
+		if(!USE_CM6) this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -121,7 +152,8 @@ const Editor = createClass({
 	},
 
 	updateCurrentCursorPage : function(cursor) {
-		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
+		const cursorLine = cursor.line ?? cursor;
+		const lines = this.props.brew.text.split('\n').slice(1, cursorLine + 1);
 		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onCursorPageChange(currentPage);

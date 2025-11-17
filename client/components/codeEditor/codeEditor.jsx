@@ -8,36 +8,36 @@ const autoCompleteEmoji = require('./autocompleteEmoji');
 
 let CodeMirror;
 if(typeof window !== 'undefined'){
-	CodeMirror = require('codemirror');
+	CodeMirror = require('codemirror5');
 
 	//Language Modes
-	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
-	require('codemirror/mode/css/css.js');
-	require('codemirror/mode/javascript/javascript.js');
+	require('codemirror5/mode/gfm/gfm.js'); //Github flavoured markdown
+	require('codemirror5/mode/css/css.js');
+	require('codemirror5/mode/javascript/javascript.js');
 
 	//Addons
 	//Code folding
-	require('codemirror/addon/fold/foldcode.js');
-	require('codemirror/addon/fold/foldgutter.js');
+	require('codemirror5/addon/fold/foldcode.js');
+	require('codemirror5/addon/fold/foldgutter.js');
 	//Search and replace
-	require('codemirror/addon/search/search.js');
-	require('codemirror/addon/search/searchcursor.js');
-	require('codemirror/addon/search/jump-to-line.js');
-	require('codemirror/addon/search/match-highlighter.js');
-	require('codemirror/addon/search/matchesonscrollbar.js');
-	require('codemirror/addon/dialog/dialog.js');
+	require('codemirror5/addon/search/search.js');
+	require('codemirror5/addon/search/searchcursor.js');
+	require('codemirror5/addon/search/jump-to-line.js');
+	require('codemirror5/addon/search/match-highlighter.js');
+	require('codemirror5/addon/search/matchesonscrollbar.js');
+	require('codemirror5/addon/dialog/dialog.js');
 	//Trailing space highlighting
 	// require('codemirror/addon/edit/trailingspace.js');
 	//Active line highlighting
 	// require('codemirror/addon/selection/active-line.js');
 	//Scroll past last line
-	require('codemirror/addon/scroll/scrollpastend.js');
+	require('codemirror5/addon/scroll/scrollpastend.js');
 	//Auto-closing
 	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
-	require('codemirror/addon/fold/xml-fold.js');
-	require('codemirror/addon/edit/closetag.js');
+	require('codemirror5/addon/fold/xml-fold.js');
+	require('codemirror5/addon/edit/closetag.js');
 	//Autocompletion
-	require('codemirror/addon/hint/show-hint.js');
+	require('codemirror5/addon/hint/show-hint.js');
 
 	const foldPagesCode = require('./fold-pages');
 	foldPagesCode.registerHomebreweryHelper(CodeMirror);
@@ -462,4 +462,3 @@ const CodeEditor = createClass({
 });
 
 module.exports = CodeEditor;
-

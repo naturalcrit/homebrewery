@@ -554,7 +554,8 @@ const renderPage = async (req, res)=>{
 		publicUrl   : config.get('publicUrl') ?? '',
 		baseUrl     : `${req.protocol}://${req.get('host')}`,
 		environment : nodeEnv,
-		deployment  : config.get('heroku_app_name') ?? ''
+		deployment  : config.get('heroku_app_name') ?? '',
+		enable_CM6  : config.get('enable_CM6') ?? false
 	};
 	const props = {
 		version       : version,
