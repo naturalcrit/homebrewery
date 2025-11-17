@@ -90,7 +90,7 @@ const Editor = createClass({
 
   		this.resizeObserver = new ResizeObserver(entries => {
 			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
-			this.setState({ snippetbarHeight: height });
+			this.setState({ snippetBarHeight: height });
 			console.log('setting state to ', height );
   		});
 
