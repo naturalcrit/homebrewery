@@ -34,25 +34,20 @@ const NewBrew = ()=>{
 
 			alert(`This file is invalid: ${!type ? 'Missing file extension' :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
 
-
 			console.log(file);
 		};
 		reader.readAsText(file);
 	};
 
-	const checkLocalStorage = ()=>{
-		// Check if changes exist for New editor
-		const currentText = localStorage.getItem(BREWKEY);
-		const currentStyle = localStorage.getItem(STYLEKEY);
-		const currentMeta = localStorage.getItem(METAKEY);
-		return (currentText || currentStyle || currentMeta);
-	};
-
 	const confirmLocalStorageChange = ()=>{
+		const currentText  = localStorage.getItem(BREWKEY);
+		const currentStyle = localStorage.getItem(STYLEKEY);
+		const currentMeta  = localStorage.getItem(METAKEY);
+
 		// TRUE if no data in any local storage key
 		// TRUE if data in any local storage key AND approval given
 		// FALSE if data in any local storage key AND approval declined
-		return (!checkLocalStorage() || confirm(
+		return (!(currentText || currentStyle || currentMeta) || confirm(
 			`You have made changes in the new brew space. If you continue, that information will be PERMANENTLY LOST.\nAre you sure you wish to continue?`
 		));
 	};
@@ -75,7 +70,7 @@ const NewBrew = ()=>{
 				className='new'
 				color='purple'
 				icon='fa-solid fa-plus-square'>
-                new
+					new
 			</Nav.item>
 			<Nav.item
 				className='new'
@@ -83,7 +78,7 @@ const NewBrew = ()=>{
 				newTab={true}
 				color='purple'
 				icon='fa-solid fa-file'>
-                resume editing
+					resume draft
 			</Nav.item>
 			<Nav.item
 				className='fromBlank'
@@ -91,16 +86,15 @@ const NewBrew = ()=>{
 				color='yellow'
 				icon='fa-solid fa-file-circle-plus'
 				onClick={()=>{ clearLocalStorage(); }}>
-                from blank
+					from blank
 			</Nav.item>
-
 			<Nav.item
 				className='fromFile'
 				color='green'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
-                from file
+					from file
 			</Nav.item>
 		</Nav.dropdown>
 	);
