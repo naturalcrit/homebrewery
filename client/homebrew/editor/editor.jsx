@@ -85,16 +85,15 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-  		const snippetBar = document.querySelector('.editor > .snippetBar');
-  		if (!snippetBar) return;
+		const snippetBar = document.querySelector('.editor > .snippetBar');
+		if (!snippetBar) return;
 
-  		this.resizeObserver = new ResizeObserver(entries => {
+		this.resizeObserver = new ResizeObserver(entries => {
 			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
 			this.setState({ snippetBarHeight: height });
-			console.log('setting state to ', height );
-  		});
+		});
 
-  		this.resizeObserver.observe(snippetBar);
+		this.resizeObserver.observe(snippetBar);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -118,7 +117,7 @@ const Editor = createClass({
 	},
 
 	componentWillUnmount() {
-  		if (this.resizeObserver) this.resizeObserver.disconnect();
+		if (this.resizeObserver) this.resizeObserver.disconnect();
 	},
 
 	handleControlKeys : function(e){
@@ -436,7 +435,6 @@ const Editor = createClass({
 	},
 
 	renderEditor : function(){
-		console.log('state at rendering is: ',this.state.snippetBarHeight);
 		if(this.isText()){
 			return <>
 				<CodeEditor key='codeEditor'
