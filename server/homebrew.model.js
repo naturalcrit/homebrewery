@@ -3,6 +3,31 @@ import { nanoid } from 'nanoid';
 import _          from 'lodash';
 import zlib       from 'zlib';
 
+const FolderSchema = mongoose.Schema({
+	folderId     : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
+	slug         : { type: String, index: true },
+	displayName  : { type: String, index: false },
+	owner        : { type: String, index: true },
+	brewIds      : { type: [String], index: true },
+	favorites    : { type: [String], index: true },
+	childFolders : { type: [String], index: true },
+	tags         : { type: [String], index: true },
+	thumbnail    : { type: String, default: '', index: true },
+
+	createdAt : { type: Date, default: Date.now, index: true },
+	updatedAt : { type: Date, default: Date.now, index: true },
+	published : { type: Boolean, default: false, index: true },
+});
+
+FolderSchema.statics.getByUser = async function(username, fields=null){
+	const query = { owner: username };
+	const folders = await Homebrew.find(query, fields).lean().exec() //lean() converts results to JSObjects
+		.catch((error)=>{throw 'Can not find Folders';});
+	return folders;
+};
+
+
+const HomeBrewFolders = mongoose.model('Folders', FolderSchema);
 
 const HomebrewSchema = mongoose.Schema({
 	shareId   : { type: String, default: ()=>{return nanoid(12);}, index: { unique: true } },
@@ -78,5 +103,6 @@ const Homebrew = mongoose.model('Homebrew', HomebrewSchema);
 
 export {
 	HomebrewSchema as schema,
-	Homebrew       as model
+	Homebrew       as model,
+	HomeBrewFolders as folderModel
 };
