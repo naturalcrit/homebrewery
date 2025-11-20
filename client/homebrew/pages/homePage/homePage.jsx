@@ -53,8 +53,9 @@ const HomePage =(props)=>{
 	const [isSaving                  , setIsSaving]                   = useState(false);
 	const [autoSaveEnabled           , setAutoSaveEnable]             = useState(false);
 
-	const editorRef     = useRef(null);
-	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	const editorRef         = useRef(null);
+	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const unsavedChangesRef = useRef(unsavedChanges);
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -70,11 +71,19 @@ const HomePage =(props)=>{
 		};
 
 		document.addEventListener('keydown', handleControlKeys);
-
+		window.onbeforeunload = ()=>{
+			if(unsavedChangesRef.current)
+				return 'You have unsaved changes!';
+		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.onbeforeunload = null;
 		};
 	}, []);
+
+	useEffect(()=>{
+		unsavedChangesRef.current = unsavedChanges;
+	}, [unsavedChanges]);
 
 	const save = ()=>{
 		request.post('/api')
