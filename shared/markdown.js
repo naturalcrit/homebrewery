@@ -31,7 +31,12 @@ renderer.html = function (token) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html)} </div>`;
+
+		// Repeat the markdown processing for content inside the div, minus the preprocessing and postprocessing hooks which should only run once globally
+		const opts = Marked.defaults;
+		const tokens = Marked.lexer(html, opts);
+		Marked.walkTokens(tokens, opts.walkTokens);
+		return `${openTag} ${Marked.parser(tokens, opts)} </div>`;
 	}
 	return html;
 };
