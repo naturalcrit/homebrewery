@@ -9,7 +9,6 @@ const FolderSchema = mongoose.Schema({
 	displayName  : { type: String, index: false },
 	owner        : { type: String, index: true },
 	brewIds      : { type: [String], index: true },
-	favorites    : { type: [String], index: true },
 	childFolders : { type: [String], index: true },
 	tags         : { type: [String], index: true },
 	thumbnail    : { type: String, default: '', index: true },
