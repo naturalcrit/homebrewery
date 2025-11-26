@@ -96,7 +96,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 		
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -111,7 +111,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -222,7 +222,7 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${escape(props.brew.brewTitle)}
 		
-		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
+		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
