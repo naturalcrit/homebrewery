@@ -580,7 +580,7 @@ const api = {
 			newFolder.tags = [];
 			newFolder.thumbnail = 'https://homebrewery.naturalcrit.com/assets/defaultFolder.svg';
 			if(newFolder.slug) await newFolder.save().catch((err)=>{
-				throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: folderRequest.foldername };
+				throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '14', folder: folderRequest.foldername };
 			});
 			else res.status(409).send('Too many Duplicate Folders');
 
@@ -594,9 +594,11 @@ const api = {
 			if((req.folder?.children.length > 0) || (req.folder?.brewIds.length > 0)) {
 			 	res.status('412').send('Cannot delete folders with contents.');
 			} else {
-
+				folderModel.deleteOne({ folderId: req.folder.folderID }).catch((err)=>{
+					throw { name: 'BrewFolderDeleteError', message: err, status: 500, HBErrorCode: '15', folder: req.folder.folderID };
+				});
 			}
-		}
+		} else  res.status(410).send('Folder not found');
 	},
 
 	getFolderContents : ()=>{
@@ -619,7 +621,7 @@ const api = {
 		} else res.status(412).send('Folder Not Present');
 
 		const saved = req.folder.save().catch((err)=>{
-			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: req.folder.slug, brewId: req.params.brewId };
+			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '16', folder: req.folder.slug, brewId: req.params.brewId };
 		});
 		res.status(200).send(saved);
 	},
@@ -634,7 +636,7 @@ const api = {
 		} else res.status(412).send('Folder Not Present');
 
 		const saved = req.folder.save().catch((err)=>{
-			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: req.folder.slug, brewId: req.params.brewId };
+			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '17', folder: req.folder.slug, brewId: req.params.brewId };
 		});
 		res.status(200).send(saved);
 	}
