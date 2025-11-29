@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
 import _                             from 'lodash';
-import { model as HomebrewModel, folderModel }    from './homebrew.model.js';
+import { model as HomebrewModel, folderModel as HomebrewFolderModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
@@ -14,6 +14,7 @@ import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 import dbCheck                       from './middleware/dbCheck.js';
+import GithubSlugger, {slug} 		 from 'github-slugger';
 
 
 const router = express.Router();
@@ -530,6 +531,7 @@ const api = {
 
 		res.status(204).send();
 	},
+
 	attachParents : (folders)=>{
 		// Walk List
 		for (const folder of folders) {
@@ -539,16 +541,102 @@ const api = {
 			}
 		}
 	},
+
 	getFolders : ()=>{
-		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
-			// Get relevant IDs for the brew
-			let folderSlug = req.params.slug;
-			let userFolders = await folderModel.get({ owner: req.params.owner });
+			const userFolders = await folderModel.get({ owner: req.params.owner });
 			api.attachParents(userFolders);
 			req.folders = userFolders;
 			next();
 		};
+	},
+
+	uniqSlug : (folders, newTitle)=>{
+		// Create a new slug using forgetful slug method. Test against folders list for
+		// uniqueness, return undefined if too many collisions. Shouldn't happen.
+		const newSlug = slug(newTitle);
+		const otherSlugs = _.map((a)=>{return a.slug});
+		if(!otherSlugs.includes(newSlug)) return newSlug;
+		let iterator = 1;
+		while (iterator<100){
+			if(!otherSlugs.includes(`${newSlug}${iterator}`)) return `${newSlug}${iterator}`;
+			iterator++;
+		}
+		return undefined;
+	},
+
+	createFolder : ()=>{
+		// Presently assumes no child folders.
+		return async (req, res, next)=>{
+			const folderRequest = req.body;
+			const userFolders = await folderModel.get({ owner: req.params.owner });
+			const newFolder = new HomebrewFolderModel();
+			newFolder.slug = api.uniqSlug(userFolders ?? {}, folderRequest.folderName);
+			newFolder.displayName = folderRequest.folderName;
+			newFolder.owner = req.params.owner;
+
+			newFolder.slug = [];
+			newFolder.childFolders = [];
+			newFolder.tags = [];
+			newFolder.thumbnail = 'https://homebrewery.naturalcrit.com/assets/defaultFolder.svg';
+			if(newFolder.slug) await newFolder.save().catch((err)=>{
+				throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: folderRequest.foldername };
+			});
+			else res.status(409).send('Too many Duplicate Folders');
+
+			res.status(200).send(newFolder);
+		};
+	},
+
+	deleteFolder : ()=>{
+		// Do not allow deleting folders with entries for now.
+		if(req.folder) {
+			if((req.folder?.children.length > 0) || (req.folder?.brewIds.length > 0)) {
+			 	res.status('412').send('Cannot delete folders with contents.');
+			} else {
+
+			}
+		}
+	},
+
+	getFolderContents : ()=>{
+		return async (req, res, next)=>{
+			const userFolder = await folderModel.get({ owner: req.params.owner, slug: req.params.slug });
+			if(userFolder) req.folder = userFolder;
+			 else req.folder = undefined;
+			next();
+		};
+	},
+
+	sendFolderContents : async (req, res)=>{
+		if(req.folder!=undefined) res.status(410).send('Folder not found');
+		else res.status(200).send(req.folder);
+	},
+
+	addFolderContents : async (req, res)=>{
+		if(req.folder) {
+			req.folder.brewIds.append(req.params.brewId);
+		} else res.status(412).send('Folder Not Present');
+
+		const saved = req.folder.save().catch((err)=>{
+			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: req.folder.slug, brewId: req.params.brewId };
+		});
+		res.status(200).send(saved);
+	},
+
+	removeContentsFromFolder : async (req, res)=>{
+		if(req.folder) {
+			const newContents = req.folder.brewIds.splice(req.folder.brewIds, req.folder.brewIds.indexOf(req.params.brewId));
+			if(req.folder.brewIds.length == newContents.length)
+				res.status(412).send('Folder Contents not present');
+			else
+				req.folder.brewIds = newContents;
+		} else res.status(412).send('Folder Not Present');
+
+		const saved = req.folder.save().catch((err)=>{
+			throw { name: 'BrewFolderSaveError', message: err, status: 500, HBErrorCode: '20', folder: req.folder.slug, brewId: req.params.brewId };
+		});
+		res.status(200).send(saved);
 	}
 };
 
@@ -560,6 +648,16 @@ router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
-router.get('/api/:owner/:slug', asyncHandler(api.getFolders));
+
+// Folder related Routes.
+// List, Create, and delete folders
+router.get('/api/folders/:owner/', asyncHandler(api.getFolders));
+router.put('/api/folders/:owner/', asyncHandler(api.createFolder));
+router.delete('/api/folders/:owner/:id', asyncHandler(api.getFolderContents), asyncHandler(api.deleteFolder));
+// Get Contents of Folder
+router.get('/api/folders/:owner/:id', asyncHandler(api.getFolderContents), asyncHandler(api.sendFolderContents));
+// Add Brews or Remove to a Folder
+router.put('/api/folders/:owner/:slug/:brewID', asyncHandler(api.getFolderContents), asyncHandler(api.addFolderContents));
+router.delete('/api/folders/:owner/:slug/:brewID', asyncHandler(api.getFolderContents), asyncHandler(api.removeContentsFromFolder));
 
 export default api;
