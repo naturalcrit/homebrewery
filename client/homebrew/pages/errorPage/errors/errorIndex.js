@@ -202,6 +202,37 @@ const errorIndex = (props)=>{
 		
 		The server could not communicate with the database.`,
 
+		// Unable to create Brew Folder
+
+		'14' : dedent`
+		## Unable to save folder.
+
+		The database was unable to create the new folder instance. 
+		`,
+
+		// Unable to delete Brew Folder
+
+		'15' : dedent`
+		## Unable to delete folder.
+
+		The database was unable to delete the folder instance.
+		`,
+
+		// Unable to add Brew to folder instance
+
+		'16' : dedent`
+		## Unable to add folder entry
+
+		The database was unable to save the updated folder contents.
+		`,
+
+		// Unable to delete folder contents
+		'17' : dedent`
+		## Unable to delete folder entry
+
+		The database was unable to save the updated folder contents.
+		`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
