@@ -93,7 +93,7 @@
     "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^19.2.0",
     "@sanity/diff-match-patch": "^3.2.0",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",
     "cookie-parser": "^1.4.7",
