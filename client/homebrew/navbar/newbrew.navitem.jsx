@@ -1,21 +1,18 @@
 const React = require('react');
 const _ = require('lodash');
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const METAKEY = 'homebrewery-new-meta';
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const METAKEY = 'HB_newPage_meta';
 
 const NewBrew = ()=>{
 	const handleFileChange = (e)=>{
 		const file = e.target.files[0];
 		if(!file) return;
 
-		const currentNew = localStorage.getItem(BREWKEY);
-		if(currentNew && !confirm(
-			`You have some text in the new brew space, if you load a file that text will be lost, are you sure you want to load the file?`
-		)) return;
+		if(!confirmLocalStorageChange()) return;
 
 		const reader = new FileReader();
 		reader.onload = (e)=>{
@@ -37,10 +34,33 @@ const NewBrew = ()=>{
 
 			alert(`This file is invalid: ${!type ? 'Missing file extension' :`.${type} files are not supported`}. Only .txt files exported from the Homebrewery are allowed.`);
 
-
 			console.log(file);
 		};
 		reader.readAsText(file);
+	};
+
+	const confirmLocalStorageChange = ()=>{
+		const currentText  = localStorage.getItem(BREWKEY);
+		const currentStyle = localStorage.getItem(STYLEKEY);
+		const currentMeta  = localStorage.getItem(METAKEY);
+
+		// TRUE if no data in any local storage key
+		// TRUE if data in any local storage key AND approval given
+		// FALSE if data in any local storage key AND approval declined
+		return (!(currentText || currentStyle || currentMeta) || confirm(
+			`You have made changes in the new brew space. If you continue, that information will be PERMANENTLY LOST.\nAre you sure you wish to continue?`
+		));
+	};
+
+	const clearLocalStorage = ()=>{
+		if(!confirmLocalStorageChange()) return;
+
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(METAKEY);
+
+		window.location.href = '/new';
+		return;
 	};
 
 
@@ -50,24 +70,31 @@ const NewBrew = ()=>{
 				className='new'
 				color='purple'
 				icon='fa-solid fa-plus-square'>
-                new
+					new
 			</Nav.item>
 			<Nav.item
-				className='fromBlank'
+				className='new'
 				href='/new'
 				newTab={true}
 				color='purple'
 				icon='fa-solid fa-file'>
-                from blank
+					resume draft
 			</Nav.item>
-
+			<Nav.item
+				className='fromBlank'
+				newTab={true}
+				color='yellow'
+				icon='fa-solid fa-file-circle-plus'
+				onClick={()=>{ clearLocalStorage(); }}>
+					from blank
+			</Nav.item>
 			<Nav.item
 				className='fromFile'
-				color='purple'
+				color='green'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
-                from file
+					from file
 			</Nav.item>
 		</Nav.dropdown>
 	);
