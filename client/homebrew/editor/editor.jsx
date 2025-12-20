@@ -4,13 +4,13 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _ = require('lodash');
 const dedent = require('dedent-tabs').default;
-import Markdown from '../../../shared/naturalcrit/markdown.js';
+import Markdown from '../../../shared/markdown.js';
 
-const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
+const CodeEditor = require('client/components/codeEditor/codeEditor.jsx');
 const SnippetBar = require('./snippetbar/snippetbar.jsx');
 const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
 
-const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+const EDITOR_THEME_KEY = 'HB_editor_theme';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
@@ -58,7 +58,7 @@ const Editor = createClass({
 		return {
 			editorTheme      : this.props.editorTheme,
 			view             : 'text', //'text', 'style', 'meta', 'snippet'
-			snippetbarHeight : 25
+			snippetBarHeight : 26,
 		};
 	},
 
@@ -85,7 +85,15 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-		this.setState({ snippetbarHeight: document.querySelector('.editor > .snippetBar').offsetHeight });
+		const snippetBar = document.querySelector('.editor > .snippetBar');
+		if (!snippetBar) return;
+
+		this.resizeObserver = new ResizeObserver(entries => {
+			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
+			this.setState({ snippetBarHeight: height });
+		});
+
+		this.resizeObserver.observe(snippetBar);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -106,6 +114,10 @@ const Editor = createClass({
 				this.brewJump(this.props.currentEditorCursorPageNum, false);
 			}
 		}
+	},
+
+	componentWillUnmount() {
+		if (this.resizeObserver) this.resizeObserver.disconnect();
 	},
 
 	handleControlKeys : function(e){
@@ -140,7 +152,7 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
-		
+
 		this.setState({
 			view : newView
 		}, ()=>{
@@ -325,10 +337,10 @@ const Editor = createClass({
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+		
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
+			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
@@ -369,8 +381,8 @@ const Editor = createClass({
 		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
 		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
 
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
@@ -408,12 +420,7 @@ const Editor = createClass({
 	},
 
 	//Called when there are changes to the editor's dimensions
-	update : function(){
-		this.codeEditor.current?.updateSize();
-		const snipHeight = document.querySelector('.editor > .snippetBar').offsetHeight;
-		if(snipHeight !== this.state.snippetbarHeight)
-			this.setState({ snippetbarHeight: snipHeight });
-	},
+	update : function(){},
 
 	updateEditorTheme : function(newTheme){
 		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
@@ -438,7 +445,7 @@ const Editor = createClass({
 					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -452,7 +459,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -469,7 +476,6 @@ const Editor = createClass({
 					userThemes={this.props.userThemes}/>
 			</>;
 		}
-
 		if(this.isSnip()){
 			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
 			return <>
@@ -482,7 +488,7 @@ const Editor = createClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetbarHeight}px)` }} />
+					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 	},

@@ -5,12 +5,12 @@ require('./vaultPage.less');
 const React = require('react');
 const { useState, useEffect, useRef } = React;
 
-const Nav           = require('naturalcrit/nav/nav.jsx');
-const Navbar        = require('../../navbar/navbar.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account       = require('../../navbar/account.navitem.jsx');
-const NewBrew       = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem   = require('../../navbar/help.navitem.jsx');
+const Nav           = require('client/homebrew/navbar/nav.jsx');
+const Navbar        = require('client/homebrew/navbar/navbar.jsx');
+const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
+const Account       = require('client/homebrew/navbar/account.navitem.jsx');
+const NewBrew       = require('client/homebrew/navbar/newbrew.navitem.jsx');
+const HelpNavItem   = require('client/homebrew/navbar/help.navitem.jsx');
 const BrewItem      = require('../basePages/listPage/brewItem/brewItem.jsx');
 const SplitPane     = require('client/components/splitPane/splitPane.jsx');
 const ErrorIndex    = require('../errorPage/errors/errorIndex.js');

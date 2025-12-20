@@ -14,7 +14,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
-		for (let themes of themeBundleSnippets) {
+		for (const themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
 				const userSnippets = [];
 				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
@@ -82,9 +82,9 @@ const yamlSnippetsToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let snippetsText = '';
-	
-	for (let snippet of yamlObj) {
-		for (let subSnippet of snippet.subsnippets) {
+
+	for (const snippet of yamlObj) {
+		for (const subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
 	}
@@ -127,7 +127,7 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	const res = await request
 				.get(`/api/theme/${renderer.toLowerCase()}/${isStaticTheme(renderer, theme) ? _.lowerFirst(theme) : theme}`)
 			.catch((err)=>{
-				setError(err)
+				setError(err);
 			});
 	if(!res) {
 		setThemeBundle({});
@@ -139,14 +139,14 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	setError(null);
 };
 
-const debugTextMismatch = (clientTextRaw, serverTextRaw, label) => {
+const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	const clientText = clientTextRaw?.normalize('NFC') || '';
 	const serverText = serverTextRaw?.normalize('NFC') || '';
 
 	const clientBuffer = Buffer.from(clientText, 'utf8');
 	const serverBuffer = Buffer.from(serverText, 'utf8');
 
-	if (clientBuffer.equals(serverBuffer)) {
+	if(clientBuffer.equals(serverBuffer)) {
 		console.log(`✅ ${label} text matches byte-for-byte.`);
 		return;
 	}
@@ -157,7 +157,7 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label) => {
 
 	// Byte-level diff
 	for (let i = 0; i < Math.min(clientBuffer.length, serverBuffer.length); i++) {
-		if (clientBuffer[i] !== serverBuffer[i]) {
+		if(clientBuffer[i] !== serverBuffer[i]) {
 			console.log(`Byte mismatch at offset ${i}: client=0x${clientBuffer[i].toString(16)} server=0x${serverBuffer[i].toString(16)}`);
 			break;
 		}
@@ -165,14 +165,14 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label) => {
 
 	// Char-level diff
 	for (let i = 0; i < Math.min(clientText.length, serverText.length); i++) {
-		if (clientText[i] !== serverText[i]) {
+		if(clientText[i] !== serverText[i]) {
 			console.log(`Char mismatch at index ${i}:`);
 			console.log(`  Client: '${clientText[i]}' (U+${clientText.charCodeAt(i).toString(16).toUpperCase()})`);
 			console.log(`  Server: '${serverText[i]}' (U+${serverText.charCodeAt(i).toString(16).toUpperCase()})`);
 			break;
 		}
 	}
-}
+};
 
 export {
 	splitTextStyleAndMetadata,

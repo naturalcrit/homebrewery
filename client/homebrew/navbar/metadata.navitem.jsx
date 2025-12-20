@@ -2,7 +2,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const Moment = require('moment');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
 
 const MetadataNav = createClass({
@@ -32,7 +32,7 @@ const MetadataNav = createClass({
 		return <>
 			{this.props.brew.authors.map((author, idx, arr)=>{
 				const spacer = arr.length - 1 == idx ? <></> : <span>, </span>;
-				return <span key={idx}><a className='userPageLink' href={`/user/${author}`}>{author}</a>{spacer}</span>;
+				return <span key={idx}><a className='userPageLink' href={`/user/${encodeURIComponent(author)}`}>{author}</a>{spacer}</span>;
 			})}
 		</>;
 	},
