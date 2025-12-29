@@ -96,7 +96,7 @@ module.exports = {
 		    ${_.sample(footnote)}
 		  }}
 
-		  ![background image](https://i.imgur.com/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
+		  ![background image](https://homebrewery.naturalcrit.com/assets/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 		  \page`;
 	},
@@ -110,7 +110,7 @@ module.exports = {
 			___
 
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![background image](https://i.imgur.com/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![background image](https://homebrewery.naturalcrit.com/assets/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
 			{{logo ![](/assets/naturalCritLogoRed.svg)}}
@@ -126,7 +126,7 @@ module.exports = {
 			## ${_.sample(subtitles)}
 
 			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
-			  ![Background image](https://i.imgur.com/9TU96xY.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![Background image](https://homebrewery.naturalcrit.com/assets/9TU96xY.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
 			\page`;
@@ -143,7 +143,7 @@ module.exports = {
 
 			For use with any fantasy roleplaying ruleset. Play the best game of your life!
 
-			![background image](https://i.imgur.com/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
+			![background image](https://homebrewery.naturalcrit.com/assets/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 			{{logo
 			![](/assets/naturalCritLogoWhite.svg)
