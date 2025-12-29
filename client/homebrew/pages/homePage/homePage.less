@@ -35,6 +35,14 @@
 
 	.navItem.save {
 		background-color : @orange;
+		transition:all 0.2s;
 		&:hover { background-color : @green; }
+		
+		&.neverSaved {
+			translate:-100%;
+			opacity: 0;
+			background-color :#333;
+			cursor:auto;
+		}
 	}
 }

@@ -1,4 +1,4 @@
-import Markdown from '../../../../shared/naturalcrit/markdown.js';
+import Markdown from '../../../../shared/markdown.js';
 
 module.exports = {
 	createFooterFunc : function(headerSize=1){

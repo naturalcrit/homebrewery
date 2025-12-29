@@ -1,7 +1,7 @@
 const React = require('react');
 const dedent = require('dedent-tabs').default;
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
 module.exports = function(props){
 	return <Nav.dropdown>
