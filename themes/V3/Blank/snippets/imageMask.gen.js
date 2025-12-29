@@ -5,7 +5,7 @@ module.exports = {
 	center : ()=>{
 		return dedent`
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![](https://homebrewery.naturalcrit.com/assets/GZfjDWV.png){height:100%}
+			  ![](/assets/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offsetX to shift the mask left or right (can use cm instead of %)
 			     Use --offsetY to shift the mask up or down
@@ -21,7 +21,7 @@ module.exports = {
 		}[side];
 		return dedent`
 			{{imageMaskEdge${_.random(1, 8)},--offset:0%,--rotation:${rotation}
-			  ![](https://homebrewery.naturalcrit.com/assets/GZfjDWV.png){height:100%}
+			  ![](/assets/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offset to shift the mask away from page center (can use cm instead of %)
 			     Use --rotation to set rotation angle in degrees. -->\n\n`;
@@ -32,7 +32,7 @@ module.exports = {
 		const offsetY = (y == 'top'  ? '50%' : '-50%');
 		return dedent`
 			{{imageMaskCorner${_.random(1, 37)},--offsetX:${offsetX},--offsetY:${offsetY},--rotation:0
-			  ![](https://homebrewery.naturalcrit.com/assets/GZfjDWV.png){height:100%}
+			  ![](/assets/GZfjDWV.png){height:100%}
 			}}
 			<!-- Use --offsetX to shift the mask left or right (can use cm instead of %)
 			     Use --offsetY to shift the mask up or down

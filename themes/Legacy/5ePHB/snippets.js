@@ -40,7 +40,7 @@ module.exports = [
 				icon : 'fas fa-image',
 				gen  : [
 					'<img ',
-					'  src=\'https://homebrewery.naturalcrit.com/assets/4a8179462cfdf39054a418efd4cb743e.jpg\' ',
+					'  src=\'/assets/4a8179462cfdf39054a418efd4cb743e.jpg\' ',
 					'  style=\'width:325px\' />',
 					'Credit: Kyounghwan Kim'
 				].join('\n')
@@ -50,7 +50,7 @@ module.exports = [
 				icon : 'fas fa-tree',
 				gen  : [
 					'<img ',
-					'  src=\'https://homebrewery.naturalcrit.com/assets/hMna6G0.png\' ',
+					'  src=\'/assets/hMna6G0.png\' ',
 					'  style=\'position:absolute; top:50px; right:30px; width:280px\' />'
 				].join('\n')
 			},
