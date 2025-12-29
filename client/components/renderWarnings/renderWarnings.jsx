@@ -3,7 +3,7 @@ const React = require('react');
 const createClass = require('create-react-class');
 const _     = require('lodash');
 
-import Dialog from '../../../client/components/dialog.jsx';
+import Dialog from '../dialog.jsx';
 
 const RenderWarnings = createClass({
 	displayName     : 'RenderWarnings',
@@ -25,7 +25,7 @@ const RenderWarnings = createClass({
 			if(!isChrome){
 				return <li key='chrome'>
 					<em>Built for Chrome </em> <br />
-					Other browsers have not been tested for compatiblilty. If you
+					Other browsers have not been tested for compatibility. If you
 					experience issues with your document not rendering or printing
 					properly, please try using the latest version of Chrome before
 					submitting a bug report.
