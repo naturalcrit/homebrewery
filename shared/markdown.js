@@ -355,8 +355,10 @@ const tableTerminators = [
 	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
 ];
 
-Marked.use(MarkedVariables());
-Marked.use(MarkedDiagrams());
+const markedDiagramsOptions = { langs: ['asciiArt'] };
+
+Marked.use(markedVariables());
+Marked.use(MarkedDiagrams(markedDiagramsOptions));
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
