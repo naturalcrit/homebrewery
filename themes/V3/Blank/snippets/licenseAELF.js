@@ -1,0 +1,54 @@
+/* eslint-disable max-lines */
+const dedent = require('dedent');
+
+// AELF License
+
+module.exports = {
+	aelfTitleNotice : function() {
+		return `This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the views of Mythmere Games LLC any other contributor.`;
+	},
+	aelfLegalNotice : function() {
+		return dedent`{{ol-lowerLetters
+		1. **Notice.** This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the olListLower
+		2. **Designation of AELF Open Game Content.** Here you describe your AELF Open Game Content. There are some examples of what might go in this section below.
+		3. **Product Identity.** Here you designate your Product Identity. 
+		4. **Required Attributions.** Here you include any “Required Attributions” for your product or for a product containing AELF Open Game Content that you’re using.
+		}}\n\n`;
+	},
+	aelf10a : function() {
+		return dedent`
+			{{license,wide,ol-noIndent
+			AELF OPEN LICENSE VERSION 1.0a
+			:
+			Defined Terms are listed in Section 13.
+			:
+			1. CONSIDERATION AND GRANT: In consideration for Your agreement to abide by the terms of this License, Mythmere Games LLC and 	each other Contributor grants You an irrevocable, perpetual, worldwide, royalty-free, non-exclusive license to Use the AELF Open Gaming Content that such Contributor has contributed under this License. By Using AELF Open Gaming Content under this License, You accept the terms of this License.
+			
+			2. CONTRIBUTION OF OPEN CONTENT: AELF Open Gaming Content may be contributed by any Contributor, and if so contributed may be Used by You, under the terms of this License. In connection with the contribution, Distribution, or Use of any AELF Open Gaming Content under this License, no terms or conditions may be added to or subtracted from this License except as expressly described herein.
+			
+			3. OTHER USAGE BY CONTRIBUTOR: Material that any Contributor contributes as AELF Open Gaming Content may also be released 			by that Contributor under one or more other licenses so long as it does not include AELF Open Gaming Content that was created by another Contributor without such other Contributor's separate consent. However, such other licenses must be independent of this License: they may not add or subtract terms or conditions to the use of the AELF Open Gaming Content under this License, nor may they affect the validity of the contribution or the rights of Use of such AELF Open Gaming Content hereunder.
+			
+			4. REQUIREMENTS FOR CONTRIBUTING AELF OPEN GAMING CONTENT: If You are contributing material as AELF Open Gaming Content, You represent that Your contributions are Your original creation and/or You have sufficient rights to grant the rights conveyed by this License (which may include, without limitation, through a Creative Commons CC-BY or CC0 license grant or another permanent licensing arrangement that allows any use of the intellectual property without any restriction on use other than attribution). Once the material is contributed, it is subject to the grant included in Section 1 and all other terms and conditions of this License. If your material is derived from 	a Creative Commons CC-BY License grant, you must require the proper attribution to this upstream material by those using your material under this license. Material derived from a Creative Commons License that includes the designators SA, ND, or NC, which restrict the use of the material by downstream users, may not be contributed as AELF Open Gaming Content under this License.
+
+			5. NOTICES: In order to Use any AELF Open Gaming Content under this License: (a) You must include a copy of this License in any material in which you Use such AELF Open Gaming Content; (b) in that copy of this License, You must update the COPYRIGHT NOTICE in Section 14 below to include (i) the exact text of the COPYRIGHT NOTICE from any AELF Open Gaming Content contributed by anyone else that You are Using, and (ii) the title, the copyright date, and the copyright holder's name of any AELF Open Gaming Content you are contributing, and (iii) any attributions required under a Creative Commons License or similar permitted open license for the use of any content under either clause (i) or clause (ii); and (c) You must prominently (immediately before the copy of the license required under (a) above, and also on the title page of the work, if possible) include in your work the following statement: “This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the views of Mythmere Games LLC or any other contributor.”
+
+			6. USE OF PRODUCT IDENTITY: This license does not grant to You any rights in any Product Identity, and the owner of any Product Identity shall retain all rights, title and interest in and to that Product Identity. However, where rights of fair use or other exceptions or limitations on copyright or similar law apply to any Product Identity, such rights, exceptions, and limitations supersede a claim of Product Identity under the terms of this License, but do not exempt You from any notice requirements in Section 5.The inclusion of any Product Identity in any work that includes AELF Open Gaming Content does not constitute a challenge to the ownership of that Product Identity.
+
+			7. NO NEED TO CONTRIBUTE: Using AELF Open Gaming Content under this license does not require you to contribute any new AELF Open Gaming Content. If you do contribute new AELF Open Gaming Content, it must be clearly identified as such.
+
+			8. USE OF CONTRIBUTOR CREDITS: You may not market or advertise AELF Open Gaming Content using the name of any Contributor unless You have written permission from the Contributor to do so. You may include a statement of compatibility if the Contributor has set forth terms for statements of compatibility or if your statement complies with relevant law regarding trademarks.
+
+			9. PRIVITY OF CONTRACT: In any dispute hereunder, only the Contributors of content Used by You are considered to be in privity of contract with You. No other person shall be deemed a third-party beneficiary of this License with respect to You.
+
+			10. INABILITY TO COMPLY: If it is impossible for You to comply with any of the terms of this License with respect to some or all of the AELF Open Gaming Content due to statute, judicial order, or governmental regulation, then You may not Use any AELF Open Gaming Content so affected.
+
+			11. TERMINATION FOR FAILURE TO COMPLY WITH LICENSE: This License (under all versions present and future) will terminate automatically, but only as to You (and to all of Your affiliates and subsidiaries), if You fail to comply with any of the terms hereof and You do not cure such failure within 30 days of becoming aware of it. If the License has so terminated with respect to You, it may only be reinstated if all Contributors of the relevant content Used by You, who were adversely affected by Your failure to comply, waive such failure in writing. However, no such termination shall affect the license of any AELF Open Gaming Content (whether contributed by the person as to which this License has terminated or by any other person) under this License to any persons as to which this License has not terminated.
+
+			12. OTHER PROVISIONS: (a) If any provision of this License is held to be unenforceable, such provision shall be reformed only to the extent necessary to make it enforceable. (b) You agree that before you use this License, you will seek such advice, including legal counsel, as you deem appropriate, and will take such advice into consideration before using this License. As a result, the interpretation of this License shall not be construed against the drafter. (c) This License shall be governed by and construed in accordance with the laws of the State of Texas.
+
+			13. DEFINED TERMS: This License includes certain defined terms, which may be identified by the use of a capital letter. (a) “AELF Open Gaming Content” means any content clearly identified as AELF Open Gaming Content by a Contributor in any work covered by this License and any material that is purely numerically or game-mechanically derived from such content; (b) “Contributors” means Mythmere Games LLC and each other copyright and/or trademark owner who has contributed AELF Open Gaming Content under this License; (c) “Derivative Material” means material based on pre-existing copyrighted material, including translations (including translations into computer languages), modifications, corrections, additions, extensions, upgrades, improvements, compilations, abridgments, or any other form in which the pre-existing work may be recast, transformed or adapted; (d) “Distribute” means to reproduce, license, rent, lease, sell, broadcast, publicly display, transmit, or otherwise distribute; (e) “Product Identity” means any trademark, any tradename, or any material subject to copyright, in each case in any work covered by this License, that is not clearly identified as AELF Open Gaming Content by the Contributor that owns such intellectual property; Product Identity may include such things as product and product line names; logos and identifying marks including trade dress; artifacts; creatures; characters; stories, storylines, plots, thematic elements, dialogue, incidents, and language; artwork; symbols, designs, depictions, likenesses, formats, or poses; concepts; themes; graphic, photographic and other visual or audio representations; names and descriptions of characters, spells, enchantments, personalities, teams, personas, likenesses, and special abilities; places, locations, and environments; equipment; and magical or supernatural abilities or effects; (f) “Use”, “Used” or “Using” means to use, Distribute, copy, edit, format, modify, translate and otherwise create Derivative Material of AELF Open Gaming Content; and (g) “You” or “Your” means a licensee under this License.
+
+			14. COPYRIGHT NOTICE \[Insert both (i) the exact text of the COPYRIGHT NOTICE from any AELF Open Gaming Content You are Using, together with any required attribution under Section 5(b)(iii), and (ii) the title, the copyright date, and the copyright holder's name of your product, together with any additional required attribution under Section 5(b)(iii).\]
+			}}`;
+	},
+};

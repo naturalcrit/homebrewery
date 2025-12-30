@@ -1,6 +1,6 @@
 const React = require('react');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
 
 module.exports = function (props) {
 	return (

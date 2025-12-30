@@ -96,7 +96,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 		
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -111,7 +111,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -196,6 +196,12 @@ const errorIndex = (props)=>{
 
 		**Brew ID:**  ${props.brew.brewId}`,
 
+		// Database Connection Lost
+		'13' : dedent`
+		## Database connection has been lost.
+		
+		The server could not communicate with the database.`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
@@ -216,7 +222,7 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${escape(props.brew.brewTitle)}
 		
-		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
+		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
