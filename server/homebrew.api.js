@@ -11,7 +11,7 @@ import { nanoid }                    from 'nanoid';
 import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata,
-		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
+		 brewSnippetsToJSON, debugTextMismatch, isStaticTheme }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 import dbCheck                       from './middleware/dbCheck.js';
 
@@ -20,10 +20,6 @@ const router = express.Router();
 
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
-
-const isStaticTheme = (renderer, themeName)=>{
-	return Themes[renderer]?.[themeName] !== undefined;
-};
 
 // const getTopBrews = (cb) => {
 // 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
@@ -329,11 +325,11 @@ const api = {
 				req.params.renderer = currentTheme.renderer;
 			} else {
 			//=== Static Themes ===//
-				themeName ??= req.params.id;
-				const localSnippets = `${req.params.renderer}_${req.params.id}`; // Just log the name for loading on client
-				const localStyle    = `@import url(\"/themes/${req.params.renderer}/${req.params.id}/style.css\");`;
+				themeName ??= _.upperFirst(req.params.id);
+				const localSnippets = `${req.params.renderer}_${Themes[req.params.renderer][req.params.id].path}`; // Just log the name for loading on client
+				const localStyle    = `@import url(\"/themes/${_.lowerFirst(req.params.renderer)}/${Themes[req.params.renderer][req.params.id].path}/style.css\");`;
 				completeSnippets.push(localSnippets);
-				completeStyles.push(`/* From Theme ${req.params.id} */\n\n${localStyle}`);
+				completeStyles.push(`/* From Theme ${Themes[(req.params.renderer)][req.params.id].name} */\n\n${localStyle}`);
 
 				req.params.id = Themes[req.params.renderer][req.params.id].baseTheme;
 			}

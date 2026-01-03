@@ -699,11 +699,11 @@ brew`);
 				name   : '5ePHB',
 				author : undefined,
 				styles : [
-					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
-					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`
+					`/* From Theme Blank */\n\n@import url("/themes/v3/blank/style.css");`,
+					`/* From Theme 5e PHB */\n\n@import url("/themes/v3/5ePHB/style.css");`
 				],
 				snippets : [
-					'V3_Blank',
+					'V3_blank',
 					'V3_5ePHB'
 				]
 			});
@@ -727,15 +727,15 @@ brew`);
 				name   : 'User Theme A',
 				author : 'authorName',
 				styles : [
-					`/* From Theme Blank */\n\n@import url("/themes/V3/Blank/style.css");`,
-					`/* From Theme 5ePHB */\n\n@import url("/themes/V3/5ePHB/style.css");`,
-					`/* From Theme 5eDMG */\n\n@import url("/themes/V3/5eDMG/style.css");`,
+					`/* From Theme Blank */\n\n@import url("/themes/v3/blank/style.css");`,
+					`/* From Theme 5e PHB */\n\n@import url("/themes/v3/5ePHB/style.css");`,
+					`/* From Theme 5e DMG */\n\n@import url("/themes/v3/5eDMG/style.css");`,
 					'/* From Brew: https://localhost/share/userThemeCID */\n\nUser Theme C Style',
 					'/* From Brew: https://localhost/share/userThemeBID */\n\nUser Theme B Style',
 					'/* From Brew: https://localhost/share/userThemeAID */\n\nUser Theme A Style'
 				],
 				snippets : [
-					'V3_Blank',
+					'V3_blank',
 					'V3_5ePHB',
 					'V3_5eDMG'
 				]

@@ -264,8 +264,8 @@ const ListPage = createClass({
 	render : function(){
 		return <div className='listPage sitePage'>
 			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
-			<link href='/themes/V3/Blank/style.css' type='text/css' rel='stylesheet'/>
-			<link href='/themes/V3/5ePHB/style.css' type='text/css' rel='stylesheet'/>
+			<link href='/themes/v3/blank/style.css' type='text/css' rel='stylesheet'/>
+			<link href='/themes/v3/5ePHB/style.css' type='text/css' rel='stylesheet'/>
 			{this.props.navItems}
 			{this.renderSortOptions()}
 			{this.renderTagsOptions()}
