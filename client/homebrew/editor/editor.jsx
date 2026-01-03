@@ -243,6 +243,15 @@ const Editor = createClass({
 							}
 						}
 
+						// Index Markers
+						if(line.startsWith('#')){
+							const regex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?/my;
+							let match;
+							while ((match = regex.exec(line)) != null){
+								codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: line.length }, { className: 'interactiveIndex' });
+							}
+						}
+
 						// Subscript & Superscript
 						if(line.includes('^')) {
 							let startIndex = line.indexOf('^');
