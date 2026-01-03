@@ -12,6 +12,7 @@ const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
 const dedent                    = require('dedent-tabs').default;
 const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
 const indexGen                  = require('./snippets/index.gen.js');
+const glossaryGen               = require('./snippets/glossary.gen.js');
 
 module.exports = [
 
@@ -139,6 +140,12 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+			},
+			{
+				name         : 'Glossary',
+				icon         : 'fas fa-indent',
+				gen          : glossaryGen,
+				experimental : true
 			},
 			{
 				name : 'Homebrewery Credit',

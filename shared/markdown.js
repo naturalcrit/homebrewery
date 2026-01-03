@@ -328,6 +328,87 @@ const forcedParagraphBreaks = {
 	}
 };
 
+const indexGlossarySplit=(src, isIndex=true)=>{
+	// Because the Index and Glossary splitting is virtually identical aside from the delimiters between
+	// a topic and subtopic or term and definition I am combining this into a single function.
+	let listName, leftSide, rightSide;
+	const nameSplitRegex = /(?<!\\):/;
+	const leftRightRegex = isIndex ? /(?<!\\)\// : /(?<!\\)\/\//;
+
+	let leftRight = [];
+	// Check to see if a list name has been provided.
+	// If not, set a default based on isIndex.
+	if(src.search(nameSplitRegex) < 0){
+		leftRight[1] = src.trim();
+		listName = isIndex ? 'Index:' : 'Glossary:';
+	} else {
+		leftRight = src.split(nameSplitRegex);
+		listName = leftRight[0].replace('\\:', ':').trim();
+		if(!leftRight[1]?.trim()>0) {
+			leftRight.splice(1, 1);
+		}
+		leftRight[1] = leftRight[1]?.trim();
+	}
+
+	// Make certain we have what should be Index/Glossary definition left over.
+	if(leftRight[1]) {
+		// If we find the left/right split indicator, split the string and clean up.
+		if(leftRight[1].search(leftRightRegex) !== -1){
+			const leftRightSplit = leftRight[1]?.split(leftRightRegex);
+			leftSide = leftRightSplit[0].trim();
+			if(leftRightSplit[1]) { leftRightSplit[1] = leftRightSplit[1].trim(); }
+			if(leftRightSplit[1]?.length>0) {
+				rightSide = leftRightSplit[1].trim();
+			}
+		} else if(isIndex) {
+			// If we *do not* have a split indicator, and this is an index (isIndex)
+			// then it is an entry without a subtopic.
+			leftSide = leftRight[1];
+		}
+	}
+
+	// Check for a left side ( subtopic or glossary definition )
+	// if one was found, return the object block.
+	if(leftSide?.length>0) {
+		return { listName: listName, leftSide: leftSide, rightSide: rightSide };
+	} else {
+		return undefined;
+	}
+
+};
+
+const glossaryEntries = {
+	name  : 'glossaryAnchor',
+	level : 'block',
+	start(src) {return src.match(/^#[^ #].*\/\/.*\n/)?.index;}, // Hint to Marked.js to stop and check for a match
+	tokenizer(src, tokens) {
+		const inlineRegex = /^#[^ #]((.+)(?<!\\):)?(.+)\n/gy;
+
+		const glossaryEntry = {};
+
+		let srcMatch;
+		while (srcMatch = inlineRegex.exec(src)){
+			const entryMatch = indexGlossarySplit(srcMatch[0], false);
+			if(!entryMatch) return;
+			// We largely don't need 
+			glossaryEntry.definition = entryMatch.rightSide;
+			glossaryEntry.term = entryMatch.leftSide;
+			glossaryEntry.glossary = entryMatch.listName;
+			return {
+				type          : 'glossaryAnchor',
+				text          : src,
+				raw           : srcMatch[0],
+				glossaryEntry : glossaryEntry
+			};
+		}
+	},
+	renderer(token) {
+		return '';
+	}
+};
+
+//^=====--------------------< Variable Handling >-------------------=====^//
+
 // Emoji options
 // To add more icon fonts, need to do these things
 // 1) Add the font file as .woff2 to themes/fonts/iconFonts folder
@@ -356,6 +437,7 @@ const tableTerminators = [
 Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
+Marked.use({ extensions: [glossaryEntries] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
