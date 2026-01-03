@@ -36,7 +36,7 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew!
 }}
 
-![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
+![homebrew mug](/assets/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
 
 {{artist,bottom:160px,left:100px
 ##### Homebrew Mug
@@ -162,7 +162,7 @@ Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You
 
 Using *Curly Injection* you can assign an id, classes, or inline CSS properties to the Markdown image syntax.
 
-![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
+![alt-text](/assets/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
 
 \* *When using Imgur-hosted images, use the "direct link", which can be found when you click into your image in the Imgur interface.*
 
