@@ -101,7 +101,7 @@ const VaultPage = (props)=>{
 
 		const title      = titleRef.current.value || '';
 		const author     = authorRef.current.value || '';
-		const count      = countRef.current.value || 10;
+		const count      = countRef.current.value || 20;
 		const v3         = v3Ref.current.checked != false;
 		const legacy     = legacyRef.current.checked != false;
 		const sortOption = sort || 'title';
@@ -288,7 +288,8 @@ const VaultPage = (props)=>{
 	const renderPaginationControls = ()=>{
 		if(!totalBrews || totalBrews < 10) return null;
 
-		const countInt = parseInt(brewCollection.length || 20);
+
+		const countInt = parseInt(countRef.current.value || 20);
 		const totalPages = Math.ceil(totalBrews / countInt);
 
 		let startPage, endPage;
