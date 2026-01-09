@@ -1,6 +1,14 @@
+/* eslint-disable max-lines */
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
+import Markdown from '../shared/markdown.js';
+import packageJSON from '../package.json' with { type: 'json' };
+
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
+const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
+
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -168,10 +176,106 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	}
 };
 
+const simulateRenderPage = (pageText, index, renderer)=>{
+
+	let styles = {};
+
+	let classes    = 'page';
+	let attributes = {};
+
+	if(renderer == 'legacy') {
+		pageText.replace(COLUMNBREAK_REGEX_LEGACY, '```\n````\n'); // Allow Legacy brews to use `\column(break)`
+		// const html = MarkdownLegacy.render(pageText);
+		const html = "Markdown Legacy currently unsupported"
+
+		return `<div className='page phb' index=${index} key=${index} style=${styles}>\n${html}\n</div>\n`;
+	} else {
+		if(pageText.startsWith('\\page')) {
+			const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+			const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
+			if(injectedTags) {
+				styles     = { ...styles, ...injectedTags.styles };
+				styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)).join(''); // Convert CSS to camelCase for React
+				classes    = [classes, injectedTags.classes].join(' ').trim();
+				attributes = injectedTags.attributes;
+			}
+			pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
+		}
+
+		// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
+		pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
+
+		const html = Markdown.render(pageText, index);
+
+		return `<div class=${classes} id=p${index} key=${index} style=${styles} ${attributes}>\n${html}\n</div>`;
+	}
+};
+
+
+const simulateRender = async (req, res, next)=>{
+	let htmlHead = '';
+	let htmlStyles = '';
+	let htmlBody = '';
+	let errorMsg = {};
+	// Build HTML similar to the BrewRender  ?
+
+	const setError = (error)=>{
+		errorMsg = error;
+	};
+
+
+	splitTextStyleAndMetadata(req.brew);
+
+	const PORT = req.header('host').indexOf[':'] > -1 ? req.header('host').split(':')[1] : '8000';
+
+	const themeRes = await request
+			.get(`http://localhost:${PORT}/api/theme/${req.brew.renderer}/${req.brew.theme}`)
+			.set('Homebrewery-Version', packageJSON.version)
+			.catch((err)=>{
+				setError(err);
+			});
+
+	const htmlThemeBundle = themeRes.body.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
+
+	// Create Head
+	htmlHead += `	<head>
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css">
+		<link href="/homebrew/bundle.css" type="text/css" rel="stylesheet">
+		<base target="_blank">
+		<title>${req.brew.title}</title>
+	</head>`;
+
+	htmlStyles = `\t<div style="display:none;">\n` +
+		`\t\t${htmlThemeBundle}\n` +
+		`\t\t<style>\n${req.brew.style}\n</style>\n` +
+		`\t</div>`;
+
+	let rawPages = [];
+	let renderedPages = [];
+
+	if(req.brew.renderer == 'legacy') {
+		rawPages = req.brew.text.split(PAGEBREAK_REGEX_LEGACY);
+	} else {
+		rawPages = req.brew.text.split(PAGEBREAK_REGEX_V3);
+	}
+
+	_.forEach(rawPages, (page, index)=>{
+		renderedPages[index] = simulateRenderPage(page, index, req.brew.renderer);
+	});
+
+	htmlBody = `<div class="pages recto	single" lang="en" style="zoom: 100%; gap: 5px 10px;">${renderedPages.join('\n')}\n</div`;
+
+	const result = `<html>\n${htmlHead}\n<body>\n\t<div>\n\t\t<div class="frame-content">\n\t\t\t<div class="brewRenderer">\n` +
+		`\t\t\t\t${htmlStyles}\n${htmlBody}\n\t\t\t</div>\n\t\t</div>\n\t</div>\n</body>\n</html>`;
+	req.brew.html = result;
+	next();
+};
+
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	simulateRender,
 };
