@@ -93,7 +93,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Friday 1/11/2026 - v13.20.1
+### Friday 1/11/2026 - v3.20.1
 
 {{taskList
 ##### calculuschild
@@ -116,7 +116,7 @@ Fixes issue [#4583](https://github.com/naturalcrit/homebrewery/issues/4583)
 Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
 }}
 
-### Friday 11/14/2025 - v13.20.0
+### Friday 11/14/2025 - v3.20.0
 
 {{taskList
 ##### calculuschild
