@@ -25,10 +25,11 @@ import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
 import asyncHandler                from 'express-async-handler';
 import templateFn                  from '../client/template.js';
-import { model as HomebrewModel }   from './homebrew.model.js';
+import { model as HomebrewModel }  from './homebrew.model.js';
 
-import { DEFAULT_BREW }              from './brewDefaults.js';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import { DEFAULT_BREW }            from './brewDefaults.js';
+import { splitTextStyleAndMetadata,
+		 simulateRender }          from '../shared/helpers.js';
 
 //==== Middleware Imports ====//
 import contentNegotiation from './middleware/content-negotiation.js';
@@ -46,6 +47,14 @@ const sanitizeBrew = (brew, accessType)=>{
 	}
 	return brew;
 };
+
+const encodeRFC3986ValueChars = (str)=>{
+	return (
+		encodeURIComponent(str)
+			.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
+	);
+};
+
 
 app.set('trust proxy', 1 /* number of proxies between user and server */);
 
@@ -231,18 +240,31 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	res.status(200).send(text);
 });
 
+//Export the Brew as HTML
+app.get('/export/:mode/:id', asyncHandler(getBrew('admin')), asyncHandler(simulateRender), (req, res)=>{
+
+	const id = req.params.id;
+	const mode = req.params.mode;
+	const { brew } = req;
+	sanitizeBrew(brew, 'share');
+	const prefix = 'HB - ';
+
+	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
+	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
+	// res.set({
+	// 	'Cache-Control'       : 'no-cache',
+	// 	'Content-Type'        : 'text/plain',
+	// 	'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.html`
+	// });
+	res.status(200).send(brew.html);
+});
+
+
 //Download brew source page
 app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	const { brew } = req;
 	sanitizeBrew(brew, 'share');
 	const prefix = 'HB - ';
-
-	const encodeRFC3986ValueChars = (str)=>{
-		return (
-			encodeURIComponent(str)
-				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
-		);
-	};
 
 	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
 	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };

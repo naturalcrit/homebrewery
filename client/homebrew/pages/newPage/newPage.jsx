@@ -21,7 +21,7 @@ import AccountNavItem            from 'client/homebrew/navbar/account.navitem.js
 import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx';
 import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
 import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
-import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
+import PDFNavItem              from 'client/homebrew/navbar/pdf.navitem.jsx';
 import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
 
 // Page specific imports
@@ -229,7 +229,7 @@ const NewPage = (props)=>{
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: renderSaveButton()}
 				<NewBrewItem />
-				<PrintNavItem />
+				<PDFNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />

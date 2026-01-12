@@ -76,7 +76,7 @@ const SharePage = (props)=>{
 				<Nav.section>
 					{brew.shareId && (
 						<>
-							<PrintNavItem />
+							<PrintNavItem brew={currentBrew}/>
 							<Nav.dropdown>
 								<Nav.item color='red' icon='fas fa-code'>
 									source
