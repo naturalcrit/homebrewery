@@ -50,6 +50,7 @@ const CodeEditor = createClass({
 	getDefaultProps : function() {
 		return {
 			language      : '',
+			tab           : 'brewText',
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
@@ -193,6 +194,22 @@ const CodeEditor = createClass({
 		this.updateSize();
 	},
 
+	// Use for GFM tabs that use common hotkeys
+	isGFM : function() {
+		if((this.isGFM()) || (this.props.tab === 'brewSnippets')) return true;
+		return false;
+	},
+
+	isBrewText : function() {
+		if(this.isGFM()) return true;
+		return false;
+	},
+
+	isBrewSnippets : function() {
+		if(this.props.tab === 'brewSnippets') return true;
+		return false;
+	},
+
 	indent : function () {
 		const cm = this.codeMirror;
 		if(cm.somethingSelected()) {
@@ -207,6 +224,7 @@ const CodeEditor = createClass({
 	},
 
 	makeHeader : function (number) {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection();
 		const header = Array(number).fill('#').join('');
 		this.codeMirror.replaceSelection(`${header} ${selection}`, 'around');
@@ -215,6 +233,7 @@ const CodeEditor = createClass({
 	},
 
 	makeBold : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '**' && selection.slice(-2) === '**';
 		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `**${selection}**`, 'around');
 		if(selection.length === 0){
@@ -224,6 +243,7 @@ const CodeEditor = createClass({
 	},
 
 	makeItalic : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
 		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
 		if(selection.length === 0){
@@ -233,6 +253,7 @@ const CodeEditor = createClass({
 	},
 
 	makeSuper : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
 		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
 		if(selection.length === 0){
@@ -242,6 +263,7 @@ const CodeEditor = createClass({
 	},
 
 	makeSub : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
 		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
 		if(selection.length === 0){
@@ -252,10 +274,12 @@ const CodeEditor = createClass({
 
 
 	makeNbsp : function() {
+		if(!this.isGFM()) return;
 		this.codeMirror.replaceSelection('&nbsp;', 'end');
 	},
 
 	makeSpace : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection();
 		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
 		if(t){
@@ -267,6 +291,7 @@ const CodeEditor = createClass({
 	},
 
 	removeSpace : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection();
 		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
 		if(t){
@@ -276,10 +301,12 @@ const CodeEditor = createClass({
 	},
 
 	newColumn : function() {
+		if(!this.isGFM()) return;
 		this.codeMirror.replaceSelection('\n\\column\n\n', 'end');
 	},
 
 	newPage : function() {
+		if(!this.isGFM()) return;
 		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
 	},
 
@@ -293,6 +320,7 @@ const CodeEditor = createClass({
 	},
 
 	makeUnderline : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
 		this.codeMirror.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
 		if(selection.length === 0){
@@ -302,6 +330,7 @@ const CodeEditor = createClass({
 	},
 
 	makeSpan : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
 		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{ ${selection}}}`, 'around');
 		if(selection.length === 0){
@@ -311,6 +340,7 @@ const CodeEditor = createClass({
 	},
 
 	makeDiv : function() {
+		if(!this.isGFM()) return;
 		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
 		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
 		if(selection.length === 0){
@@ -324,7 +354,7 @@ const CodeEditor = createClass({
 		let cursorPos;
 		let newComment;
 		const selection = this.codeMirror.getSelection();
-		if(this.props.language === 'gfm'){
+		if(this.isGFM()){
 			regex = /^\s*(<!--\s?)(.*?)(\s?-->)\s*$/gs;
 			cursorPos = 4;
 			newComment = `<!-- ${selection} -->`;
@@ -341,6 +371,7 @@ const CodeEditor = createClass({
 	},
 
 	makeLink : function() {
+		if(!this.isGFM()) return;
 		const isLink = /^\[(.*)\]\((.*)\)$/;
 		const selection = this.codeMirror.getSelection().trim();
 		let match;
@@ -358,6 +389,7 @@ const CodeEditor = createClass({
 	},
 
 	makeList : function(listType) {
+		if(!this.isGFM()) return;
 		const selectionStart = this.codeMirror.getCursor('from'), selectionEnd = this.codeMirror.getCursor('to');
 		this.codeMirror.setSelection(
 			{ line: selectionStart.line, ch: 0 },
