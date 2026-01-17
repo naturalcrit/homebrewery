@@ -116,6 +116,7 @@
     "marked": "15.0.12",
     "marked-alignment-paragraphs": "^1.0.0",
     "marked-definition-lists": "^1.0.1",
+    "marked-diagrams": "github:G-Ambatte/marked-diagrams",
     "marked-emoji": "^2.0.2",
     "marked-extended-tables": "^2.0.1",
     "marked-gfm-heading-id": "^4.1.3",

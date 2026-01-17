@@ -1,4 +1,4 @@
-/* eslint-disable max-depth */
+
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { marked as Marked }     from 'marked';
@@ -8,12 +8,14 @@ import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
-				setMarkedVariablePage,
-				setMarkedVariable,
-				getMarkedVariable }  from 'marked-variables';
+	setMarkedVariablePage,
+	setMarkedVariable,
+	getMarkedVariable }  from 'marked-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+import MarkedDiagrams from 'marked-diagrams';
+
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../themes/fonts/iconFonts/diceFont.js';
@@ -353,7 +355,10 @@ const tableTerminators = [
 	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
 ];
 
+const markedDiagramsOptions = { langs: ['asciiArt'] };
+
 Marked.use(markedVariables());
+Marked.use(MarkedDiagrams(markedDiagramsOptions));
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
