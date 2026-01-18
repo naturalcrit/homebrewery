@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -17,7 +17,7 @@ import fs      from 'fs-extra';
 const app = express();
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+const { homebrewApi, getBrew, getMeta, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import GoogleActions               from './googleActions.js';
@@ -112,9 +112,7 @@ app.use(vaultApi);
 
 const welcomeText       = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-const migrateText       = fs.readFileSync('client/homebrew/pages/homePage/migrate.md', 'utf8');
-const changelogText     = fs.readFileSync('changelog.md', 'utf8');
-const faqText           = fs.readFileSync('faq.md', 'utf8');
+
 
 String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -167,54 +165,31 @@ app.get('/legacy', (req, res, next)=>{
 
 //Legacy/Other Document -> v3 Migration Guide
 app.get('/migrate', (req, res, next)=>{
-	req.brew = {
-		text     : migrateText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'v3 Migration Guide',
 		description : 'A brief guide to converting Legacy documents to the v3 renderer.'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //Changelog page
 app.get('/changelog', async (req, res, next)=>{
-	req.brew = {
-		title    : 'Changelog',
-		text     : changelogText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Changelog',
 		description : 'Development changelog.'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
 //FAQ page
 app.get('/faq', async (req, res, next)=>{
-	req.brew = {
-		title    : 'FAQ',
-		text     : faqText,
-		renderer : 'V3',
-		theme    : '5ePHB'
-	},
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'FAQ',
 		description : 'Frequently Asked Questions'
 	};
 
-	splitTextStyleAndMetadata(req.brew);
 	return next();
 });
 
@@ -432,32 +407,47 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
-//Share Page
-app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-	const { brew } = req;
+app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 	req.ogMeta = { ...defaultMetaTags,
-		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
-		description : req.brew.description || 'No description.',
-		image       : req.brew.thumbnail || defaultMetaTags.image,
+		title       : `${req.brew?.title || 'Untitled Brew'} - ${req.brew?.authors[0] || 'No author.'}`,
+		description : req.brew?.description || 'No description.',
+		image       : req.brew?.thumbnail || defaultMetaTags.image,
 		type        : 'article'
 	};
 
-	// increase visitor view count, do not include visits by author(s)
-	if(!brew.authors.includes(req.account?.username)){
-		if(req.params.id.length > 12 && !brew._id) {
-			const googleId = brew.googleId;
-			const shareId = brew.shareId;
-			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-				.catch((err)=>{next(err);});
-		} else {
-			await HomebrewModel.increaseView({ shareId: brew.shareId });
-		}
+	req.data = {
+		id   : req.params.id,
+		type : 'share'
 	};
-
-	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-	splitTextStyleAndMetadata(req.brew);
 	return next();
-}));
+});
+
+//Share Page
+// app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+// 	const { brew } = req;
+// 	req.ogMeta = { ...defaultMetaTags,
+// 		title       : req.brew.title || 'Untitled Brew',
+// 		description : req.brew.description || 'No description.',
+// 		image       : req.brew.thumbnail || defaultMetaTags.image,
+// 		type        : 'article'
+// 	};
+
+// 	// increase visitor view count, do not include visits by author(s)
+// 	if(!brew.authors.includes(req.account?.username)){
+// 		if(req.params.id.length > 12 && !brew._id) {
+// 			const googleId = brew.googleId;
+// 			const shareId = brew.shareId;
+// 			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+// 				.catch((err)=>{next(err);});
+// 		} else {
+// 			await HomebrewModel.increaseView({ shareId: brew.shareId });
+// 		}
+// 	};
+
+// 	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+// 	splitTextStyleAndMetadata(req.brew);
+// 	return next();
+// }));
 
 //Account Page
 app.get('/account', dbCheck, asyncHandler(async (req, res, next)=>{
@@ -565,7 +555,8 @@ const renderPage = async (req, res)=>{
 		account       : req.account,
 		config        : configuration,
 		ogMeta        : req.ogMeta,
-		userThemes    : req.userThemes
+		userThemes    : req.userThemes,
+		data          : req.data || undefined
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
@@ -602,9 +593,6 @@ app.use(async (err, req, res, next)=>{
 		return;
 	}
 
-	// console.log('non-API error');
-	const status = err.status || err.code || 500;
-
 	req.ogMeta = { ...defaultMetaTags,
 		title       : 'Error Page',
 		description : 'Something went wrong!'
@@ -612,8 +600,6 @@ app.use(async (err, req, res, next)=>{
 	req.brew = {
 		...err,
 		title       : 'Error - Something went wrong!',
-		text        : err.errors?.map((error)=>{return error.message;}).join('\n\n') || err.message || 'Unknown error!',
-		status      : status,
 		HBErrorCode : err.HBErrorCode ?? '00',
 		pureError   : getPureError(err)
 	};

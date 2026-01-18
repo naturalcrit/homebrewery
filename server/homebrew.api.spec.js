@@ -1,5 +1,6 @@
 /* eslint-disable max-lines */
 
+import { readFile } from 'fs-extra';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 describe('Tests for api', ()=>{
@@ -54,7 +55,8 @@ describe('Tests for api', ()=>{
 			status    : jest.fn(()=>res),
 			send      : jest.fn(()=>{}),
 			set       : jest.fn(()=>{}),
-			setHeader : jest.fn(()=>{})
+			setHeader : jest.fn(()=>{}),
+			json      : jest.fn(()=>{})
 		};
 
 		hbBrew = {
@@ -1122,82 +1124,165 @@ brew`);
 		});
 	});
 
-	describe('updateBrew', ()=>{
-		it('should return error on version mismatch', async ()=>{
-			const brewFromClient = { version: 1 };
-			const brewFromServer = { version: 1000, text: '' };
+	describe('Return Brew check', ()=>{
+		it('should return the brew passed in req', async ()=>{
+			const testProperty = { test: 'testProperty' };
 
 			const req = {
-				brew : brewFromServer,
-				body : brewFromClient
+				brew : testProperty
 			};
 
-			await api.updateBrew(req, res);
-
-			expect(res.status).toHaveBeenCalledWith(409);
-			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
-		});
-
-		it('should return error on hash mismatch', async ()=>{
-			const brewFromClient = { version: 1, hash: '1234' };
-			const brewFromServer = { version: 1, text: 'test' };
-
-			const req = {
-				brew : brewFromServer,
-				body : brewFromClient
-			};
-
-			await api.updateBrew(req, res);
-
-			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
-			expect(res.status).toHaveBeenCalledWith(409);
-			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
-		});
-
-		// Commenting this one out for now, since we are no longer throwing this error while we monitor
-		// it('should return error on applying patches', async ()=>{
-		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
-		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
-
-		// 	const req = {
-		// 		brew  : brewFromServer,
-		// 		body  : brewFromClient,
-		// 	};
-
-		// 	let err;
-		// 	try {
-		// 		await api.updateBrew(req, res);
-		// 	} catch (e) {
-		// 		err = e;
-		// 	}
-
-		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
-		// });
-
-		it('should save brew, no ID', async ()=>{
-			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
-			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
-
-			model.save = jest.fn((brew)=>{return brew;});
-
-			const req = {
-				brew  : brewFromServer,
-				body  : brewFromClient,
-				query : { saveToGoogle: false, removeFromGoogle: false }
-			};
-
-			await api.updateBrew(req, res);
+			await api.returnBrew(req, res);
 
 			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith(
-				expect.objectContaining({
-					_id         : '1',
-					description : 'Test Description',
-					hash        : '098f6bcd4621d373cade4e832627b4f6',
-					title       : 'Test Title',
-					version     : 2
-				})
-			);
+			expect(res.json).toHaveBeenCalledWith(testProperty);
+		});
+	});
+
+	describe('Share Author Checks', ()=>{
+		it('should remove author-only properties and increase view count', async ()=>{
+			model.increaseView = jest.fn(async ()=>{});
+
+			const req = {
+				brew : {
+					authors : ['testAuthor'],
+					editId  : 'editId',
+					_id     : '_id',
+					__v     : '__v'
+				},
+				account : {
+					username : 'differentTestAuthor'
+				},
+				params : {
+					id : 'paramId'
+				}
+			};
+
+			const next = jest.fn((brew)=>{
+				return brew;
+			});
+
+			await api.shareAuthorChecks(req, res, next);
+
+			expect(req).toHaveProperty('brew._id', undefined);
+			expect(req).toHaveProperty('brew.__v', undefined);
+			expect(req).toHaveProperty('brew.editId', undefined);
+			expect(model.increaseView).toHaveBeenCalledWith({ 'shareId': 'paramId' });
+			expect(next).toHaveBeenCalled();
+		});
+	});
+
+	describe('Static File Checks', ()=>{
+		it('should return Migrate text', async ()=>{
+			const fileData = await readFile('client/homebrew/pages/homePage/migrate.md', 'utf-8');
+
+			const req = { params: { file: 'migrate' } };
+
+			await api.getStaticText(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(fileData);
+		});
+
+		it('should return FAQ text', async ()=>{
+			const fileData = await readFile('faq.md', 'utf-8');
+
+			const req = { params: { file: 'faq' } };
+
+			await api.getStaticText(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(fileData);
+		});
+
+		it('should return Changelog text', async ()=>{
+			const fileData = await readFile('changelog.md', 'utf-8');
+
+			const req = { params: { file: 'changelog' } };
+
+			await api.getStaticText(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(fileData);
+		});
+
+		describe('updateBrew', ()=>{
+			it('should return error on version mismatch', async ()=>{
+				const brewFromClient = { version: 1 };
+				const brewFromServer = { version: 1000, text: '' };
+
+				const req = {
+					brew : brewFromServer,
+					body : brewFromClient
+				};
+
+				await api.updateBrew(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(409);
+				expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+			});
+
+			it('should return error on hash mismatch', async ()=>{
+				const brewFromClient = { version: 1, hash: '1234' };
+				const brewFromServer = { version: 1, text: 'test' };
+
+				const req = {
+					brew : brewFromServer,
+					body : brewFromClient
+				};
+
+				await api.updateBrew(req, res);
+
+				expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
+				expect(res.status).toHaveBeenCalledWith(409);
+				expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+			});
+
+			// Commenting this one out for now, since we are no longer throwing this error while we monitor
+			// it('should return error on applying patches', async ()=>{
+			// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+			// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			// 	const req = {
+			// 		brew  : brewFromServer,
+			// 		body  : brewFromClient,
+			// 	};
+
+			// 	let err;
+			// 	try {
+			// 		await api.updateBrew(req, res);
+			// 	} catch (e) {
+			// 		err = e;
+			// 	}
+
+			// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+			// });
+
+			it('should save brew, no ID', async ()=>{
+				const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
+				const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+				model.save = jest.fn((brew)=>{return brew;});
+
+				const req = {
+					brew  : brewFromServer,
+					body  : brewFromClient,
+					query : { saveToGoogle: false, removeFromGoogle: false }
+				};
+
+				await api.updateBrew(req, res);
+
+				expect(res.status).toHaveBeenCalledWith(200);
+				expect(res.send).toHaveBeenCalledWith(
+					expect.objectContaining({
+						_id         : '1',
+						description : 'Test Description',
+						hash        : '098f6bcd4621d373cade4e832627b4f6',
+						title       : 'Test Title',
+						version     : 2
+					})
+				);
+			});
 		});
 	});
 });
