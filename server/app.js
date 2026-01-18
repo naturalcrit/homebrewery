@@ -35,6 +35,7 @@ import contentNegotiation from './middleware/content-negotiation.js';
 import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
+import dbCheck            from './middleware/dbCheck.js';
 
 
 const sanitizeBrew = (brew, accessType)=>{
@@ -249,7 +250,7 @@ app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
 app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
 //User Page
-app.get('/user/:username', async (req, res, next)=>{
+app.get('/user/:username', dbCheck, async (req, res, next)=>{
 	const ownAccount = req.account && (req.account.username == req.params.username);
 
 	req.ogMeta = { ...defaultMetaTags,
@@ -321,7 +322,7 @@ app.get('/user/:username', async (req, res, next)=>{
 });
 
 //Change author name on brews
-app.put('/api/user/rename', async (req, res)=>{
+app.put('/api/user/rename', dbCheck, async (req, res)=>{
 	const { username, newUsername } = req.body;
 	const ownAccount = req.account && (req.account.username == newUsername);
 
@@ -449,7 +450,7 @@ app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 // }));
 
 //Account Page
-app.get('/account', asyncHandler(async (req, res, next)=>{
+app.get('/account', dbCheck, asyncHandler(async (req, res, next)=>{
 	const data = {};
 	data.title = 'Account Information Page';
 
@@ -477,8 +478,8 @@ app.get('/account', asyncHandler(async (req, res, next)=>{
 		const query = { authors: req.account.username, googleId: { $exists: false } };
 		const mongoCount = await HomebrewModel.countDocuments(query)
 			.catch((err)=>{
-				mongoCount = 0;
 				console.log(err);
+				return 0;
 			});
 
 		data.accountDetails = {
@@ -552,8 +553,6 @@ const renderPage = async (req, res)=>{
 		brews         : req.brews,
 		googleBrews   : req.googleBrews,
 		account       : req.account,
-		enable_v3     : config.get('enable_v3'),
-		enable_themes : config.get('enable_themes'),
 		config        : configuration,
 		ogMeta        : req.ogMeta,
 		userThemes    : req.userThemes,

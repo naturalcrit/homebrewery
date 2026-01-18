@@ -3,12 +3,12 @@ const  React = require('react');
 const { useState, useEffect, useCallback } = React;
 const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const MetadataNav = require('../../navbar/metadata.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
+const Nav = require('client/homebrew/navbar/nav.jsx');
+const Navbar = require('client/homebrew/navbar/navbar.jsx');
+const MetadataNav = require('client/homebrew/navbar/metadata.navitem.jsx');
+const PrintNavItem = require('client/homebrew/navbar/print.navitem.jsx');
+const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
+const Account = require('client/homebrew/navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 const ErrorPage = require('../errorPage/errorPage.jsx');
@@ -24,15 +24,11 @@ const SharePage = (props)=>{
 	const [brew, setBrew] = useState(DEFAULT_BREW_LOAD);
 	const [error, setError] = useState();
 
-	const [state, setState] = useState({
-		themeBundle                : {},
-		currentBrewRendererPageNum : 1,
-	});
+	const [themeBundle,                setThemeBundle]                = useState({});
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
 	const handleBrewRendererPageChange = useCallback((pageNumber)=>{
-		setState((prevState)=>({
-			currentBrewRendererPageNum : pageNumber,
-			...prevState }));
+		setCurrentBrewRendererPageNum(pageNumber);
 	}, []);
 
 	const handleControlKeys = (e)=>{
@@ -81,7 +77,8 @@ const SharePage = (props)=>{
 			splitTextStyleAndMetadata(brewData);
 
 			await fetchThemeBundle(
-				{ setState },
+				setError,
+				setThemeBundle,
 				brewData.renderer,
 				brewData.theme
 			);
@@ -91,6 +88,7 @@ const SharePage = (props)=>{
 		fetchData();
 
 		document.addEventListener('keydown', handleControlKeys);
+		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
@@ -162,9 +160,9 @@ const SharePage = (props)=>{
 					lang={brew.lang}
 					renderer={brew.renderer}
 					theme={brew.theme}
-					themeBundle={state.themeBundle}
+					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}
-					currentBrewRendererPageNum={state.currentBrewRendererPageNum}
+					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>
