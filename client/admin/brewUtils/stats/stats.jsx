@@ -1,7 +1,8 @@
-import React, {createClass} from 'react';
+import React from 'react';
+import createReactClass from 'create-react-class';
 import request from 'superagent';
 
-const Stats = createClass({
+const Stats = createReactClass({
 	displayName : 'Stats',
 	getDefaultProps(){
 		return {};

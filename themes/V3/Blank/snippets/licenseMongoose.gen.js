@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-const dedent = require('dedent');
+import dedent from 'dedent';
 
 // Mongoose Publishing Licenses
 

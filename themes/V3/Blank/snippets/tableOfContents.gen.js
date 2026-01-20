@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent-tabs';
 
 // Map each actual page to its footer label, accounting for skips or numbering resets
 const mapPages = (pages)=>{

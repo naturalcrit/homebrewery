@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent-tabs';
 
 export default {
 	dwarvish : ()=>{

@@ -1,5 +1,5 @@
-require('./errorBar.less');
-const React = require('react');
+import './errorBar.less';
+import React from 'react';
 
 import Dialog from '../../../components/dialog.jsx';
 

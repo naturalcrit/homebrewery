@@ -1,14 +1,14 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
-require('./editor.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import './editor.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import dedent from 'dedent-tabs';
 import Markdown from '../../../shared/markdown.js';
 
-const CodeEditor = require('client/components/codeEditor/codeEditor.jsx');
-const SnippetBar = require('./snippetbar/snippetbar.jsx');
-const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
+import CodeEditor from 'client/components/codeEditor/codeEditor.jsx';
+import SnippetBar from './snippetbar/snippetbar.jsx';
+import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
@@ -31,7 +31,7 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 `;
 let isJumping = false;
 
-const Editor = createClass({
+const Editor = createReactClass({
 	displayName     : 'Editor',
 	getDefaultProps : function() {
 		return {

@@ -1,20 +1,19 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
-require('./brewRenderer.less');
-const React = require('react');
-const { useState, useRef, useMemo, useEffect } = React;
-const _ = require('lodash');
+import './brewRenderer.less';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import _ from 'lodash';
 
-const MarkdownLegacy = require('markdownLegacy.js');
+import MarkdownLegacy from 'markdownLegacy.js';
 import Markdown from 'markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
-const ToolBar  = require('./toolBar/toolBar.jsx');
+import ErrorBar from './errorBar/errorBar.jsx';
+import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-const RenderWarnings = require('client/components/renderWarnings/renderWarnings.jsx');
-const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
-const Frame = require('react-frame-component').default;
-const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+import RenderWarnings from 'client/components/renderWarnings/renderWarnings.jsx';
+import NotificationPopup from './notificationPopup/notificationPopup.jsx';
+import Frame from 'react-frame-component';
+import dedent from 'dedent-tabs';
+import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';

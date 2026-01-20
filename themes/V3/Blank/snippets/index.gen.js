@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent-tabs';
 
 export default ()=>{
 	return dedent`

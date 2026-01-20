@@ -1,4 +1,4 @@
-require('./notificationAdd.less');
+import './notificationAdd.less';
 import React, { useState, useRef } from 'react';
 import request from 'superagent';
 

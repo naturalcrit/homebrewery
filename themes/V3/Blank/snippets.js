@@ -1,17 +1,16 @@
 /* eslint-disable max-lines */
-
-const WatercolorGen 			= require('./snippets/watercolor.gen.js');
-const ImageMaskGen              = require('./snippets/imageMask.gen.js');
-const FooterGen                 = require('./snippets/footer.gen.js');
-const LicenseGenWotC            = require('./snippets/licenseWotC.gen.js');
-const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
-const LicenseGen 			    = require('./snippets/license.gen.js');
-const LicenseGenAelf            = require('./snippets/licenseAELF.js');
-const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
-const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
-const dedent                    = require('dedent-tabs').default;
-const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
-const indexGen                  = require('./snippets/index.gen.js');
+import dedent                    from 'dedent-tabs';
+import WatercolorGen 			 from './snippets/watercolor.gen.js';
+import ImageMaskGen              from './snippets/imageMask.gen.js';
+import FooterGen                 from './snippets/footer.gen.js';
+import LicenseGenWotC            from './snippets/licenseWotC.gen.js';
+import LicenseGenGNU             from './snippets/licenseGNU.gen.js';
+import LicenseGen 			     from './snippets/license.gen.js';
+import LicenseGenAelf            from './snippets/licenseAELF.js';
+import LicenseDTTRPGGCC          from './snippets/licenseDTRPGCC.gen.js';
+import LicenseMongoosePublishing from './snippets/licenseMongoose.gen.js';
+import TableOfContentsGen        from './snippets/tableOfContents.gen.js';
+import indexGen                  from './snippets/index.gen.js';
 
 export default [
 

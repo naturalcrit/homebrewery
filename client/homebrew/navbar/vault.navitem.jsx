@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import Nav from 'client/homebrew/navbar/nav.jsx';
 
 export default function (props) {
 	return (

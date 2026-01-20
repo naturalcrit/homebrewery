@@ -1,8 +1,7 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const ClassFeatureGen = require('./classfeature.gen.js');
-
-const ClassTableGen = require('./classtable.gen.js');
+import ClassFeatureGen from './classfeature.gen.js';
+import ClassTableGen from './classtable.gen.js';
 
 export default function(){
 

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const getTOC = (pages)=>{
 	const add1 = (title, page)=>{

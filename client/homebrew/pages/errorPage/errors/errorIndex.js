@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent-tabs';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 

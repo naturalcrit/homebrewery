@@ -1,17 +1,16 @@
-const React = require('react');
-const { useState } = React;
-const _ = require('lodash');
+import React, { useState} from 'react';
+import _ from 'lodash';
 
-const ListPage = require('../basePages/listPage/listPage.jsx');
+import ListPage from '../basePages/listPage/listPage.jsx';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
-const Navbar = require('client/homebrew/navbar/navbar.jsx');
-const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
-const Account = require('client/homebrew/navbar/account.navitem.jsx');
-const NewBrew = require('client/homebrew/navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('client/homebrew/navbar/help.navitem.jsx');
-const ErrorNavItem = require('client/homebrew/navbar/error-navitem.jsx');
-const VaultNavitem = require('client/homebrew/navbar/vault.navitem.jsx');
+import Nav from 'client/homebrew/navbar/nav.jsx';
+import Navbar from 'client/homebrew/navbar/navbar.jsx';
+import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
+import Account from 'client/homebrew/navbar/account.navitem.jsx';
+import NewBrew from 'client/homebrew/navbar/newbrew.navitem.jsx';
+import HelpNavItem from 'client/homebrew/navbar/help.navitem.jsx';
+import ErrorNavItem from 'client/homebrew/navbar/error-navitem.jsx';
+import VaultNavitem from 'client/homebrew/navbar/vault.navitem.jsx';
 
 const UserPage = (props)=>{
 	props = {

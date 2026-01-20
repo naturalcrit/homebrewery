@@ -1,10 +1,11 @@
-import React, {createClass} from 'react';
+import React from 'react';
+import createReactClass from 'create-react-class';
 import request from 'superagent';
 import cx from 'classnames';
 
 import Moment from 'moment';
 
-const BrewLookup = createClass({
+const BrewLookup = createReactClass({
 	getDefaultProps() {
 		return {};
 	},

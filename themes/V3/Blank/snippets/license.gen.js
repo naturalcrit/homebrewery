@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-const dedent = require('dedent');
+import dedent from 'dedent';
 
 // Small and one-off licenses
 // Licenses in this file consist of one or two functions at most. If something is larger, 

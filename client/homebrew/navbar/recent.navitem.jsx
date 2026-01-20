@@ -1,15 +1,15 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const Moment = require('moment');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import Moment from 'moment';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import Nav from 'client/homebrew/navbar/nav.jsx';
 
 const EDIT_KEY = 'HB_nav_recentlyEdited';
 const VIEW_KEY = 'HB_nav_recentlyViewed';
 
 
-const RecentItems = createClass({
+const RecentItems = createReactClass({
 	DisplayName     : 'RecentItems',
 	getDefaultProps : function() {
 		return {

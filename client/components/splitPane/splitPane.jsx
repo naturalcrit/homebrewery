@@ -1,6 +1,5 @@
-require('./splitPane.less');
-const React = require('react');
-const { useState, useEffect } = React;
+import './splitPane.less';
+import React, { useEffect, useState} from 'react';
 
 const PANE_WIDTH_KEY = 'HB_editor_splitWidth';
 const LIVE_SCROLL_KEY = 'HB_editor_liveScroll';
