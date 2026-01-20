@@ -1,22 +1,44 @@
-const label = 'dev';
-console.time(label);
+import express from "express";
+import { createServer as createViteServer } from "vite";
+import path from "path";
+import url from "url";
+import template from "../client/template.js";
 
-const jsx = require('vitreum/steps/jsx.watch.js');
-const less = require('vitreum/steps/less.watch.js');
-const assets = require('vitreum/steps/assets.watch.js');
-const server = require('vitreum/steps/server.watch.js');
-const livereload = require('vitreum/steps/livereload.js');
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const app = express();
 
-const Proj = require('./project.json');
+async function start() {
+	const vite = await createViteServer({
+		server: { middlewareMode: true },
+		root: path.resolve(__dirname, "../client"),
+		appType: "custom",
+	});
 
-Promise.resolve()
-	.then(()=>jsx('homebrew', './client/homebrew/homebrew.jsx', { libs: Proj.libs, shared: ['./shared'] }))
-	.then((deps)=>less('homebrew', { shared: ['./shared'] }, deps))
-	.then(()=>jsx('admin', './client/admin/admin.jsx', { libs: Proj.libs, shared: ['./shared'] }))
-	.then((deps)=>less('admin', { shared: ['./shared'] }, deps))
+	app.use(vite.middlewares);
+	app.use("/assets", express.static(path.resolve(__dirname, "../client/assets")));
 
-	.then(()=>assets(Proj.assets, ['./shared', './client']))
-	.then(()=>livereload())
-	.then(()=>server('./server.js', ['server']))
-	.then(console.timeEnd.bind(console, label))
-	.catch(console.error);
+	app.use(/(.*)/, async (req, res, next) => {
+		try {
+			const parsed = url.parse(req.url);
+			const pathname = parsed.pathname || "/";
+
+			// Ignore vite HMR or ping requests
+			if (pathname.startsWith("/__vite")) return next();
+
+			const entry = pathname.startsWith("/admin") ? "admin" : "homebrew";
+
+			const ssrModule = await vite.ssrLoadModule(`/${entry}/${entry}.jsx`);
+
+			const html = await template(entry, "", { path: pathname, ssrModule });
+			res.status(200).set({ "Content-Type": "text/html" }).end(html);
+		} catch (e) {
+			vite.ssrFixStacktrace(e);
+			console.error(e);
+			res.status(500).end(e.message);
+		}
+	});
+
+	app.listen(8000, () => console.log("Dev server running on http://localhost:8000"));
+}
+
+start();

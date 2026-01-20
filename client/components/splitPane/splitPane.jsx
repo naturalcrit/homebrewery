@@ -1,5 +1,5 @@
-require('./splitPane.less');
-const React = require('react');
+import "./splitPane.less";
+import React from "react";
 const { useState, useEffect } = React;
 
 const PANE_WIDTH_KEY = 'HB_editor_splitWidth';
@@ -108,4 +108,4 @@ const Pane = ({ width, children, isDragging, moveBrew, moveSource, liveScroll, s
 	);
 };
 
-module.exports = SplitPane;
+export default SplitPane;

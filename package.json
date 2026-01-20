@@ -12,6 +12,10 @@
     "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
+    "viteDev": "node scripts/dev.js",
+    "viteDevAdmin": "vite --config vite.config.js --ssr client/admin/admin.jsx",
+    "viteBuild":"vite build",
+    "viteStart":"vite preview",
     "dev": "node --experimental-require-module scripts/dev.js",
     "quick": "node --experimental-require-module scripts/quick.js",
     "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
@@ -111,7 +115,7 @@
     "idb-keyval": "^6.2.2",
     "js-yaml": "^4.1.1",
     "jwt-simple": "^0.5.6",
-    "less": "^3.13.1",
+    "less": "^4.5.1",
     "lodash": "^4.17.21",
     "marked": "15.0.12",
     "marked-alignment-paragraphs": "^1.0.0",
@@ -135,7 +139,7 @@
     "romans": "^3.1.0",
     "sanitize-filename": "1.6.3",
     "superagent": "^10.2.1",
-    "vitreum": "git+https://git@github.com/calculuschild/vitreum.git",
+    "vite": "^7.3.1",
     "written-number": "^0.11.1"
   },
   "devDependencies": {
