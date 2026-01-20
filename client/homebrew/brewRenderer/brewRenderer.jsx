@@ -88,6 +88,7 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
+let pageTemplates = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -200,10 +201,24 @@ const BrewRenderer = (props)=>{
 				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
+					const processedClassNames = injectedTags.classes.split(' ').map((className)=>{
+						if(className.startsWith('@')) {					// Look for a "classname" with a template prefix "@"
+							pageTemplates[index] = className.slice(1);	// Store it in the lookup array without the prefix
+							return className.slice(1);					// return the value without the prefix.
+						}
+						return className;
+					}).join(' ');
 					styles     = { ...styles, ...injectedTags.styles };
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
-					classes    = [classes, injectedTags.classes].join(' ').trim();
+					classes    = [classes, processedClassNames].join(' ').trim();
 					attributes = injectedTags.attributes;
+				}
+				// If we don't have a template for this page, look backwards until one is found or the first page.
+				if(!pageTemplates[index]) {
+					for(let i=index;i>=0; i--) {
+						// If one is found, insert the template class name after 'page'
+						if(pageTemplates[i]) classes = classes.replace('page', `page ${pageTemplates[i]}`);
+					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
@@ -221,8 +236,10 @@ const BrewRenderer = (props)=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
-		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
+		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
 			renderedPages.length = 0;
+			pageTemplates.length = 0;
+		}
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
 		if(rawPages.length > props.currentEditorCursorPageNum -1)
