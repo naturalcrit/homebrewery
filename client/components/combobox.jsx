@@ -1,5 +1,6 @@
 import React from 'react';
 import request from 'superagent';
+import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import './combobox.less';
 

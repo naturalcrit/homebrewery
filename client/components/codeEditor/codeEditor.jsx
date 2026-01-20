@@ -5,52 +5,6 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import closeTag from './close-tag';
 import autoCompleteEmoji from './autocompleteEmoji';
-import Codemirror from 'codemirror';
-
-// ================= Language Modes =================
-// Github flavoured markdown
-import 'codemirror/mode/gfm/gfm.js';
-import 'codemirror/mode/css/css.js';
-import 'codemirror/mode/javascript/javascript.js';
-
-// ================= Addons =================
-
-// ---- Code folding ----
-import 'codemirror/addon/fold/foldcode.js';
-import 'codemirror/addon/fold/foldgutter.js';
-import 'codemirror/addon/fold/xml-fold.js';
-
-// ---- Search and replace ----
-import 'codemirror/addon/search/search.js';
-import 'codemirror/addon/search/searchcursor.js';
-import 'codemirror/addon/search/jump-to-line.js';
-import 'codemirror/addon/search/match-highlighter.js';
-import 'codemirror/addon/search/matchesonscrollbar.js';
-import 'codemirror/addon/dialog/dialog.js';
-
-// Trailing space highlighting
-// import 'codemirror/addon/edit/trailingspace.js';
-// Active line highlighting
-// import 'codemirror/addon/selection/active-line.js';
-// Scroll past last line
-import 'codemirror/addon/scroll/scrollpastend.js';
-
-// ---- Auto-closing ----
-import 'codemirror/addon/edit/closetag.js';
-
-// ---- Autocompletion ----
-import 'codemirror/addon/hint/show-hint.js';
-
-// ================= Custom Fold Helpers =================
-import foldPagesCode from './fold-pages';
-import foldCSSCode from './fold-css';
-
-let CodeMirror = Codemirror;
-
-// register helpers
-foldPagesCode.registerHomebreweryHelper(CodeMirror);
-foldCSSCode.registerHomebreweryHelper(CodeMirror);
-
 
 const CodeEditor = createReactClass({
 	displayName     : 'CodeEditor',
@@ -73,11 +27,42 @@ const CodeEditor = createReactClass({
 
 	editor : React.createRef(null),
 
-	componentDidMount : function() {
+	async componentDidMount() {
+		const Codemirror = (await import('codemirror')).default;
+		await import('codemirror/mode/gfm/gfm.js');
+		await import('codemirror/mode/css/css.js');
+		await import('codemirror/mode/javascript/javascript.js');
+
+		// addons
+		await import('codemirror/addon/fold/foldcode.js');
+		await import('codemirror/addon/fold/foldgutter.js');
+		await import('codemirror/addon/fold/xml-fold.js');
+		await import('codemirror/addon/search/search.js');
+		await import('codemirror/addon/search/searchcursor.js');
+		await import('codemirror/addon/search/jump-to-line.js');
+		await import('codemirror/addon/search/match-highlighter.js');
+		await import('codemirror/addon/search/matchesonscrollbar.js');
+		await import('codemirror/addon/dialog/dialog.js');
+		await import('codemirror/addon/scroll/scrollpastend.js');
+		await import('codemirror/addon/edit/closetag.js');
+		await import('codemirror/addon/hint/show-hint.js');
+		// import 'codemirror/addon/selection/active-line.js';
+		// import 'codemirror/addon/edit/trailingspace.js';
+
+
+		this.CodeMirror = Codemirror;
+
+		// register helpers dynamically as well
+		const foldPagesCode = (await import('./fold-pages')).default;
+		const foldCSSCode   = (await import('./fold-css')).default;
+		foldPagesCode.registerHomebreweryHelper(Codemirror);
+		foldCSSCode.registerHomebreweryHelper(Codemirror);
+
 		this.buildEditor();
-		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+		const newDoc = Codemirror.Doc(this.props.value, this.props.language);
 		this.codeMirror.swapDoc(newDoc);
 	},
+
 
 	componentDidUpdate : function(prevProps) {
 		if(prevProps.view !== this.props.view){ //view changed; swap documents

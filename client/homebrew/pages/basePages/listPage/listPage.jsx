@@ -3,7 +3,7 @@ import './listPage.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
-import moment from 'moment;'
+import moment from 'moment';
 
 import BrewItem from './brewItem/brewItem.jsx';
 

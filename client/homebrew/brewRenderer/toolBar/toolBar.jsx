@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import '.toolBar.less';
+import './toolBar.less';
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
