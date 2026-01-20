@@ -204,6 +204,7 @@ const BrewRenderer = (props)=>{
 					const processedClassNames = injectedTags.classes.split(' ').map((className)=>{
 						if(className.startsWith('@')) {					// Look for a "classname" with a template prefix "@"
 							pageTemplates[index] = className.slice(1);	// Store it in the lookup array without the prefix
+							classes = '';								// Strip the default Template class from assignment.
 							return className.slice(1);					// return the value without the prefix.
 						}
 						return className;
@@ -215,9 +216,9 @@ const BrewRenderer = (props)=>{
 				}
 				// If we don't have a template for this page, look backwards until one is found or the first page.
 				if(!pageTemplates[index]) {
-					for(let i=index;i>=0; i--) {
+					for (let i=index;i>=0; i--) {
 						// If one is found, insert the template class name after 'page'
-						if(pageTemplates[i]) classes = classes.replace('page', `page ${pageTemplates[i]}`);
+						if (pageTemplates[i]) classes = classes.replace( /^page/, `${pageTemplates[i]}`);
 					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
