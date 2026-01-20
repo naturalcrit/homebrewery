@@ -141,8 +141,8 @@
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^4.0.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
-    "eslint": "^9.39.1",
-    "eslint-plugin-jest": "^29.1.0",
+    "eslint": "^9.39.2",
+    "eslint-plugin-jest": "^29.12.1",
     "eslint-plugin-react": "^7.37.5",
     "globals": "^16.4.0",
     "jest": "^30.2.0",
@@ -150,8 +150,8 @@
     "jsdom-global": "^3.0.2",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.25.0",
-    "stylelint-config-recess-order": "^7.3.0",
+    "stylelint-config-recess-order": "^7.5.0",
     "stylelint-config-recommended": "^17.0.0",
-    "supertest": "^7.1.4"
+    "supertest": "^7.2.2"
   }
 }
