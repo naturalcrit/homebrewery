@@ -3,7 +3,7 @@ const dedent = require('dedent');
 
 // GNU Licenses
 
-module.exports = {
+export default {
 
 	gpl3 : function () {
 		return dedent`{{license,wide

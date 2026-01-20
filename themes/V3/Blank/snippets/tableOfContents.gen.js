@@ -65,7 +65,7 @@ const getTOC = ()=>{
 	return getMarkdown(headings, pageMap);
 };
 
-module.exports = function(props){
+export default function(props){
 	const TOC = getTOC();
 
 	return dedent`

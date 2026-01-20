@@ -1,7 +1,5 @@
-const React       = require('react');
-const createClass = require('create-react-class');
-
-const request = require('superagent');
+import React, {createClass} from 'react';
+import request from 'superagent';
 
 const BrewCleanup = createClass({
 	displayName : 'BrewCleanup',
@@ -69,4 +67,4 @@ const BrewCleanup = createClass({
 	}
 });
 
-module.exports = BrewCleanup;
+export default BrewCleanup;

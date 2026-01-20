@@ -415,4 +415,4 @@ const EditPage = (props)=>{
 	);
 };
 
-module.exports = EditPage;
+export default EditPage;

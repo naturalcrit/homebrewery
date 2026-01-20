@@ -111,4 +111,4 @@ const Account = createClass({
 	}
 });
 
-module.exports = Account;
+export default Account;

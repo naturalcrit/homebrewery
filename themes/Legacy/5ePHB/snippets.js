@@ -8,7 +8,7 @@ const CoverPageGen       = require('./snippets/coverpage.gen.js');
 const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
 const dedent             = require('dedent-tabs').default;
 
-module.exports = [
+export default [
 
 	{
 		groupName : 'Text Editor',

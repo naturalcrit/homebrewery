@@ -102,4 +102,4 @@ const TagInput = ({ unique = true, values = [], ...props })=>{
 	);
 };
 
-module.exports = TagInput;
+export default TagInput;

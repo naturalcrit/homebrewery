@@ -47,7 +47,7 @@ const getTOC = (pages)=>{
 	return res;
 };
 
-module.exports = function(props){
+export default function(props){
 	const pages = props.brew.text.split('\\page');
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{

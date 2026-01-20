@@ -268,4 +268,4 @@ const errorIndex = (props)=>{
 	};
 };
 
-module.exports = errorIndex;
+export default errorIndex;

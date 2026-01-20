@@ -175,7 +175,7 @@ const RecentItems = createClass({
 
 });
 
-module.exports = {
+export default {
 
 	edited : (props)=>{
 		return <RecentItems

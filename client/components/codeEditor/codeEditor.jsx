@@ -461,5 +461,5 @@ const CodeEditor = createClass({
 	}
 });
 
-module.exports = CodeEditor;
+export default CodeEditor;
 

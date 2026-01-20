@@ -279,4 +279,4 @@ const ListPage = createClass({
 	}
 });
 
-module.exports = ListPage;
+export default ListPage;

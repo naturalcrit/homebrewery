@@ -345,4 +345,4 @@ const BrewRenderer = (props)=>{
 	);
 };
 
-module.exports = BrewRenderer;
+export default BrewRenderer;

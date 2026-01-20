@@ -137,7 +137,7 @@ const genAction = function(){
 };
 
 
-module.exports = {
+export default {
 
 	full : function(){
 		return `${[

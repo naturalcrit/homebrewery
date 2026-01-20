@@ -49,4 +49,4 @@ const Navbar = createClass({
 	}
 });
 
-module.exports = Navbar;
+export default Navbar;

@@ -103,7 +103,7 @@ const voidTags = new Set([
 ]);
 
 
-module.exports = {
+export default {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		return Markdown(

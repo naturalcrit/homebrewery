@@ -4,7 +4,7 @@ const ClassFeatureGen = require('./classfeature.gen.js');
 
 const ClassTableGen = require('./classtable.gen.js');
 
-module.exports = function(){
+export default function(){
 
 	const classname = _.sample(['Archivist', 'Fancyman', 'Linguist', 'Fletcher',
 		'Notary', 'Berserker-Typist', 'Fishmongerer', 'Manicurist', 'Haberdasher', 'Concierge']);

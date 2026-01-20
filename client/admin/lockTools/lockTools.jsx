@@ -1,7 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 require('./lockTools.less');
-const React = require('react');
-const createClass = require('create-react-class');
+import React, {createClass} from 'react';
 
 import request from '../../homebrew/utils/request-middleware.js';
 
@@ -339,4 +338,4 @@ const LockLookup = createClass({
 	}
 });
 
-module.exports = LockTools;
+export default LockTools;

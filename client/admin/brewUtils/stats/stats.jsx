@@ -1,7 +1,5 @@
-const React       = require('react');
-const createClass = require('create-react-class');
-
-const request = require('superagent');
+import React, {createClass} from 'react';
+import request from 'superagent';
 
 const Stats = createClass({
 	displayName : 'Stats',
@@ -43,4 +41,4 @@ const Stats = createClass({
 	}
 });
 
-module.exports = Stats;
+export default Stats;

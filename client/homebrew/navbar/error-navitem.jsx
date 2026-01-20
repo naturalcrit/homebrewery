@@ -144,4 +144,4 @@ const ErrorNavItem = ({ error = '', clearError })=>{
 	</Nav.item>;
 };
 
-module.exports = ErrorNavItem;
+export default ErrorNavItem;

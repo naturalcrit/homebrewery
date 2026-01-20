@@ -57,4 +57,4 @@ const RenderWarnings = createClass({
 	}
 });
 
-module.exports = RenderWarnings;
+export default RenderWarnings;

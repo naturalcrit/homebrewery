@@ -3,7 +3,7 @@ const dedent = require('dedent-tabs').default;
 
 const Nav = require('client/homebrew/navbar/nav.jsx');
 
-module.exports = function(props){
+export default function(props){
 	return <Nav.dropdown>
 		<Nav.item color='grey' icon='fas fa-question-circle'>
 			need help?

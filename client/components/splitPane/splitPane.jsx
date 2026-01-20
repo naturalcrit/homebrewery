@@ -108,4 +108,4 @@ const Pane = ({ width, children, isDragging, moveBrew, moveSource, liveScroll, s
 	);
 };
 
-module.exports = SplitPane;
+export default SplitPane;

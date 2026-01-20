@@ -430,4 +430,4 @@ const VaultPage = (props)=>{
 	);
 };
 
-module.exports = VaultPage;
+export default VaultPage;

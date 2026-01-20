@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 const dedent = require('dedent');
 
-module.exports = {
+export default {
 	ogl1a : function () {
 		return dedent`
 			{{license,wide

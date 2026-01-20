@@ -542,4 +542,4 @@ const Editor = createClass({
 	}
 });
 
-module.exports = Editor;
+export default Editor;

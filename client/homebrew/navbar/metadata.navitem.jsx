@@ -86,4 +86,4 @@ const MetadataNav = createClass({
 
 });
 
-module.exports = MetadataNav;
+export default MetadataNav;

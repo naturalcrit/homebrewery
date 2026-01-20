@@ -11,7 +11,7 @@ const dedent             = require('dedent-tabs').default;
 
 
 
-module.exports = [
+export default [
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',

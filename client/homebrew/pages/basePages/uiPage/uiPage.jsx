@@ -35,4 +35,4 @@ const UIPage = createClass({
 	}
 });
 
-module.exports = UIPage;
+export default UIPage;

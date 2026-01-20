@@ -176,4 +176,4 @@ const BrewItem = ({
 	);
 };
 
-module.exports = BrewItem;
+export default BrewItem;

@@ -13,7 +13,7 @@ const dedent                    = require('dedent-tabs').default;
 const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
 const indexGen                  = require('./snippets/index.gen.js');
 
-module.exports = [
+export default [
 
 	{
 		groupName : 'Text Editor',

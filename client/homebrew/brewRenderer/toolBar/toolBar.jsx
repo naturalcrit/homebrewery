@@ -259,4 +259,4 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	);
 };
 
-module.exports = ToolBar;
+export default ToolBar;

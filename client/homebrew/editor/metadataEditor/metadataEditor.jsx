@@ -411,4 +411,4 @@ const MetadataEditor = createClass({
 	}
 });
 
-module.exports = MetadataEditor;
+export default MetadataEditor;

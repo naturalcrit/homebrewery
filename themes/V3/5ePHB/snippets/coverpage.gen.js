@@ -78,7 +78,7 @@ const coverText = [
 	'Enter a world of wonder and danger, where you can find allies and enemies among the various races and factions that inhabit it. You can choose to join or oppose any of them, or forge your own path. The game world is alive and responsive to your actions.'
 ];
 
-module.exports = {
+export default {
 
 	front : function() {
 		return dedent`

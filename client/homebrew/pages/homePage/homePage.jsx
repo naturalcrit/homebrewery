@@ -230,4 +230,4 @@ const HomePage =(props)=>{
 	);
 };
 
-module.exports = HomePage;
+export default HomePage;

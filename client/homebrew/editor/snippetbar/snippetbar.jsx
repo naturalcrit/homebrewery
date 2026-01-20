@@ -281,7 +281,7 @@ const Snippetbar = createClass({
 	}
 });
 
-module.exports = Snippetbar;
+export default Snippetbar;
 
 const SnippetGroup = createClass({
 	displayName     : 'SnippetGroup',

@@ -126,4 +126,4 @@ const Combobox = createClass({
 	}
 });
 
-module.exports = Combobox;
+export default Combobox;

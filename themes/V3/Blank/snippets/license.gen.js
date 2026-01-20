@@ -5,7 +5,7 @@ const dedent = require('dedent');
 // Licenses in this file consist of one or two functions at most. If something is larger, 
 // has more assets, or variations, break it out into a distinct file.
 
-module.exports = {
+export default {
 
 	mit : function () {
 		return dedent`

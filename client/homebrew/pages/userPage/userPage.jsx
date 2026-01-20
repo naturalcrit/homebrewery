@@ -61,4 +61,4 @@ const UserPage = (props)=>{
 	);
 };
 
-module.exports = UserPage;
+export default UserPage;

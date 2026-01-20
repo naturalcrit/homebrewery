@@ -50,7 +50,7 @@ const getFeature = (level)=>{
 	return res.join(', ');
 };
 
-module.exports = {
+export default {
 	full : function(){
 		const classname = _.sample(classnames);
 

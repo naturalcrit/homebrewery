@@ -62,4 +62,4 @@ const NotificationPopup = ()=>{
 	</Dialog>;
 };
 
-module.exports = NotificationPopup;
+export default NotificationPopup;

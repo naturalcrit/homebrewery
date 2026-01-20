@@ -22,4 +22,4 @@ const ErrorPage = ({ brew })=>{
 	);
 };
 
-module.exports = ErrorPage;
+export default ErrorPage;

@@ -152,7 +152,7 @@ const genAction = function(){
 };
 
 
-module.exports = {
+export default {
 
 	monster : function(classes, genLines){
 		return dedent`

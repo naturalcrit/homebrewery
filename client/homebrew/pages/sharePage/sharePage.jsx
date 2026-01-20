@@ -116,4 +116,4 @@ const SharePage = (props)=>{
 	);
 };
 
-module.exports = SharePage;
+export default SharePage;

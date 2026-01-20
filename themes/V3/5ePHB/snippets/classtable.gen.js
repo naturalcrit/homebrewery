@@ -18,7 +18,7 @@ const classnames = [
 	'Haberdasher', 'Manicurist', 'Netrunner', 'Weirkeeper'
 ];
 
-module.exports = {
+export default {
 	non : function(snippetClasses){
 		return dedent`
 		{{${snippetClasses}

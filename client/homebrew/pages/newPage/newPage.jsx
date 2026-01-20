@@ -276,4 +276,4 @@ const NewPage = (props)=>{
 	);
 };
 
-module.exports = NewPage;
+export default NewPage;

@@ -40,7 +40,7 @@ const books = [
 	'Frost and Fury',
 
 ];
-module.exports = ()=>{
+export default ()=>{
 	return `
 {{quote
 ${_.sample(quotes)}

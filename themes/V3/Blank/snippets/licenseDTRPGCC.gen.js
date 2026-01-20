@@ -3,7 +3,7 @@ const dedent = require('dedent');
 
 // DriveThruRPG/OneBookShelf Community Content Programs
 
-module.exports = {
+export default {
 	// Alligator Alley Entertainment  Starforger's Guild
 	alligatorAlleyEntertainmentStarforgersGuildColophon : function() {
 		return dedent `

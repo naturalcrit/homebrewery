@@ -100,4 +100,4 @@ const NewBrew = ()=>{
 	);
 };
 
-module.exports = NewBrew;
+export default NewBrew;

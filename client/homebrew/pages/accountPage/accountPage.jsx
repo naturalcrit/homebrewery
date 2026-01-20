@@ -79,4 +79,4 @@ const AccountPage = (props)=>{
 		</UIPage>);
 };
 
-module.exports = AccountPage;
+export default AccountPage;

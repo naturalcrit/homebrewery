@@ -50,4 +50,4 @@ const ErrorBar = (props)=>{
 	);
 };
 
-module.exports = ErrorBar;
+export default ErrorBar;
