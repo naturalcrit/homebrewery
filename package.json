@@ -54,7 +54,6 @@
     "build/*"
   ],
   "jest": {
-    "testEnvironment": "jsdom",
     "testTimeout": 30000,
     "modulePaths": [
       "node_modules",
