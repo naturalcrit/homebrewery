@@ -29,7 +29,6 @@
 		"moment",
 		"superagent",
 		"@sanity/diff-match-patch",
-		"fflate",
-		"jsdom-global"
+		"fflate"
 	]
 }
