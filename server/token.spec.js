@@ -1,3 +1,4 @@
+/** @jest-environment node */
 import { expect, jest } from '@jest/globals';
 import config from './config.js';
 

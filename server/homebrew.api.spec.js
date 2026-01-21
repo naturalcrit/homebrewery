@@ -1,3 +1,4 @@
+/** @jest-environment node */
 /* eslint-disable max-lines */
 
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';

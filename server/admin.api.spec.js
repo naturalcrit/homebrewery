@@ -1,3 +1,4 @@
+/** @jest-environment node */
 /*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 import supertest from 'supertest';
 import HBApp     from './app.js';
