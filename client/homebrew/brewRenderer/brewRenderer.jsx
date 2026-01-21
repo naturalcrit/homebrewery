@@ -201,24 +201,19 @@ const BrewRenderer = (props)=>{
 				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
-					const processedClassNames = injectedTags.classes.split(' ').map((className)=>{
-						if(className.startsWith('@')) {					// Look for a "classname" with a template prefix "@"
-							pageTemplates[index] = className.slice(1);	// Store it in the lookup array without the prefix
-							classes = '';								// Strip the default Template class from assignment.
-							return className.slice(1);					// return the value without the prefix.
-						}
-						return className;
-					}).join(' ');
 					styles     = { ...styles, ...injectedTags.styles };
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
-					classes    = [classes, processedClassNames].join(' ').trim();
+					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
+					if (attributes && Object.hasOwn(attributes, 'hbtemplate')) {
+						pageTemplates[index] = attributes['hbtemplate'];
+					}
 				}
 				// If we don't have a template for this page, look backwards until one is found or the first page.
 				if(!pageTemplates[index]) {
 					for (let i=index;i>=0; i--) {
-						// If one is found, insert the template class name after 'page'
-						if (pageTemplates[i]) classes = classes.replace( /^page/, `${pageTemplates[i]}`);
+						// If one is found, add the template attribute
+						if (pageTemplates[i]) attributes['hbtemplate'] = pageTemplates[i];
 					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
