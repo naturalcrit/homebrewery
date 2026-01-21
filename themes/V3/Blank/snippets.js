@@ -1,17 +1,18 @@
 /* eslint-disable max-lines */
 
 const WatercolorGen 			= require('./snippets/watercolor.gen.js');
-const ImageMaskGen              = require('./snippets/imageMask.gen.js');
-const FooterGen                 = require('./snippets/footer.gen.js');
+const ImageMaskGen  			= require('./snippets/imageMask.gen.js');
+const FooterGen     			= require('./snippets/footer.gen.js');
+const dedent        			= require('dedent-tabs').default;
+const richIndexGen  			= require('./snippets/richIndex.gen.js');
+const TableOfContentsGen 		= require('./snippets/tableOfContents.gen.js');
+const indexGen           		= require('./snippets/index.gen.js');
 const LicenseGenWotC            = require('./snippets/licenseWotC.gen.js');
 const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
 const LicenseGen 			    = require('./snippets/license.gen.js');
 const LicenseGenAelf            = require('./snippets/licenseAELF.js');
 const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
 const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
-const dedent                    = require('dedent-tabs').default;
-const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
-const indexGen                  = require('./snippets/index.gen.js');
 
 module.exports = [
 
@@ -139,6 +140,12 @@ module.exports = [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+			},
+			{
+				name         : 'Rich Index',
+				icon         : 'fas fa-indent',
+				gen          : richIndexGen,
+				experimental : true
 			},
 			{
 				name : 'Homebrewery Credit',
