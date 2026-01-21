@@ -1,4 +1,3 @@
-/** @jest-environment node */
 import forceSSL from './forcessl.mw';
 
 describe('Tests for ForceSSL middleware', ()=>{

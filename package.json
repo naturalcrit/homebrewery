@@ -81,8 +81,7 @@
       }
     },
     "setupFilesAfterEnv": [
-      "jest-expect-message",
-      "<rootDir>/jest.setup.js"
+      "jest-expect-message"
     ]
   },
   "dependencies": {
