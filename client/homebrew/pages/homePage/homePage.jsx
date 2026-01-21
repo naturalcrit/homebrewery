@@ -22,7 +22,9 @@ import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx'
 import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
 import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
 import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
-import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
+import RecentNavItems from 'client/homebrew/navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+
 
 // Page specific imports
 import { Meta }                               from 'vitreum/headtags';

@@ -6,7 +6,8 @@ import Nav from 'client/homebrew/navbar/nav.jsx';
 import Navbar from 'client/homebrew/navbar/navbar.jsx';
 import MetadataNav from 'client/homebrew/navbar/metadata.navitem.jsx';
 import PrintNavItem from 'client/homebrew/navbar/print.navitem.jsx';
-import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
+import RecentNavItems from 'client/homebrew/navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 import Account from 'client/homebrew/navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 

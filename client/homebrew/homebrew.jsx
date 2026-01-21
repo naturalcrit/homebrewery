@@ -80,4 +80,4 @@ const Homebrew = (props)=>{
 	);
 };
 
-export default Homebrew;
+module.exports = Homebrew;

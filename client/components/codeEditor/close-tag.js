@@ -43,6 +43,6 @@ export default {
 		const map = { name: 'autoCloseCurlyBraces' };
 		map[`'{'`] = function(cm) { return autoCloseCurlyBraces(CodeMirror, cm); };
 		map[`'}'`] = function(cm) { return autoCloseCurlyBraces(CodeMirror, cm, true); };
-		codeMirror.addKeyMap(map);
+		codeMirror?.addKeyMap(map);
 	}
 };

@@ -5,7 +5,8 @@ import ListPage from '../basePages/listPage/listPage.jsx';
 
 import Nav from 'client/homebrew/navbar/nav.jsx';
 import Navbar from 'client/homebrew/navbar/navbar.jsx';
-import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
+import RecentNavItems from 'client/homebrew/navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 import Account from 'client/homebrew/navbar/account.navitem.jsx';
 import NewBrew from 'client/homebrew/navbar/newbrew.navitem.jsx';
 import HelpNavItem from 'client/homebrew/navbar/help.navitem.jsx';
