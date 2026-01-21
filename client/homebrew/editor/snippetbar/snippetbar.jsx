@@ -16,11 +16,11 @@ import V3_Journal from 'themes/V3/Journal/snippets.js';
 import V3_Blank  from 'themes/V3/Blank/snippets.js';
 
 const ThemeSnippets = {
-  Legacy_5ePHB: Legacy5ePHB,
-  V3_5ePHB: V3_5ePHB,
-  V3_5eDMG: V3_5eDMG,
-  V3_Journal: V3_Journal,
-  V3_Blank: V3_Blank,
+	Legacy_5ePHB : Legacy5ePHB,
+	V3_5ePHB     : V3_5ePHB,
+	V3_5eDMG     : V3_5eDMG,
+	V3_Journal   : V3_Journal,
+	V3_Blank     : V3_Blank,
 };
 
 import EditorThemes from 'build/homebrew/codeMirror/editorThemes.json';

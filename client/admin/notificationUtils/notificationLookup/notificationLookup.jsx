@@ -1,5 +1,5 @@
 import './notificationLookup.less';
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import request from 'superagent';
 import Moment from 'moment';
 

@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import _ from 'lodash';
 
 import ListPage from '../basePages/listPage/listPage.jsx';

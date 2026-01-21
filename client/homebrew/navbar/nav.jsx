@@ -1,5 +1,5 @@
 import 'client/homebrew/navbar/navbar.less';
-import React, { useState, useRef, useEffect} from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import cx from 'classnames';
