@@ -1,5 +1,5 @@
-import Jsdom from 'jsdom-global';
-Jsdom();
+import globalJsdom from 'jsdom-global';
+globalJsdom();
 import { safeHTML } from '../../client/homebrew/brewRenderer/safeHTML';
 
 test('Exit if no document', function() {
