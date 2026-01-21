@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 import dedent from 'dedent';
 
 export default {

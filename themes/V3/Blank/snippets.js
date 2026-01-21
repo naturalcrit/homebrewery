@@ -208,7 +208,7 @@ export default [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'AELF',
+				name        : 'AELF',
 				subsnippets : [
 					{
 						name : 'Title Page Declaration',
@@ -328,51 +328,51 @@ export default [
 				]
 			},
 			{
-				name  : 'DTRPG Community Content',
-				incon : 'fab fa-dtrpg',
+				name        : 'DTRPG Community Content',
+				incon       : 'fab fa-dtrpg',
 				subsnippets : [
 					{
-						name : "Chronicle System Guild Colophon",
+						name : 'Chronicle System Guild Colophon',
 						gen	 : LicenseDTTRPGGCC.greenRoninChronicleSystemGuildColophon,
 					},
 
 					{
-						name : 'Green Ronin\'s Age Creator\'s Alliance',
+						name        : 'Green Ronin\'s Age Creator\'s Alliance',
 						subsnippets : [
 							{
-								name : "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
 									{
-										name : "Colophon",
+										name : 'Colophon',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceColophon,
 									},
 
 									{
-										name : "Cover",
+										name : 'Cover',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceCover,
 									},
 								]
 							},
 							{
-								name : "Logos",
+								name        : 'Logos',
 								subsnippets : [
 									{
-										name : "Age",
+										name : 'Age',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceLogo,
 									},
 
 									{
-										name : "Blue Rose",
+										name : 'Blue Rose',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceBlueRoseLogo,
 									},
 
 									{
-										name : "Fantasy Age Compatible",
+										name : 'Fantasy Age Compatible',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceFantasyAgeCompatible,
 									},
 
 									{
-										name : "Modern AGE Compatible",
+										name : 'Modern AGE Compatible',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceModernAGECompatible,
 									},
 								]
@@ -381,30 +381,30 @@ export default [
 					},
 
 					{
-						name : "Hero Kid\'s Creators Guild",
+						name        : 'Hero Kid\'s Creators Guild',
 						subsnippets : [
 
 							{
-								name: "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
-							
+
 									{
-										name : "heroForgeHeroKidsCreatorsGuildColophon",
+										name : 'heroForgeHeroKidsCreatorsGuildColophon',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
+										name : 'heroForgeHeroKidsCreatorsGuildSuperKidsColophon',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildCover",
+										name : 'heroForgeHeroKidsCreatorsGuildCover',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
+										name : 'heroForgeHeroKidsCreatorsGuildSuperKidsCover',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
 									},
 								]
@@ -413,33 +413,33 @@ export default [
 					},
 
 					{
-						name : "Travellers' Aid Society",
+						name        : 'Travellers\' Aid Society',
 						subsnippets : [
 							{
-								name : "Legal Statement",
+								name : 'Legal Statement',
 								gen  : LicenseMongoosePublishing.TASLegal,
 							}
 						]
 					},
-          
+
 					{
-						name : "Super-Powered by M&M",
+						name        : 'Super-Powered by M&M',
 						subsnippets : [
 							{
-								name : "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
 									{
-										name : "Colophon",
+										name : 'Colophon',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMColophon,
 									},
 
 									{
-										name : "Cover",
+										name : 'Cover',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMCover,
 									},
 
 									{
-										name : "Section 15",
+										name : 'Section 15',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMSection15,
 									},
 								]
