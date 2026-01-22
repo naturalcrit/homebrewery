@@ -1,7 +1,7 @@
-require('./headerNav.less');
+import './headerNav.less';
 
-import * as React from 'react';
-import * as _ from 'lodash';
+import React from 'react';
+import _ from 'lodash';
 
 const MAX_TEXT_LENGTH = 40;
 

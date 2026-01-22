@@ -79,6 +79,6 @@ const showAutocompleteEmoji = function(CodeMirror, editor) {
 	});
 };
 
-module.exports = {
+export default {
 	showAutocompleteEmoji
 };
