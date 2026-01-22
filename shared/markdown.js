@@ -8,9 +8,9 @@ import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
-				setMarkedVariablePage,
-				setMarkedVariable,
-				getMarkedVariable }  from 'marked-variables';
+	setMarkedVariablePage,
+	setMarkedVariable,
+	getMarkedVariable }  from 'marked-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
