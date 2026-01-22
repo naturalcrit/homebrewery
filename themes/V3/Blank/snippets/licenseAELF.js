@@ -1,9 +1,9 @@
-/* eslint-disable max-lines */
-const dedent = require('dedent');
+
+import dedent from 'dedent';
 
 // AELF License
 
-module.exports = {
+export default {
 	aelfTitleNotice : function() {
 		return `This work includes AELF Open Gaming Content, which may only be used under the terms of the AELF Open License version 1.0a. This product is not endorsed or reviewed by Mythmere Games LLC or any other contributor of AELF Open Gaming Content and does not represent the views of Mythmere Games LLC any other contributor.`;
 	},

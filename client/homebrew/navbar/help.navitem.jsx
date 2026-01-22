@@ -1,9 +1,9 @@
-const React = require('react');
-const dedent = require('dedent-tabs').default;
+import React from 'react';
+import dedent from 'dedent-tabs';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import Nav from 'client/homebrew/navbar/nav.jsx';
 
-module.exports = function(props){
+export default function(props){
 	return <Nav.dropdown>
 		<Nav.item color='grey' icon='fas fa-question-circle'>
 			need help?

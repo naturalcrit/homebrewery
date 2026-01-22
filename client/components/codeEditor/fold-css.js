@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	registerHomebreweryHelper : function(CodeMirror) {
 		CodeMirror.registerHelper('fold', 'homebrewerycss', function(cm, start) {
 

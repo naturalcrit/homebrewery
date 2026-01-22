@@ -1,7 +1,7 @@
-const React = require('react');
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import React from 'react';
+import Nav from 'client/homebrew/navbar/nav.jsx';
 
-module.exports = function(props){
+export default function(props){
 	return <Nav.item
 		className='patreon'
 		newTab={true}

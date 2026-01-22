@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent-tabs';
 
-module.exports = function(classname){
+export default function(classname){
 
 	classname = _.sample(['archivist', 'fancyman', 'linguist', 'fletcher',
 		'notary', 'berserker-typist', 'fishmongerer', 'manicurist', 'haberdasher', 'concierge']);
