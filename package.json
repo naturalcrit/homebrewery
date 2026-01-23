@@ -154,7 +154,7 @@
     "jsdom": "^27.4.0",
     "jsdom-global": "^3.0.2",
     "postcss-less": "^6.0.0",
-    "stylelint": "^16.25.0",
+    "stylelint": "^17.0.0",
     "stylelint-config-recess-order": "^7.3.0",
     "stylelint-config-recommended": "^17.0.0",
     "supertest": "^7.1.4"
