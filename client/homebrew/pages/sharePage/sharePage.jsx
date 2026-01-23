@@ -3,12 +3,12 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Meta }   from '../../../../vitreum/headtags.js';
 
 import Nav from '../../navbar/nav.jsx';
-import Navbar from './client/homebrew/navbar/navbar.jsx';
-import MetadataNav from './client/homebrew/navbar/metadata.navitem.jsx';
-import PrintNavItem from './client/homebrew/navbar/print.navitem.jsx';
-import RecentNavItems from './client/homebrew/navbar/recent.navitem.jsx';
+import Navbar from '../../navbar/navbar.jsx';
+import MetadataNav from '../../navbar/metadata.navitem.jsx';
+import PrintNavItem from '../../navbar/print.navitem.jsx';
+import RecentNavItems from '../../navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account from './client/homebrew/navbar/account.navitem.jsx';
+import Account from '../../navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';

@@ -2,7 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import Moment from 'moment';
 
-import Nav from './client/homebrew/navbar/nav.jsx';
+import Nav from './nav.jsx';
 
 
 const MetadataNav = createReactClass({

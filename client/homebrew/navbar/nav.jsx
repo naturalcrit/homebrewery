@@ -1,10 +1,10 @@
-import './client/homebrew/navbar/navbar.less';
+import './navbar.less';
 import React, { useState, useRef, useEffect } from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import cx from 'classnames';
 
-import NaturalCritIcon from './client/components/svg/naturalcrit-d20.svg.jsx';
+import NaturalCritIcon from '../../components/svg/naturalcrit-d20.svg.jsx';
 
 const Nav = {
 	base : createReactClass({

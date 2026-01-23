@@ -3,7 +3,7 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import Moment from 'moment';
 
-import Nav from './client/homebrew/navbar/nav.jsx';
+import Nav from './nav.jsx';
 
 const EDIT_KEY = 'HB_nav_recentlyEdited';
 const VIEW_KEY = 'HB_nav_recentlyViewed';
