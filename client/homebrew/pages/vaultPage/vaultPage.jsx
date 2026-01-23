@@ -3,15 +3,15 @@
 import './vaultPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 
-import Nav          from 'client/homebrew/navbar/nav.jsx';
-import Navbar       from 'client/homebrew/navbar/navbar.jsx';
-import RecentNavItems from 'client/homebrew/navbar/recent.navitem.jsx';
+import Nav          from './client/homebrew/navbar/nav.jsx';
+import Navbar       from './client/homebrew/navbar/navbar.jsx';
+import RecentNavItems from './client/homebrew/navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account      from 'client/homebrew/navbar/account.navitem.jsx';
-import NewBrew      from 'client/homebrew/navbar/newbrew.navitem.jsx';
-import HelpNavItem  from 'client/homebrew/navbar/help.navitem.jsx';
+import Account      from './client/homebrew/navbar/account.navitem.jsx';
+import NewBrew      from './client/homebrew/navbar/newbrew.navitem.jsx';
+import HelpNavItem  from './client/homebrew/navbar/help.navitem.jsx';
 import BrewItem     from '../basePages/listPage/brewItem/brewItem.jsx';
-import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import SplitPane    from './client/components/splitPane/splitPane.jsx';
 import ErrorIndex   from '../errorPage/errors/errorIndex.js';
 
 import request from '../../utils/request-middleware.js';

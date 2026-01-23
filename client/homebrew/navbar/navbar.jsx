@@ -2,7 +2,7 @@ import './navbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
 
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './client/homebrew/navbar/nav.jsx';
 import PatreonNavItem from './patreon.navitem.jsx';
 
 const Navbar = createReactClass({

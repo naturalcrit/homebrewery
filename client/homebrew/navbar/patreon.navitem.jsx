@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './client/homebrew/navbar/nav.jsx';
 
 export default function(props){
 	return <Nav.item

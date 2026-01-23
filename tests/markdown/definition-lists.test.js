@@ -1,6 +1,6 @@
 
 
-import Markdown from 'markdown.js';
+import Markdown from './shared/markdown.js';
 
 describe('Inline Definition Lists', ()=>{
 	test('No Term 1 Definition', function() {

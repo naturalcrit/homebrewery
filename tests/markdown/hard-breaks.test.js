@@ -1,6 +1,6 @@
 
 
-import Markdown from 'markdown.js';
+import Markdown from './shared/markdown.js';
 
 describe('Hard Breaks', ()=>{
 	test('Single Break', function() {

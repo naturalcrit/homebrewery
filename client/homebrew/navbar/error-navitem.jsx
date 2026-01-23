@@ -1,6 +1,6 @@
 import './error-navitem.less';
 import React from 'react';
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './client/homebrew/navbar/nav.jsx';
 
 const ErrorNavItem = ({ error = '', clearError })=>{
 	const response    = error.response;
