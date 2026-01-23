@@ -4,9 +4,8 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import request from '../../utils/request-middleware.js';
-import Combobox from 'client/components/combobox.jsx';
+import Combobox from '../../../components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
-
 
 import Themes from 'themes/themes.json';
 import validations from './validations.js';

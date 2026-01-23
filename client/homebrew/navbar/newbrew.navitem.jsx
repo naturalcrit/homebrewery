@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './nav.jsx';
 import { splitTextStyleAndMetadata } from '../../../shared/helpers.js';
 
 const BREWKEY  = 'HB_newPage_content';

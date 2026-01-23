@@ -1,7 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import request from 'superagent';
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './nav.jsx';
 
 const Account = createReactClass({
 	displayName     : 'AccountNavItem',
