@@ -3,13 +3,13 @@ import './brewRenderer.less';
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
-import MarkdownLegacy from 'markdownLegacy.js';
-import Markdown from 'markdown.js';
+import MarkdownLegacy from '../../../shared/markdownLegacy.js';
+import Markdown from '../../../shared/markdown.js';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-import RenderWarnings from 'client/components/renderWarnings/renderWarnings.jsx';
+import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
 import dedent from 'dedent';

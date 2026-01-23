@@ -1,5 +1,5 @@
 import React from 'react';
-import Nav from 'client/homebrew/navbar/nav.jsx';
+import Nav from './nav.jsx';
 import { printCurrentBrew } from '../../../shared/helpers.js';
 
 export default function(){
