@@ -4,7 +4,7 @@ import './homePage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from '../../../../shared/naturalcrit/markdown.js';
+import Markdown                               from '../../../../shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -27,7 +27,7 @@ const { both: RecentNavItem } = RecentNavItems;
 
 
 // Page specific imports
-import { Meta }                               from 'vitreum/headtags';
+import { Meta }   from 'vitreum/headtags';
 
 const BREWKEY  = 'homebrewery-new';
 const STYLEKEY = 'homebrewery-new-style';

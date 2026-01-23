@@ -8,7 +8,7 @@ import Combobox from 'client/components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
 
-import Themes from 'themes/themes.json';
+import Themes from './themes/themes.json';
 import validations from './validations.js';
 
 const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];

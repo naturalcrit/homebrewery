@@ -4,9 +4,9 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import dedent from 'dedent-tabs';
-import Markdown from '../../../shared/markdown.js';
+import Markdown from './shared/markdown.js';
 
-import CodeEditor from 'client/components/codeEditor/codeEditor.jsx';
+import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
