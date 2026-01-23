@@ -23,7 +23,7 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-import EditorThemes from 'build/homebrew/codeMirror/editorThemes.json';
+import EditorThemes from './build/homebrew/codeMirror/editorThemes.json';
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);

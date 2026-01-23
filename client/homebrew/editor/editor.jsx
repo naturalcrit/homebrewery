@@ -3,7 +3,7 @@ import './editor.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 import Markdown from './shared/markdown.js';
 
 import CodeEditor from '../../components/codeEditor/codeEditor.jsx';

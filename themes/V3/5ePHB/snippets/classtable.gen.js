@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 const features = [
 	'Astrological Botany',   'Biochemical Sorcery',   'Civil Divination',

@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import dedent                    from 'dedent-tabs';
+import dedent                    from 'dedent';
 import WatercolorGen 			 from './snippets/watercolor.gen.js';
 import ImageMaskGen              from './snippets/imageMask.gen.js';
 import FooterGen                 from './snippets/footer.gen.js';

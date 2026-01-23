@@ -1,12 +1,12 @@
 /* eslint-disable max-lines */
 
-import MagicGen           from './snippets/magic.gen.js';
-import ClassTableGen      from './snippets/classtable.gen.js';
-import MonsterBlockGen    from './snippets/monsterblock.gen.js';
-import ClassFeatureGen    from './snippets/classfeature.gen.js';
-import CoverPageGen       from './snippets/coverpage.gen.js';
-import TableOfContentsGen from './snippets/tableOfContents.gen.js';
-import dedent             from 'dedent-tabs';
+import MagicGen from './themes/Legacy/5ePHB/snippets/magic.gen.js';
+import ClassTableGen      from './themes/Legacy/5ePHB/snippets/classtable.gen.js';
+import MonsterBlockGen    from './themes/Legacy/5ePHB/snippets/monsterblock.gen.js';
+import ClassFeatureGen    from './themes/Legacy/5ePHB/snippets/classfeature.gen.js';
+import CoverPageGen       from './themes/Legacy/5ePHB/snippets/coverpage.gen.js';
+import TableOfContentsGen from './themes/Legacy/5ePHB/snippets/tableOfContents.gen.js';
+import dedent from 'dedent';
 
 export default [
 

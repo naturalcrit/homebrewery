@@ -6,7 +6,7 @@ import scriptGen        from './snippets/script.gen.js';
 import ClassFeatureGen  from './snippets/classfeature.gen.js';
 import CoverPageGen     from './snippets/coverpage.gen.js';
 import QuoteGen 		from './snippets/quote.gen.js';
-import dedent           from 'dedent-tabs';
+import dedent           from 'dedent';
 
 export default [
 	{

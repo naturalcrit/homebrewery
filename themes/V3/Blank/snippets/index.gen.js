@@ -1,4 +1,4 @@
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 export default ()=>{
 	return dedent`

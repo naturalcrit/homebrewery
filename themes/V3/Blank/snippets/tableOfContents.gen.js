@@ -1,4 +1,4 @@
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 // Map each actual page to its footer label, accounting for skips or numbering resets
 const mapPages = (pages)=>{

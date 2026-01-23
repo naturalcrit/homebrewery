@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export default function(classname){
+function classFeatureGen(classname) {
 
 	classname = _.sample(['archivist', 'fancyman', 'linguist', 'fletcher',
 		'notary', 'berserker-typist', 'fishmongerer', 'manicurist', 'haberdasher', 'concierge']);
@@ -49,4 +49,6 @@ export default function(classname){
 		`- ${_.sample(['10 lint fluffs', '1 button', 'a cherished lost sock'])}`,
 		'\n\n\n'
 	].join('\n');
-};
+}
+
+export default classFeatureGen;

@@ -12,7 +12,7 @@ import ToolBar  from './toolBar/toolBar.jsx';
 import RenderWarnings from 'client/components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 import { printCurrentBrew } from './shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
