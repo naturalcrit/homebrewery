@@ -26,7 +26,7 @@ import RecentNavItems from './client/homebrew/navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import { Meta }                  from 'vitreum/headtags';
+import { Meta }   from './vitreum/headtags.js';
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';

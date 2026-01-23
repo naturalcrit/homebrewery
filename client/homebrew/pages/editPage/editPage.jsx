@@ -26,7 +26,7 @@ import RecentNavItems from './client/homebrew/navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import { Meta }                          from 'vitreum/headtags';
+import { Meta }   from './vitreum/headtags.js';
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
