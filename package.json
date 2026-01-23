@@ -100,6 +100,7 @@
     "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^19.2.0",
     "@sanity/diff-match-patch": "^3.2.0",
+    "@vitejs/plugin-react": "^5.1.2",
     "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
     "codemirror": "^5.65.6",

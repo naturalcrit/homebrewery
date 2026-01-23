@@ -1,8 +1,8 @@
 import './sharePage.less';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Meta }   from './vitreum/headtags.js';
+import { Meta }   from '../../../../vitreum/headtags.js';
 
-import Nav from './client/homebrew/navbar/nav.jsx';
+import Nav from '../../navbar/nav.jsx';
 import Navbar from './client/homebrew/navbar/navbar.jsx';
 import MetadataNav from './client/homebrew/navbar/metadata.navitem.jsx';
 import PrintNavItem from './client/homebrew/navbar/print.navitem.jsx';

@@ -1,7 +1,7 @@
 import React from 'react';
 import moment from 'moment';
 import UIPage from '../basePages/uiPage/uiPage.jsx';
-import NaturalCritIcon from './client/components/svg/naturalcrit-d20.svg.jsx';
+import NaturalCritIcon from '../../../components/svg/naturalcrit-d20.svg.jsx';
 
 let SAVEKEY = '';
 

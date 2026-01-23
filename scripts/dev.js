@@ -10,12 +10,12 @@ const app = express();
 async function start() {
 	const vite = await createViteServer({
 		server: { middlewareMode: true },
-		root: path.resolve(__dirname, "../client"),
+		root: __dirname,
 		appType: "custom",
 	});
 
 	app.use(vite.middlewares);
-	app.use("/assets", express.static(path.resolve(__dirname, "../client/assets")));
+	app.use("/assets", express.static(path.resolve(__dirname, "/client/assets")));
 
 	app.use(/(.*)/, async (req, res, next) => {
 		try {
@@ -27,7 +27,7 @@ async function start() {
 
 			const entry = pathname.startsWith("/admin") ? "admin" : "homebrew";
 
-			const ssrModule = await vite.ssrLoadModule(`/${entry}/${entry}.jsx`);
+			const ssrModule = await vite.ssrLoadModule(`client/${entry}/${entry}.jsx`);
 
 			const html = await template(entry, "", { path: pathname, ssrModule });
 			res.status(200).set({ "Content-Type": "text/html" }).end(html);
