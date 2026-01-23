@@ -103,7 +103,7 @@
     "core-js": "^3.47.0",
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
-    "dedent-tabs": "^0.10.3",
+    "dedent": "^1.7.1",
     "expr-eval": "^2.0.2",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",

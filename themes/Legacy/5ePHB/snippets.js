@@ -6,7 +6,7 @@ import MonsterBlockGen    from './snippets/monsterblock.gen.js';
 import ClassFeatureGen    from './snippets/classfeature.gen.js';
 import CoverPageGen       from './snippets/coverpage.gen.js';
 import TableOfContentsGen from './snippets/tableOfContents.gen.js';
-import dedent             from 'dedent-tabs';
+import dedent             from 'dedent';
 
 export default [
 

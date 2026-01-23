@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 const genList = function(list, max){
 	return _.sampleSize(list, _.random(0, max)).join(', ') || 'None';

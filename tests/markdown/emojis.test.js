@@ -1,5 +1,5 @@
 import Markdown from 'markdown.js';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
