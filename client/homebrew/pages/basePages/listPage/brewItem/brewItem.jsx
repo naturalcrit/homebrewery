@@ -5,7 +5,7 @@ import request from '../../../../utils/request-middleware.js';
 
 import googleDriveIcon from '../../../../googleDrive.svg';
 import homebreweryIcon from '../../../../thumbnail.svg';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 const BrewItem = ({
 	brew = {

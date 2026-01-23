@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 
 const titles = [
 	'The Burning Gallows',                    'The Ring of Nenlast',

@@ -1,5 +1,5 @@
 import React from 'react';
-import dedent from 'dedent-tabs';
+import dedent from 'dedent';
 import Nav from 'client/homebrew/navbar/nav.jsx';
 
 const getShareId = (brew)=>(
