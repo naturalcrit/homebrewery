@@ -1,6 +1,6 @@
 import fs from 'fs-extra';
 
-// const editorThemesBuildDir = './build/homebrew/cm-themes';
+const editorThemesBuildDir = './build/homebrew/cm-themes';
 
 const editorThemeFile = './themes/codeMirror/editorThemes.json';
 const sources = ['./node_modules/codemirror/theme', './themes/codeMirror/customThemes'];
@@ -61,7 +61,16 @@ const updateThemesFile = function(){
 	return;
 };
 
+const copyThemesFiles = function(){
+	sources.forEach((source)=>{
+		console.log('Copying CM themes from', source);
+		fs.copySync(source, editorThemesBuildDir);
+	});
+	return;
+};
+
 export {
 	checkThemesFile,
-	updateThemesFile
+	updateThemesFile,
+	copyThemesFiles
 };

@@ -9,7 +9,7 @@ import assetTransform from 'vitreum/transforms/asset.js';
 import babel          from '@babel/core';
 import babelConfig    from '../babel.config.json' with { type : 'json' };
 import less           from 'less';
-import { updateThemesFile } from './cmThemeUtils/cmUtils.js';
+import { copyThemesFiles, updateThemesFile } from './cmThemeUtils/cmUtils.js';
 
 const isDev = !!process.argv.find((arg)=>arg === '--dev');
 
@@ -105,6 +105,7 @@ fs.emptyDirSync('./build');
 	//v==--------------------------UPDATE CM EDITOR THEMES ----------------------------==v//
 
 	updateThemesFile();
+	copyThemesFiles();
 
 	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
