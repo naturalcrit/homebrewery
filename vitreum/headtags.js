@@ -74,6 +74,8 @@ export const flush = () => {
 	UnnamedTags = [];
 };
 
+export const Meta = HeadComponents.Meta;
+
 export default {
 	Inject,
 	...HeadComponents,

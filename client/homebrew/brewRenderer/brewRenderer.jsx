@@ -16,7 +16,7 @@ import dedent from 'dedent';
 import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
-import { safeHTML } from './safeHTML.js';
+import safeHTML from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;

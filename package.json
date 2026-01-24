@@ -15,7 +15,7 @@
     "viteDev": "node scripts/dev.js",
     "viteDevAdmin": "vite --config vite.config.js --ssr client/admin/admin.jsx",
     "viteBuild": "vite build",
-    "viteStart": "vite preview",
+    "viteStart": "vite preview --outDir ../build",
     "dev": "node --experimental-require-module scripts/dev.js",
     "quick": "node --experimental-require-module scripts/quick.js",
     "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
