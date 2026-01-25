@@ -1,14 +1,13 @@
-require('client/homebrew/navbar/navbar.less');
-const React = require('react');
-const { useState, useRef, useEffect } = React;
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const cx = require('classnames');
+import './navbar.less';
+import React, { useState, useRef, useEffect } from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import cx from 'classnames';
 
-const NaturalCritIcon = require('client/components/svg/naturalcrit-d20.svg.jsx');
+import NaturalCritIcon from '../../components/svg/naturalcrit-d20.svg.jsx';
 
 const Nav = {
-	base : createClass({
+	base : createReactClass({
 		displayName : 'Nav.base',
 		render      : function(){
 			return <nav>
@@ -25,7 +24,7 @@ const Nav = {
 		</a>;
 	},
 
-	section : createClass({
+	section : createReactClass({
 		displayName : 'Nav.section',
 		render      : function(){
 			return <div className={`navSection ${this.props.className ?? ''}`}>
@@ -34,7 +33,7 @@ const Nav = {
 		}
 	}),
 
-	item : createClass({
+	item : createReactClass({
 		displayName     : 'Nav.item',
 		getDefaultProps : function() {
 			return {
@@ -117,4 +116,4 @@ const Nav = {
 };
 
 
-module.exports = Nav;
+export default Nav;

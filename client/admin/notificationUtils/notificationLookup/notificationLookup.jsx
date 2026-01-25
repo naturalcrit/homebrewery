@@ -1,9 +1,7 @@
-require('./notificationLookup.less');
-
-const React = require('react');
-const { useState } = require('react');
-const request = require('superagent');
-const Moment = require('moment');
+import './notificationLookup.less';
+import React, { useState } from 'react';
+import request from 'superagent';
+import Moment from 'moment';
 
 const NotificationDetail = ({ notification, onDelete })=>(
 	<>
@@ -102,4 +100,4 @@ const NotificationLookup = ()=>{
 	);
 };
 
-module.exports = NotificationLookup;
+export default NotificationLookup;

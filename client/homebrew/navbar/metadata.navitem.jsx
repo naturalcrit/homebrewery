@@ -1,11 +1,11 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const Moment = require('moment');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import Moment from 'moment';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import Nav from './nav.jsx';
 
 
-const MetadataNav = createClass({
+const MetadataNav = createReactClass({
 	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
 		return {
@@ -86,4 +86,4 @@ const MetadataNav = createClass({
 
 });
 
-module.exports = MetadataNav;
+export default MetadataNav;
