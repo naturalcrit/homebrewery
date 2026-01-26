@@ -22,6 +22,7 @@ import ErrorNavItem              from '../../navbar/error-navitem.jsx';
 import HelpNavItem               from '../../navbar/help.navitem.jsx';
 import VaultNavItem              from '../../navbar/vault.navitem.jsx';
 import PrintNavItem              from '../../navbar/print.navitem.jsx';
+import ClaudeNavItem             from '../../navbar/claude.navitem.jsx';
 import RecentNavItems from '../../navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
@@ -219,6 +220,10 @@ const NewPage = (props)=>{
 		setIsSaving(false);
 	};
 
+	const handleClaudeInsert = (text)=>{
+		editorRef.current?.handleInject(text);
+	};
+
 	const renderNavbar = ()=>(
 		<Navbar>
 			<Nav.section>
@@ -231,6 +236,7 @@ const NewPage = (props)=>{
 					: renderSaveButton()}
 				<NewBrewItem />
 				<PrintNavItem />
+				<ClaudeNavItem brew={currentBrew} onInsert={handleClaudeInsert} />
 				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />

@@ -20,6 +20,7 @@ import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
+import claudeApi                   from './claude.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -109,6 +110,7 @@ app.use((req, res, next)=>{
 app.use(homebrewApi);
 app.use(adminApi);
 app.use(vaultApi);
+app.use(claudeApi);
 
 const welcomeText       = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = fs.readFileSync('client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');

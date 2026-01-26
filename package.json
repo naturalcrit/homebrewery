@@ -93,6 +93,7 @@
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.28.5",
     "@babel/runtime": "^7.28.4",
+    "@anthropic-ai/sdk": "^0.52.0",
     "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^19.2.0",
     "@sanity/diff-match-patch": "^3.2.0",

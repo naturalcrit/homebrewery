@@ -1,0 +1,219 @@
+@import 'naturalcrit/styles/colors.less';
+
+.claudeModal {
+	position         : fixed;
+	top              : 50%;
+	left             : 50%;
+	transform        : translate(-50%, -50%);
+	width            : 90%;
+	max-width        : 700px;
+	max-height       : 85vh;
+	padding          : 0;
+	color            : #333;
+	background-color : #fafafa;
+	border           : none;
+	border-radius    : 8px;
+	box-shadow       : 0 10px 40px rgba(0, 0, 0, 0.3);
+	overflow         : hidden;
+	display          : flex;
+	flex-direction   : column;
+
+	&::backdrop {
+		background-color : rgba(0, 0, 0, 0.5);
+	}
+
+	.modalHeader {
+		display          : flex;
+		justify-content  : space-between;
+		align-items      : center;
+		padding          : 16px 20px;
+		background-color : @purple;
+		color            : white;
+
+		h2 {
+			margin      : 0;
+			font-size   : 18px;
+			font-weight : 600;
+			i {
+				margin-right : 8px;
+			}
+		}
+
+		.closeButton {
+			padding          : 4px 8px;
+			font-size        : 16px;
+			color            : white;
+			background       : transparent;
+			border           : none;
+			border-radius    : 4px;
+			cursor           : pointer;
+			opacity          : 0.8;
+			&:hover {
+				opacity          : 1;
+				background-color : rgba(255, 255, 255, 0.1);
+			}
+		}
+	}
+
+	.promptForm {
+		padding : 20px;
+
+		textarea {
+			width            : 100%;
+			min-height       : 120px;
+			padding          : 12px;
+			font-family      : inherit;
+			font-size        : 14px;
+			line-height      : 1.5;
+			color            : #333;
+			background-color : white;
+			border           : 1px solid #ddd;
+			border-radius    : 6px;
+			resize           : vertical;
+			box-sizing       : border-box;
+
+			&:focus {
+				outline      : none;
+				border-color : @purple;
+				box-shadow   : 0 0 0 2px fade(@purple, 20%);
+			}
+
+			&:disabled {
+				background-color : #f5f5f5;
+				cursor           : not-allowed;
+			}
+
+			&::placeholder {
+				color      : #999;
+				font-size  : 13px;
+			}
+		}
+
+		.formActions {
+			display         : flex;
+			align-items     : center;
+			justify-content : space-between;
+			margin-top      : 12px;
+
+			.submitButton {
+				padding          : 10px 20px;
+				font-size        : 14px;
+				font-weight      : 600;
+				color            : white;
+				background-color : @purple;
+				border           : none;
+				border-radius    : 6px;
+				cursor           : pointer;
+				transition       : background-color 0.2s;
+
+				&:hover:not(:disabled) {
+					background-color : darken(@purple, 10%);
+				}
+
+				&:disabled {
+					opacity : 0.6;
+					cursor  : not-allowed;
+				}
+
+				i {
+					margin-right : 6px;
+				}
+			}
+
+			.hint {
+				font-size : 12px;
+				color     : #999;
+			}
+		}
+	}
+
+	.errorMessage {
+		margin           : 0 20px 20px;
+		padding          : 12px;
+		color            : #c0392b;
+		background-color : #fdf2f2;
+		border           : 1px solid #f5c6cb;
+		border-radius    : 6px;
+		font-size        : 14px;
+
+		i {
+			margin-right : 8px;
+		}
+	}
+
+	.responseSection {
+		flex             : 1;
+		display          : flex;
+		flex-direction   : column;
+		margin           : 0 20px 20px;
+		min-height       : 0;
+		overflow         : hidden;
+
+		.responseHeader {
+			display         : flex;
+			justify-content : space-between;
+			align-items     : center;
+			margin-bottom   : 10px;
+
+			h3 {
+				margin      : 0;
+				font-size   : 14px;
+				font-weight : 600;
+				color       : #666;
+			}
+
+			.responseActions {
+				display : flex;
+				gap     : 8px;
+			}
+		}
+
+		.actionButton {
+			padding          : 6px 12px;
+			font-size        : 12px;
+			font-weight      : 500;
+			color            : #666;
+			background-color : #f0f0f0;
+			border           : 1px solid #ddd;
+			border-radius    : 4px;
+			cursor           : pointer;
+			transition       : all 0.2s;
+
+			&:hover {
+				background-color : #e5e5e5;
+				color            : #333;
+			}
+
+			&.primary {
+				color            : white;
+				background-color : @green;
+				border-color     : @green;
+
+				&:hover {
+					background-color : darken(@green, 10%);
+				}
+			}
+
+			i {
+				margin-right : 4px;
+			}
+		}
+
+		.responseContent {
+			flex             : 1;
+			margin           : 0;
+			padding          : 12px;
+			font-family      : 'Consolas', 'Monaco', 'Courier New', monospace;
+			font-size        : 13px;
+			line-height      : 1.6;
+			color            : #333;
+			white-space      : pre-wrap;
+			word-wrap        : break-word;
+			background-color : #f8f8f8;
+			border           : 1px solid #e0e0e0;
+			border-radius    : 6px;
+			overflow-y       : auto;
+			max-height       : 300px;
+		}
+	}
+}
