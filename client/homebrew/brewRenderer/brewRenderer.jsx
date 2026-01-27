@@ -87,6 +87,7 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
+let pageTemplates = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -203,6 +204,16 @@ const BrewRenderer = (props)=>{
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
+					if (attributes && Object.hasOwn(attributes, 'hbtemplate')) {
+						pageTemplates[index] = attributes['hbtemplate'];
+					}
+				}
+				// If we don't have a template for this page, look backwards until one is found or the first page.
+				if(!pageTemplates[index]) {
+					for (let i=index;i>=0; i--) {
+						// If one is found, add the template attribute
+						if (pageTemplates[i]) attributes['hbtemplate'] = pageTemplates[i];
+					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
@@ -220,8 +231,10 @@ const BrewRenderer = (props)=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
-		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
+		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
 			renderedPages.length = 0;
+			pageTemplates.length = 0;
+		}
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
 		if(rawPages.length > props.currentEditorCursorPageNum -1)
