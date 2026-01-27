@@ -132,12 +132,10 @@ const BrewRenderer = (props)=>{
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
 
-	if(props.text){
-		if(props.renderer == 'legacy') {
-			rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
-		} else {
-			rawPages = props.text.split(PAGEBREAK_REGEX_V3);
-		}
+	if(props.renderer == 'legacy') {
+		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
+	} else {
+		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
