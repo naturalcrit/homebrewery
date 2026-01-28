@@ -84,7 +84,7 @@ module.exports = {
 		return dedent`
 		  {{frontCover}}
 
-		  {{logo ![](/assets/naturalCritLogoRed.svg)}}
+		  {{logo ![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoRed.svg)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
@@ -96,7 +96,7 @@ module.exports = {
 		    ${_.sample(footnote)}
 		  }}
 
-		  ![background image](/assets/IwHRrbF.jpg){position:absolute,bottom:0,left:0,height:100%}
+		  ![background image](https://homebrewery.naturalcrit.com/assets/demontemple.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 		  \page`;
 	},
@@ -110,10 +110,10 @@ module.exports = {
 			___
 
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![background image](/assets/IsfUnFR.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![background image](https://homebrewery.naturalcrit.com/assets/mountaincottage.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
-			{{logo ![](/assets/naturalCritLogoRed.svg)}}
+			{{logo ![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoRed.svg)}}
 
 			\page`;
 	},
@@ -126,7 +126,7 @@ module.exports = {
 			## ${_.sample(subtitles)}
 
 			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
-			  ![Background image](/assets/9TU96xY.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![Background image](https://homebrewery.naturalcrit.com/assets/nightchapel.jpg){position:absolute,bottom:0,left:0,height:100%}
 			}}
 
 			\page`;
@@ -143,10 +143,10 @@ module.exports = {
 
 			For use with any fantasy roleplaying ruleset. Play the best game of your life!
 
-			![background image](/assets/MJ4YHu7.jpg){position:absolute,bottom:0,left:0,height:100%}
+			![background image](https://homebrewery.naturalcrit.com/assets/shopvials.jpg){position:absolute,bottom:0,left:0,height:100%}
 
 			{{logo
-			![](/assets/naturalCritLogoWhite.svg)
+			![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoWhite.svg)
 
 			Homebrewery.Naturalcrit.com
 			}}`;

@@ -631,25 +631,25 @@ module.exports = [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](/assets/4a8179462cfdf39054a418efd4cb743e.jpg) {width:325px,mix-blend-mode:multiply}`
+					![cat warrior](https://homebrewery.naturalcrit.com/assets/catwarrior.jpg) {width:325px,mix-blend-mode:multiply}`
 			},
 			{
 				name : 'Image Wrap Left',
 				icon : 'fac image-wrap-left',
 				gen  : dedent`
-					![homebrewery_mug](/assets/hMna6G0.png) {width:280px,margin-right:-3cm,wrapLeft}`
+					![homebrewery_mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {width:280px,margin-right:-3cm,wrapLeft}`
 			},
 			{
 				name : 'Image Wrap Right',
 				icon : 'fac image-wrap-right',
 				gen  : dedent`
-					![homebrewery_mug](/assets/hMna6G0.png) {width:280px,margin-left:-3cm,wrapRight}`
+					![homebrewery_mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {width:280px,margin-left:-3cm,wrapRight}`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
 				gen  : dedent`
-					![homebrew mug](/assets/hMna6G0.png) {position:absolute,top:50px,right:30px,width:280px}`
+					![homebrew mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
 				name : 'Watercolor Splatter',
