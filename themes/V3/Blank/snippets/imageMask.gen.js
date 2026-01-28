@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent';
 
-module.exports = {
+export default {
 	center : ()=>{
 		return dedent`
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0

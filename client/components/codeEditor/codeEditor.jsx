@@ -1,51 +1,13 @@
 /* eslint-disable max-lines */
-require('./codeEditor.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const closeTag = require('./close-tag');
-const autoCompleteEmoji = require('./autocompleteEmoji');
-
+import './codeEditor.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import closeTag from './close-tag';
+import autoCompleteEmoji from './autocompleteEmoji';
 let CodeMirror;
-if(typeof window !== 'undefined'){
-	CodeMirror = require('codemirror');
 
-	//Language Modes
-	require('codemirror/mode/gfm/gfm.js'); //Github flavoured markdown
-	require('codemirror/mode/css/css.js');
-	require('codemirror/mode/javascript/javascript.js');
-
-	//Addons
-	//Code folding
-	require('codemirror/addon/fold/foldcode.js');
-	require('codemirror/addon/fold/foldgutter.js');
-	//Search and replace
-	require('codemirror/addon/search/search.js');
-	require('codemirror/addon/search/searchcursor.js');
-	require('codemirror/addon/search/jump-to-line.js');
-	require('codemirror/addon/search/match-highlighter.js');
-	require('codemirror/addon/search/matchesonscrollbar.js');
-	require('codemirror/addon/dialog/dialog.js');
-	//Trailing space highlighting
-	// require('codemirror/addon/edit/trailingspace.js');
-	//Active line highlighting
-	// require('codemirror/addon/selection/active-line.js');
-	//Scroll past last line
-	require('codemirror/addon/scroll/scrollpastend.js');
-	//Auto-closing
-	//XML code folding is a requirement of the auto-closing tag feature and is not enabled
-	require('codemirror/addon/fold/xml-fold.js');
-	require('codemirror/addon/edit/closetag.js');
-	//Autocompletion
-	require('codemirror/addon/hint/show-hint.js');
-
-	const foldPagesCode = require('./fold-pages');
-	foldPagesCode.registerHomebreweryHelper(CodeMirror);
-	const foldCSSCode = require('./fold-css');
-	foldCSSCode.registerHomebreweryHelper(CodeMirror);
-}
-
-const CodeEditor = createClass({
+const CodeEditor = createReactClass({
 	displayName     : 'CodeEditor',
 	getDefaultProps : function() {
 		return {
@@ -66,23 +28,54 @@ const CodeEditor = createClass({
 
 	editor : React.createRef(null),
 
-	componentDidMount : function() {
+	async componentDidMount() {
+		CodeMirror = (await import('codemirror')).default;
+		this.CodeMirror = CodeMirror;
+
+		await import('codemirror/mode/gfm/gfm.js');
+		await import('codemirror/mode/css/css.js');
+		await import('codemirror/mode/javascript/javascript.js');
+
+		// addons
+		await import('codemirror/addon/fold/foldcode.js');
+		await import('codemirror/addon/fold/foldgutter.js');
+		await import('codemirror/addon/fold/xml-fold.js');
+		await import('codemirror/addon/search/search.js');
+		await import('codemirror/addon/search/searchcursor.js');
+		await import('codemirror/addon/search/jump-to-line.js');
+		await import('codemirror/addon/search/match-highlighter.js');
+		await import('codemirror/addon/search/matchesonscrollbar.js');
+		await import('codemirror/addon/dialog/dialog.js');
+		await import('codemirror/addon/scroll/scrollpastend.js');
+		await import('codemirror/addon/edit/closetag.js');
+		await import('codemirror/addon/hint/show-hint.js');
+		// import 'codemirror/addon/selection/active-line.js';
+		// import 'codemirror/addon/edit/trailingspace.js';
+
+
+		// register helpers dynamically as well
+		const foldPagesCode = (await import('./fold-pages')).default;
+		const foldCSSCode   = (await import('./fold-css')).default;
+		foldPagesCode.registerHomebreweryHelper(CodeMirror);
+		foldCSSCode.registerHomebreweryHelper(CodeMirror);
+
 		this.buildEditor();
-		const newDoc = CodeMirror.Doc(this.props.value, this.props.language);
-		this.codeMirror.swapDoc(newDoc);
+		const newDoc = CodeMirror?.Doc(this.props.value, this.props.language);
+		this.codeMirror?.swapDoc(newDoc);
 	},
+
 
 	componentDidUpdate : function(prevProps) {
 		if(prevProps.view !== this.props.view){ //view changed; swap documents
 			let newDoc;
 
 			if(!this.state.docs[this.props.view]) {
-				newDoc = CodeMirror.Doc(this.props.value, this.props.language);
+				newDoc = CodeMirror?.Doc(this.props.value, this.props.language);
 			} else {
 				newDoc = this.state.docs[this.props.view];
 			}
 
-			const oldDoc = { [prevProps.view]: this.codeMirror.swapDoc(newDoc) };
+			const oldDoc = { [prevProps.view]: this.codeMirror?.swapDoc(newDoc) };
 
 			this.setState((prevState)=>({
 				docs : _.merge({}, prevState.docs, oldDoc)
@@ -90,17 +83,17 @@ const CodeEditor = createClass({
 
 			this.props.rerenderParent();
 		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
-			this.codeMirror.setValue(this.props.value);
+			this.codeMirror?.setValue(this.props.value);
 		}
 
 		if(this.props.enableFolding) {
-			this.codeMirror.setOption('foldOptions', this.foldOptions(this.codeMirror));
+			this.codeMirror?.setOption('foldOptions', this.foldOptions(this.codeMirror));
 		} else {
-			this.codeMirror.setOption('foldOptions', false);
+			this.codeMirror?.setOption('foldOptions', false);
 		}
 
 		if(prevProps.editorTheme !== this.props.editorTheme){
-			this.codeMirror.setOption('theme', this.props.editorTheme);
+			this.codeMirror?.setOption('theme', this.props.editorTheme);
 		}
 	},
 
@@ -188,8 +181,8 @@ const CodeEditor = createClass({
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
 
-		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror. Either one works.
-		this.codeMirror.on('change', (cm)=>{this.props.onChange(cm.getValue());});
+		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror?. Either one works.
+		this.codeMirror?.on('change', (cm)=>{this.props.onChange(cm.getValue());});
 		this.updateSize();
 	},
 
@@ -203,84 +196,84 @@ const CodeEditor = createClass({
 	},
 
 	dedent : function () {
-		this.codeMirror.execCommand('indentLess');
+		this.codeMirror?.execCommand('indentLess');
 	},
 
 	makeHeader : function (number) {
-		const selection = this.codeMirror.getSelection();
+		const selection = this.codeMirror?.getSelection();
 		const header = Array(number).fill('#').join('');
-		this.codeMirror.replaceSelection(`${header} ${selection}`, 'around');
-		const cursor = this.codeMirror.getCursor();
-		this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch + selection.length + number + 1 });
+		this.codeMirror?.replaceSelection(`${header} ${selection}`, 'around');
+		const cursor = this.codeMirror?.getCursor();
+		this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch + selection.length + number + 1 });
 	},
 
 	makeBold : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '**' && selection.slice(-2) === '**';
-		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `**${selection}**`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '**' && selection.slice(-2) === '**';
+		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `**${selection}**`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
 		}
 	},
 
 	makeItalic : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
-		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
+		this.codeMirror?.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
 		}
 	},
 
 	makeSuper : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
-		this.codeMirror.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
+		this.codeMirror?.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
 		}
 	},
 
 	makeSub : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
-		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
+		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
 		}
 	},
 
 
 	makeNbsp : function() {
-		this.codeMirror.replaceSelection('&nbsp;', 'end');
+		this.codeMirror?.replaceSelection('&nbsp;', 'end');
 	},
 
 	makeSpace : function() {
-		const selection = this.codeMirror.getSelection();
+		const selection = this.codeMirror?.getSelection();
 		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
 		if(t){
 			const percent = parseInt(selection.slice(8, -4)) + 10;
-			this.codeMirror.replaceSelection(percent < 90 ? `{{width:${percent}% }}` : '{{width:100% }}', 'around');
+			this.codeMirror?.replaceSelection(percent < 90 ? `{{width:${percent}% }}` : '{{width:100% }}', 'around');
 		} else {
-			this.codeMirror.replaceSelection(`{{width:10% }}`, 'around');
+			this.codeMirror?.replaceSelection(`{{width:10% }}`, 'around');
 		}
 	},
 
 	removeSpace : function() {
-		const selection = this.codeMirror.getSelection();
+		const selection = this.codeMirror?.getSelection();
 		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
 		if(t){
 			const percent = parseInt(selection.slice(8, -4)) - 10;
-			this.codeMirror.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
+			this.codeMirror?.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
 		}
 	},
 
 	newColumn : function() {
-		this.codeMirror.replaceSelection('\n\\column\n\n', 'end');
+		this.codeMirror?.replaceSelection('\n\\column\n\n', 'end');
 	},
 
 	newPage : function() {
-		this.codeMirror.replaceSelection('\n\\page\n\n', 'end');
+		this.codeMirror?.replaceSelection('\n\\page\n\n', 'end');
 	},
 
 	injectText : function(injectText, overwrite=true) {
@@ -293,29 +286,29 @@ const CodeEditor = createClass({
 	},
 
 	makeUnderline : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
-		this.codeMirror.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
+		this.codeMirror?.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
 		}
 	},
 
 	makeSpan : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
-		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{ ${selection}}}`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
+		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `{{ ${selection}}}`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
 		}
 	},
 
 	makeDiv : function() {
-		const selection = this.codeMirror.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
-		this.codeMirror.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
+		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
+		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line - 1, ch: cursor.ch });  // set to -2? if wanting to enter classes etc.  if so, get rid of first \n when replacing selection
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line - 1, ch: cursor.ch });  // set to -2? if wanting to enter classes etc.  if so, get rid of first \n when replacing selection
 		}
 	},
 
@@ -323,7 +316,7 @@ const CodeEditor = createClass({
 		let regex;
 		let cursorPos;
 		let newComment;
-		const selection = this.codeMirror.getSelection();
+		const selection = this.codeMirror?.getSelection();
 		if(this.props.language === 'gfm'){
 			regex = /^\s*(<!--\s?)(.*?)(\s?-->)\s*$/gs;
 			cursorPos = 4;
@@ -333,44 +326,44 @@ const CodeEditor = createClass({
 			cursorPos = 3;
 			newComment = `/* ${selection} */`;
 		}
-		this.codeMirror.replaceSelection(regex.test(selection) == true ? selection.replace(regex, '$2') : newComment, 'around');
+		this.codeMirror?.replaceSelection(regex.test(selection) == true ? selection.replace(regex, '$2') : newComment, 'around');
 		if(selection.length === 0){
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setCursor({ line: cursor.line, ch: cursor.ch - cursorPos });
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - cursorPos });
 		};
 	},
 
 	makeLink : function() {
 		const isLink = /^\[(.*)\]\((.*)\)$/;
-		const selection = this.codeMirror.getSelection().trim();
+		const selection = this.codeMirror?.getSelection().trim();
 		let match;
 		if(match = isLink.exec(selection)){
 			const altText = match[1];
 			const url     = match[2];
-			this.codeMirror.replaceSelection(`${altText} ${url}`);
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
+			this.codeMirror?.replaceSelection(`${altText} ${url}`);
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
 		} else {
-			this.codeMirror.replaceSelection(`[${selection || 'alt text'}](url)`);
-			const cursor = this.codeMirror.getCursor();
-			this.codeMirror.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
+			this.codeMirror?.replaceSelection(`[${selection || 'alt text'}](url)`);
+			const cursor = this.codeMirror?.getCursor();
+			this.codeMirror?.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
 		}
 	},
 
 	makeList : function(listType) {
-		const selectionStart = this.codeMirror.getCursor('from'), selectionEnd = this.codeMirror.getCursor('to');
-		this.codeMirror.setSelection(
+		const selectionStart = this.codeMirror?.getCursor('from'), selectionEnd = this.codeMirror?.getCursor('to');
+		this.codeMirror?.setSelection(
 			{ line: selectionStart.line, ch: 0 },
-			{ line: selectionEnd.line, ch: this.codeMirror.getLine(selectionEnd.line).length }
+			{ line: selectionEnd.line, ch: this.codeMirror?.getLine(selectionEnd.line).length }
 		);
-		const newSelection = this.codeMirror.getSelection();
+		const newSelection = this.codeMirror?.getSelection();
 
 		const regex = /^\d+\.\s|^-\s/gm;
 		if(newSelection.match(regex) != null){   	// if selection IS A LIST
-			this.codeMirror.replaceSelection(newSelection.replace(regex, ''), 'around');
+			this.codeMirror?.replaceSelection(newSelection.replace(regex, ''), 'around');
 		} else {									// if selection IS NOT A LIST
-			listType == 'UL' ? this.codeMirror.replaceSelection(newSelection.replace(/^/gm, `- `), 'around') :
-				this.codeMirror.replaceSelection(newSelection.replace(/^/gm, (()=>{
+			listType == 'UL' ? this.codeMirror?.replaceSelection(newSelection.replace(/^/gm, `- `), 'around') :
+				this.codeMirror?.replaceSelection(newSelection.replace(/^/gm, (()=>{
 					let n = 1;
 					return ()=>{
 						return `${n++}. `;
@@ -380,39 +373,39 @@ const CodeEditor = createClass({
 	},
 
 	foldAllCode : function() {
-		this.codeMirror.execCommand('foldAll');
+		this.codeMirror?.execCommand('foldAll');
 	},
 
 	unfoldAllCode : function() {
-		this.codeMirror.execCommand('unfoldAll');
+		this.codeMirror?.execCommand('unfoldAll');
 	},
 
 	//=-- Externally used -==//
 	setCursorPosition : function(line, char){
 		setTimeout(()=>{
-			this.codeMirror.focus();
-			this.codeMirror.doc.setCursor(line, char);
+			this.codeMirror?.focus();
+			this.codeMirror?.doc.setCursor(line, char);
 		}, 10);
 	},
 	getCursorPosition : function(){
-		return this.codeMirror.getCursor();
+		return this.codeMirror?.getCursor();
 	},
 	getTopVisibleLine : function(){
-		const rect = this.codeMirror.getWrapperElement().getBoundingClientRect();
-		const topVisibleLine = this.codeMirror.lineAtHeight(rect.top, 'window');
+		const rect = this.codeMirror?.getWrapperElement().getBoundingClientRect();
+		const topVisibleLine = this.codeMirror?.lineAtHeight(rect.top, 'window');
 		return topVisibleLine;
 	},
 	updateSize : function(){
-		this.codeMirror.refresh();
+		this.codeMirror?.refresh();
 	},
 	redo : function(){
-		return this.codeMirror.redo();
+		return this.codeMirror?.redo();
 	},
 	undo : function(){
-		return this.codeMirror.undo();
+		return this.codeMirror?.undo();
 	},
 	historySize : function(){
-		return this.codeMirror.doc.historySize();
+		return this.codeMirror?.doc.historySize();
 	},
 
 	foldOptions : function(cm){
@@ -426,7 +419,7 @@ const CodeEditor = createClass({
 
 				let foldPreviewText = '';
 				while (currentLine <= to.line && text.length <= maxLength) {
-					const currentText = this.codeMirror.getLine(currentLine);
+					const currentText = this.codeMirror?.getLine(currentLine);
 					currentLine++;
 					if(currentText[0] == '#'){
 						foldPreviewText = currentText;
@@ -461,5 +454,5 @@ const CodeEditor = createClass({
 	}
 });
 
-module.exports = CodeEditor;
+export default CodeEditor;
 

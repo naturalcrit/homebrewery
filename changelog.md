@@ -83,12 +83,40 @@ pre {
 .page .exampleTable td,th {
 	border:1px dashed #00000030;
 }
+
+.page .df {
+  font-size: 2em;
+  vertical-align: middle;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Friday 11/14/2025 - v13.20.0
+### Friday 1/11/2026 - v3.20.1
+
+{{taskList
+##### calculuschild
+* [x] Add D100 "ball" dice icons `:d100:` :df_d100_05:
+
+##### G-Ambatte
+* [x] Fix transparent edge on back cover image
+
+Fixes issue [#4551](https://github.com/naturalcrit/homebrewery/issues/4551)
+
+* [x] Fix "Out of sync" error when document contains extended unicode characters
+
+Fixes issue [#4583](https://github.com/naturalcrit/homebrewery/issues/4583)
+
+##### 5e-Cleric
+* [x] Fix page count error on Vault
+
+* [x] Fix cover page footnote set to all-caps
+
+Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
+}}
+
+### Friday 11/14/2025 - v3.20.0
 
 {{taskList
 ##### calculuschild
