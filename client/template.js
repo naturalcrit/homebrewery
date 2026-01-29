@@ -8,7 +8,7 @@ const template = async function(name, title='', props = {}){
 	});
 	const ogMetaTags = ogTags.join('\n');
 
-	const ssrModule = await import(`../build/${name}/ssr.cjs`);
+	const ssrModule = await import(`../build/entry-server-${name}/bundle.js`);
 
 	return `<!DOCTYPE html>
 	<html>

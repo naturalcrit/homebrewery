@@ -9,6 +9,7 @@ export default defineConfig({
 		outDir: "build",
 		emptyOutDir: true,
 		ssrManifest: true,
+		ssr:'./client/entry-server-homebrew.jsx',
 		rollupOptions: {
 			input: {
 				admin: path.resolve(__dirname, "client/admin/admin.jsx"),

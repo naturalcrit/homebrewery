@@ -16,6 +16,7 @@
     "viteDevAdmin": "vite --config vite.config.js --ssr client/admin/admin.jsx",
     "viteBuild": "vite build",
     "viteStart": "vite preview --outDir build",
+		"start": "node server.js",
     "dev": "node --experimental-require-module scripts/dev.js",
     "quick": "node --experimental-require-module scripts/quick.js",
     "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
@@ -48,7 +49,6 @@
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
-    "start": "node --experimental-require-module server.js",
     "docker:build": "docker build -t ${DOCKERID}/homebrewery:$npm_package_version .",
     "docker:publish": "docker login && docker push  ${DOCKERID}/homebrewery:$npm_package_version"
   },
