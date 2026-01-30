@@ -12,11 +12,13 @@
     "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
-    "viteDev": "node scripts/dev.js",
+    "viteDev1": "node scripts/dev.js",
+    "viteDev2": "vite dev",
     "viteDevAdmin": "vite --config vite.config.js --ssr client/admin/admin.jsx",
-    "viteBuild": "vite build",
+    "viteBuild": "vite build && node scripts/compileAssets.js",
     "viteStart": "vite preview --outDir build",
 		"start": "node server.js",
+    "compileAssets": "node scripts/compileAssets.js --dev",
     "dev": "node --experimental-require-module scripts/dev.js",
     "quick": "node --experimental-require-module scripts/quick.js",
     "build": "node --experimental-require-module scripts/buildHomebrew.js && node --experimental-require-module scripts/buildAdmin.js",
