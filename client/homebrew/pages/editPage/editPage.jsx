@@ -26,7 +26,8 @@ import RecentNavItems from '../../navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import Meta    from '../../../../vitreum/headtags.js';
+import Headtags from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';

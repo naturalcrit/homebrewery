@@ -11,7 +11,8 @@ import ToolBar  from './toolBar/toolBar.jsx';
 //TODO: move to the brew renderer
 import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
-import Frame from 'react-frame-component';
+import frameComp from 'react-frame-component';
+const Frame = frameComp.default;
 import dedent from 'dedent';
 import { printCurrentBrew } from '../../../shared/helpers.js';
 
