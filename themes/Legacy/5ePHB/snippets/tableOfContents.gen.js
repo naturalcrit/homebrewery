@@ -47,7 +47,8 @@ const getTOC = (pages)=>{
 	return res;
 };
 
-export default function(props){
+function tableOfContentsGen(props){
+
 	const pages = props.brew.text.split('\\page');
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
@@ -69,4 +70,6 @@ export default function(props){
 ##### Table Of Contents
 ${markdown}
 </div>\n`;
-};
+}
+
+export default tableOfContentsGen;

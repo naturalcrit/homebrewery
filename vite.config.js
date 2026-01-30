@@ -1,0 +1,31 @@
+// vite.config.js
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
+
+export default defineConfig({
+	plugins: [react()],
+	build: {
+		outDir: "build",
+		emptyOutDir: true,
+		ssrManifest: true,
+		ssr:'./client/entry-server-homebrew.jsx',
+		rollupOptions: {
+			input: {
+				admin: path.resolve(__dirname, "client/admin/admin.jsx"),
+				homebrew: path.resolve(__dirname, "client/homebrew/homebrew.jsx"),
+			},
+			output: {
+				entryFileNames: "[name]/bundle.js",
+				chunkFileNames: "[name]/[name]-[hash].js",
+				assetFileNames: "[name]/[name].[ext]",
+			},
+		},
+	},
+	server: {
+		port:8000,
+		fs: {
+			allow: ["."],
+		},
+	},
+});

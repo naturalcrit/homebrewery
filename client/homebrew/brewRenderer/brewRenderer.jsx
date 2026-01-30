@@ -11,12 +11,13 @@ import ToolBar  from './toolBar/toolBar.jsx';
 //TODO: move to the brew renderer
 import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
-import Frame from 'react-frame-component';
+import frameComp from 'react-frame-component';
+const Frame = frameComp.default;
 import dedent from 'dedent';
 import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
-import { safeHTML } from './safeHTML.js';
+import safeHTML from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
