@@ -5,6 +5,11 @@ const isDev = !!process.argv.find((arg) => arg === "--dev");
 const compileAssets = async () => {
 	await fs.copy("./client/homebrew/favicon.ico", "./build/assets/favicon.ico");
 
+	let assets = fs.readdirSync("./shared/naturalcrit/styles");
+	for (const file of assets) {
+		await fs.copy(`./shared/naturalcrit/styles/${file}`, `./build/fonts/${file}`);
+	}
+
 	//v==----------------------------- COMPILE THEMES --------------------------------==v//
 
 	// Update list of all Theme files
@@ -52,14 +57,6 @@ const compileAssets = async () => {
 	}
 
 	await fs.outputFile("./themes/themes.json", JSON.stringify(themes, null, 2));
-
-	// await less.render(lessCode, {
-	// 	compress  : !dev,
-	// 	sourceMap : (dev ? {
-	// 		sourceMapFileInline: true,
-	// 		outputSourceFiles: true
-	// 	} : false),
-	// })
 
 	// Move assets
 	await fs.copy("./themes/fonts", "./build/fonts");

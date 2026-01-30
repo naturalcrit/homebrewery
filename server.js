@@ -13,7 +13,6 @@ async function start() {
 		vite = await createViteServer({
 			server: { middlewareMode: true },
 			appType: "custom",
-			logLevel: 'error',
 		});
 		
 	}
