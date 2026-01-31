@@ -59,6 +59,12 @@
 		}
 		&-corner { visibility : hidden; }
 	}
+
+	@-moz-document url-prefix() {
+		.columnSplit {
+			margin-bottom: 100vh;
+		}
+	}
 }
 
 .pane { position : relative; }
@@ -81,4 +87,5 @@
 		}
 	}
 	.headerNav { visibility : hidden; }
+
 }
