@@ -1,6 +1,6 @@
 import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
@@ -22,7 +22,6 @@ const WithRoute = ({ el: Element, ...rest })=>{
 };
 
 const Homebrew = (props)=>{
-	// SPA defaults / client-side state
 	const {
 		url = '',
 		version = '0.0.0',
