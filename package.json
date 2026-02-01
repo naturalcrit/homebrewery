@@ -16,7 +16,6 @@
     "build": "vite build",
     "preview": "vite preview",
     "compileAssets": "node scripts/compileAssets.js --dev",
-
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
@@ -92,8 +91,6 @@
     "@babel/plugin-transform-runtime": "^7.28.3",
     "@babel/preset-env": "^7.28.3",
     "@babel/preset-react": "^7.28.5",
-    "@babel/runtime": "^7.28.4",
-    "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^19.2.0",
     "@sanity/diff-match-patch": "^3.2.0",
     "@vitejs/plugin-react": "^5.1.2",
@@ -105,7 +102,6 @@
     "cors": "^2.8.5",
     "create-react-class": "^15.7.0",
     "dedent": "^1.7.1",
-    "expr-eval": "^2.0.2",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "3.0.0",
@@ -136,14 +132,11 @@
     "react-dom": "^18.3.1",
     "react-frame-component": "^4.1.3",
     "react-router": "^7.9.6",
-    "romans": "^3.1.0",
     "sanitize-filename": "1.6.3",
     "superagent": "^10.2.1",
-    "vite": "^7.3.1",
-    "written-number": "^0.11.1"
+    "vite": "^7.3.1"
   },
   "devDependencies": {
-    "@stylistic/stylelint-plugin": "^4.0.0",
     "babel-jest": "^30.2.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
     "eslint": "^9.39.1",
@@ -154,10 +147,7 @@
     "jest-expect-message": "^1.1.3",
     "jsdom": "^27.4.0",
     "jsdom-global": "^3.0.2",
-    "postcss-less": "^6.0.0",
     "stylelint": "^16.25.0",
-    "stylelint-config-recess-order": "^7.3.0",
-    "stylelint-config-recommended": "^17.0.0",
     "supertest": "^7.1.4"
   }
 }
