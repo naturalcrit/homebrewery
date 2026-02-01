@@ -1,7 +1,7 @@
 import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
 
@@ -21,31 +21,27 @@ const WithRoute = ({ el: Element, ...rest })=>{
 	return <Element {...rest} {...params} query={queryParams} />;
 };
 
-const Homebrew = ()=>{
+const Homebrew = (props)=>{
 	// SPA defaults / client-side state
-	const [account, setAccount] = useState(null);
-	const [version] = useState('0.0.0');
-	const [config, setConfig] = useState({});
-	const [brew, setBrew] = useState({
-		title     : '',
-		text      : '',
-		shareId   : null,
-		editId    : null,
-		createdAt : null,
-		updatedAt : null,
-		lang      : ''
-	});
-	const [userThemes, setUserThemes] = useState([]);
-	const [brews, setBrews] = useState([]);
+	const {
+		url = '',
+		version = '0.0.0',
+		account = null,
+		config,
+		brew = {
+			title     : '',
+			text      : '',
+			shareId   : null,
+			editId    : null,
+			createdAt : null,
+			updatedAt : null,
+			lang      : ''
+		},
+		userThemes,
+		brews
+	} = props;
 
-	// Maybe should fetch the data here?
-	//probably should fetch the object later
-	// useEffect(() => { fetch('/api/...').then(res => res.json()).then(setBrew) }, []);
-
-	// Set globals if needed (legacy)
-	global.account = account;
-	global.version = version;
-	global.config = config;
+	console.log('props: ', props);
 
 	const backgroundObject = ()=>{
 		if(config?.deployment || (config?.local && config?.development)) {

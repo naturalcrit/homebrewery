@@ -20,8 +20,12 @@ export default defineConfig({
 			},
 		},
 	},
+	// vite.config.js
+	define: {
+		global: "window",
+	},
 	server: {
-		port:8000,
+		port: 8000,
 		fs: {
 			allow: ["."],
 		},

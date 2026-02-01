@@ -8,7 +8,6 @@ const isProd = process.env.NODE_ENV === "production";
 async function start() {
 	let vite;
 
-	//==== Create Vite dev server only in development ====//
 	if (!isProd) {
 		vite = await createViteServer({
 			server: { middlewareMode: true },
@@ -17,16 +16,13 @@ async function start() {
 		
 	}
 
-	//==== Connect to the database ====//
 	await DB.connect(config).catch((err) => {
 		console.error("Database connection failed:", err);
 		process.exit(1);
 	});
 
-	//==== Create the Express app ====//
 	const app = await createApp(vite);
 
-	//==== Start listening ====//
 	const PORT = process.env.PORT || config.get("web_port") || 8000;
 	app.listen(PORT, () => {
 		const reset = "\x1b[0m"; // Reset to default style
@@ -42,5 +38,4 @@ async function start() {
 	});
 }
 
-//==== Start the server ====//
 start();

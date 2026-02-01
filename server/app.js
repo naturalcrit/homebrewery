@@ -12,8 +12,8 @@ import _       from 'lodash';
 import jwt     from 'jwt-simple';
 import express from 'express';
 import config  from './config.js';
+import path from 'path';
 import fs      from 'fs-extra';
-
 
 import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
@@ -23,7 +23,6 @@ import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
 import asyncHandler                from 'express-async-handler';
-import template                  from '../client/template.js';
 import { model as HomebrewModel }   from './homebrew.model.js';
 
 import { DEFAULT_BREW }              from './brewDefaults.js';
@@ -545,7 +544,8 @@ export default async function createApp(vite) {
 
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
-		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+		console.log(req.route);
+		//if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
 
 		const page = await renderPage(req, res);
 		if(!page) return;
@@ -554,6 +554,7 @@ export default async function createApp(vite) {
 
 	//Render the page
 	const renderPage = async (req, res)=>{
+		console.log('renderpage');
 	// Create configuration object
 		const configuration = {
 			local       : isLocalEnvironment,
@@ -573,18 +574,25 @@ export default async function createApp(vite) {
 			ogMeta      : req.ogMeta,
 			userThemes  : req.userThemes
 		};
-		const title = req.brew ? req.brew.title : '';
+		console.log('props: ',props);
+		return await renderSPA(req, props);
+	};
 
-		const page = await template(
-    	isProd ? {} : { vite, url: req.originalUrl },
-    	'homebrew',
-    	title,
-    	props
-  	).catch((err)=>{
-    	console.error(err);
-  	});
+	const renderSPA = async (req, props)=>{
+		const htmlPath = isProd ? path.resolve('build', 'index.html') : path.resolve('index.html');
+		let html = fs.readFileSync(htmlPath, 'utf-8');
+		console.log('index.html snippet:', html.slice(0, 200)); // see the first 200 chars
+		html = html.replace(
+			'</head>',
+			`<script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n</head>`
+		);
 
-		return page;
+		if(!isProd && vite?.transformIndexHtml) {
+			console.log('transforming');
+			return await vite.transformIndexHtml(req.originalUrl, html);
+		}
+
+		return html;
 	};
 
 	//v=====----- Error-Handling Middleware -----=====v//

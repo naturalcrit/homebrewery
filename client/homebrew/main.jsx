@@ -1,9 +1,7 @@
 import { createRoot } from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import Homebrew from "./homebrew.jsx";
 
-createRoot(document.getElementById("reactRoot")).render(
-  <BrowserRouter>
-    <App />
-  </BrowserRouter>
-);
+const props = window.__INITIAL_PROPS__ || {};
+console.log('props: ', window.__INITIAL_PROPS__);
+
+createRoot(document.getElementById("reactRoot")).render(<Homebrew {...props} />);
