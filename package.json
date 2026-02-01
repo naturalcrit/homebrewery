@@ -12,9 +12,9 @@
     "url": "git://github.com/naturalcrit/homebrewery.git"
   },
   "scripts": {
-    "dev": "vite",
+    "start": "node server.js",
     "build": "vite build && node scripts/compileAssets.js",
-    "preview": "vite preview --port 8000",
+    "preview": "vite preview",
     "compileAssets": "node scripts/compileAssets.js --dev",
 
     "lint": "eslint --fix",
