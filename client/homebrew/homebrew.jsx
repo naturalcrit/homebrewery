@@ -1,8 +1,7 @@
-
-import 'core-js/es/string/to-well-formed.js'; //Polyfill for older browsers
+import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React from 'react';
-import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router-dom';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
 
@@ -22,42 +21,46 @@ const WithRoute = ({ el: Element, ...rest })=>{
 	return <Element {...rest} {...params} query={queryParams} />;
 };
 
-const Homebrew = (props)=>{
-	const {
-		url = '',
-		version = '0.0.0',
-		account = null,
-		config,
-		brew = {
-			title     : '',
-			text      : '',
-			shareId   : null,
-			editId    : null,
-			createdAt : null,
-			updatedAt : null,
-			lang      : ''
-		},
-		userThemes,
-		brews
-	} = props;
+const Homebrew = ()=>{
+	// SPA defaults / client-side state
+	const [account, setAccount] = useState(null);
+	const [version] = useState('0.0.0');
+	const [config, setConfig] = useState({});
+	const [brew, setBrew] = useState({
+		title     : '',
+		text      : '',
+		shareId   : null,
+		editId    : null,
+		createdAt : null,
+		updatedAt : null,
+		lang      : ''
+	});
+	const [userThemes, setUserThemes] = useState([]);
+	const [brews, setBrews] = useState([]);
 
-	global.account       = account;
-	global.version       = version;
-	global.config        = config;
+	// Maybe should fetch the data here?
+	//probably should fetch the object later
+	// useEffect(() => { fetch('/api/...').then(res => res.json()).then(setBrew) }, []);
+
+	// Set globals if needed (legacy)
+	global.account = account;
+	global.version = version;
+	global.config = config;
 
 	const backgroundObject = ()=>{
-		if(global.config?.deployment || (config?.local && config?.development)){
-  			const bgText = global.config?.deployment || 'Local';
-  			return {
-    			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
-  			};
+		if(config?.deployment || (config?.local && config?.development)) {
+			const bgText = config?.deployment || 'Local';
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
+			};
 		}
 		return null;
 	};
+
 	updateLocalStorage();
 
 	return (
-		<Router location={url}>
+		<Router>
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
