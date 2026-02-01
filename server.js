@@ -10,7 +10,7 @@ async function start() {
 
 	if (!isProd) {
 		vite = await createViteServer({
-			server: { middlewareMode: 'html' },
+			server: { middlewareMode: true },
 			appType: "custom",
 		});
 		

@@ -574,18 +574,18 @@ export default async function createApp(vite) {
 			userThemes  : req.userThemes
 		};
 
-		console.log('props: ', !!props);
-
 		const htmlPath = isProd ? path.resolve('build', 'index.html') : path.resolve('index.html');
 		let html = fs.readFileSync(htmlPath, 'utf-8');
 
+		if(!isProd && vite?.transformIndexHtml) {
+			html = await vite.transformIndexHtml(req.originalUrl, html);
+		}
 
 		html = html.replace(
 			'<head>',
-			`<head><script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
+			`<head>\n<script id="props" >window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
 		);
 
-		console.log('html', html);
 		return html;
 	};
 

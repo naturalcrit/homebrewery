@@ -9,10 +9,6 @@ export default defineConfig({
 		outDir: "build",
 		emptyOutDir: true,
 		rollupOptions: {
-			input: {
-				admin: path.resolve(__dirname, "client/admin/admin.jsx"),
-				homebrew: path.resolve(__dirname, "client/homebrew/homebrew.jsx"),
-			},
 			output: {
 				entryFileNames: "[name]/bundle.js",
 				chunkFileNames: "[name]/[name]-[hash].js",

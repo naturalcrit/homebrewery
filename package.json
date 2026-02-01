@@ -14,8 +14,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/compileAssets.js",
-    "preview": "vite preview",
+    "preview": "vite preview --port 8000",
     "compileAssets": "node scripts/compileAssets.js --dev",
+
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
