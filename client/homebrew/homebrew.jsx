@@ -40,8 +40,6 @@ const Homebrew = (props)=>{
 		brews
 	} = props;
 
-	console.log('props: ', props);
-
 	const backgroundObject = ()=>{
 		if(config?.deployment || (config?.local && config?.development)) {
 			const bgText = config?.deployment || 'Local';

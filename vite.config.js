@@ -18,7 +18,7 @@ export default defineConfig({
 		},
 	},
 	define: {
-		global: "window",
+		global: "window.__INITIAL_PROPS__",
 	},
 	server: {
 		port: 8000,
