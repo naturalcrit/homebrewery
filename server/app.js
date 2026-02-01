@@ -542,12 +542,6 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
-		app.use((req, res, next) => {
-    	console.log('Before SPA middleware:', req.originalUrl);
-    	next();
-	});
-
-
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
 		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
@@ -559,7 +553,7 @@ export default async function createApp(vite) {
 
 	//Render the page
 	const renderPage = async (req, res)=>{
-		console.log('renderpage');
+
 		// Create configuration object
 		const configuration = {
 			local       : isLocalEnvironment,
@@ -579,20 +573,16 @@ export default async function createApp(vite) {
 			ogMeta      : req.ogMeta,
 			userThemes  : req.userThemes
 		};
-		console.log('props: ',!!props);
-		return await renderSPA(req, props);
-	};
 
-	const renderSPA = async (req, props)=>{
+		console.log('props: ', !!props);
+
 		const htmlPath = isProd ? path.resolve('build', 'index.html') : path.resolve('index.html');
 		let html = fs.readFileSync(htmlPath, 'utf-8');
 
-		if(!isProd && vite?.transformIndexHtml) {
-			html = await vite.transformIndexHtml(req.originalUrl, html);
-		}
+
 		html = html.replace(
-		  '<head>',
-		  `<head><script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
+			'<head>',
+			`<head><script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
 		);
 
 		console.log('html', html);
