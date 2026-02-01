@@ -542,10 +542,15 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+		app.use((req, res, next) => {
+    	console.log('Before SPA middleware:', req.originalUrl);
+    	next();
+	});
+
+
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
-		console.log(req.route);
-		//if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
+		if(!req.route) return res.redirect('/'); // Catch-all for invalid routes
 
 		const page = await renderPage(req, res);
 		if(!page) return;
@@ -555,7 +560,7 @@ export default async function createApp(vite) {
 	//Render the page
 	const renderPage = async (req, res)=>{
 		console.log('renderpage');
-	// Create configuration object
+		// Create configuration object
 		const configuration = {
 			local       : isLocalEnvironment,
 			publicUrl   : config.get('publicUrl') ?? '',
@@ -574,24 +579,23 @@ export default async function createApp(vite) {
 			ogMeta      : req.ogMeta,
 			userThemes  : req.userThemes
 		};
-		console.log('props: ',props);
+		console.log('props: ',!!props);
 		return await renderSPA(req, props);
 	};
 
 	const renderSPA = async (req, props)=>{
 		const htmlPath = isProd ? path.resolve('build', 'index.html') : path.resolve('index.html');
 		let html = fs.readFileSync(htmlPath, 'utf-8');
-		console.log('index.html snippet:', html.slice(0, 200)); // see the first 200 chars
-		html = html.replace(
-			'</head>',
-			`<script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n</head>`
-		);
 
 		if(!isProd && vite?.transformIndexHtml) {
-			console.log('transforming');
-			return await vite.transformIndexHtml(req.originalUrl, html);
+			html = await vite.transformIndexHtml(req.originalUrl, html);
 		}
+		html = html.replace(
+		  '<head>',
+		  `<head><script>window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
+		);
 
+		console.log('html', html);
 		return html;
 	};
 
