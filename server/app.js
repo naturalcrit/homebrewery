@@ -56,7 +56,9 @@ export default async function createApp(vite) {
 
 	app.set('trust proxy', 1 /* number of proxies between user and server */);
 
-	app.use(vite.middlewares);
+	if (vite) {
+		app.use(vite.middlewares);
+	}
 
 	app.use('/', serveCompressedStaticAssets('build'));
 	app.use(contentNegotiation);
