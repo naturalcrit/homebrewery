@@ -2,12 +2,13 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { generateAssetsPlugin } from "./vitePlugins/generateAssetsPlugin.js";
 
 export default defineConfig({
-	plugins: [react()],
+	plugins: [react(), generateAssetsPlugin()],
 	build: {
 		outDir: "build",
-		emptyOutDir: true,
+		emptyOutDir: false,
 		rollupOptions: {
 			output: {
 				entryFileNames: "[name]/bundle.js",
@@ -16,7 +17,6 @@ export default defineConfig({
 			},
 		},
 	},
-	// vite.config.js
 	define: {
 		global: "window",
 	},
