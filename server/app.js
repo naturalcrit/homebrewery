@@ -44,7 +44,6 @@ export default async function createApp(vite) {
 	const isProd = nodeEnv === 'production';
 	const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 
-
 	const sanitizeBrew = (brew, accessType)=>{
 		brew._id = undefined;
 		brew.__v = undefined;
@@ -114,7 +113,7 @@ export default async function createApp(vite) {
 	});
 
 	app.use(homebrewApi);
-	app.use(adminApi);
+	app.use(adminApi(vite));
 	app.use(vaultApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');

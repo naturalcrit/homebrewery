@@ -13,7 +13,6 @@ async function start() {
 			server: { middlewareMode: true },
 			appType: "custom",
 		});
-		
 	}
 
 	await DB.connect(config).catch((err) => {
