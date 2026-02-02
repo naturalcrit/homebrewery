@@ -1,6 +1,6 @@
 
 
-import Markdown from 'markdown.js';
+import Markdown from './shared/markdown.js';
 
 test('Processes the markdown within an HTML block if its just a class wrapper', function() {
 	const source = '<div>*Bold text*</div>';

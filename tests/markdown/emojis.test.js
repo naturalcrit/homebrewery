@@ -1,4 +1,4 @@
-import Markdown from 'markdown.js';
+import Markdown from './shared/markdown.js';
 import dedent from 'dedent';
 
 // Marked.js adds line returns after closing tags on some default tokens.
