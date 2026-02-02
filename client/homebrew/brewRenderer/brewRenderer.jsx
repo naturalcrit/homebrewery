@@ -1,5 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 import brewRendererStylesUrl from './brewRenderer.less?url';
+import brewRendererStylesUrl from './brewRenderer.less';
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
