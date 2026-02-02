@@ -1,5 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 import brewRendererStylesUrl from './brewRenderer.less?url';
+import headerNavStylesUrl from './headerNav/headerNav.less?url';
 import './brewRenderer.less';
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
@@ -18,6 +19,7 @@ import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
+console.log(HeaderNav);
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -31,6 +33,7 @@ const INITIAL_CONTENT = dedent`
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
+	<link href="${headerNavStylesUrl}" rel="stylesheet" />
 	<base target=_blank>
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
@@ -340,6 +343,7 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
+				{console.log(headerState)}
 				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 		</>
