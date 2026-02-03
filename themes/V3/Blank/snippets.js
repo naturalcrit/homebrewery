@@ -589,6 +589,21 @@ export default [
 			},
 
 			{
+				name        : 'True 20',
+				subsnippets : [
+					{
+						name : 'OGL 1.0 Section 15',
+						gen	 : LicenseGen.grTrue20Sec15,
+					},
+					{
+						name : 'True20 Logo',
+						gen  : LicenseGen.grTrue20CompatLogo,
+					}
+
+				]
+			},
+
+			{
 				name        : 'Wizards of the Coast',
 				icon        : 'fab fa-wizards-of-the-coast',
 				subsnippets : [
