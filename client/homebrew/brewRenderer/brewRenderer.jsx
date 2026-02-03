@@ -19,7 +19,6 @@ import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
-console.log(HeaderNav);
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -343,7 +342,6 @@ const BrewRenderer = (props)=>{
 						</>
 					}
 				</div>
-				{console.log(headerState)}
 				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
 			</Frame>
 		</>
