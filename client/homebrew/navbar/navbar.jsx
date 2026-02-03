@@ -1,11 +1,11 @@
-require('./navbar.less');
-const React = require('react');
-const createClass = require('create-react-class');
+import './navbar.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
-const PatreonNavItem = require('./patreon.navitem.jsx');
+import Nav from './nav.jsx';
+import PatreonNavItem from './patreon.navitem.jsx';
 
-const Navbar = createClass({
+const Navbar = createReactClass({
 	displayName     : 'Navbar',
 	getInitialState : function() {
 		return {
@@ -49,4 +49,4 @@ const Navbar = createClass({
 	}
 });
 
-module.exports = Navbar;
+export default Navbar;

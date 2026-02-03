@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const Markdown = require('markedLegacy');
+import _ from 'lodash';
+import Markdown from 'markedLegacy';
 const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -103,7 +103,7 @@ const voidTags = new Set([
 ]);
 
 
-module.exports = {
+export default {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		return Markdown(

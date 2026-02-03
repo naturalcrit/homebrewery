@@ -1,7 +1,6 @@
-require('./notificationAdd.less');
-const React = require('react');
-const { useState, useRef } = require('react');
-const request = require('superagent');
+import './notificationAdd.less';
+import React, { useState, useRef } from 'react';
+import request from 'superagent';
 
 const NotificationAdd = ()=>{
 	const [notificationResult, setNotificationResult] = useState(null);
@@ -106,4 +105,4 @@ const NotificationAdd = ()=>{
 	);
 };
 
-module.exports = NotificationAdd;
+export default NotificationAdd;
