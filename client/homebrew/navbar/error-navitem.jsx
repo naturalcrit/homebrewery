@@ -1,6 +1,6 @@
-require('./error-navitem.less');
-const React = require('react');
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import './error-navitem.less';
+import React from 'react';
+import Nav from './nav.jsx';
 
 const ErrorNavItem = ({ error = '', clearError })=>{
 	const response    = error.response;
@@ -144,4 +144,4 @@ const ErrorNavItem = ({ error = '', clearError })=>{
 	</Nav.item>;
 };
 
-module.exports = ErrorNavItem;
+export default ErrorNavItem;

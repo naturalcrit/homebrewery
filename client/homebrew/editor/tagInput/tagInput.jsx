@@ -1,7 +1,6 @@
-require('./tagInput.less');
-const React = require('react');
-const { useState, useEffect } = React;
-const _     = require('lodash');
+import './tagInput.less';
+import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 
 const TagInput = ({ unique = true, values = [], ...props })=>{
 	const [tempInputText, setTempInputText] = useState('');
@@ -102,4 +101,4 @@ const TagInput = ({ unique = true, values = [], ...props })=>{
 	);
 };
 
-module.exports = TagInput;
+export default TagInput;

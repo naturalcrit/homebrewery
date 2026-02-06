@@ -1,19 +1,18 @@
 /* eslint-disable max-lines */
+import dedent                    from 'dedent';
+import WatercolorGen 			 from './snippets/watercolor.gen.js';
+import ImageMaskGen              from './snippets/imageMask.gen.js';
+import FooterGen                 from './snippets/footer.gen.js';
+import LicenseGenWotC            from './snippets/licenseWotC.gen.js';
+import LicenseGenGNU             from './snippets/licenseGNU.gen.js';
+import LicenseGen 			     from './snippets/license.gen.js';
+import LicenseGenAelf            from './snippets/licenseAELF.js';
+import LicenseDTTRPGGCC          from './snippets/licenseDTRPGCC.gen.js';
+import LicenseMongoosePublishing from './snippets/licenseMongoose.gen.js';
+import TableOfContentsGen        from './snippets/tableOfContents.gen.js';
+import indexGen                  from './snippets/index.gen.js';
 
-const WatercolorGen 			= require('./snippets/watercolor.gen.js');
-const ImageMaskGen              = require('./snippets/imageMask.gen.js');
-const FooterGen                 = require('./snippets/footer.gen.js');
-const LicenseGenWotC            = require('./snippets/licenseWotC.gen.js');
-const LicenseGenGNU             = require('./snippets/licenseGNU.gen.js');
-const LicenseGen 			    = require('./snippets/license.gen.js');
-const LicenseGenAelf            = require('./snippets/licenseAELF.js');
-const LicenseDTTRPGGCC          = require('./snippets/licenseDTRPGCC.gen.js');
-const LicenseMongoosePublishing = require('./snippets/licenseMongoose.gen.js');
-const dedent                    = require('dedent-tabs').default;
-const TableOfContentsGen        = require('./snippets/tableOfContents.gen.js');
-const indexGen                  = require('./snippets/index.gen.js');
-
-module.exports = [
+export default [
 
 	{
 		groupName : 'Text Editor',
@@ -209,7 +208,7 @@ module.exports = [
 		view      : 'text',
 		snippets  : [
 			{
-				name : 'AELF',
+				name        : 'AELF',
 				subsnippets : [
 					{
 						name : 'Title Page Declaration',
@@ -329,51 +328,51 @@ module.exports = [
 				]
 			},
 			{
-				name  : 'DTRPG Community Content',
-				incon : 'fab fa-dtrpg',
+				name        : 'DTRPG Community Content',
+				incon       : 'fab fa-dtrpg',
 				subsnippets : [
 					{
-						name : "Chronicle System Guild Colophon",
+						name : 'Chronicle System Guild Colophon',
 						gen	 : LicenseDTTRPGGCC.greenRoninChronicleSystemGuildColophon,
 					},
 
 					{
-						name : 'Green Ronin\'s Age Creator\'s Alliance',
+						name        : 'Green Ronin\'s Age Creator\'s Alliance',
 						subsnippets : [
 							{
-								name : "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
 									{
-										name : "Colophon",
+										name : 'Colophon',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceColophon,
 									},
 
 									{
-										name : "Cover",
+										name : 'Cover',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceCover,
 									},
 								]
 							},
 							{
-								name : "Logos",
+								name        : 'Logos',
 								subsnippets : [
 									{
-										name : "Age",
+										name : 'Age',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceLogo,
 									},
 
 									{
-										name : "Blue Rose",
+										name : 'Blue Rose',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceBlueRoseLogo,
 									},
 
 									{
-										name : "Fantasy Age Compatible",
+										name : 'Fantasy Age Compatible',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceFantasyAgeCompatible,
 									},
 
 									{
-										name : "Modern AGE Compatible",
+										name : 'Modern AGE Compatible',
 										gen	 : LicenseDTTRPGGCC.greenRoninAgeCreatorsAllianceModernAGECompatible,
 									},
 								]
@@ -382,30 +381,30 @@ module.exports = [
 					},
 
 					{
-						name : "Hero Kid\'s Creators Guild",
+						name        : 'Hero Kid\'s Creators Guild',
 						subsnippets : [
 
 							{
-								name: "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
-							
+
 									{
-										name : "heroForgeHeroKidsCreatorsGuildColophon",
+										name : 'heroForgeHeroKidsCreatorsGuildColophon',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildColophon,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildSuperKidsColophon",
+										name : 'heroForgeHeroKidsCreatorsGuildSuperKidsColophon',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsColophon,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildCover",
+										name : 'heroForgeHeroKidsCreatorsGuildCover',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildCover,
 									},
 
 									{
-										name : "heroForgeHeroKidsCreatorsGuildSuperKidsCover",
+										name : 'heroForgeHeroKidsCreatorsGuildSuperKidsCover',
 										gen	 : LicenseDTTRPGGCC.heroForgeHeroKidsCreatorsGuildSuperKidsCover,
 									},
 								]
@@ -414,33 +413,33 @@ module.exports = [
 					},
 
 					{
-						name : "Travellers' Aid Society",
+						name        : 'Travellers\' Aid Society',
 						subsnippets : [
 							{
-								name : "Legal Statement",
+								name : 'Legal Statement',
 								gen  : LicenseMongoosePublishing.TASLegal,
 							}
 						]
 					},
-          
+
 					{
-						name : "Super-Powered by M&M",
+						name        : 'Super-Powered by M&M',
 						subsnippets : [
 							{
-								name : "Required Text",
+								name        : 'Required Text',
 								subsnippets : [
 									{
-										name : "Colophon",
+										name : 'Colophon',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMColophon,
 									},
 
 									{
-										name : "Cover",
+										name : 'Cover',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMCover,
 									},
 
 									{
-										name : "Section 15",
+										name : 'Section 15',
 										gen	 : LicenseDTTRPGGCC.greenRoninSuperPoweredMMSection15,
 									},
 								]
@@ -587,6 +586,21 @@ module.exports = [
 
 				]
 
+			},
+
+			{
+				name        : 'True 20',
+				subsnippets : [
+					{
+						name : 'OGL 1.0 Section 15',
+						gen	 : LicenseGen.grTrue20Sec15,
+					},
+					{
+						name : 'True20 Logo',
+						gen  : LicenseGen.grTrue20CompatLogo,
+					}
+
+				]
 			},
 
 			{

@@ -1,8 +1,7 @@
 /* eslint-disable max-lines */
-require('./toolBar.less');
-const React = require('react');
-const { useState, useEffect } = React;
-const _ = require('lodash');
+import './toolBar.less';
+import React, { useState, useEffect } from 'react';
+import _ from 'lodash';
 
 import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
 
@@ -259,4 +258,4 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	);
 };
 
-module.exports = ToolBar;
+export default ToolBar;
