@@ -11,13 +11,10 @@ export default function(props){
 			get PDF
 		</Nav.item>
 		<Nav.item color='orange' icon='fas fa-file-code' href={`/export/slimHTML/${props?.brew?.editId || props?.brew?.shareId}`}>
-			get HTML (Slim)
+			get HTML
 		</Nav.item>
 		<Nav.item color='orange' icon='fas fa-file-archive' href={`/export/zipHTML/${props?.brew?.editId || props?.brew?.shareId}`}>
 			get HTML (Zip)
-		</Nav.item>
-		<Nav.item color='orange' icon='far fa-file-code'  href={`/export/inlineHTML/${props?.brew?.editId || props?.brew?.shareId}`}>
-			get HTML (Inline)
 		</Nav.item>
 	</Nav.dropdown>;
 };
