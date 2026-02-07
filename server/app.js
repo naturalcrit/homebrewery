@@ -454,8 +454,8 @@ app.get('/new', asyncHandler(async(req, res, next)=>{
 	return next();
 }));
 
-//Share Page
-app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+
+const shareEmbedCommon = async (req)=>{
 	const { brew } = req;
 	req.ogMeta = { ...defaultMetaTags,
 		title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
@@ -478,6 +478,17 @@ app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(asyn
 
 	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 	splitTextStyleAndMetadata(req.brew);
+};
+
+//Share Page
+app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	shareEmbedCommon(req);
+	return next();
+}));
+
+//Embed Page
+app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	shareEmbedCommon(req);
 	return next();
 }));
 
