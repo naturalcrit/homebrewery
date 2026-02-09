@@ -1,11 +1,11 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const Moment = require('moment');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import Moment from 'moment';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+import Nav from './nav.jsx';
 
 
-const MetadataNav = createClass({
+const MetadataNav = createReactClass({
 	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
 		return {
@@ -32,7 +32,7 @@ const MetadataNav = createClass({
 		return <>
 			{this.props.brew.authors.map((author, idx, arr)=>{
 				const spacer = arr.length - 1 == idx ? <></> : <span>, </span>;
-				return <span key={idx}><a className='userPageLink' href={`/user/${author}`}>{author}</a>{spacer}</span>;
+				return <span key={idx}><a className='userPageLink' href={`/user/${encodeURIComponent(author)}`}>{author}</a>{spacer}</span>;
 			})}
 		</>;
 	},
@@ -86,4 +86,4 @@ const MetadataNav = createClass({
 
 });
 
-module.exports = MetadataNav;
+export default MetadataNav;

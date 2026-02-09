@@ -1,14 +1,14 @@
 /* eslint-disable max-lines */
 
-const MagicGen           = require('./snippets/magic.gen.js');
-const ClassTableGen      = require('./snippets/classtable.gen.js');
-const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
-const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
-const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const TableOfContentsGen = require('./snippets/tableOfContents.gen.js');
-const dedent             = require('dedent-tabs').default;
+import MagicGen           from './snippets/magic.gen.js';
+import ClassTableGen      from './snippets/classtable.gen.js';
+import MonsterBlockGen    from './snippets/monsterblock.gen.js';
+import ClassFeatureGen    from './snippets/classfeature.gen.js';
+import CoverPageGen       from './snippets/coverpage.gen.js';
+import TableOfContentsGen from './snippets/tableOfContents.gen.js';
+import dedent             from 'dedent';
 
-module.exports = [
+export default [
 
 	{
 		groupName : 'Text Editor',

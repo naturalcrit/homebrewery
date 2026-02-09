@@ -1,6 +1,6 @@
-const Markdown = require('../../../../shared/naturalcrit/markdown.js');
+import Markdown from '../../../../shared/markdown.js';
 
-module.exports = {
+export default {
 	createFooterFunc : function(headerSize=1){
 		return (props)=>{
 			const cursorPos = props.cursorPos;

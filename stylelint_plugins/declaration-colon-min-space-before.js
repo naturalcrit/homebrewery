@@ -1,5 +1,5 @@
-const stylelint = require('stylelint');
-const { isNumber } = require('stylelint/lib/utils/validateTypes.cjs');
+import stylelint  from 'stylelint';
+import { isNumber } from 'stylelint/lib/utils/validateTypes.mjs';
 
 const { report, ruleMessages, validateOptions } = stylelint.utils;
 const ruleName = 'naturalcrit/declaration-colon-min-space-before';
@@ -7,9 +7,8 @@ const messages = ruleMessages(ruleName, {
 	expected : (num)=>`Expected at least ${num} space${num == 1 ? '' : 's'} before ":"`
 });
 
-
-module.exports = stylelint.createPlugin(ruleName, function getPlugin(primaryOption, secondaryOptionObject, context) {
-	return function lint(postcssRoot, postcssResult) {
+const ruleFunction = (primaryOption, secondaryOptionObject, context)=>{
+	return (postcssRoot, postcssResult)=>{
 
 		const validOptions = validateOptions(
 			postcssResult,
@@ -30,9 +29,9 @@ module.exports = stylelint.createPlugin(ruleName, function getPlugin(primaryOpti
 			const between = decl.raws.between;
 			const colonIndex = between.indexOf(':');
 
-			if(between.slice(0, colonIndex).length >= primaryOption) {
+			if(between.slice(0, colonIndex).length >= primaryOption)
 				return;
-			}
+
 			if(isAutoFixing) { //We are in “fix” mode
 				decl.raws.between = between.slice(0, colonIndex).replace(/\s*$/, ' '.repeat(primaryOption)) + between.slice(colonIndex);
 			} else {
@@ -46,7 +45,9 @@ module.exports = stylelint.createPlugin(ruleName, function getPlugin(primaryOpti
 			}
 		});
 	};
-});
+};
 
-module.exports.ruleName = ruleName;
-module.exports.messages = messages;
+ruleFunction.ruleName = ruleName;
+ruleFunction.messages = messages;
+
+export default stylelint.createPlugin(ruleName, ruleFunction);

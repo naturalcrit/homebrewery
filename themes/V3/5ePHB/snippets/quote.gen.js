@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const quotes = [
 	'The sword glinted in the dim light, its edges keen and deadly. As the adventurer reached for it, he couldn\'t help but feel a surge of excitement mixed with fear. This was no ordinary blade.',
@@ -40,7 +40,7 @@ const books = [
 	'Frost and Fury',
 
 ];
-module.exports = ()=>{
+export default ()=>{
 	return `
 {{quote
 ${_.sample(quotes)}

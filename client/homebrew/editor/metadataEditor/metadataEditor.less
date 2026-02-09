@@ -1,20 +1,31 @@
 @import 'naturalcrit/styles/colors.less';
 
+.userThemeName {
+	padding-right : 10px;
+	padding-left  : 10px;
+}
+
 .metadataEditor {
 	position         : absolute;
-	z-index          : 5;
 	box-sizing       : border-box;
 	width            : 100%;
 	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
 	padding          : 25px;
 	overflow-y       : auto;
+	font-size        : 13px;
 	background-color : #999999;
 
-	.sectionHead {
-		margin      : 20px 0;
-		font-weight : 1000;
-
-		&:first-of-type { margin-top : 0; }
+	h1 {
+		margin         : 0 0 40px;
+		font-weight    : bold;
+		text-transform : uppercase;
+	}
+	
+	h2 {
+		margin        : 20px 0;
+		font-weight   : bold;
+		color         : #555555;
+		border-bottom : 2px solid gray;
 	}
 
 	& > div { margin-bottom : 10px; }
@@ -43,7 +54,7 @@
 		min-width     : 200px;
 		& > label {
 			width          : 80px;
-			font-size      : 11px;
+			font-size      : 0.9em;
 			font-weight    : 800;
 			line-height    : 1.8em;
 			text-transform : uppercase;
@@ -52,19 +63,25 @@
 			flex           : 1 1 auto;
 			width          : 50px;
 			&:invalid { background : #FFB9B9; }
+			small {
+				display     : block;
+				font-size   : 0.9em;
+				font-style  : italic;
+				line-height : 1.4em;
+			}
 		}
 		input[type='text'], textarea {
 			border : 1px solid gray;
 			&:focus { outline : 1px solid #444444; }
 		}
-		&.thumbnail {
-			height      : 1.4em;
+		&.thumbnail, &.themes {
 			label { line-height : 2.0em; }
 			.value {
 				overflow      : hidden;
 				text-overflow : ellipsis;
 			}
 			button {
+				.colorButton();
 				padding          : 0px 5px;
 				color            : white;
 				background-color : black;
@@ -73,12 +90,22 @@
 			}
 		}
 
+		&.themes {
+			.value {
+				overflow      : visible;
+				text-overflow : auto;
+			}
+			button {
+				padding-right : 5px;
+				padding-left  : 5px;
+			}
+		}
+
 		&.description {
 			flex : 1;
 			textarea.value {
 				height      : auto;
 				font-family : 'Open Sans', sans-serif;
-				font-size   : 0.8em;
 				resize      : none;
 			}
 		}
@@ -86,12 +113,6 @@
 		&.language .language-dropdown {
 			z-index   : 200;
 			max-width : 150px;
-		}
-		small {
-			display     : inline-block;
-			font-size   : 0.6em;
-			font-style  : italic;
-			line-height : 1.4em;
 		}
 	}
 
@@ -113,17 +134,12 @@
 			display        : inline-flex;
 			align-items    : center;
 			margin-right   : 15px;
-			font-size      : 0.7em;
+			font-size      : 0.9em;
 			font-weight    : 800;
-			white-space    : nowrap;
 			vertical-align : middle;
+			white-space    : nowrap;
 			cursor         : pointer;
 			user-select    : none;
-		}
-		a {
-			display     : inline-flex;
-			font-size   : 0.7em;
-			font-weight : 800;
 		}
 		input {
 			margin         : 3px;
@@ -136,110 +152,89 @@
 		margin-bottom : 15px;
 		button { width : 100%; }
 		button.publish {
-			.button(@blueLight);
+			.colorButton(@blueLight);
 		}
 		button.unpublish {
-			.button(@silver);
+			.colorButton(@silver);
 		}
 	}
 
 	.delete.field .value {
 		button {
-			.button(@red);
+			.colorButton(@red);
 		}
 	}
-	.authors.field .value {
-		font-size      : 0.8em;
-		line-height    : 1.5em;
-	}
+	.authors.field .value { line-height    : 1.5em; }
 
 	.themes.field {
-		font-size : 13.33px;
-		.navDropdownContainer {
+		& .dropdown-container {
 			position         : relative;
 			z-index          : 100;
 			background-color : white;
-			&.disabled {
-				font-style       : italic;
-				color            : dimgray;
-				background-color : darkgray;
-			}
-			& > div:first-child {
-				padding           : 6px 3px;
-				background-color  : inherit;
-				border            : 2px solid rgb(118,118,118);
-				i { float	: right; }
-				&:hover {
-					color            : white;
-					background-color : @blue;
+		}
+		& .dropdown-options { overflow-y : visible; }
+		.disabled {
+			font-style       : italic;
+			color            : dimgray;
+			background-color : darkgray;
+		}
+		.item {
+			position          : relative;
+			padding           : 3px 3px;
+			overflow          : visible;
+			background-color  : white;
+			border-top        : 1px solid rgb(118, 118, 118);
+			.preview {
+				position       : absolute;
+				top            : 0;
+				right          : 0;
+				z-index        : 1;
+				display        : flex;
+				flex-direction : column;
+				width          : 200px;
+				overflow       : hidden;
+				color          : black;
+				background     : #CCCCCC;
+				border-radius  : 5px;
+				box-shadow     : 0 0 5px black;
+				opacity        : 0;
+				transition     : opacity 250ms ease;
+				h6 {
+					padding-block  : 0.5em;
+					padding-inline : 1em;
+					font-weight    : 900;
+					border-bottom  : 2px solid hsl(0,0%,40%);
 				}
 			}
-			.navDropdown .item > p {
-				width         : 45%;
-				height        : 1.1em;
-				overflow      : hidden;
-				text-overflow : ellipsis;
-				white-space   : nowrap;
-			}			
-			.navDropdown {
-				position	  : absolute;
-				width		    : 100%;
-				box-shadow	: 0px 5px 10px rgba(0, 0, 0, 0.3);
-				.item {
-					position          : relative;
-					padding           : 3px 3px;
-					overflow          : visible;
-					background-color  : white;
-					border-top        : 1px solid rgb(118, 118, 118);
-					.preview {
-						position       : absolute;
-						top            : 0;
-						right          : 0;
-						z-index        : 1;
-						display        : flex;
-						flex-direction : column;
-						width          : 200px;
-						overflow       : hidden;
-						color          : black;
-						background     : #CCCCCC;
-						border-radius  : 5px;
-						box-shadow     : 0 0 5px black;
-						opacity        : 0;
-						transition     : opacity 250ms ease;
-						h6 {
-							padding-block  : 0.5em;
-							padding-inline : 1em;
-							font-weight    : 900;
-							border-bottom  : 2px solid hsl(0,0%,40%);
-						}
-					}
-					&:hover {
-						color            : white;
-						background-color : @blue;
-					}
-					&:hover > .preview { opacity : 1; }
-					.texture-container {
-						position   : absolute;
-						top        : 0;
-						left       : 0;
-						width      : 100%;
-						height     : 100%;
-						min-height : 100%;
-						overflow   : hidden;
-						> img {
-							position            : absolute;
-							top                 : 0px;
-							right               : 0;
-							width               : 50%;
-							min-height          : 100%;
-							-webkit-mask-image  : linear-gradient(90deg, transparent, black 20%);
-							mask-image          : linear-gradient(90deg, transparent, black 20%);
-						}
-					}
+
+			.texture-container {
+				position   : absolute;
+				top        : 0;
+				left       : 0;
+				width      : 100%;
+				height     : 100%;
+				min-height : 100%;
+				overflow   : hidden;
+				> img {
+					position            : absolute;
+					top                 : 0;
+					right               : 0;
+					width               : 50%;
+					min-height          : 100%;
+					-webkit-mask-image  : linear-gradient(90deg, transparent, black 20%);
+					mask-image          : linear-gradient(90deg, transparent, black 20%);
 				}
 			}
+
+			&:hover {
+				color            : white;
+				background-color : @blue;
+				filter           : unset;
+			}
+			&:hover > .preview { opacity : 1; }
 		}
 	}
+
 	.field .list {
 		display   : flex;
 		flex      : 1 0;
@@ -258,27 +253,26 @@
 			color      : white;
 			text-align : center;
 			cursor     : pointer;
-
+	
 			i {
 				position  : relative;
 				top       : 50%;
 				transform : translateY(-50%);
 			}
-
+	
 			&:not(:last-child) { border-right : 1px solid black; }
-
+	
 			&:last-child { border-radius : 0 0.5em 0.5em 0; }
 		}
 
-		.badge {
+		.tag {
 			padding          : 0.3em;
 			margin           : 2px;
 			font-size        : 0.9em;
 			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 
-			.icon {
-				#groupedIcon; }
+			.icon { #groupedIcon; }
 		}
 
 		.input-group {
@@ -294,16 +288,29 @@
 				height    : 100%;
 			}
 
-			.invalid:focus { background-color : pink; }
+			.input-group {
+				height : ~'calc(.9em + 4px + .6em)';
 
-			.icon {
-				#groupedIcon;
-				top       : -0.54em;
-				right     : 1px;
-				height    : 97%;
-				font-size : 0.8em;
+				input { border-radius : 0.5em 0 0 0.5em; }
 
-				i { font-size : 1.125em; }
+				input:last-child { border-radius : 0.5em; }
+
+				.value {
+					width     : 7.5vw;
+					min-width : 75px;
+					height    : 100%;
+				}
+
+				.invalid:focus { background-color : pink; }
+
+				.icon {
+					#groupedIcon;
+					top       : -0.54em;
+					right     : 1px;
+					height    : 97%;
+
+					i { font-size : 1.125em; }
+				}
 			}
 		}
 	}

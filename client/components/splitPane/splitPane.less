@@ -1,0 +1,68 @@
+
+.splitPane {
+	position       : relative;
+	display        : flex;
+	flex-direction : row;
+	height         : 100%;
+	outline        : none;
+	.pane {
+		flex       : 1;
+		overflow-x : hidden;
+		overflow-y : hidden;
+	}
+	.divider {
+		position         : relative;
+		display          : table;
+		width            : 15px;
+		height           : 100%;
+		text-align       : center;
+		touch-action     : none;
+		cursor           : ew-resize;
+		background-color : #BBBBBB;
+		.dots {
+			display        : table-cell;
+			vertical-align : middle;
+			text-align     : center;
+			i {
+				display   : block !important;
+				margin    : 10px 0px;
+				font-size : 6px;
+				color     : #666666;
+			}
+		}
+		&:hover,&.dragging { background-color : #999999; }
+	}
+	.arrow {
+		position         : absolute;
+		left             : 50%;
+		z-index          : 999;
+		width            : 25px;
+		height           : 25px;
+		font-size        : 1.2em;
+		text-align       : center;
+		cursor           : pointer;
+		background-color : #DDDDDD;
+		border           : 2px solid #BBBBBB;
+		border-radius    : 15px;
+		box-shadow       : 0 4px 5px #0000007F;
+		translate        : -50%;
+		&.left {
+			.tooltipLeft('Jump to location in Editor');
+			top : 30px;
+		}
+		&.right {
+			.tooltipRight('Jump to location in Preview');
+			top : 60px;
+		}
+		&.lock {
+			.tooltipRight('De-sync Editor and Preview locations.');
+			top        : 90px;
+			background : #666666;
+		}
+		&.unlock {
+			.tooltipRight('Sync Editor and Preview locations');
+			top : 90px;
+		}
+		&:hover { background-color : #666666; }
+	}
+}

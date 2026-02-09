@@ -1,18 +1,19 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
-require('./editor.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
-const Markdown = require('../../../shared/naturalcrit/markdown.js');
+import './editor.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import dedent from 'dedent';
+import Markdown from '../../../shared/markdown.js';
 
-const CodeEditor = require('naturalcrit/codeEditor/codeEditor.jsx');
-const SnippetBar = require('./snippetbar/snippetbar.jsx');
-const MetadataEditor = require('./metadataEditor/metadataEditor.jsx');
+import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
+import SnippetBar from './snippetbar/snippetbar.jsx';
+import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
-const EDITOR_THEME_KEY = 'HOMEBREWERY-EDITOR-THEME';
+const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-const SNIPPETBAR_HEIGHT = 25;
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -21,9 +22,16 @@ const DEFAULT_STYLE_TEXT = dedent`
 					color: black;
 				}`;
 
+const DEFAULT_SNIPPET_TEXT = dedent`
+				\snippet example snippet
+				
+				The text between \`\snippet title\` lines will become a snippet of name \`title\` as this example provides.
+				
+				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
+`;
 let isJumping = false;
 
-const Editor = createClass({
+const Editor = createReactClass({
 	displayName     : 'Editor',
 	getDefaultProps : function() {
 		return {
@@ -32,10 +40,8 @@ const Editor = createClass({
 				style : ''
 			},
 
-			onTextChange  : ()=>{},
-			onStyleChange : ()=>{},
-			onMetaChange  : ()=>{},
-			reportError   : ()=>{},
+			onBrewChange : ()=>{},
+			reportError  : ()=>{},
 
 			onCursorPageChange : ()=>{},
 			onViewPageChange   : ()=>{},
@@ -50,8 +56,9 @@ const Editor = createClass({
 	},
 	getInitialState : function() {
 		return {
-			editorTheme : this.props.editorTheme,
-			view        : 'text' //'text', 'style', 'meta'
+			editorTheme      : this.props.editorTheme,
+			view             : 'text', //'text', 'style', 'meta', 'snippet'
+			snippetBarHeight : 26,
 		};
 	},
 
@@ -61,17 +68,16 @@ const Editor = createClass({
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
+	isSnip  : function() {return this.state.view == 'snippet';},
 
 	componentDidMount : function() {
 
-		this.updateEditorSize();
 		this.highlightCustomMarkdown();
-		window.addEventListener('resize', this.updateEditorSize);
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		this.codeEditor.current.codeMirror.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
-		this.codeEditor.current.codeMirror.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
+		this.codeEditor.current.codeMirror?.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
+		this.codeEditor.current.codeMirror?.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
@@ -79,10 +85,15 @@ const Editor = createClass({
 				editorTheme : editorTheme
 			});
 		}
-	},
+		const snippetBar = document.querySelector('.editor > .snippetBar');
+		if (!snippetBar) return;
 
-	componentWillUnmount : function() {
-		window.removeEventListener('resize', this.updateEditorSize);
+		this.resizeObserver = new ResizeObserver(entries => {
+			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
+			this.setState({ snippetBarHeight: height });
+		});
+
+		this.resizeObserver.observe(snippetBar);
 	},
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
@@ -105,6 +116,10 @@ const Editor = createClass({
 		}
 	},
 
+	componentWillUnmount() {
+		if (this.resizeObserver) this.resizeObserver.disconnect();
+	},
+
 	handleControlKeys : function(e){
 		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 		const LEFTARROW_KEY = 37;
@@ -117,24 +132,16 @@ const Editor = createClass({
 		}
 	},
 
-	updateEditorSize : function() {
-		if(this.codeEditor.current) {
-			let paneHeight = this.editor.current.parentNode.clientHeight;
-			paneHeight -= SNIPPETBAR_HEIGHT;
-			this.codeEditor.current.codeMirror.setSize(null, paneHeight);
-		}
-	},
-
 	updateCurrentCursorPage : function(cursor) {
-		const lines = this.props.brew.text.split('\n').slice(0, cursor.line + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onCursorPageChange(currentPage);
 	},
 
 	updateCurrentViewPage : function(topScrollLine) {
-		const lines = this.props.brew.text.split('\n').slice(0, topScrollLine + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? /^\\page$/ : /\\page/;
+		const lines = this.props.brew.text.split('\n').slice(1, topScrollLine + 1);
+		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
 		this.props.onViewPageChange(currentPage);
 	},
@@ -145,25 +152,25 @@ const Editor = createClass({
 
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+
 		this.setState({
 			view : newView
 		}, ()=>{
-			this.codeEditor.current?.codeMirror.focus();
-			this.updateEditorSize();
-		});	//TODO: not sure if updateeditorsize needed
+			this.codeEditor.current?.codeMirror?.focus();
+		});
 	},
 
 	highlightCustomMarkdown : function(){
-		if(!this.codeEditor.current) return;
-		if(this.state.view === 'text')  {
+		if(!this.codeEditor.current?.codeMirror) return;
+		if((this.state.view === 'text') ||(this.state.view === 'snippet')) {
 			const codeMirror = this.codeEditor.current.codeMirror;
 
-			codeMirror.operation(()=>{ // Batch CodeMirror styling
+			codeMirror?.operation(()=>{ // Batch CodeMirror styling
 
 				const foldLines = [];
 
 				//reset custom text styles
-				const customHighlights = codeMirror.getAllMarks().filter((mark)=>{
+				const customHighlights = codeMirror?.getAllMarks().filter((mark)=>{
 					// Record details of folded sections
 					if(mark.__isFold) {
 						const fold = mark.find();
@@ -174,14 +181,20 @@ const Editor = createClass({
 
 				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
 
-				let editorPageCount = 2; // start page count from page 2
+				let userSnippetCount = 1; // start snippet count from snippet 1
+				let editorPageCount = 1; // start page count from page 1
 
-				_.forEach(this.props.brew.text.split('\n'), (line, lineNumber)=>{
+				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
+				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
+
+					const tabHighlight = this.state.view === 'text' ? 'pageLine' : 'snippetLine';
+					const textOrSnip = this.state.view === 'text';
 
 					//reset custom line styles
-					codeMirror.removeLineClass(lineNumber, 'background', 'pageLine');
-					codeMirror.removeLineClass(lineNumber, 'text');
-					codeMirror.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
+					codeMirror?.removeLineClass(lineNumber, 'background', 'pageLine');
+					codeMirror?.removeLineClass(lineNumber, 'background', 'snippetLine');
+					codeMirror?.removeLineClass(lineNumber, 'text');
+					codeMirror?.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
 
 					// Don't process lines inside folded text
 					// If the current lineNumber is inside any folded marks, skip line styling
@@ -190,23 +203,26 @@ const Editor = createClass({
 
 					// Styling for \page breaks
 					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(/^\\page$/))) {
+				     (this.props.renderer == 'V3'     && line.match(textOrSnip ? PAGEBREAK_REGEX_V3 : SNIPPETBREAK_REGEX_V3))) {
+
+						if((lineNumber > 0) && (textOrSnip))      // Since \page is optional on first line of document,
+							editorPageCount += 1; // don't use it to increment page count; stay at 1
+						else if(this.state.view !== 'text')	userSnippetCount += 1;
 
 						// add back the original class 'background' but also add the new class '.pageline'
-						codeMirror.addLineClass(lineNumber, 'background', 'pageLine');
+						codeMirror?.addLineClass(lineNumber, 'background', tabHighlight);
 						const pageCountElement = Object.assign(document.createElement('span'), {
 							className   : 'editor-page-count',
-							textContent : editorPageCount
+							textContent : textOrSnip ? editorPageCount : userSnippetCount
 						});
-						codeMirror.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-
-						editorPageCount += 1;
+						codeMirror?.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
 					};
 
-					// New Codemirror styling for V3 renderer
-					if(this.props.renderer == 'V3') {
-						if(line.match(/^\\column$/)){
-							codeMirror.addLineClass(lineNumber, 'text', 'columnSplit');
+
+					// New CodeMirror styling for V3 renderer
+					if(this.props.renderer === 'V3') {
+						if(line.match(/^\\column(?:break)?$/)){
+							codeMirror?.addLineClass(lineNumber, 'text', 'columnSplit');
 						}
 
 						// definition lists
@@ -215,14 +231,14 @@ const Editor = createClass({
 							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
 							let match;
 							while ((match = regex.exec(line)) != null){
-								codeMirror.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'dl-highlight' });
-								codeMirror.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
-								codeMirror.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
+								codeMirror?.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'dl-highlight' });
+								codeMirror?.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
+								codeMirror?.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
 								const ddIndex = match.indices[2][0];
 								const colons = /::/g;
 								const colonMatches = colons.exec(match[2]);
 								if(colonMatches !== null){
-									codeMirror.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight' });
+									codeMirror?.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight' });
 								}
 							}
 						}
@@ -239,7 +255,7 @@ const Editor = createClass({
 								const match = subRegex.exec(line) || superRegex.exec(line);
 								if(match) {
 									isSuper = !subRegex.lastIndex;
-									codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
+									codeMirror?.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
 								}
 								startIndex = line.indexOf('^', Math.max(startIndex + 1, subRegex.lastIndex, superRegex.lastIndex));
 							}
@@ -250,7 +266,7 @@ const Editor = createClass({
 							const regex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
 							let match;
 							while ((match = regex.exec(line)) != null) {
-								codeMirror.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
+								codeMirror?.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
 							}
 						}
 						// Highlight inline spans {{content}}
@@ -268,7 +284,7 @@ const Editor = createClass({
 									blockCount = 0;
 									continue;
 								}
-								codeMirror.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
+								codeMirror?.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
 							}
 						} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
 							// Highlight block divs {{\n Content \n}}
@@ -277,7 +293,7 @@ const Editor = createClass({
 							const match = line.match(/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/);
 							if(match)
 								endCh = match.index+match[0].length;
-							codeMirror.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
+							codeMirror?.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
 						}
 
 						// Emojis
@@ -298,11 +314,11 @@ const Editor = createClass({
 									const endPos   = { line: lineNumber, ch: match.index + match[0].length };
 
 									// Iterate over conflicting marks and clear them
-									const marks = codeMirror.findMarks(startPos, endPos);
+									const marks = codeMirror?.findMarks(startPos, endPos);
 									marks.forEach(function(marker) {
 										if(!marker.__isFold) marker.clear();
 									});
-									codeMirror.markText(startPos, endPos, { className: 'emoji' });
+									codeMirror?.markText(startPos, endPos, { className: 'emoji' });
 								}
 								startIndex = line.indexOf(':', Math.max(startIndex + 1, emojiRegex.lastIndex));
 							}
@@ -314,17 +330,17 @@ const Editor = createClass({
 	},
 
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || isJumping)
+		if(!window || !this.isText() || isJumping)
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
+		
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
+			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
@@ -355,58 +371,58 @@ const Editor = createClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText || isJumping)
+		if(!this.isText() || isJumping)
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? /^\\page$/gm : /\\page/;
+		const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
 		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
 		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
 
-		let currentY = this.codeEditor.current.codeMirror.getScrollInfo().top;
-		let targetY  = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+		let currentY = this.codeEditor.current.codeMirror?.getScrollInfo().top;
+		let targetY  = this.codeEditor.current.codeMirror?.heightAtLine(targetLine, 'local', true);
 
-		const checkIfScrollComplete = ()=>{
-			let scrollingTimeout;
+		let scrollingTimeout;
+		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
-				this.codeEditor.current.codeMirror.off('scroll', checkIfScrollComplete);
+				this.codeEditor.current.codeMirror?.off('scroll', checkIfScrollComplete);
 			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
 		};
 
 		isJumping = true;
 		checkIfScrollComplete();
-		this.codeEditor.current.codeMirror.on('scroll', checkIfScrollComplete);
+		if (this.codeEditor.current?.codeMirror) {
+			this.codeEditor.current.codeMirror?.on('scroll', checkIfScrollComplete);
+		}
 
 		if(smooth) {
 			//Scroll 1/10 of the way every 10ms until 1px off.
 			const incrementalScroll = setInterval(()=>{
 				currentY += (targetY - currentY) / 10;
-				this.codeEditor.current.codeMirror.scrollTo(null, currentY);
+				this.codeEditor.current.codeMirror?.scrollTo(null, currentY);
 
 				// Update target: target height is not accurate until within +-10 lines of the visible window
 				if(Math.abs(targetY - currentY > 100))
-					targetY = this.codeEditor.current.codeMirror.heightAtLine(targetLine, 'local', true);
+					targetY = this.codeEditor.current.codeMirror?.heightAtLine(targetLine, 'local', true);
 
 				// End when close enough
 				if(Math.abs(targetY - currentY) < 1) {
-					this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+					this.codeEditor.current.codeMirror?.scrollTo(null, targetY);  // Scroll any remaining difference
 					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-					this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+					this.codeEditor.current.codeMirror?.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 					clearInterval(incrementalScroll);
 				}
 			}, 10);
 		} else {
-			this.codeEditor.current.codeMirror.scrollTo(null, targetY);  // Scroll any remaining difference
+			this.codeEditor.current.codeMirror?.scrollTo(null, targetY);  // Scroll any remaining difference
 			this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-			this.codeEditor.current.codeMirror.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
+			this.codeEditor.current.codeMirror?.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
 		}
 	},
 
 	//Called when there are changes to the editor's dimensions
-	update : function(){
-		this.codeEditor.current?.updateSize();
-	},
+	update : function(){},
 
 	updateEditorTheme : function(newTheme){
 		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
@@ -428,9 +444,10 @@ const Editor = createClass({
 					language='gfm'
 					view={this.state.view}
 					value={this.props.brew.text}
-					onChange={this.props.onTextChange}
+					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isStyle()){
@@ -440,10 +457,11 @@ const Editor = createClass({
 					language='css'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-					onChange={this.props.onStyleChange}
+					onChange={this.props.onBrewChange('style')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent} />
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 		if(this.isMeta()){
@@ -454,9 +472,25 @@ const Editor = createClass({
 					rerenderParent={this.rerenderParent} />
 				<MetadataEditor
 					metadata={this.props.brew}
-					onChange={this.props.onMetaChange}
+					themeBundle={this.props.themeBundle}
+					onChange={this.props.onBrewChange('metadata')}
 					reportError={this.props.reportError}
 					userThemes={this.props.userThemes}/>
+			</>;
+		}
+		if(this.isSnip()){
+			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='gfm'
+					view={this.state.view}
+					value={this.props.brew.snippets}
+					onChange={this.props.onBrewChange('snippets')}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }} />
 			</>;
 		}
 	},
@@ -499,7 +533,7 @@ const Editor = createClass({
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}
-					snippetBundle={this.props.snippetBundle}
+					themeBundle={this.props.themeBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
 				/>
@@ -510,4 +544,4 @@ const Editor = createClass({
 	}
 });
 
-module.exports = Editor;
+export default Editor;

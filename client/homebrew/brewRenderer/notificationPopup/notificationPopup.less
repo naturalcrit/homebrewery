@@ -48,14 +48,46 @@
 	}
 	ul {
 		margin-top          : 15px;
-		font-size           : 0.8em;
+		font-size           : 0.9em;
 		list-style-position : outside;
 		list-style-type     : disc;
 		li {
-			margin-top  : 1.4em;
-			font-size   : 0.8em;
-			line-height : 1.4em;
-			em { font-weight : 800; }
+			padding-left : 1em;
+			margin-top   : 1.5em;
+			font-size    : 0.9em;
+			line-height  : 1.5em;
+			em {
+				font-weight    : 800; 
+				text-transform : capitalize;
+			}
+			li {
+				margin-top      : 0;
+				line-height     : 1.2em; 
+				list-style-type : square;
+			}
 		}
+		ul ul,ol ol,ul ol,ol ul {
+			margin-bottom : 0px;
+			margin-left   : 1.5em;
+		}
+	}
+
+	/* Markdown styling */
+	code {
+		padding          : 0.1em 0.5em;
+		font-family      : 'Courier New', 'Courier', monospace;
+		overflow-wrap    : break-word;
+		white-space      : pre-wrap;
+		background       : #08115A;
+		border-radius    : 2px;
+	}
+	pre code {
+		display          : inline-block;
+		width            : 100%;
+	}
+	.blank {
+		height     : 1em;
+		margin-top : 0;
+		& + * { margin-top : 0; }
 	}
 }

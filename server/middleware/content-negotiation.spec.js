@@ -1,4 +1,4 @@
-const contentNegotiationMiddleware = require('./content-negotiation.js');
+import contentNegotiationMiddleware from './content-negotiation.js';
 
 describe('content-negotiation-middleware', ()=>{
 	let request;

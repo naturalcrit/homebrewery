@@ -206,4 +206,4 @@ const elderberryInn = {
 	'ei_wish'                          : 'ei wish'
 };
 
-module.exports = elderberryInn;
+export default elderberryInn;

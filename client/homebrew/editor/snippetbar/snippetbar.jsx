@@ -1,28 +1,36 @@
-/*eslint max-lines: ["warn", {"max": 250, "skipBlankLines": true, "skipComments": true}]*/
-require('./snippetbar.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
+/*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
+import './snippetbar.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
 
-import { getHistoryItems, historyExists } from '../../utils/versionHistory.js';
+import _ from 'lodash';
+import cx from 'classnames';
 
-//Import all themes
-const ThemeSnippets = {};
-ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
-ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
-ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
-ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
+import { loadHistory } from '../../utils/versionHistory.js';
+import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
-const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
+import Legacy5ePHB from 'themes/Legacy/5ePHB/snippets.js';
+import V3_5ePHB   from 'themes/V3/5ePHB/snippets.js';
+import V3_5eDMG   from 'themes/V3/5eDMG/snippets.js';
+import V3_Journal from 'themes/V3/Journal/snippets.js';
+import V3_Blank  from 'themes/V3/Blank/snippets.js';
+
+const ThemeSnippets = {
+	Legacy_5ePHB : Legacy5ePHB,
+	V3_5ePHB     : V3_5ePHB,
+	V3_5eDMG     : V3_5eDMG,
+	V3_Journal   : V3_Journal,
+	V3_Blank     : V3_Blank,
+};
+
+import EditorThemes from 'build/homebrew/codeMirror/editorThemes.json';
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
 	return val;
 };
 
-const Snippetbar = createClass({
+const Snippetbar = createReactClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
@@ -40,7 +48,7 @@ const Snippetbar = createClass({
 			unfoldCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
-			snippetBundle     : [],
+			themeBundle       : [],
 			updateBrew        : ()=>{}
 		};
 	},
@@ -50,37 +58,57 @@ const Snippetbar = createClass({
 			renderer      : this.props.renderer,
 			themeSelector : false,
 			snippets      : [],
-			historyExists : false
+			showHistory   : false,
+			historyExists : false,
+			historyItems  : []
 		};
 	},
 
-	componentDidMount : async function() {
+	componentDidMount : async function(prevState) {
 		const snippets = this.compileSnippets();
 		this.setState({
 			snippets : snippets
 		});
 	},
 
-	componentDidUpdate : async function(prevProps) {
-		if(prevProps.renderer != this.props.renderer || prevProps.theme != this.props.theme || prevProps.snippetBundle != this.props.snippetBundle) {
+	componentDidUpdate : async function(prevProps, prevState) {
+		if(prevProps.renderer != this.props.renderer ||
+			prevProps.theme != this.props.theme ||
+			prevProps.themeBundle != this.props.themeBundle ||
+			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
 		};
 
-		if(historyExists(this.props.brew) != this.state.historyExists){
+		// Update history list if it has changed
+		const checkHistoryItems = await loadHistory(this.props.brew);
+
+		// If all items have the noData property, there is no saved data
+		const checkHistoryExists = !checkHistoryItems.every((historyItem)=>{
+			return historyItem?.noData;
+		});
+		if(prevState.historyExists != checkHistoryExists){
 			this.setState({
-					historyExists : !this.state.historyExists
+				historyExists : checkHistoryExists
 			});
-		};
-	
+		}
+
+		// If any history items have changed, update the list
+		if(checkHistoryExists && checkHistoryItems.some((historyItem, index)=>{
+			return index >= prevState.historyItems.length || !_.isEqual(historyItem, prevState.historyItems[index]);
+		})){
+			this.setState({
+				historyItems : checkHistoryItems
+			});
+		}
 	},
 
 	mergeCustomizer : function(oldValue, newValue, key) {
 		if(key == 'snippets') {
 			const result = _.reverse(_.unionBy(_.reverse(newValue), _.reverse(oldValue), 'name')); // Join snippets together, with preference for the child theme over the parent theme
 			return result.filter((snip)=>snip.gen || snip.subsnippets);
-		}
+		};
 	},
 
 	compileSnippets : function() {
@@ -88,15 +116,21 @@ const Snippetbar = createClass({
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
 
-		for (let snippets of this.props.snippetBundle) {
-			if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
-				snippets = ThemeSnippets[snippets];
+		if(this.props.themeBundle.snippets) {
+			for (let snippets of this.props.themeBundle.snippets) {
+				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name
+					snippets = ThemeSnippets[snippets];
 
-			const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
-			compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
+				const newSnippets = _.keyBy(_.cloneDeep(snippets), 'groupName');
+				compiledSnippets = _.values(_.mergeWith(oldSnippets, newSnippets, this.mergeCustomizer));
 
-			oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+				oldSnippets = _.keyBy(compiledSnippets, 'groupName');
+			}
 		}
+
+		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
+		compiledSnippets.push(userSnippetsasJSON);
+
 		return compiledSnippets;
 	},
 
@@ -133,30 +167,40 @@ const Snippetbar = createClass({
 
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
+		if(snippets.length === 0) return null;
 
-		return _.map(snippets, (snippetGroup)=>{
-			return <SnippetGroup
-				brew={this.props.brew}
-				groupName={snippetGroup.groupName}
-				icon={snippetGroup.icon}
-				snippets={snippetGroup.snippets}
-				key={snippetGroup.groupName}
-				onSnippetClick={this.handleSnippetClick}
-				cursorPos={this.props.cursorPos}
-			/>;
-		});
+		return <div className='snippets'>
+			{_.map(snippets, (snippetGroup)=>{
+				return <SnippetGroup
+					brew={this.props.brew}
+					groupName={snippetGroup.groupName}
+					icon={snippetGroup.icon}
+					snippets={snippetGroup.snippets}
+					key={snippetGroup.groupName}
+					onSnippetClick={this.handleSnippetClick}
+					cursorPos={this.props.cursorPos}
+				/>;
+			})
+			}
+		</div>;
 	},
 
 	replaceContent : function(item){
 		return this.props.updateBrew(item);
 	},
 
+	toggleHistoryMenu : function(){
+		this.setState({
+			showHistory : !this.state.showHistory
+		});
+	},
+
 	renderHistoryItems : function() {
-		const historyItems = getHistoryItems(this.props.brew);
+		if(!this.state.historyExists) return;
 
 		return <div className='dropdown'>
-			{_.map(historyItems, (item, index)=>{
-				if(!item.savedAt) return;
+			{_.map(this.state.historyItems, (item, index)=>{
+				if(item.noData || !item.savedAt) return;
 
 				const saveTime = new Date(item.savedAt);
 				const diffMs = new Date() - saveTime;
@@ -180,10 +224,24 @@ const Snippetbar = createClass({
 	renderEditorButtons : function(){
 		if(!this.props.showEditButtons) return;
 
-		let foldButtons;
-		if(this.props.view == 'text'){
-			foldButtons =
-				<>
+		return (
+			<div className='editors'>
+				{this.props.view !== 'meta' && <><div className='historyTools'>
+					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+						onClick={this.toggleHistoryMenu} >
+						<i className='fas fa-clock-rotate-left' />
+						{ this.state.showHistory && this.renderHistoryItems() }
+					</div>
+					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+						onClick={this.props.undo} >
+						<i className='fas fa-undo' />
+					</div>
+					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+						onClick={this.props.redo} >
+						<i className='fas fa-redo' />
+					</div>
+				</div>
+				<div className='codeTools'>
 					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
 						onClick={this.props.foldCode} >
 						<i className='fas fa-compress-alt' />
@@ -192,45 +250,34 @@ const Snippetbar = createClass({
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
 					</div>
-				</>;
+					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+						onClick={this.toggleThemeSelector} >
+						<i className='fas fa-palette' />
+						{this.state.themeSelector && this.renderThemeSelector()}
+					</div>
+				</div></>}
 
-		}
+				<div className='tabs'>
+					<div className={cx('text', { selected: this.props.view === 'text' })}
+						onClick={()=>this.props.onViewChange('text')}>
+						<i className='fa fa-beer' />
+					</div>
+					<div className={cx('style', { selected: this.props.view === 'style' })}
+						onClick={()=>this.props.onViewChange('style')}>
+						<i className='fa fa-paint-brush' />
+					</div>
+					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
+						onClick={()=>this.props.onViewChange('snippet')}>
+						<i className='fas fa-th-list' />
+					</div>
+					<div className={cx('meta', { selected: this.props.view === 'meta' })}
+						onClick={()=>this.props.onViewChange('meta')}>
+						<i className='fas fa-info-circle' />
+					</div>
+				</div>
 
-		return <div className='editors'>
-			<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`} >
-				<i className='fas fa-clock-rotate-left' />
-				{this.state.historyExists && this.renderHistoryItems() }
 			</div>
-			<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
-				onClick={this.props.undo} >
-				<i className='fas fa-undo' />
-			</div>
-			<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
-				onClick={this.props.redo} >
-				<i className='fas fa-redo' />
-			</div>
-			<div className='divider'></div>
-			{foldButtons}
-			<div className={`editorTool editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-				onClick={this.toggleThemeSelector} >
-				<i className='fas fa-palette' />
-				{this.state.themeSelector && this.renderThemeSelector()}
-			</div>
-
-			<div className='divider'></div>
-			<div className={cx('text', { selected: this.props.view === 'text' })}
-				 onClick={()=>this.props.onViewChange('text')}>
-				<i className='fa fa-beer' />
-			</div>
-			<div className={cx('style', { selected: this.props.view === 'style' })}
-				 onClick={()=>this.props.onViewChange('style')}>
-				<i className='fa fa-paint-brush' />
-			</div>
-			<div className={cx('meta', { selected: this.props.view === 'meta' })}
-				onClick={()=>this.props.onViewChange('meta')}>
-				<i className='fas fa-info-circle' />
-			</div>
-		</div>;
+		);
 	},
 
 	render : function(){
@@ -241,14 +288,9 @@ const Snippetbar = createClass({
 	}
 });
 
-module.exports = Snippetbar;
+export default Snippetbar;
 
-
-
-
-
-
-const SnippetGroup = createClass({
+const SnippetGroup = createReactClass({
 	displayName     : 'SnippetGroup',
 	getDefaultProps : function() {
 		return {
@@ -267,8 +309,9 @@ const SnippetGroup = createClass({
 		return _.map(snippets, (snippet)=>{
 			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 				<i className={snippet.icon} />
-				<span className='name'title={snippet.name}>{snippet.name}</span>
+				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
 				{snippet.experimental && <span className='beta'>beta</span>}
+				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
 				{snippet.subsnippets && <>
 					<i className='fas fa-caret-right'></i>
 					<div className='dropdown side'>
@@ -280,7 +323,8 @@ const SnippetGroup = createClass({
 	},
 
 	render : function(){
-		return <div className='snippetGroup snippetBarButton'>
+		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
+		return <div className={snippetGroup}>
 			<div className='text'>
 				<i className={this.props.icon} />
 				<span className='groupName'>{this.props.groupName}</span>

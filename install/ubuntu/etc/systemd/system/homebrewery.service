@@ -3,7 +3,8 @@ Description=Homebrewery Web Server
 
 [Service]
 User=root
-After=mongodb
+BindsTo=mongod.service
+After=mongod.service
 Environment=NODE_ENV=local
 WorkingDirectory=/usr/local/homebrewery
 ExecStart=node server.js

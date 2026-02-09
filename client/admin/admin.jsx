@@ -1,38 +1,52 @@
-require('./admin.less');
-const React = require('react');
-const createClass = require('create-react-class');
+import './admin.less';
+import React, { useEffect, useState } from 'react';
+import BrewUtils from './brewUtils/brewUtils.jsx';
+import NotificationUtils from './notificationUtils/notificationUtils.jsx';
+import AuthorUtils from './authorUtils/authorUtils.jsx';
+import LockTools  from './lockTools/lockTools.jsx';
 
+const tabGroups = ['brew', 'notifications', 'authors', 'locks'];
 
-const BrewCleanup = require('./brewCleanup/brewCleanup.jsx');
-const BrewLookup = require('./brewLookup/brewLookup.jsx');
-const BrewCompress = require ('./brewCompress/brewCompress.jsx');
-const Stats = require('./stats/stats.jsx');
+const ADMIN_TAB = 'HB_adminPage_currentTab';
 
-const Admin = createClass({
-	getDefaultProps : function() {
-		return {};
-	},
+const Admin = ()=>{
+	const [currentTab, setCurrentTab] = useState('');
 
-	render : function(){
-		return <div className='admin'>
+	useEffect(()=>{
+		setCurrentTab(localStorage.getItem(ADMIN_TAB) || 'brew');
+	}, []);
 
+	useEffect(()=>{
+		localStorage.setItem(ADMIN_TAB, currentTab);
+	}, [currentTab]);
+
+	return (
+		<div className='admin'>
 			<header>
 				<div className='container'>
 					<i className='fas fa-rocket' />
-					homebrewery admin
+					The Homebrewery Admin Page
+					<a href='/'>back to homepage</a>
 				</div>
 			</header>
-			<div className='container'>
-				<Stats />
-				<hr />
-				<BrewLookup />
-				<hr />
-				<BrewCleanup />
-				<hr />
-				<BrewCompress />
-			</div>
-		</div>;
-	}
-});
+			<main className='container'>
+				<nav className='tabs'>
+					{tabGroups.map((tab, idx)=>(
+						<button
+							className={tab === currentTab ? 'active' : ''}
+							key={idx}
+							onClick={()=>setCurrentTab(tab)}>
+							{tab.toUpperCase()}
+						</button>
+					))}
+				</nav>
+				{currentTab === 'brew' && <BrewUtils />}
+				{currentTab === 'notifications' && <NotificationUtils />}
+				{currentTab === 'authors' && <AuthorUtils />}
+        		{currentTab === 'locks' && <LockTools />}
+			</main>
+		</div>
+	);
+};
 
 module.exports = Admin;

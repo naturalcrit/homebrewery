@@ -1,8 +1,8 @@
-const supertest = require('supertest');
+import supertest from 'supertest';
+import HBApp     from 'app.js';
 
 // Mimic https responses to avoid being redirected all the time
-const app = supertest.agent(require('app.js').app)
-    .set('X-Forwarded-Proto', 'https');
+const app = supertest.agent(HBApp).set('X-Forwarded-Proto', 'https');
 
 describe('Tests for static pages', ()=>{
 	it('Home page works', ()=>{

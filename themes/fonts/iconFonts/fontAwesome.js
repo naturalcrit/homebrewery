@@ -1,3 +1,5 @@
+/* eslint-disable max-lines */
+
 const fontAwesome = {
 	// FONT-AWESOME SOLID
 	'fas_0'                                      : 'fas fa-0',
@@ -2051,4 +2053,4 @@ const fontAwesome = {
 	'fab_zhihu'                          : 'fab fa-zhihu'
 };
 
-module.exports = fontAwesome;
+export default fontAwesome;

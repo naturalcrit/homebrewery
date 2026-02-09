@@ -1,82 +1,64 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
+import React, { useState } from 'react';
+import _ from 'lodash';
 
-const ListPage = require('../basePages/listPage/listPage.jsx');
+import ListPage from '../basePages/listPage/listPage.jsx';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
+import Nav from '../../navbar/nav.jsx';
+import Navbar from '../../navbar/navbar.jsx';
+import RecentNavItems from '../../navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+import Account from '../../navbar/account.navitem.jsx';
+import NewBrew from '../../navbar/newbrew.navitem.jsx';
+import HelpNavItem from '../../navbar/help.navitem.jsx';
+import ErrorNavItem from '../../navbar/error-navitem.jsx';
+import VaultNavitem from '../../navbar/vault.navitem.jsx';
 
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const VaultNavitem = require('../../navbar/vault.navitem.jsx');
+const UserPage = (props)=>{
+	props = {
+		username : '',
+		brews    : [],
+		query    : '',
+		...props
+	};
 
-const UserPage = createClass({
-	displayName     : 'UserPage',
-	getDefaultProps : function() {
-		return {
-			username : '',
-			brews    : [],
-			query    : '',
-			error    : null
-		};
-	},
-	getInitialState : function() {
-		const usernameWithS = this.props.username + (this.props.username.endsWith('s') ? `’` : `’s`);
+	const [error, setError] = useState(null);
 
-		const brews = _.groupBy(this.props.brews, (brew)=>{
-			return (brew.published ? 'published' : 'private');
-		});
+	const usernameWithS = props.username + (props.username.endsWith('s') ? `’` : `’s`);
+	const groupedBrews = _.groupBy(props.brews, (brew)=>brew.published ? 'published' : 'private');
 
-		const brewCollection = [
-			{
-				title : `${usernameWithS} published brews`,
-				class : 'published',
-				brews : brews.published
-			}
-		];
-		if(this.props.username == global.account?.username){
-			brewCollection.push(
-				{
-					title : `${usernameWithS} unpublished brews`,
-					class : 'unpublished',
-					brews : brews.private
-				}
-			);
-		}
+	const brewCollection = [
+		{
+			title : `${usernameWithS} published brews`,
+			class : 'published',
+			brews : groupedBrews.published || []
+		},
+		...(props.username === global.account?.username ? [{
+			title : `${usernameWithS} unpublished brews`,
+			class : 'unpublished',
+			brews : groupedBrews.private || []
+		}] : [])
+	];
 
-		return {
-			brewCollection : brewCollection
-		};
-	},
-	errorReported : function(error) {
-		this.setState({
-			error
-		});
-	},
+	const clearError = ()=>{
+		setError(null);
+	};
 
-	navItems : function() {
-		return <Navbar>
+	const navItems = (
+		<Navbar>
 			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				}
+				{error && (<ErrorNavItem error={error} clearError={clearError}></ErrorNavItem>)}
 				<NewBrew />
 				<HelpNavItem />
-				<VaultNavitem/>
+				<VaultNavitem />
 				<RecentNavItem />
 				<Account />
 			</Nav.section>
-		</Navbar>;
-	},
+		</Navbar>
+	);
 
-	render : function(){
-		return <ListPage brewCollection={this.state.brewCollection} navItems={this.navItems()} query={this.props.query} reportError={this.errorReported}></ListPage>;
-	}
-});
+	return (
+		<ListPage brewCollection={brewCollection}  navItems={navItems} query={props.query} reportError={(err)=>setError(err)} />
+	);
+};
 
-module.exports = UserPage;
+export default UserPage;

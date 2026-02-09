@@ -1,0 +1,60 @@
+@import (less) 'codemirror/lib/codemirror.css';
+@import (less) 'codemirror/addon/fold/foldgutter.css';
+@import (less) 'codemirror/addon/search/matchesonscrollbar.css';
+@import (less) 'codemirror/addon/dialog/dialog.css';
+@import (less) 'codemirror/addon/hint/show-hint.css';
+
+//Icon fonts included so they can appear in emoji autosuggest dropdown
+@import (less) './themes/fonts/iconFonts/diceFont.less';
+@import (less) './themes/fonts/iconFonts/elderberryInn.less';
+@import (less) './themes/fonts/iconFonts/gameIcons.less';
+@import (less) './themes/fonts/iconFonts/fontAwesome.less';
+
+@keyframes sourceMoveAnimation {
+	50% {   color            : white;background-color : red;}
+	100% { color            : unset;background-color : unset;}
+}
+
+.codeEditor {
+	@media screen and (pointer : coarse) {
+		font-size : 16px;
+	}
+	.CodeMirror-foldmarker {
+		font-family : inherit;
+		font-weight : 600;
+		color       : grey;
+		text-shadow : none;
+	}
+
+	.CodeMirror-foldgutter {
+		cursor      : pointer;
+		border-left : 1px solid #EEEEEE;
+		transition  : background 0.1s;
+		&:hover { background : #DDDDDD; }
+	}
+
+	.sourceMoveFlash .CodeMirror-line {
+		animation-name     : sourceMoveAnimation;
+		animation-duration : 0.4s;
+	}
+
+	.CodeMirror-search-field {
+		width:25em !important;
+		outline:1px inset #00000055 !important;
+	}
+
+	//.cm-tab {
+	//  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAQAAACOs/baAAAARUlEQVR4nGJgIAG8JkXxUAcCtDWemcGR1lY4MvgzCEKY7jSBjgxBDAG09UEQzAe0AMwMHrSOAwEGRtpaMIwAAAAA//8DAG4ID9EKs6YqAAAAAElFTkSuQmCC) no-repeat right;
+	//}
+
+	//.cm-trailingspace {
+	//  .cm-space {
+	//    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAQAgMAAABW5NbuAAAACVBMVEVHcEwAAAAAAAAWawmTAAAAA3RSTlMAPBJ6PMxpAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAFUlEQVQI12NgwACcCQysASAEZGAAACMuAX06aCQUAAAAAElFTkSuQmCC) no-repeat right;
+	//  }
+	//}
+}
+
+.emojiPreview {
+	font-size   : 1.5em;
+	line-height : 1.2em;
+}

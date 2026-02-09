@@ -1,0 +1,35 @@
+.notificationLookup {
+	width     : 450px;
+	height    : fit-content;
+
+	.noNotification { margin-block : 20px; }
+	.notificationList {
+		display        : flex;
+		flex-direction : column;
+		max-height     : 500px;
+		margin-block   : 20px;
+		overflow       : auto;
+		border         : 1px solid;
+		border-radius  : 5px;
+		
+		li {
+			padding    : 10px;
+			background : #CCCCCC;
+				
+			&:nth-child(even) { background : #DDDDDD; }
+			&:first-child {
+				border-top-left-radius  : 5px;
+				border-top-right-radius : 5px;
+			}
+			&:last-child {
+				border-bottom-right-radius : 5px;
+				border-bottom-left-radius  : 5px;
+			}
+				
+			summary {
+				font-size   : 20px;
+				font-weight : 900;
+			}
+		}
+	}
+}

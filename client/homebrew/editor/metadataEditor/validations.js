@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	title : [
 		(value)=>{
 			return value?.length > 100 ? 'Max title length of 100 characters' : null;
@@ -18,7 +18,7 @@ module.exports = {
 			try {
 				Boolean(new URL(value));
 				return null;
-			} catch (e) {
+			} catch {
 				return 'Must be a valid URL';
 			}
 		}
@@ -26,6 +26,19 @@ module.exports = {
 	lang : [
 		(value)=>{
 			return new RegExp(/^([a-zA-Z]{2,3})(-[a-zA-Z]{4})?(-(?:[0-9]{3}|[a-zA-Z]{2}))?$/).test(value) === false && (value.length > 0) ? 'Invalid language code.' : null;
+		}
+	],
+	theme : [
+		(value)=>{
+			const URL = global.config.baseUrl.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&'); //Escape any regex characters
+			const shareIDPattern = '[a-zA-Z0-9-_]{12}';
+			const shareURLRegex  = new RegExp(`^${URL}\\/share\\/${shareIDPattern}$`);
+			const shareIDRegex   = new RegExp(`^${shareIDPattern}$`);
+			if(value?.length === 0)       return null;
+			if(shareURLRegex.test(value)) return null;
+			if(shareIDRegex.test(value))  return null;
+
+			return 'Must be a valid Share URL or a 12-character ID.';
 		}
 	]
 };
