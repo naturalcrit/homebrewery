@@ -27,9 +27,8 @@ import asyncHandler                from 'express-async-handler';
 import templateFn                  from '../client/template.js';
 import { model as HomebrewModel }  from './homebrew.model.js';
 
-import { DEFAULT_BREW }            from './brewDefaults.js';
-import { splitTextStyleAndMetadata,
-		 simulateRender }          from '../shared/helpers.js';
+import { DEFAULT_BREW }              from './brewDefaults.js';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 //==== Middleware Imports ====//
 import contentNegotiation from './middleware/content-negotiation.js';
@@ -238,25 +237,6 @@ app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
 	}
 	text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
 	res.status(200).send(text);
-});
-
-//Export the Brew as HTML
-app.get('/export/:mode/:id', asyncHandler(getBrew('admin')), asyncHandler(simulateRender), (req, res)=>{
-
-	const id = req.params.id;
-	const mode = req.params.mode;
-	const { brew } = req;
-	sanitizeBrew(brew, 'share');
-	const prefix = 'HB - ';
-
-	let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-	if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
-	// res.set({
-	// 	'Cache-Control'       : 'no-cache',
-	// 	'Content-Type'        : 'text/plain',
-	// 	'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.html`
-	// });
-	res.status(200).send(brew.html);
 });
 
 
