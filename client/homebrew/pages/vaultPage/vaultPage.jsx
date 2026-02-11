@@ -14,6 +14,8 @@ import BrewItem     from '../basePages/listPage/brewItem/brewItem.jsx';
 import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import ErrorIndex   from '../errorPage/errors/errorIndex.js';
 
+import TagInput from '../../editor/tagInput/tagInput.jsx';
+
 import request from '../../utils/request-middleware.js';
 
 const VaultPage = (props)=>{
@@ -183,6 +185,17 @@ const VaultPage = (props)=>{
 								loadPage(1, true);
 						}}
 						placeholder='Username'
+					/>
+				</label>
+
+				<label>
+					Tags
+					<TagInput 
+						label='tags' 
+						valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+						placeholder='add tag' unique={true}
+						values={props.metadata.tags}
+						onChange={(e)=>this.handleFieldChange('tags', e)}
 					/>
 				</label>
 
