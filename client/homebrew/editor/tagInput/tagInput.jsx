@@ -13,7 +13,7 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 		})),
 	);
 	//console.log(label, values, placeholder);
-	// Keep in sync if parent updates values
+
 	useEffect(() => {
 		const incoming = values || [];
 		const current = tagList.map((t) => t.value);
@@ -31,25 +31,34 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 		}
 	}, [values]);
 
-	// Emit changes upward
 	useEffect(() => {
 		onChange?.({
 			target: { value: tagList.map((t) => t.value) },
 		});
 	}, [tagList]);
 
-	// Canonical duplicate groups
 	const duplicateGroups = [
+		["5e 2024", "5.5e", "5e'24", "5.24", "5e24", "5.5"],
+		["5e", "5th Edition"],
+		["Dungeons & Dragons", "Dungeons and Dragons", "Dungeons n dragons"],
 		["D&D", "DnD", "dnd", "Dnd", "dnD", "d&d", "d&D", "D&d"],
 		["P2e", "p2e", "P2E", "Pathfinder 2e"],
+		["meta:", "Meta:", "META:"],
+		["group:", "Group:", "GROUP:"],
+		["type:", "Type:", "TYPE:"],
+		["system:", "System:", "SYSTEM:"],
 	];
 
 	const normalizeValue = (input) => {
-		const group = duplicateGroups.find((grp) => grp.some((tag) => tag.toLowerCase() === input.toLowerCase()));
+		const lowerInput = input.toLowerCase();
+		const group = duplicateGroups.find((grp) => grp.some((tag) => tag && lowerInput.includes(tag.toLowerCase())));
 		return group ? group[0] : input;
 	};
 
-	const regexPattern = /^[-A-Za-z0-9&_.()]+$/;
+	const regexPattern =
+		label === "tags"
+			? /^[-A-Za-z0-9&_.()]+$/ // only allowed chars for tags
+			: /^.*$/; // allow all characters otherwise
 
 	const submitTag = (newValue, index = null) => {
 		const trimmed = newValue?.trim();
