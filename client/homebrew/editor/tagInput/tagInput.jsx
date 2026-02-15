@@ -2,7 +2,7 @@ import "./tagInput.less";
 import React, { useState, useEffect, useMemo } from "react";
 import Combobox from "../../../components/combobox.jsx";
 
-import tagSuggestionList from "./tagSuggestionList.js";
+import tagSuggestionList from "./curatedTagSuggestionList.js";
 
 const TagInput = ({ label, unique = true, values = [], placeholder = "", onChange }) => {
 	const [tagList, setTagList] = useState(
@@ -81,16 +81,44 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 		setTagList((prev) => prev.map((t, i) => ({ ...t, editing: i === index })));
 	};
 
-	const suggestionOptions = tagSuggestionList.map((tag) => (
-		<div
-			className="item"
-			key={`tag-${tag}`} // unique key
-			value={tag}
-			data={tag}
-			title={tag}>
-			{tag}
-		</div>
-	));
+	const suggestionOptions = tagSuggestionList.map((tag) => {
+
+		const tagType = tag.split(':');
+
+		let classes = 'item';
+		switch (tagType[0]) {
+			case 'type':
+				classes = 'item type'
+				break;
+
+			case 'group':
+				classes = 'item group'
+				break;
+
+			case 'meta':
+				classes = 'item meta'
+				break;
+				
+			case 'system':
+				classes = 'item system'
+				break;
+		
+			default:
+				classes = 'item'
+				break;
+		}
+
+		return (
+			<div
+				className={classes}
+				key={`tag-${tag}`} // unique key
+				value={tag}
+				data={tag}
+				title={tag}>
+				{tag}
+			</div>
+		);
+	});
 
 	return (
 		<div className="field tags">
