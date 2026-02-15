@@ -4,7 +4,7 @@ import Combobox from "../../../components/combobox.jsx";
 
 import tagSuggestionList from "./curatedTagSuggestionList.js";
 
-const TagInput = ({ label, unique = true, values = [], placeholder = "", onChange }) => {
+const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholder = "", onChange }) => {
 	const [tagList, setTagList] = useState(
 		values.map((value) => ({
 			value,
@@ -51,19 +51,27 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 
 	const normalizeValue = (input) => {
 		const lowerInput = input.toLowerCase();
-		const group = duplicateGroups.find((grp) => grp.some((tag) => tag && lowerInput.includes(tag.toLowerCase())));
-		return group ? group[0] : input;
-	};
 
-	const regexPattern =
-		label === "tags"
-			? /^[-A-Za-z0-9&_.()]+$/ // only allowed chars for tags
-			: /^.*$/; // allow all characters otherwise
+		for (const group of duplicateGroups) {
+			for (const tag of group) {
+				if (!tag) continue;
+
+				const index = lowerInput.indexOf(tag.toLowerCase());
+				if (index !== -1) {
+					return input.slice(0, index) + group[0] + input.slice(index + tag.length);
+				}
+			}
+		}
+
+		return input;
+	};
 
 	const submitTag = (newValue, index = null) => {
 		const trimmed = newValue?.trim();
+		console.log(newValue, trimmed);
 		if (!trimmed) return;
-		if (!regexPattern.test(trimmed)) return;
+		console.log(valuePatterns.test(trimmed));
+		if (!valuePatterns.test(trimmed)) return;
 
 		const canonical = normalizeValue(trimmed);
 
@@ -117,12 +125,7 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 		}
 
 		return (
-			<div
-				className={classes}
-				key={`tag-${tag}`} // unique key
-				value={tag}
-				data={tag}
-				title={tag}>
+			<div className={classes} key={`tag-${tag}`} value={tag} data={tag} title={tag}>
 				{tag}
 			</div>
 		);
@@ -140,7 +143,7 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 								key={i}
 								type="text"
 								value={t.display}
-								pattern="[-A-Za-z0-9&_.()]+"
+								pattern={valuePatterns.source}
 								onChange={(e) => {
 									const val = e.target.value;
 									setTagList((prev) =>
@@ -186,9 +189,11 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 								}
 							: { suggestMethod: "includes", clearAutoSuggestOnClick: true, filterOn: [] } // empty filter
 					}
+					valuePatterns={valuePatterns.source}
 					onSelect={(value) => submitTag(value)}
 					onEntry={(e) => {
 						if (e.key === "Enter") {
+							console.log("submit");
 							e.preventDefault();
 							submitTag(e.target.value);
 						}
