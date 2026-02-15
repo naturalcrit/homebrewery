@@ -12,7 +12,7 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 			editing: false,
 		})),
 	);
-
+	//console.log(label, values, placeholder);
 	// Keep in sync if parent updates values
 	useEffect(() => {
 		const incoming = values || [];
@@ -82,29 +82,28 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 	};
 
 	const suggestionOptions = tagSuggestionList.map((tag) => {
+		const tagType = tag.split(":");
 
-		const tagType = tag.split(':');
-
-		let classes = 'item';
+		let classes = "item";
 		switch (tagType[0]) {
-			case 'type':
-				classes = 'item type'
+			case "type":
+				classes = "item type";
 				break;
 
-			case 'group':
-				classes = 'item group'
+			case "group":
+				classes = "item group";
 				break;
 
-			case 'meta':
-				classes = 'item meta'
+			case "meta":
+				classes = "item meta";
 				break;
-				
-			case 'system':
-				classes = 'item system'
+
+			case "system":
+				classes = "item system";
 				break;
-		
+
 			default:
-				classes = 'item'
+				classes = "item";
 				break;
 		}
 
@@ -168,20 +167,21 @@ const TagInput = ({ label, unique = true, values = [], placeholder = "", onChang
 					className="tagInput-dropdown"
 					default=""
 					placeholder={placeholder}
-					options={suggestionOptions}
-					autoSuggest={{
-						suggestMethod: "startsWith",
-						clearAutoSuggestOnClick: true,
-						filterOn: ["value", "title"],
-					}}
-					onSelect={(value) => {
-						submitTag(value, null);
-					}}
+					options={label === "tags" ? suggestionOptions : []} // always array
+					autoSuggest={
+						label === "tags"
+							? {
+									suggestMethod: "startsWith",
+									clearAutoSuggestOnClick: true,
+									filterOn: ["value", "title"],
+								}
+							: { suggestMethod: "includes", clearAutoSuggestOnClick: true, filterOn: [] } // empty filter
+					}
+					onSelect={(value) => submitTag(value)}
 					onEntry={(e) => {
-						// Allow free typing + Enter
 						if (e.key === "Enter") {
 							e.preventDefault();
-							submitTag(e.target.value, null);
+							submitTag(e.target.value);
 						}
 					}}
 				/>
