@@ -12,8 +12,8 @@ import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
+const PAGEBREAK_REGEX_V3     = /^(?=\\(?:soft)?page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const SNIPPETBREAK_REGEX_V3  = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -30,6 +30,17 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
 let isJumping = false;
+let softPageCalc  = false;
+
+const stripTrailingTags = (str)=>{
+	if(!str) return str;
+	let newStr = str;
+	while (newStr.lastIndexOf('</') > 0) {
+		newStr = newStr.slice(0, newStr.lastIndexOf('</'));
+	}
+
+	return newStr;
+};
 
 const Editor = createReactClass({
 	displayName     : 'Editor',
@@ -98,6 +109,9 @@ const Editor = createReactClass({
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
+		if(prevProps.brew.text !== this.props.brew.text)
+			this.handleSoftPages();
+
 		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
@@ -159,6 +173,136 @@ const Editor = createReactClass({
 			this.codeEditor.current?.codeMirror?.focus();
 		});
 	},
+
+	handleSoftPages : function(targetPage=(parseInt(this.props.currentEditorCursorPageNum, 10))) {
+		if(softPageCalc) return; 						// This can trigger mid-run. Skip out if still calculating softpage handling.
+		if(this.props.renderer == 'Legacy') return; 	// Skip the legacy renderer, it doesn't understand \softpage
+
+		const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
+		if(!testPage) return;							// Make sure we have an actual page with content.
+
+		const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];  // Grab the page's columnWrapper
+		const preserveStyles = columnWrapper.style;									// Save the page's columnWrapper style
+
+		let child = Math.floor(columnWrapper.children.length / 2);					// Set the starting position for testing the bounds checking in the children to the midpoint.
+		let lastChild = 0;															// Initialize array movement variables
+		let shift;
+
+		let softInsert = false;
+
+		const parentX      = testPage.getBoundingClientRect().left;					// Determine page boundaries
+		const parentX2      = testPage.getBoundingClientRect().right;
+		const parentY      = testPage.getBoundingClientRect().top;
+		const parentY2      = testPage.getBoundingClientRect().bottom;
+
+		while ((child != lastChild) && (child < columnWrapper.children.length)){
+			// Walk the array of children, going up or down by increments of shift. Go up if current child is in bounds, down if not.
+			// Continue until no movement occurs. References to position indicate the child element's position in the columnWrapper.children list
+			shift = Math.floor(Math.abs(lastChild - child) / 2);						// Set shift to half the distance of the difference
+																						// of the previous last child position and the current child 
+																						// position
+
+			const childX = columnWrapper.children[child].getBoundingClientRect().left;				// Get Child elements bounding box.
+			const childX2 = childX + columnWrapper.children[child].getBoundingClientRect().width;
+			const childY = columnWrapper.children[child].getBoundingClientRect().top;
+			const childY2 = childY + columnWrapper.children[child].getBoundingClientRect().height;
+
+			const inX = ((childX >= parentX) && (childX2 <= parentX2));					// Test if Child X coords are inside page's X coords
+			const inY = ((childY >= parentY) && (childY2 <= parentY2));					// Test if Child Y coords are inside page's Y coords
+
+			if(((!inX) || (!inY)) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) {
+				// If child element has any one dimension outside of the page and it is NOT absolutely placed
+				// Shift towards the front of the children ( earlier in the document )
+				lastChild = child;
+				child -= shift;
+				softInsert = true;
+			} else if((inX) && (inY) && (getComputedStyle(columnWrapper.children[child])?.position != 'absolute')) {
+				// Else If child element has all dimensions inside of the page and it is NOT absolutely placed
+				// Shift towards the back of the children ( later in the document )
+				lastChild = child;
+				child += shift;
+			} else if(getComputedStyle(columnWrapper.children[child])?.position == 'absolute') {
+				// Else If child absolutely placed, step one element earlier
+				child -= 1;
+				softInsert = false;
+			}
+		}
+
+		// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
+		// If so, exit
+		if(columnWrapper.children[child-1]?.className == 'columnSplit') {
+			return;
+		}
+
+		// Exit if the last element is in bounds and is not absolutely positioned and that is where we stopped walking the loop.
+		if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
+
+		columnWrapper.style.overflow = 'hidden'; // Unsure if this is needed still.
+		if(softInsert && columnWrapper.children[child]) {
+
+			// Concatenate all of the softpages from the target page on.
+			const allPages = this.props.brew.text.split(PAGEBREAK_REGEX_V3);
+			let lastPage = targetPage; // Init at targetPage
+			for (; (!allPages[lastPage]?.startsWith('\\page') && (lastPage<=allPages.length)); lastPage++) {}
+
+			const strippedString = lastPage != targetPage ?            // Join the softpages together
+				allPages.slice(targetPage, lastPage - 1).join('\n') :
+				allPages[targetPage - 1];
+
+			const lines = strippedString.split('\n');				  // Split the softpages into an array of lines.
+																	  // Clone the \page formatter as \softpage or initialize if one was not set on page 1.
+			const softPageFormatter = (allPages[targetPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage').trim();
+
+			const textString = this.props.brew.text.split(PAGEBREAK_REGEX_V3).slice(0, targetPage-1).join(PAGEBREAK_REGEX_V3);
+			const targetPageLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
+
+			// Walk line section and strip \softpage lines.
+
+			const walkedLines = [];
+			for (let line in lines) {
+				if(!lines[line].startsWith('\\softpage')) walkedLines.push(lines[line]);
+			}
+
+			if(lines.length != walkedLines.length) {
+				softPageCalc = true;
+				// Run the replaceRange in a timeout so that the update blocks looping into handleSoftPages()
+				setTimeout(async ()=>{
+					await this.codeEditor.current?.replaceRange(walkedLines.join('\n'), { line: targetPageLine, ch: 0 },
+						{ line: targetPageLine + lines.length + 1, ch: 0 });
+					lines = walkedLines;
+					softPageCalc = false;
+				}, 250);
+			}
+
+			let inBlock = -1;
+			for (let line in lines) {
+				// Look at a four line range to try and find starting text.
+				const render = stripTrailingTags(Markdown.render(`${lines[line-1]}\n${lines[line]}\n${lines[line + 1]}\n${lines[line + 2]}`));
+				// Look to see if the current line starts a div {{ }}, or ends one. Save the start if found.
+				if(lines[line].startsWith('{{')) inBlock = line;
+				if(lines[line].endsWith('}}')) inBlock = -1;
+				if((render?.length>0) && (columnWrapper.children[child]?.outerHTML?.toString()?.indexOf(render)>-1)) {
+					// Attempt to match the child element determined to be last inbounds to the rendered text
+					// If found, set the targetLine to either inBlock ( if set ) or line + targetPageLine - 1
+					// Pop the cursor to that line and insert the softPage.
+					softPageCalc = true;
+					const targetLine = (inBlock -1 ? inBlock : line) + targetPageLine - 1;
+					const whereWasI = this.codeEditor.current.getCursorPosition();
+					this.codeEditor.current.setCursorPosition({ line: targetLine, ch: 0 });
+					setTimeout(async ()=>{
+						await this.handleInject(`\n${softPageFormatter}\n`);
+						this.codeEditor.current.setCursorPosition(whereWasI);
+						columnWrapper.style=preserveStyles;
+						softPageCalc = false;
+					}, 250);
+					break;
+				}
+			}
+		}
+		columnWrapper.style=preserveStyles;
+
+	},
+
 
 	highlightCustomMarkdown : function(){
 		if(!this.codeEditor.current?.codeMirror) return;

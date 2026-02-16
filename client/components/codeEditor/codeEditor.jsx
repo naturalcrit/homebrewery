@@ -285,6 +285,10 @@ const CodeEditor = createReactClass({
 		cm.focus();
 	},
 
+	replaceLines : function(start, stop, replacementText) {
+		this.codeMirror.replaceRange(start, stop, replacementText);
+	},
+
 	makeUnderline : function() {
 		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
 		this.codeMirror?.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
