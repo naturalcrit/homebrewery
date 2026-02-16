@@ -10,4 +10,4 @@ const authorUtils = ()=>{
 	);
 };
 
-module.exports = authorUtils;
+export default authorUtils;
