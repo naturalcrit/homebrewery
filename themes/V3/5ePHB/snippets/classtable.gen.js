@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent';
 
 const features = [
 	'Astrological Botany',   'Biochemical Sorcery',   'Civil Divination',
@@ -18,7 +18,7 @@ const classnames = [
 	'Haberdasher', 'Manicurist', 'Netrunner', 'Weirkeeper'
 ];
 
-module.exports = {
+export default {
 	non : function(snippetClasses){
 		return dedent`
 		{{${snippetClasses}

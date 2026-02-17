@@ -4,25 +4,26 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from 'markdown.js';
+import Markdown                               from '../../../../shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
 
-import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from 'client/homebrew/navbar/nav.jsx';
-import Navbar                    from 'client/homebrew/navbar/navbar.jsx';
-import NewBrewItem               from 'client/homebrew/navbar/newbrew.navitem.jsx';
-import AccountNavItem            from 'client/homebrew/navbar/account.navitem.jsx';
-import ErrorNavItem              from 'client/homebrew/navbar/error-navitem.jsx';
-import HelpNavItem               from 'client/homebrew/navbar/help.navitem.jsx';
-import VaultNavItem              from 'client/homebrew/navbar/vault.navitem.jsx';
-import PrintNavItem              from 'client/homebrew/navbar/print.navitem.jsx';
-import { both as RecentNavItem } from 'client/homebrew/navbar/recent.navitem.jsx';
+import Nav                       from '../../navbar/nav.jsx';
+import Navbar                    from '../../navbar/navbar.jsx';
+import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '../../navbar/account.navitem.jsx';
+import ErrorNavItem              from '../../navbar/error-navitem.jsx';
+import HelpNavItem               from '../../navbar/help.navitem.jsx';
+import VaultNavItem              from '../../navbar/vault.navitem.jsx';
+import PrintNavItem              from '../../navbar/print.navitem.jsx';
+import RecentNavItems from '../../navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
 import { Meta }                          from 'vitreum/headtags';
@@ -30,7 +31,7 @@ import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
-import ShareNavItem              from 'client/homebrew/navbar/share.navitem.jsx';
+import ShareNavItem              from '../../navbar/share.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
@@ -415,4 +416,4 @@ const EditPage = (props)=>{
 	);
 };
 
-module.exports = EditPage;
+export default EditPage;

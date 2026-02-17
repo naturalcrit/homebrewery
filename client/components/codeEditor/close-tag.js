@@ -38,11 +38,11 @@ const autoCloseCurlyBraces = function(CodeMirror, cm, typingClosingBrace) {
 	}
 };
 
-module.exports = {
+export default {
 	autoCloseCurlyBraces : function(CodeMirror, codeMirror) {
 		const map = { name: 'autoCloseCurlyBraces' };
 		map[`'{'`] = function(cm) { return autoCloseCurlyBraces(CodeMirror, cm); };
 		map[`'}'`] = function(cm) { return autoCloseCurlyBraces(CodeMirror, cm, true); };
-		codeMirror.addKeyMap(map);
+		codeMirror?.addKeyMap(map);
 	}
 };
