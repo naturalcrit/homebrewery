@@ -339,9 +339,9 @@ const MetadataEditor = createReactClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<TagInput 
-				label='tags' 
-				valuePatterns={/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.&_\-]{0,40}$/}
+			<TagInput
+				label='tags'
+				valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/.&_\-]{0,40}\s*$/}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				smallText='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
@@ -358,8 +358,8 @@ const MetadataEditor = createReactClass({
 
 			{this.renderAuthors()}
 
-			<TagInput 
-				label='invited authors' 
+			<TagInput
+				label='invited authors'
 				valuePatterns={/.+/}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
