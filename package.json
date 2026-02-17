@@ -128,7 +128,7 @@
     "marked-variables": "^1.0.5",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^9.1.5",
+    "mongoose": "^9.2.1",
     "nanoid": "5.1.6",
     "nconf": "^0.13.0",
     "react": "^18.3.1",
