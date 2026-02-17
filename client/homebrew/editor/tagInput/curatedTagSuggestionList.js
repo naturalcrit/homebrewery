@@ -29,9 +29,9 @@ export default [
 	"system:Draw Steel",
 	"system:Mutants and Masterminds",
 
-	// ###################################### RPG Keywords
-
 	// Meta
+	"meta:V3",
+	"meta:Legacy",
 	"meta:Template",
 	"meta:Theme",
 	"meta:free",
@@ -39,12 +39,31 @@ export default [
 	"meta:Documentation",
 	"meta:NPC",
 	"meta:Guide",
-	"Resource",
-	"notes",
-	"syntax",
-	"example",
-	"stat block",
-	"Character Sheet",
+	"meta:Resource",
+	"meta:Notes",
+	"meta:Example",
+
+	// Book type
+	"type:Campaign",
+	"type:Campaign Setting",
+	"type:Adventure",
+	"type:One-Shot",
+	"type:Setting",
+	"type:World",
+	"type:Lore",
+	"type:History",
+	"type:Dungeon Master",
+	"type:Encounter Pack",
+	"type:Encounter",
+	"type:Session Notes",
+	"type:reference",
+	"type:Handbook",
+	"type:Manual",
+	"type:Manuals",
+	"type:Compendium",
+	"type:Bestiary",
+
+	// ###################################### RPG Keywords
 
 	// Classes / Subclasses / Archetypes
 	"Class",
@@ -96,16 +115,15 @@ export default [
 	"Artifact",
 	"Spell",
 	"Spells",
-	"cantrip",
-	"cantrips",
+	"Cantrip",
+	"Cantrips",
 	"Eldritch",
 	"Eldritch Invocation",
-	"invocation",
+	"Invocation",
 	"Invocations",
-	"pact boon",
+	"Pact boon",
 	"Pact Boon",
 	"Spellcaster",
-	"spellcaster",
 	"Spellblade",
 	"Magical Tattoos",
 	"Enchantment",
@@ -122,26 +140,6 @@ export default [
 	"Item",
 	"Items",
 	"Bag of Holding",
-
-	// Book type
-	"type:Campaign",
-	"type:Campaign Setting",
-	"type:Adventure",
-	"type:One-Shot",
-	"type:Setting",
-	"type:World",
-	"type:Lore",
-	"type:History",
-	"type:Dungeon Master",
-	"type:Encounter Pack",
-	"type:Encounter",
-	"type:Session Notes",
-	"type:reference",
-	"type:Handbook",
-	"type:Manual",
-	"type:Manuals",
-	"type:Compendium",
-	"type:Bestiary",
 
 	// Monsters / Creatures / Enemies
 	"Monster",
@@ -164,11 +162,6 @@ export default [
 	"Constructs",
 	"Boss",
 	"BBEG",
-
-	// ############################# Document meta tags
-
-	"meta:v3",
-	"meta:Legacy",
 
 	// ############################# Media / Pop Culture
 	"One Piece",
