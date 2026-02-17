@@ -339,9 +339,12 @@ const MetadataEditor = createReactClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<TagInput label='tags' valuePatterns={/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/}
+			<TagInput 
+				label='tags' 
+				valuePatterns={/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.&_\-]{0,40}$/}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
+				smallText='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
 				onChange={(e)=>this.handleFieldChange('tags', e)}
 			/>
 
@@ -355,11 +358,13 @@ const MetadataEditor = createReactClass({
 
 			{this.renderAuthors()}
 
-			<TagInput label='invited authors' valuePatterns={/.+/}
+			<TagInput 
+				label='invited authors' 
+				valuePatterns={/.+/}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				smallText='Invited author usernames are case sensitive. After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.'
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
 			/>
 

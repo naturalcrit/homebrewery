@@ -4,7 +4,7 @@ import Combobox from "../../../components/combobox.jsx";
 
 import tagSuggestionList from "./curatedTagSuggestionList.js";
 
-const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholder = "", onChange }) => {
+const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholder = "", smallText = "", onChange }) => {
 	const [tagList, setTagList] = useState(
 		values.map((value) => ({
 			value,
@@ -12,7 +12,6 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 			editing: false,
 		})),
 	);
-	//console.log(label, values, placeholder);
 
 	useEffect(() => {
 		const incoming = values || [];
@@ -179,7 +178,7 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 					className="tagInput-dropdown"
 					default=""
 					placeholder={placeholder}
-					options={label === "tags" ? suggestionOptions : []} // always array
+					options={label === "tags" ? suggestionOptions : []}
 					autoSuggest={
 						label === "tags"
 							? {
@@ -187,7 +186,7 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 									clearAutoSuggestOnClick: true,
 									filterOn: ["value", "title"],
 								}
-							: { suggestMethod: "includes", clearAutoSuggestOnClick: true, filterOn: [] } // empty filter
+							: { suggestMethod: "includes", clearAutoSuggestOnClick: true, filterOn: [] }
 					}
 					valuePatterns={valuePatterns.source}
 					onSelect={(value) => submitTag(value)}
@@ -199,6 +198,7 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 						}
 					}}
 				/>
+				{smallText.length !== 0 && <small>{smallText}</small>}
 			</div>
 		</div>
 	);
