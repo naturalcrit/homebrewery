@@ -341,7 +341,7 @@ const MetadataEditor = createReactClass({
 
 			<TagInput
 				label='tags'
-				valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/.&_\-]{0,40}\s*$/}
+				valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
 				smallText='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
