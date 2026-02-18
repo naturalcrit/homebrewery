@@ -60,10 +60,11 @@
       "server"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(nanoid|@exodus/bytes|parse5)/)"
+      "node_modules/(?!(nanoid|@exodus/bytes|parse5|@asamuzakjp|@csstools)/)"
     ],
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.[jt]s$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
     },
     "coveragePathIgnorePatterns": [
       "build/*"
@@ -87,12 +88,13 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/plugin-transform-runtime": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-transform-runtime": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.28.5",
     "@babel/runtime": "^7.28.6",
-    "@googleapis/drive": "^19.2.0",
+    "@dmsnell/diff-match-patch": "^1.1.0",
+    "@googleapis/drive": "^20.1.0",
     "@sanity/diff-match-patch": "^3.2.0",
     "@vitejs/plugin-react": "^5.1.2",
     "body-parser": "^2.2.0",
@@ -107,7 +109,7 @@
     "express-async-handler": "^1.2.0",
     "express-static-gzip": "3.0.0",
     "fflate": "^0.8.2",
-    "fs-extra": "11.3.2",
+    "fs-extra": "^11.3.3",
     "hash-wasm": "^4.12.0",
     "idb-keyval": "^6.2.2",
     "js-yaml": "^4.1.1",
@@ -123,10 +125,10 @@
     "marked-nonbreaking-spaces": "^1.0.1",
     "marked-smartypants-lite": "^1.0.3",
     "marked-subsuper-text": "^1.0.4",
-    "marked-variables": "^1.0.4",
+    "marked-variables": "^1.0.5",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^8.20.0",
+    "mongoose": "^9.2.1",
     "nanoid": "5.1.6",
     "nconf": "^0.13.0",
     "react": "^18.3.1",
@@ -146,7 +148,7 @@
     "globals": "^16.4.0",
     "jest": "^30.2.0",
     "jest-expect-message": "^1.1.3",
-    "jsdom": "^27.4.0",
+    "jsdom": "^28.1.0",
     "jsdom-global": "^3.0.2",
     "stylelint": "^16.25.0",
     "supertest": "^7.1.4"
