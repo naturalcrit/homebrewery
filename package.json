@@ -61,10 +61,11 @@
       "server"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(nanoid|@exodus/bytes|parse5)/)"
+      "node_modules/(?!(nanoid|@exodus/bytes|parse5|@asamuzakjp|@csstools)/)"
     ],
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.[jt]s$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
     },
     "coveragePathIgnorePatterns": [
       "build/*"
