@@ -26,7 +26,7 @@ import RecentNavItems from '../../navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import { Meta }                  from 'vitreum/headtags';
+import { Meta }   from '../../../../vitreum/headtags.js';
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
@@ -59,7 +59,7 @@ const NewPage = (props)=>{
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
 	// const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{

@@ -1,7 +1,7 @@
 import './notificationPopup.less';
 import React, { useEffect, useState } from 'react';
 import request from '../../utils/request-middleware.js';
-import Markdown from 'markdown.js';
+import Markdown from '../../../../shared/markdown.js';
 
 import Dialog from '../../../components/dialog.jsx';
 

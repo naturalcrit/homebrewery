@@ -9,11 +9,11 @@ import cx from 'classnames';
 import { loadHistory } from '../../utils/versionHistory.js';
 import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
 
-import Legacy5ePHB from 'themes/Legacy/5ePHB/snippets.js';
-import V3_5ePHB   from 'themes/V3/5ePHB/snippets.js';
-import V3_5eDMG   from 'themes/V3/5eDMG/snippets.js';
-import V3_Journal from 'themes/V3/Journal/snippets.js';
-import V3_Blank  from 'themes/V3/Blank/snippets.js';
+import Legacy5ePHB from '../../../../themes/Legacy/5ePHB/snippets.js';
+import V3_5ePHB   from '../../../../themes/V3/5ePHB/snippets.js';
+import V3_5eDMG   from '../../../../themes/V3/5eDMG/snippets.js';
+import V3_Journal from '../../../../themes/V3/Journal/snippets.js';
+import V3_Blank  from '../../../../themes/V3/Blank/snippets.js';
 
 const ThemeSnippets = {
 	Legacy_5ePHB : Legacy5ePHB,
@@ -23,7 +23,7 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-import EditorThemes from 'build/homebrew/codeMirror/editorThemes.json';
+import EditorThemes from '../../../../build/homebrew/codeMirror/editorThemes.json';
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
