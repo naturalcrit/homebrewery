@@ -8,9 +8,9 @@ import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
-				setMarkedVariablePage,
-				setMarkedVariable,
-				getMarkedVariable }  from 'marked-variables';
+	setMarkedVariablePage,
+	setMarkedVariable,
+	getMarkedVariable }  from 'marked-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
@@ -31,7 +31,12 @@ renderer.html = function (token) {
 		const openTag = html.substring(0, html.indexOf('>')+1);
 		html = html.substring(html.indexOf('>')+1);
 		html = html.substring(0, html.lastIndexOf('</div>'));
-		return `${openTag} ${Marked.parse(html)} </div>`;
+
+		// Repeat the markdown processing for content inside the div, minus the preprocessing and postprocessing hooks which should only run once globally
+		const opts = Marked.defaults;
+		const tokens = Marked.lexer(html, opts);
+		Marked.walkTokens(tokens, opts.walkTokens);
+		return `${openTag} ${Marked.parser(tokens, opts)} </div>`;
 	}
 	return html;
 };

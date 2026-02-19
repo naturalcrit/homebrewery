@@ -1,9 +1,9 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const Nav = require('client/homebrew/navbar/nav.jsx');
-const request = require('superagent');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import request from 'superagent';
+import Nav from './nav.jsx';
 
-const Account = createClass({
+const Account = createReactClass({
 	displayName     : 'AccountNavItem',
 	getInitialState : function() {
 		return {
@@ -111,4 +111,4 @@ const Account = createClass({
 	}
 });
 
-module.exports = Account;
+export default Account;

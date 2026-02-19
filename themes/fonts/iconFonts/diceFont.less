@@ -6,14 +6,6 @@
 	src : url('../../../fonts/iconFonts/diceFont.woff2');
 } 
 
-@font-face {
-	font-family  : 'DiceFontD100';
-	src          : url('../../../fonts/iconFonts/diceFontD100.woff2') format('woff2');
-	font-weight  : normal;
-	font-style   : normal;
-	font-display : block;
-  }
-  
 .df {
 	display                 : inline;
 	font-family             : 'DiceFont';
@@ -33,8 +25,19 @@
 	&.F-minus::before { content : '\f191'; }
 	&.F-plus::before { content : '\f192'; }
 	&.F-zero::before { content : '\f193'; }
-	&.d10::before { content : '\f194'; }
-	&.d12::before { content : '\f195'; }
+	&.d10::before    { content : '\f194'; }
+	&.d10-0::before  { content : '\f100'; }
+	&.d10-1:before   { content : '\f101'; }
+	&.d10-10::before { content : '\f102'; }
+	&.d10-2:before   { content : '\f103'; }
+	&.d10-3::before  { content : '\f104'; }
+	&.d10-4::before  { content : '\f105'; }
+	&.d10-5::before  { content : '\f106'; }
+	&.d10-6::before  { content : '\f107'; }
+	&.d10-7::before  { content : '\f108'; }
+	&.d10-8::before  { content : '\f109'; }
+	&.d10-9::before  { content : '\f10A'; }
+	&.d12::before   { content : '\f195'; }
 	&.d12-1::before { content : '\f10b'; }
 	&.d12-10::before { content : '\f10c'; }
 	&.d12-11::before { content : '\f10d'; }
@@ -92,6 +95,208 @@
 	&.d8-6::before { content : '\f13c'; }
 	&.d8-7::before { content : '\f13d'; }
 	&.d8-8::before { content : '\f13e'; }
+	&.d10-00::before { content : '\f19C'; }
+	&.d10-01::before { content : '\f19D'; }
+	&.d10-02::before { content : '\f19E'; }
+	&.d10-03::before { content : '\f19F'; }
+	&.d10-04::before { content : '\f1A0'; }
+	&.d10-05::before { content : '\f1A1'; }
+	&.d10-06::before { content : '\f1A2'; }
+	&.d10-07::before { content : '\f1A3'; }
+	&.d10-08::before { content : '\f1A4'; }
+	&.d10-09::before { content : '\f1A5'; }
+	&.d10-11::before { content : '\f1A7'; }
+	&.d10-12::before { content : '\f1A8'; }
+	&.d10-13::before { content : '\f1A9'; }
+	&.d10-14::before { content : '\f1AA'; }
+	&.d10-15::before { content : '\f1AB'; }
+	&.d10-16::before { content : '\f1AC'; }
+	&.d10-17::before { content : '\f1AD'; }
+	&.d10-18::before { content : '\f1AE'; }
+	&.d10-19::before { content : '\f1AF'; }
+	&.d10-20::before { content : '\f1B0'; }
+	&.d10-21::before { content : '\f1B1'; }
+	&.d10-22::before { content : '\f1B2'; }
+	&.d10-23::before { content : '\f1B3'; }
+	&.d10-24::before { content : '\f1B4'; }
+	&.d10-25::before { content : '\f1B5'; }
+	&.d10-26::before { content : '\f1B6'; }
+	&.d10-27::before { content : '\f1B7'; }
+	&.d10-28::before { content : '\f1B8'; }
+	&.d10-29::before { content : '\f1B9'; }
+	&.d10-30::before { content : '\f1BA'; }
+	&.d10-31::before { content : '\f1BB'; }
+	&.d10-32::before { content : '\f1BC'; }
+	&.d10-33::before { content : '\f1BD'; }
+	&.d10-34::before { content : '\f1BE'; }
+	&.d10-35::before { content : '\f1BF'; }
+	&.d10-36::before { content : '\f1C0'; }
+	&.d10-37::before { content : '\f1C1'; }
+	&.d10-38::before { content : '\f1C2'; }
+	&.d10-39::before { content : '\f1C3'; }
+	&.d10-40::before { content : '\f1C4'; }
+	&.d10-41::before { content : '\f1C5'; }
+	&.d10-42::before { content : '\f1C6'; }
+	&.d10-43::before { content : '\f1C7'; }
+	&.d10-44::before { content : '\f1C8'; }
+	&.d10-45::before { content : '\f1C9'; }
+	&.d10-46::before { content : '\f1CA'; }
+	&.d10-47::before { content : '\f1CB'; }
+	&.d10-48::before { content : '\f1CC'; }
+	&.d10-49::before { content : '\f1CD'; }
+	&.d10-50::before { content : '\f1CE'; }
+	&.d10-51::before { content : '\f1CF'; }
+	&.d10-52::before { content : '\f1D0'; }
+	&.d10-53::before { content : '\f1D1'; }
+	&.d10-54::before { content : '\f1D2'; }
+	&.d10-55::before { content : '\f1D3'; }
+	&.d10-56::before { content : '\f1D4'; }
+	&.d10-57::before { content : '\f1D5'; }
+	&.d10-58::before { content : '\f1D6'; }
+	&.d10-59::before { content : '\f1D7'; }
+	&.d10-60::before { content : '\f1D8'; }
+	&.d10-61::before { content : '\f1D9'; }
+	&.d10-62::before { content : '\f1DA'; }
+	&.d10-63::before { content : '\f1DB'; }
+	&.d10-64::before { content : '\f1DC'; }
+	&.d10-65::before { content : '\f1DD'; }
+	&.d10-66::before { content : '\f1DE'; }
+	&.d10-67::before { content : '\f1DF'; }
+	&.d10-68::before { content : '\f1E0'; }
+	&.d10-69::before { content : '\f1E1'; }
+	&.d10-70::before { content : '\f1E2'; }
+	&.d10-71::before { content : '\f1E3'; }
+	&.d10-72::before { content : '\f1E4'; }
+	&.d10-73::before { content : '\f1E5'; }
+	&.d10-74::before { content : '\f1E6'; }
+	&.d10-75::before { content : '\f1E7'; }
+	&.d10-76::before { content : '\f1E8'; }
+	&.d10-77::before { content : '\f1E9'; }
+	&.d10-78::before { content : '\f1EA'; }
+	&.d10-79::before { content : '\f1EB'; }
+	&.d10-80::before { content : '\f1EC'; }
+	&.d10-81::before { content : '\f1ED'; }
+	&.d10-82::before { content : '\f1EE'; }
+	&.d10-83::before { content : '\f1EF'; }
+	&.d10-84::before { content : '\f1F0'; }
+	&.d10-85::before { content : '\f1F1'; }
+	&.d10-86::before { content : '\f1F2'; }
+	&.d10-87::before { content : '\f1F3'; }
+	&.d10-88::before { content : '\f1F4'; }
+	&.d10-89::before { content : '\f1F5'; }
+	&.d10-90::before { content : '\f1F6'; }
+	&.d10-91::before { content : '\f1F7'; }
+	&.d10-92::before { content : '\f1F8'; }
+	&.d10-93::before { content : '\f1F9'; }
+	&.d10-94::before { content : '\f1FA'; }
+	&.d10-95::before { content : '\f1FB'; }
+	&.d10-96::before { content : '\f1FC'; }
+	&.d10-97::before { content : '\f1FD'; }
+	&.d10-98::before { content : '\f1FE'; }
+	&.d10-99::before { content : '\f1FF'; }
+	&.d10-100::before { content : '\f200'; }
+	&.d100-00::before { content : '\f201'; }
+	&.d100-01::before { content : '\f202'; }
+	&.d100-02::before { content : '\f203'; }
+	&.d100-03::before { content : '\f204'; }
+	&.d100-04::before { content : '\f205'; }
+	&.d100-05::before { content : '\f206'; }
+	&.d100-06::before { content : '\f207'; }
+	&.d100-07::before { content : '\f208'; }
+	&.d100-08::before { content : '\f209'; }
+	&.d100-09::before { content : '\f20A'; }
+	&.d100-10::before { content : '\f20B'; }
+	&.d100-11::before { content : '\f20C'; }
+	&.d100-12::before { content : '\f20D'; }
+	&.d100-13::before { content : '\f20E'; }
+	&.d100-14::before { content : '\f20F'; }
+	&.d100-15::before { content : '\f210'; }
+	&.d100-16::before { content : '\f211'; }
+	&.d100-17::before { content : '\f212'; }
+	&.d100-18::before { content : '\f213'; }
+	&.d100-19::before { content : '\f214'; }
+	&.d100-20::before { content : '\f215'; }
+	&.d100-21::before { content : '\f216'; }
+	&.d100-22::before { content : '\f217'; }
+	&.d100-23::before { content : '\f218'; }
+	&.d100-24::before { content : '\f219'; }
+	&.d100-25::before { content : '\f21A'; }
+	&.d100-26::before { content : '\f21B'; }
+	&.d100-27::before { content : '\f21C'; }
+	&.d100-28::before { content : '\f21D'; }
+	&.d100-29::before { content : '\f21E'; }
+	&.d100-30::before { content : '\f21F'; }
+	&.d100-31::before { content : '\f220'; }
+	&.d100-32::before { content : '\f221'; }
+	&.d100-33::before { content : '\f222'; }
+	&.d100-34::before { content : '\f223'; }
+	&.d100-35::before { content : '\f224'; }
+	&.d100-36::before { content : '\f225'; }
+	&.d100-37::before { content : '\f226'; }
+	&.d100-38::before { content : '\f227'; }
+	&.d100-39::before { content : '\f228'; }
+	&.d100-40::before { content : '\f229'; }
+	&.d100-41::before { content : '\f22A'; }
+	&.d100-42::before { content : '\f22B'; }
+	&.d100-43::before { content : '\f22C'; }
+	&.d100-44::before { content : '\f22D'; }
+	&.d100-45::before { content : '\f22E'; }
+	&.d100-46::before { content : '\f22F'; }
+	&.d100-47::before { content : '\f230'; }
+	&.d100-48::before { content : '\f231'; }
+	&.d100-49::before { content : '\f232'; }
+	&.d100-50::before { content : '\f233'; }
+	&.d100-51::before { content : '\f234'; }
+	&.d100-52::before { content : '\f235'; }
+	&.d100-53::before { content : '\f236'; }
+	&.d100-54::before { content : '\f237'; }
+	&.d100-55::before { content : '\f238'; }
+	&.d100-56::before { content : '\f239'; }
+	&.d100-57::before { content : '\f23A'; }
+	&.d100-58::before { content : '\f23B'; }
+	&.d100-59::before { content : '\f23C'; }
+	&.d100-60::before { content : '\f23D'; }
+	&.d100-61::before { content : '\f23E'; }
+	&.d100-62::before { content : '\f23F'; }
+	&.d100-63::before { content : '\f240'; }
+	&.d100-64::before { content : '\f241'; }
+	&.d100-65::before { content : '\f242'; }
+	&.d100-66::before { content : '\f243'; }
+	&.d100-67::before { content : '\f244'; }
+	&.d100-68::before { content : '\f245'; }
+	&.d100-69::before { content : '\f246'; }
+	&.d100-70::before { content : '\f247'; }
+	&.d100-71::before { content : '\f248'; }
+	&.d100-72::before { content : '\f249'; }
+	&.d100-73::before { content : '\f24A'; }
+	&.d100-74::before { content : '\f24B'; }
+	&.d100-75::before { content : '\f24C'; }
+	&.d100-76::before { content : '\f24D'; }
+	&.d100-77::before { content : '\f24E'; }
+	&.d100-78::before { content : '\f24F'; }
+	&.d100-79::before { content : '\f250'; }
+	&.d100-80::before { content : '\f251'; }
+	&.d100-81::before { content : '\f252'; }
+	&.d100-82::before { content : '\f253'; }
+	&.d100-83::before { content : '\f254'; }
+	&.d100-84::before { content : '\f255'; }
+	&.d100-85::before { content : '\f256'; }
+	&.d100-86::before { content : '\f257'; }
+	&.d100-87::before { content : '\f258'; }
+	&.d100-88::before { content : '\f259'; }
+	&.d100-89::before { content : '\f25A'; }
+	&.d100-90::before { content : '\f25B'; }
+	&.d100-91::before { content : '\f25C'; }
+	&.d100-92::before { content : '\f25D'; }
+	&.d100-93::before { content : '\f25E'; }
+	&.d100-94::before { content : '\f25F'; }
+	&.d100-95::before { content : '\f260'; }
+	&.d100-96::before { content : '\f261'; }
+	&.d100-97::before { content : '\f262'; }
+	&.d100-98::before { content : '\f263'; }
+	&.d100-99::before { content : '\f264'; }
+	&.d100-100::before { content : '\f265'; }
+	&.d100::before { content : '\f266'; }
 	&.dot-d6::before { content : '\f19b'; }
 	&.dot-d6-1::before { content : '\f13f'; }
 	&.dot-d6-2::before { content : '\f140'; }
@@ -111,568 +316,4 @@
 	&.solid-small-dot-d6-4::before { content : '\f18c'; }
 	&.solid-small-dot-d6-5::before { content : '\f18d'; }
 	&.solid-small-dot-d6-6::before { content : '\f18e'; }
-
-  // Replacement d10
-
-  &.d10-0::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e900';
-  }
-  
-  &.d10-1::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e901';
-  }
-  
-  &.d10-2::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e902';
-  }
-  
-  &.d10-3::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e903';
-  }
-  
-  &.d10-4::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e904';
-  }
-  
-  &.d10-5::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e905';
-  }
-  
-  &.d10-6::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e906';
-  }
-  
-  &.d10-7::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e907';
-  }
-  
-  &.d10-8::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e908';
-  }
-  
-  &.d10-9::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e909';
-  }
-  
-  &.d10-10::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90a';
-  }
-
-  // d100
-
-  &.d10-00::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90b';
-  }
-  
-  &.d10-01::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90c';
-  }
-  
-  &.d10-02::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90d';
-  }
-  
-  &.d10-03::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90e';
-  }
-  
-  &.d10-04::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e90f';
-  }
-  
-  &.d10-05::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e910';
-  }
-  
-  &.d10-06::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e911';
-  }
-  
-  &.d10-07::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e912';
-  }
-  
-  &.d10-08::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e913';
-  }
-  
-  &.d10-09::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e914';
-  }
-  
-  &.d10-10::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e915';
-  }
-  
-  &.d10-11::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e916';
-  }
-  
-  &.d10-12::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e917';
-  }
-  
-  &.d10-13::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e918';
-  }
-  
-  &.d10-14::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e919';
-  }
-  
-  &.d10-15::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91a';
-  }
-  
-  &.d10-16::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91b';
-  }
-  
-  &.d10-17::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91c';
-  }
-  
-  &.d10-18::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91d';
-  }
-  
-  &.d10-19::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91e';
-  }
-  
-  &.d10-20::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e91f';
-  }
-  
-  &.d10-21::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e920';
-  }
-  
-  &.d10-22::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e921';
-  }
-  
-  &.d10-23::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e922';
-  }
-  
-  &.d10-24::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e923';
-  }
-  
-  &.d10-25::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e924';
-  }
-  
-  &.d10-26::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e925';
-  }
-  
-  &.d10-27::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e926';
-  }
-  
-  &.d10-28::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e927';
-  }
-  
-  &.d10-29::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e928';
-  }
-  
-  &.d10-30::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e929';
-  }
-  
-  &.d10-31::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92a';
-  }
-  
-  &.d10-32::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92b';
-  }
-  
-  &.d10-33::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92c';
-  }
-  
-  &.d10-34::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92d';
-  }
-  
-  &.d10-35::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92e';
-  }
-  
-  &.d10-36::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e92f';
-  }
-  
-  &.d10-37::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e930';
-  }
-  
-  &.d10-38::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e931';
-  }
-  
-  &.d10-39::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e932';
-  }
-  
-  &.d10-40::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e933';
-  }
-  
-  &.d10-41::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e934';
-  }
-  
-  &.d10-42::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e935';
-  }
-  
-  &.d10-43::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e936';
-  }
-  
-  &.d10-44::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e937';
-  }
-  
-  &.d10-45::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e938';
-  }
-  
-  &.d10-46::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e939';
-  }
-  
-  &.d10-47::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93a';
-  }
-  
-  &.d10-48::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93b';
-  }
-  
-  &.d10-49::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93c';
-  }
-  
-  &.d10-50::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93d';
-  }
-  
-  &.d10-51::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93e';
-  }
-  
-  &.d10-52::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e93f';
-  }
-  
-  &.d10-53::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e940';
-  }
-  
-  &.d10-54::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e941';
-  }
-  
-  &.d10-55::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e942';
-  }
-  
-  &.d10-56::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e943';
-  }
-  
-  &.d10-57::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e944';
-  }
-  
-  &.d10-58::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e945';
-  }
-  
-  &.d10-59::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e946';
-  }
-  
-  &.d10-60::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e947';
-  }
-  
-  &.d10-61::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e948';
-  }
-  
-  &.d10-62::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e949';
-  }
-  
-  &.d10-63::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94a';
-  }
-  
-  &.d10-64::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94b';
-  }
-  
-  &.d10-65::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94c';
-  }
-  
-  &.d10-66::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94d';
-  }
-  
-  &.d10-67::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94e';
-  }
-  
-  &.d10-68::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e94f';
-  }
-  
-  &.d10-69::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e950';
-  }
-  
-  &.d10-70::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e951';
-  }
-  
-  &.d10-71::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e952';
-  }
-  
-  &.d10-72::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e953';
-  }
-  
-  &.d10-73::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e954';
-  }
-  
-  &.d10-74::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e955';
-  }
-  
-  &.d10-75::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e956';
-  }
-  
-  &.d10-76::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e957';
-  }
-  
-  &.d10-77::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e958';
-  }
-  
-  &.d10-78::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e959';
-  }
-  
-  &.d10-79::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95a';
-  }
-  
-  &.d10-80::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95b';
-  }
-  
-  &.d10-81::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95c';
-  }
-  
-  &.d10-82::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95d';
-  }
-  
-  &.d10-83::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95e';
-  }
-  
-  &.d10-84::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e95f';
-  }
-  
-  &.d10-85::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e960';
-  }
-  
-  &.d10-86::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e961';
-  }
-  
-  &.d10-87::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e962';
-  }
-  
-  &.d10-88::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e963';
-  }
-  
-  &.d10-89::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e964';
-  }
-  
-  &.d10-90::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e965';
-  }
-  
-  &.d10-91::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e966';
-  }
-  
-  &.d10-92::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e967';
-  }
-  
-  &.d10-93::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e968';
-  }
-  
-  &.d10-94::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e969';
-  }
-  
-  &.d10-95::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96a';
-  }
-  
-  &.d10-96::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96b';
-  }
-  
-  &.d10-97::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96c';
-  }
-  
-  &.d10-98::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96d';
-  }
-  
-  &.d10-99::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96e';
-  }
-  
-  &.d10-100::before { 
-    font-family : 'DiceFontD100';
-    content     : '\e96f';
-  }
 }

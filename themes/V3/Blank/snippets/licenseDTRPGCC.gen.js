@@ -1,9 +1,9 @@
-/* eslint-disable max-lines */
-const dedent = require('dedent');
+
+import dedent from 'dedent';
 
 // DriveThruRPG/OneBookShelf Community Content Programs
 
-module.exports = {
+export default {
 	// Alligator Alley Entertainment  Starforger's Guild
 	alligatorAlleyEntertainmentStarforgersGuildColophon : function() {
 		return dedent `
@@ -168,8 +168,8 @@ module.exports = {
 		`;
 	},
 	// Monte Cook's Cypher License
-	monteCookCypherCover                 : `Requires the Cypher System Rulebook from Monte Cook Games. Distributed through the Cypher System CreatorTM at DriveThruRPG.`,
-	monteCookCypherColophon              : function() {
+	monteCookCypherCover    : `Requires the Cypher System Rulebook from Monte Cook Games. Distributed through the Cypher System CreatorTM at DriveThruRPG.`,
+	monteCookCypherColophon : function() {
 		return dedent`
 		This product was created under license. CYPHER SYSTEM and its logo, and CYPHER SYSTEM CREATOR and its logo, are trademarks of Monte Cook Games, LLC in the U.S.A. and other countries. All Monte Cook Games characters and character names, and the distinctive likenesses thereof, are trademarks of Monte Cook Games, LLC. [](www.montecookgames.com)
 
@@ -179,10 +179,10 @@ module.exports = {
 		`;
 	},
 	// Verify Logo redistribution
-	monteCookLogoDarkLarge              : `![Cypher System Compatible](/assets/license_logos/CSCDarkLarge.png)`,
-	monteCookLogoDarkSmall              : `![Cypher System Compatible](/assets/license_logos/CSCDarkSmall.png)`,
-	monteCookLogoLightLarge             : `![Cypher System Compatible](/assets/license_logos/CSCLightLarge.png)`,
-	monteCookLogoLightSmall             : `![Cypher System Compatible](/assets/license_logos/CSCLightSmall.png)`,
+	monteCookLogoDarkLarge     : `![Cypher System Compatible](/assets/license_logos/CSCDarkLarge.png)`,
+	monteCookLogoDarkSmall     : `![Cypher System Compatible](/assets/license_logos/CSCDarkSmall.png)`,
+	monteCookLogoLightLarge    : `![Cypher System Compatible](/assets/license_logos/CSCLightLarge.png)`,
+	monteCookLogoLightSmall    : `![Cypher System Compatible](/assets/license_logos/CSCLightSmall.png)`,
 	// Onyx Path Canis Minor - Verify logos and access
 	onyxPathCanisMinorColophon : function () {
 		return dedent`

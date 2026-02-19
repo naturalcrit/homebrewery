@@ -492,7 +492,7 @@ body { counter-reset : page-numbers 0; }
 		.pageNumber { left : 30px; }
 	}
 
-	.resetCounting { counter-set : page-numbers 1; }
+	&:has(.resetCounting) { counter-set : page-numbers 1; }
 
 	&:not(:has(.skipCounting)) { counter-increment : page-numbers; }
 
