@@ -146,9 +146,7 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 							type='text'
 							value={t.draft} // always use draft
 							pattern={valuePatterns.source}
-							onChange={(e)=>setTagList((prev)=>prev.map((tag, idx)=>(idx === i ? { ...tag, draft: e.target.value } : tag)),
-							)
-							}
+							onChange={(e)=>setTagList((prev)=>prev.map((tag, idx)=>(idx === i ? { ...tag, draft: e.target.value } : tag)))}
 							onKeyDown={(e)=>{
 								if(e.key === 'Enter') {
 									e.preventDefault();
@@ -198,7 +196,6 @@ const TagInput = ({ label, valuePatterns, values = [], unique = true, placeholde
 					onSelect={(value)=>submitTag(value)}
 					onEntry={(e)=>{
 						if(e.key === 'Enter') {
-							console.log('submit');
 							e.preventDefault();
 							submitTag(e.target.value);
 						}
