@@ -10,8 +10,6 @@ import TagInput from '../tagInput/tagInput.jsx';
 import Themes from 'themes/themes.json';
 import validations from './validations.js';
 
-const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
-
 import homebreweryThumbnail from '../../thumbnail.png';
 
 const callIfExists = (val, fn, ...args)=>{
@@ -33,7 +31,6 @@ const MetadataEditor = createReactClass({
 				tags        : [],
 				published   : false,
 				authors     : [],
-				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
 				lang        : 'en'
@@ -91,15 +88,6 @@ const MetadataEditor = createReactClass({
 		}
 	},
 
-	handleSystem : function(system, e){
-		if(e.target.checked){
-			this.props.metadata.systems.push(system);
-		} else {
-			this.props.metadata.systems = _.without(this.props.metadata.systems, system);
-		}
-		this.props.onChange(this.props.metadata);
-	},
-
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
@@ -153,18 +141,6 @@ const MetadataEditor = createReactClass({
 					window.location.href = '/';
 				}
 			});
-	},
-
-	renderSystems : function(){
-		return _.map(SYSTEMS, (val)=>{
-			return <label key={val}>
-				<input
-					type='checkbox'
-					checked={_.includes(this.props.metadata.systems, val)}
-					onChange={(e)=>this.handleSystem(val, e)} />
-				{val}
-			</label>;
-		});
 	},
 
 	renderPublish : function(){
@@ -304,7 +280,7 @@ const MetadataEditor = createReactClass({
 	},
 
 	renderRenderOptions : function(){
-		return <div className='field systems'>
+		return <div className='field renderers'>
 			<label>Renderer</label>
 			<div className='value'>
 				<label key='legacy'>
@@ -363,18 +339,14 @@ const MetadataEditor = createReactClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
+			<TagInput
+				label='tags'
+				valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
 				placeholder='add tag' unique={true}
 				values={this.props.metadata.tags}
+				smallText='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
 				onChange={(e)=>this.handleFieldChange('tags', e)}
 			/>
-
-			<div className='field systems'>
-				<label>systems</label>
-				<div className='value'>
-					{this.renderSystems()}
-				</div>
-			</div>
 
 			{this.renderLanguageDropdown()}
 
@@ -386,11 +358,13 @@ const MetadataEditor = createReactClass({
 
 			{this.renderAuthors()}
 
-			<TagInput label='invited authors' valuePatterns={[/.+/]}
+			<TagInput
+				label='invited authors'
+				valuePatterns={/.+/}
 				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
 				placeholder='invite author' unique={true}
 				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
+				smallText='Invited author usernames are case sensitive. After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.'
 				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
 			/>
 

@@ -16,6 +16,7 @@ const Combobox = createReactClass({
 				suggestMethod           : 'includes',
 				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 			},
+			valuePatterns: /.+/
 		};
 	},
 	getInitialState : function() {
@@ -74,12 +75,19 @@ const Combobox = createReactClass({
 					type='text'
 					onChange={(e)=>this.handleInput(e)}
 					value={this.state.value || ''}
+					pattern={this.props.valuePatterns}
 					placeholder={this.props.placeholder}
 					onBlur={(e)=>{
 						if(!e.target.checkValidity()){
 							this.setState({
 								value : this.props.default
 							});
+						}
+					}}
+					onKeyDown={(e)=>{
+						if (e.key === "Enter") {
+							e.preventDefault();
+							this.props.onEntry(e);
 						}
 					}}
 				/>
