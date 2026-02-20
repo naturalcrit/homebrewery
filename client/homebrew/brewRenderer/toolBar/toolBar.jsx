@@ -186,8 +186,8 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 
 				</div>
 				<Anchored>
-					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
-					<AnchoredBox title='Options'>
+					<AnchoredTrigger id='spread-settings' className='tool' data-tooltip-bottom='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredBox>
 						<h1>Options</h1>
 						<label data-tooltip-left='Modify the horizontal space between pages.'>
 							Column gap

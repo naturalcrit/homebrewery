@@ -128,7 +128,7 @@ const TagInput = ({tooltip, label, valuePatterns, values = [], unique = true, pl
 		}
 
 		return (
-			<div className={classes} key={`tag-${tag}`} value={tag} data={tag} title={tag}>
+			<div className={classes} key={`tag-${tag}`} value={tag} data={tag}>
 				{tag}
 			</div>
 		);
