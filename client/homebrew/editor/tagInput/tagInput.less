@@ -1,21 +1,30 @@
-.list input {
-	border-radius: 5px;
-}
+.tags {
 
-.tagInput-dropdown {
-	.dropdown-options {
-		.item {
-			&.type {
-				background-color: #00800035;
-			}
-			&.group {
-				background-color: #50505035;
-			}
-			&.meta {
-				background-color: #00008035;
-			}
-			&.system {
-				background-color: #80000035;
+	.tagInputWrap {
+		display:grid;
+		grid-template-columns: 200px 3fr;
+		gap:10px;
+	}
+
+	.list input {
+		border-radius: 5px;
+	}
+
+	.tagInput-dropdown {
+		.dropdown-options {
+			.item {
+				&.type {
+					background-color: #00800035;
+				}
+				&.group {
+					background-color: #50505035;
+				}
+				&.meta {
+					background-color: #00008035;
+				}
+				&.system {
+					background-color: #80000035;
+				}
 			}
 		}
 	}

@@ -44,8 +44,6 @@
 		gap            : 10px;
 	}
 
-
-
 	.field {
 		position      : relative;
 		display       : flex;
@@ -62,6 +60,9 @@
 		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
+			&[data-tooltip-right] {
+				max-width:380px;
+			}
 			&:invalid { background : #FFB9B9; }
 			small {
 				display     : block;
@@ -110,7 +111,7 @@
 			}
 		}
 
-		&.language .language-dropdown {
+		&.language .value {
 			z-index   : 200;
 			max-width : 150px;
 		}

@@ -256,7 +256,7 @@ const MetadataEditor = createReactClass({
 
 		return <div className='field language'>
 			<label>language</label>
-			<div className='value'>
+			<div className='value' data-tooltip-right='Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.'>
 				<Combobox trigger='click'
 					className='language-dropdown'
 					default={this.props.metadata.lang || ''}
@@ -273,7 +273,6 @@ const MetadataEditor = createReactClass({
 						filterOn                : ['value', 'detail', 'title']
 					}}
 				/>
-				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
 			</div>
 
 		</div>;
@@ -339,14 +338,20 @@ const MetadataEditor = createReactClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<TagInput
-				label='tags'
-				valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
-				placeholder='add tag' unique={true}
-				values={this.props.metadata.tags}
-				smallText='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
-				onChange={(e)=>this.handleFieldChange('tags', e)}
-			/>
+			<div className="field tags">
+				<label>Tags</label>
+				<div className="value" >
+					<TagInput
+						label='tags'
+						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+						placeholder='add tag' unique={true}
+						values={this.props.metadata.tags}
+						onChange={(e)=>this.handleFieldChange('tags', e)}
+						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+					/>
+				</div>
+			</div>
+			
 
 			{this.renderLanguageDropdown()}
 
@@ -358,15 +363,22 @@ const MetadataEditor = createReactClass({
 
 			{this.renderAuthors()}
 
-			<TagInput
-				label='invited authors'
-				valuePatterns={/.+/}
-				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
-				placeholder='invite author' unique={true}
-				values={this.props.metadata.invitedAuthors}
-				smallText='Invited author usernames are case sensitive. After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.'
-				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-			/>
+			<div className="field tags">
+				<label>Invited authors</label>
+				<div className="value">
+					<TagInput
+						label='invited authors'
+						valuePatterns={/.+/}
+						validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
+						placeholder='invite author' unique={true}
+						tooltip={`Invited author usernames are case sensitive.
+							After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.`}
+						values={this.props.metadata.invitedAuthors}
+						onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
+					/>
+				</div>
+			</div>
+			
 
 			<h2>Privacy</h2>
 
