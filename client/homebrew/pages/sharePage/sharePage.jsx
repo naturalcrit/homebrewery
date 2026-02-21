@@ -15,7 +15,7 @@ import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, share = true } = props;
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -65,40 +65,43 @@ const SharePage = (props)=>{
 		</Nav.item>
 	);
 
+	const showNav = (
+		<Navbar>
+			<Nav.section className='titleSection'>
+				{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
+			</Nav.section>
+
+			<Nav.section>
+				{brew.shareId && (
+					<>
+						<PrintNavItem brew={brew}/>
+						<Nav.dropdown>
+							<Nav.item color='red' icon='fas fa-code'>
+								source
+							</Nav.item>
+							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
+								view
+							</Nav.item>
+							{renderEditLink()}
+							<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
+								download
+							</Nav.item>
+							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
+								clone to new
+							</Nav.item>
+						</Nav.dropdown>
+					</>
+				)}
+				<RecentNavItem brew={brew} storageKey='view' />
+				<Account />
+			</Nav.section>
+		</Navbar>
+	);
+
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar>
-				<Nav.section className='titleSection'>
-					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
-				</Nav.section>
-
-				<Nav.section>
-					{brew.shareId && (
-						<>
-							<PrintNavItem />
-							<Nav.dropdown>
-								<Nav.item color='red' icon='fas fa-code'>
-									source
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
-									view
-								</Nav.item>
-								{renderEditLink()}
-								<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
-									download
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
-									clone to new
-								</Nav.item>
-							</Nav.dropdown>
-						</>
-					)}
-					<RecentNavItem brew={brew} storageKey='view' />
-					<Account />
-				</Nav.section>
-			</Navbar>
-
+			{share ? showNav : ''}
 			<div className='content'>
 				<BrewRenderer
 					text={brew.text}
@@ -110,6 +113,7 @@ const SharePage = (props)=>{
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
+					showToolbar={share}
 				/>
 			</div>
 		</div>

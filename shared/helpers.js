@@ -1,6 +1,14 @@
+/* eslint-disable max-lines */
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
+import Markdown from '../shared/markdown.js';
+import packageJSON from '../package.json' with { type: 'json' };
+
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
+const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
+
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -168,10 +176,45 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	}
 };
 
+const scrapeBrew = ()=>{
+	const htmlBody = `<html>\n${window.frames['BrewRenderer'].contentDocument.documentElement.innerHTML}\n</html>`;
+	return htmlBody;
+};
+
+
+const downloadBlob = (brewHtml, fileName)=>{
+	const blob = new Blob([brewHtml], { type: 'text/plain' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = fileName || 'download';
+	const clickHandler = ()=>{
+		setTimeout(()=>{
+			URL.revokeObjectURL(url);
+			removeEventListener('click', clickHandler);
+		}, 150);
+	};
+	a.addEventListener('click', clickHandler, false);
+	a.click();
+};
+
+const scrapeBrewZip = ()=>{
+	const htmlBody = scrapeBrew();
+	// DO STUFF!
+};
+
+const scrapeBrewHTML = ()=>{
+	const htmlBody = scrapeBrew();
+	// Manipulate the body to change all relative path references to full URLs
+	downloadBlob(htmlBody, 'testDownload.html');
+};
+
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	scrapeBrewHTML,
+	scrapeBrewZip,
 };
