@@ -79,9 +79,18 @@ const BrewPage = (props)=>{
 		};
 	}, []);
 
-	return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
-	         <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
-	       </div>;
+	// Return unwrapped legacy pages
+	if(props.renderer == 'legacy') {
+		return <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
+			 <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
+		 </div>;
+	}
+	return <div className='trim' id={`s${props.index + 1}`} data-index={props.index} ref={pageRef}>
+				 <div className={props.className} id={`p${props.index + 1}`} data-index={props.index} ref={pageRef} style={props.style} {...props.attributes}>
+					 <div className='columnWrapper' dangerouslySetInnerHTML={{ __html: cleanText }} />
+				 </div>
+			 </div>;
+
 };
 
 

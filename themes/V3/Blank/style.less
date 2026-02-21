@@ -11,11 +11,57 @@
 	//Colors
 	--HB_Color_Background            : #FFFFFF; // White
 	--HB_Color_WatercolorStain       : #000000; // Black
+	--HB_Trim_Inside                 : 0.00in;
+	--HB_Trim_Top                    : 0.125in;
+	--HB_Trim_Outside                : 0.125in;
+	--HB_Trim_Bottom                 : 0.125in;
 }
 
+@trim { margin : 0; }
 @page { margin : 0; }
 body { counter-reset : page-numbers 0; }
 * { -webkit-print-color-adjust : exact; }
+
+.trim {
+	position               : relative;
+	z-index                : 14;
+	box-sizing             : border-box;
+	width                  : 8.625in;
+	height                 : 11.25in;
+	padding                : var(--HB_Trim_Top, 0.0in) var(--HB_Trim_Outside, 0.0in) var(--HB_Trim_Bottom, 0.0in) var(--HB_Trim_Inside, 0.0in);
+	overflow               : clip;
+	background-color       : white;
+	text-rendering         : optimizeLegibility;
+	contain                : strict;
+	content-visibility     : auto;
+	contain-intrinsic-size : auto none;
+
+	&:nth-child(even) {
+	padding                : var(--HB_Trim_Top, 0.0in) var(--HB_Trim_Inside, 0.0in) var(--HB_Trim_Bottom, 0.0in) var(--HB_Trim_Outside, 0.0in);
+
+	}
+
+	&:before {
+		content: '';
+		display: block;
+		position: absolute;
+		z-index: 16;
+		border-right: 1px solid;
+		border-left: 1px solid;
+		border-top: 1px solid;
+		border-bottom: 1px solid;
+		top: var(--HB_Trim_Top, 0.0in);
+		left: var(--HB_Trim_Inside, 0.0in);
+		bottom: var(--HB_Trim_Bottom, 0.0in);
+		right: var(--HB_Trim_Outside, 0.0in);
+   		border-color: black;
+	}
+	&:nth-child(even):before {
+		right: var(--HB_Trim_Inside, 0.0in);
+		left: var(--HB_Trim_Outside, 0.0in);
+	}
+}
+
 
 //*****************************
 // *    MUSTACHE DIVS/SPANS
