@@ -86,9 +86,9 @@ const Editor = createReactClass({
 			});
 		}
 		const snippetBar = document.querySelector('.editor > .snippetBar');
-		if (!snippetBar) return;
+		if(!snippetBar) return;
 
-		this.resizeObserver = new ResizeObserver(entries => {
+		this.resizeObserver = new ResizeObserver(entries=>{
 			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
 			this.setState({ snippetBarHeight: height });
 		});
@@ -117,7 +117,7 @@ const Editor = createReactClass({
 	},
 
 	componentWillUnmount() {
-		if (this.resizeObserver) this.resizeObserver.disconnect();
+		if(this.resizeObserver) this.resizeObserver.disconnect();
 	},
 
 	handleControlKeys : function(e){
@@ -337,7 +337,7 @@ const Editor = createReactClass({
 		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 		const currentPos = brewRenderer.scrollTop;
 		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-		
+
 		let scrollingTimeout;
 		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
 			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
@@ -392,7 +392,7 @@ const Editor = createReactClass({
 
 		isJumping = true;
 		checkIfScrollComplete();
-		if (this.codeEditor.current?.codeMirror) {
+		if(this.codeEditor.current?.codeMirror) {
 			this.codeEditor.current.codeMirror?.on('scroll', checkIfScrollComplete);
 		}
 
@@ -442,6 +442,7 @@ const Editor = createReactClass({
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
 					language='gfm'
+					tab='brewText'
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onBrewChange('text')}
@@ -455,6 +456,7 @@ const Editor = createReactClass({
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
 					language='css'
+					tab='brewStyles'
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onBrewChange('style')}
@@ -484,6 +486,7 @@ const Editor = createReactClass({
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
 					language='gfm'
+					tab='brewSnippets'
 					view={this.state.view}
 					value={this.props.brew.snippets}
 					onChange={this.props.onBrewChange('snippets')}

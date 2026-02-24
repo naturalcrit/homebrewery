@@ -40,7 +40,7 @@ export default [
 				icon : 'fas fa-image',
 				gen  : [
 					'<img ',
-					'  src=\'https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg\' ',
+					'  src=\'https://homebrewery.naturalcrit.com/assets/catwarrior.jpg\' ',
 					'  style=\'width:325px\' />',
 					'Credit: Kyounghwan Kim'
 				].join('\n')
@@ -50,7 +50,7 @@ export default [
 				icon : 'fas fa-tree',
 				gen  : [
 					'<img ',
-					'  src=\'http://i.imgur.com/hMna6G0.png\' ',
+					'  src=\'https://homebrewery.naturalcrit.com/assets/homebrewerymug.png\' ',
 					'  style=\'position:absolute; top:50px; right:30px; width:280px\' />'
 				].join('\n')
 			},
