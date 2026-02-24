@@ -61,10 +61,11 @@
       "server"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(nanoid|@exodus/bytes|parse5)/)"
+      "node_modules/(?!(nanoid|@exodus/bytes|parse5|@asamuzakjp|@csstools)/)"
     ],
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.[jt]s$": "babel-jest",
+      "^.+\\.mjs$": "babel-jest"
     },
     "coveragePathIgnorePatterns": [
       "build/*"
@@ -94,7 +95,7 @@
     "@babel/preset-react": "^7.28.5",
     "@babel/runtime": "^7.28.4",
     "@dmsnell/diff-match-patch": "^1.1.0",
-    "@googleapis/drive": "^19.2.0",
+    "@googleapis/drive": "^20.1.0",
     "@sanity/diff-match-patch": "^3.2.0",
     "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
@@ -128,7 +129,7 @@
     "marked-variables": "^1.0.5",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
-    "mongoose": "^9.1.5",
+    "mongoose": "^9.2.1",
     "nanoid": "5.1.6",
     "nconf": "^0.13.0",
     "react": "^18.3.1",
@@ -151,7 +152,7 @@
     "globals": "^16.4.0",
     "jest": "^30.2.0",
     "jest-expect-message": "^1.1.3",
-    "jsdom": "^28.0.0",
+    "jsdom": "^28.1.0",
     "jsdom-global": "^3.0.2",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.25.0",

@@ -1,4 +1,5 @@
 /*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
+import mongoose from 'mongoose';
 import supertest from 'supertest';
 import HBApp     from './app.js';
 import { model as NotificationModel } from './notifications.model.js';
@@ -8,8 +9,19 @@ import { model as HomebrewModel } from './homebrew.model.js';
 // Mimic https responses to avoid being redirected all the time
 const app = supertest.agent(HBApp).set('X-Forwarded-Proto', 'https');
 
+let dbState;
+
 describe('Tests for admin api', ()=>{
+	beforeEach(()=>{
+		// Mock DB ready (for dbCheck middleware)
+		dbState = mongoose.connection.readyState;
+		mongoose.connection.readyState = 1;
+	});
+
 	afterEach(()=>{
+		// Restore DB ready state
+		mongoose.connection.readyState = dbState;
+
 		jest.resetAllMocks();
 	});
 
