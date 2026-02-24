@@ -3,8 +3,7 @@ import createApp from "./server/app.js";
 import config from "./server/config.js";
 import { createServer as createViteServer } from "vite";
 
-const isProd = process.env.NODE_ENV === "production";
-const isDev = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV === "local";
 
 async function start() {
 	let vite;
