@@ -4,11 +4,12 @@ import config from "./server/config.js";
 import { createServer as createViteServer } from "vite";
 
 const isProd = process.env.NODE_ENV === "production";
+const isDev = process.env.NODE_ENV === "development";
 
 async function start() {
 	let vite;
 
-	if (!isProd) {
+	if (isDev) {
 		vite = await createViteServer({
 			server: { middlewareMode: true },
 			appType: "custom",

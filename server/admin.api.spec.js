@@ -1,42 +1,45 @@
 /*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 import mongoose from 'mongoose';
 import supertest from 'supertest';
-import HBApp     from './app.js';
+import createApp from './app.js';
 import { model as NotificationModel } from './notifications.model.js';
 import { model as HomebrewModel } from './homebrew.model.js';
 
-
-// Mimic https responses to avoid being redirected all the time
-const app = supertest.agent(HBApp).set('X-Forwarded-Proto', 'https');
-
+let app;
+let request;
 let dbState;
+
+beforeAll(async ()=>{
+	app = await createApp();
+	request = supertest.agent(app).set('X-Forwarded-Proto', 'https');
+});
 
 describe('Tests for admin api', ()=>{
 	beforeEach(()=>{
-		// Mock DB ready (for dbCheck middleware)
 		dbState = mongoose.connection.readyState;
 		mongoose.connection.readyState = 1;
 	});
 
 	afterEach(()=>{
-		// Restore DB ready state
 		mongoose.connection.readyState = dbState;
-
 		jest.resetAllMocks();
+	});
+
+	afterAll(async ()=>{
+		await mongoose.connection.close();
 	});
 
 	describe('Notifications', ()=>{
 		it('should return list of all notifications', async ()=>{
 			const testNotifications = ['a', 'b'];
 
-			jest.spyOn(NotificationModel, 'find')
-			.mockImplementationOnce(()=>{
+			jest.spyOn(NotificationModel, 'find').mockImplementationOnce(()=>{
 				return { exec: jest.fn().mockResolvedValue(testNotifications) };
 			});
 
-			const response = await app
-				.get('/admin/notification/all')
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+			const response = await request
+        .get('/admin/notification/all')
+        .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual(testNotifications);
@@ -56,18 +59,17 @@ describe('Tests for admin api', ()=>{
 				_id       : expect.any(String),
 				createdAt : expect.any(String),
 				startAt   : inputNotification.startAt,
-				stopAt    : inputNotification.stopAt,
+				stopAt    : inputNotification.stopAt
 			};
 
-			jest.spyOn(NotificationModel.prototype, 'save')
-				.mockImplementationOnce(function() {
-					return Promise.resolve(this);
-				});
+			jest.spyOn(NotificationModel.prototype, 'save').mockImplementationOnce(function () {
+				return Promise.resolve(this);
+			});
 
-			const response = await app
-				.post('/admin/notification/add')
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.send(inputNotification);
+			const response = await request
+        .post('/admin/notification/add')
+        .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+        .send(inputNotification);
 
 			expect(response.status).toBe(201);
 			expect(response.body).toEqual(savedNotification);
@@ -81,16 +83,14 @@ describe('Tests for admin api', ()=>{
 				stopAt  : new Date().toISOString()
 			};
 
-			//Change 'save' function to just return itself instead of actually interacting with the database
-			jest.spyOn(NotificationModel.prototype, 'save')
-				.mockImplementationOnce(function() {
-					return Promise.resolve(this);
-				});
+			jest.spyOn(NotificationModel.prototype, 'save').mockImplementationOnce(function () {
+				return Promise.resolve(this);
+			});
 
-			const response = await app
-				.post('/admin/notification/add')
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.send(inputNotification);
+			const response = await request
+        .post('/admin/notification/add')
+        .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+        .send(inputNotification);
 
 			expect(response.status).toBe(500);
 			expect(response.body).toEqual({ message: 'Dismiss key is required!' });
@@ -99,15 +99,15 @@ describe('Tests for admin api', ()=>{
 		it('should delete a notification based on its dismiss key', async ()=>{
 			const dismissKey = 'testKey';
 
-			jest.spyOn(NotificationModel, 'findOneAndDelete')
-				.mockImplementationOnce((key)=>{
-					return { exec: jest.fn().mockResolvedValue(key) };
-				});
-			const response = await app
-				.delete(`/admin/notification/delete/${dismissKey}`)
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+			jest.spyOn(NotificationModel, 'findOneAndDelete').mockImplementationOnce((key)=>{
+				return { exec: jest.fn().mockResolvedValue(key) };
+			});
 
-			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ 'dismissKey': 'testKey' });
+			const response = await request
+        .delete(`/admin/notification/delete/${dismissKey}`)
+        .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+
+			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ dismissKey: 'testKey' });
 			expect(response.status).toBe(200);
 			expect(response.body).toEqual({ dismissKey: 'testKey' });
 		});
@@ -115,15 +115,15 @@ describe('Tests for admin api', ()=>{
 		it('should handle error deleting a notification that doesnt exist', async ()=>{
 			const dismissKey = 'testKey';
 
-			jest.spyOn(NotificationModel, 'findOneAndDelete')
-				.mockImplementationOnce(()=>{
-					return { exec: jest.fn().mockResolvedValue() };
-				});
-			const response = await app
-				.delete(`/admin/notification/delete/${dismissKey}`)
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+			jest.spyOn(NotificationModel, 'findOneAndDelete').mockImplementationOnce(()=>{
+				return { exec: jest.fn().mockResolvedValue() };
+			});
 
-			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ 'dismissKey': 'testKey' });
+			const response = await request
+        .delete(`/admin/notification/delete/${dismissKey}`)
+        .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
+
+			expect(NotificationModel.findOneAndDelete).toHaveBeenCalledWith({ dismissKey: 'testKey' });
 			expect(response.status).toBe(500);
 			expect(response.body).toEqual({ message: 'Notification not found' });
 		});
@@ -132,30 +132,24 @@ describe('Tests for admin api', ()=>{
 	describe('Locks', ()=>{
 		describe('Count', ()=>{
 			it('Count of all locked documents', async ()=>{
-				const testNumber = 16777216; // 8^8, because why not
+				const testNumber = 16777216;
 
-				jest.spyOn(HomebrewModel, 'countDocuments')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testNumber);
-					});
+				jest.spyOn(HomebrewModel, 'countDocuments').mockImplementationOnce(()=>Promise.resolve(testNumber));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.get('/api/lock/count');
+				const response = await request
+          .get('/api/lock/count')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({ count: testNumber });
 			});
 
 			it('Handle error while fetching count of locked documents', async ()=>{
-				jest.spyOn(HomebrewModel, 'countDocuments')
-					.mockImplementationOnce(()=>{
-						return Promise.reject();
-					});
+				jest.spyOn(HomebrewModel, 'countDocuments').mockImplementationOnce(()=>Promise.reject());
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.get('/api/lock/count');
+				const response = await request
+          .get('/api/lock/count')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -163,7 +157,7 @@ describe('Tests for admin api', ()=>{
 					message     : 'Unable to get lock count',
 					name        : 'Lock Count Error',
 					originalUrl : '/api/lock/count',
-					status      : 500,
+					status      : 500
 				});
 			});
 		});
@@ -172,28 +166,22 @@ describe('Tests for admin api', ()=>{
 			it('Get list of all locked documents', async ()=>{
 				const testLocks = ['a', 'b'];
 
-				jest.spyOn(HomebrewModel, 'aggregate')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testLocks);
-					});
+				jest.spyOn(HomebrewModel, 'aggregate').mockImplementationOnce(()=>Promise.resolve(testLocks));
 
-				const response = await app
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.get('/api/locks');
+				const response = await request
+          .get('/api/locks')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({ lockedDocuments: testLocks });
 			});
 
 			it('Handle error while fetching list of all locked documents', async ()=>{
-				jest.spyOn(HomebrewModel, 'aggregate')
-					.mockImplementationOnce(()=>{
-						return Promise.reject();
-					});
+				jest.spyOn(HomebrewModel, 'aggregate').mockImplementationOnce(()=>Promise.reject());
 
-				const response = await app
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.get('/api/locks');
+				const response = await request
+          .get('/api/locks')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -208,28 +196,22 @@ describe('Tests for admin api', ()=>{
 			it('Get list of all locked documents with pending review requests', async ()=>{
 				const testLocks = ['a', 'b'];
 
-				jest.spyOn(HomebrewModel, 'aggregate')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testLocks);
-					});
+				jest.spyOn(HomebrewModel, 'aggregate').mockImplementationOnce(()=>Promise.resolve(testLocks));
 
-				const response = await app
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.get('/api/lock/reviews');
+				const response = await request
+          .get('/api/lock/reviews')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({ reviewDocuments: testLocks });
 			});
 
 			it('Handle error while fetching list of all locked documents with pending review requests', async ()=>{
-				jest.spyOn(HomebrewModel, 'aggregate')
-					.mockImplementationOnce(()=>{
-						return Promise.reject();
-					});
+				jest.spyOn(HomebrewModel, 'aggregate').mockImplementationOnce(()=>Promise.reject());
 
-				const response = await app
-				.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-				.get('/api/lock/reviews');
+				const response = await request
+          .get('/api/lock/reviews')
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -247,8 +229,8 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); }
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve()
 				};
 
 				const testLock = {
@@ -257,15 +239,12 @@ describe('Tests for admin api', ()=>{
 					shareMessage : 'share'
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.post(`/api/lock/${testBrew.shareId}`)
-					.send(testLock);
+				const response = await request
+          .post(`/api/lock/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+          .send(testLock);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toMatchObject({
@@ -289,24 +268,21 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve(),
 					lock         : {
 						code         : 1,
 						editMessage  : 'oldEdit',
-						shareMessage : 'oldShare',
+						shareMessage : 'oldShare'
 					}
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.post(`/api/lock/${testBrew.shareId}`)
-					.send(testLock);
+				const response = await request
+          .post(`/api/lock/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+          .send(testLock);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toMatchObject({
@@ -329,24 +305,21 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve(),
 					lock         : {
 						code         : 1,
 						editMessage  : 'oldEdit',
-						shareMessage : 'oldShare',
+						shareMessage : 'oldShare'
 					}
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.post(`/api/lock/${testBrew.shareId}`)
-					.send(testLock);
+				const response = await request
+          .post(`/api/lock/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+          .send(testLock);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -364,8 +337,8 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.reject(); }
+					markModified : ()=>true,
+					save         : ()=>Promise.reject()
 				};
 
 				const testLock = {
@@ -374,15 +347,12 @@ describe('Tests for admin api', ()=>{
 					shareMessage : 'share'
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.post(`/api/lock/${testBrew.shareId}`)
-					.send(testLock);
+				const response = await request
+          .post(`/api/lock/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
+          .send(testLock);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -408,19 +378,17 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/unlock/${testBrew.shareId}`);
+				const response = await request.put(`/api/unlock/${testBrew.shareId}`).set(
+					'Authorization',
+					`Basic ${Buffer.from('admin:password3').toString('base64')}`
+				);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({
@@ -433,18 +401,16 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve()
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/unlock/${testBrew.shareId}`);
+				const response = await request.put(`/api/unlock/${testBrew.shareId}`).set(
+					'Authorization',
+					`Basic ${Buffer.from('admin:password3').toString('base64')}`
+				);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -453,7 +419,7 @@ describe('Tests for admin api', ()=>{
 					name        : 'Not Locked',
 					originalUrl : `/api/unlock/${testBrew.shareId}`,
 					shareId     : testBrew.shareId,
-					status      : 500,
+					status      : 500
 				});
 			});
 
@@ -468,19 +434,17 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.reject(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.reject(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/unlock/${testBrew.shareId}`);
+				const response = await request.put(`/api/unlock/${testBrew.shareId}`).set(
+					'Authorization',
+					`Basic ${Buffer.from('admin:password3').toString('base64')}`
+				);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -506,40 +470,28 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.put(`/api/lock/review/request/${testBrew.shareId}`);
+				const response = await request.put(`/api/lock/review/request/${testBrew.shareId}`);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({
 					message : `Review requested on brew ID ${testBrew.shareId} - ${testBrew.title}`,
-					name    : 'Review Requested',
+					name    : 'Review Requested'
 				});
 			});
 
 			it('Error when cannot find a locked brew', async ()=>{
-				const testBrew = {
-					shareId : 'shareId'
-				};
+				const testBrew = { shareId: 'shareId' };
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(false);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(false));
 
-
-				const response = await app
-					.put(`/api/lock/review/request/${testBrew.shareId}`)
-					.catch((err)=>{return err;});
+				const response = await request.put(`/api/lock/review/request/${testBrew.shareId}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -547,43 +499,6 @@ describe('Tests for admin api', ()=>{
 					name        : 'Brew Not Found',
 					HBErrorCode : '70',
 					code        : 500,
-					originalUrl : `/api/lock/review/request/${testBrew.shareId}`
-				});
-			});
-
-			it('Error when review is already requested', async ()=>{
-				const testLock = {
-					applied         : 'YES',
-					code            : 999,
-					editMessage     : 'edit',
-					shareMessage    : 'share',
-					reviewRequested : 'YES'
-				};
-
-				const testBrew = {
-					shareId      : 'shareId',
-					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
-					lock         : testLock
-				};
-
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(false);
-					});
-
-
-				const response = await app
-					.put(`/api/lock/review/request/${testBrew.shareId}`)
-					.catch((err)=>{return err;});
-
-				expect(response.status).toBe(500);
-				expect(response.body).toEqual({
-					HBErrorCode : '70',
-					code        : 500,
-					message     : `Cannot find a locked brew with ID ${testBrew.shareId}`,
-					name        : 'Brew Not Found',
 					originalUrl : `/api/lock/review/request/${testBrew.shareId}`
 				});
 			});
@@ -599,18 +514,14 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.reject(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.reject(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.put(`/api/lock/review/request/${testBrew.shareId}`);
+				const response = await request.put(`/api/lock/review/request/${testBrew.shareId}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -634,19 +545,16 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.resolve(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.resolve(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/lock/review/remove/${testBrew.shareId}`);
+				const response = await request
+          .put(`/api/lock/review/remove/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(200);
 				expect(response.body).toEqual({
@@ -656,18 +564,13 @@ describe('Tests for admin api', ()=>{
 			});
 
 			it('Error when clearing review request from a brew with no review request', async ()=>{
-				const testBrew = {
-					shareId : 'shareId',
-				};
+				const testBrew = { shareId: 'shareId' };
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(false);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(false));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/lock/review/remove/${testBrew.shareId}`);
+				const response = await request
+          .put(`/api/lock/review/remove/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
@@ -690,19 +593,16 @@ describe('Tests for admin api', ()=>{
 				const testBrew = {
 					shareId      : 'shareId',
 					title        : 'title',
-					markModified : ()=>{ return true; },
-					save         : ()=>{ return Promise.reject(); },
+					markModified : ()=>true,
+					save         : ()=>Promise.reject(),
 					lock         : testLock
 				};
 
-				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(testBrew);
-					});
+				jest.spyOn(HomebrewModel, 'findOne').mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-				const response = await app
-					.set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`)
-					.put(`/api/lock/review/remove/${testBrew.shareId}`);
+				const response = await request
+          .put(`/api/lock/review/remove/${testBrew.shareId}`)
+          .set('Authorization', `Basic ${Buffer.from('admin:password3').toString('base64')}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
