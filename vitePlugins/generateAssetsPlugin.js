@@ -68,8 +68,7 @@ export function generateAssetsPlugin(isDev = false) {
 			await fs.copy("./themes/codeMirror/customThemes", editorThemesBuildDir);
 
 			const editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
-			await fs.outputFile(
-				"./themes/codeMirror/editorThemes.json",
+			await fs.outputFile(`${buildDir}/homebrew/codeMirror/editorThemes.json`,
 				JSON.stringify(["default", ...editorThemeFiles.map((f) => f.slice(0, -4))], null, 2),
 			);
 
