@@ -9,9 +9,10 @@ export default defineConfig({
 	resolve: {
 		alias: {
 			"@vitreum": path.resolve(__dirname, "./vitreum"),
+			"@shared": path.resolve(__dirname, "./shared"),
 			"@sharedStyles": path.resolve(__dirname, "./shared/naturalcrit/styles"),
-			"@navbar":path.resolve(__dirname, "./client/homebrew/navbar"),
-			"@themes":path.resolve(__dirname, "./themes"),
+			"@navbar": path.resolve(__dirname, "./client/homebrew/navbar"),
+			"@themes": path.resolve(__dirname, "./themes"),
 		},
 	},
 	build: {

@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import Nav from './nav.jsx';
-import { splitTextStyleAndMetadata } from '../../../shared/helpers.js';
+import { splitTextStyleAndMetadata } from '@shared/helpers.js';
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';

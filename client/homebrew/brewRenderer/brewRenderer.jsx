@@ -5,8 +5,8 @@ import './brewRenderer.less';
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
-import MarkdownLegacy from '../../../shared/markdownLegacy.js';
-import Markdown from '../../../shared/markdown.js';
+import MarkdownLegacy from '@shared/markdownLegacy.js';
+import Markdown from '@shared/markdown.js';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
@@ -15,7 +15,7 @@ import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
 import dedent from 'dedent';
-import { printCurrentBrew } from '../../../shared/helpers.js';
+import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';

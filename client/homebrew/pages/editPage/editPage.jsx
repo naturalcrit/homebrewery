@@ -4,11 +4,11 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from '../../../../shared/markdown.js';
+import Markdown                               from '@shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
 import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';

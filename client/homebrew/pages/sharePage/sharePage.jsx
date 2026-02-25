@@ -13,7 +13,7 @@ import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
 	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
