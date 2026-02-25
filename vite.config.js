@@ -11,6 +11,7 @@ export default defineConfig({
 			"@vitreum": path.resolve(__dirname, "./vitreum"),
 			"@sharedStyles": path.resolve(__dirname, "./shared/naturalcrit/styles"),
 			"@navbar":path.resolve(__dirname, "./client/homebrew/navbar"),
+			"@themes":path.resolve(__dirname, "./themes"),
 		},
 	},
 	build: {

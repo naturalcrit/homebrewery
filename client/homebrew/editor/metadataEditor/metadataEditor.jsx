@@ -8,7 +8,7 @@ import Combobox from '../../../components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
 
-import Themes from '../../../../themes/themes.json';
+import Themes from '@themes/themes.json';
 import validations from './validations.js';
 
 import homebreweryThumbnail from '../../thumbnail.png';
