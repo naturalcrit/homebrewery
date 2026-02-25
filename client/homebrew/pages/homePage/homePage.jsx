@@ -27,7 +27,7 @@ const { both: RecentNavItem } = RecentNavItems;
 
 
 // Page specific imports
-import Headtags   from '../../../../vitreum/headtags.js';
+import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
 const BREWKEY  = 'homebrewery-new';

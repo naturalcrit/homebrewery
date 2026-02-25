@@ -6,6 +6,12 @@ import { generateAssetsPlugin } from "./vitePlugins/generateAssetsPlugin.js";
 
 export default defineConfig({
 	plugins: [react(), generateAssetsPlugin()],
+	resolve: {
+		alias: {
+			"@vitreum": path.resolve(__dirname, "./vitreum"),
+			"@sharedStyles": path.resolve(__dirname, "./shared/naturalcrit/styles"),
+		},
+	},
 	build: {
 		outDir: "build",
 		emptyOutDir: false,
