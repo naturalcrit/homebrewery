@@ -20,6 +20,8 @@ import diceFont      from '../themes/fonts/iconFonts/diceFont.js';
 import elderberryInn from '../themes/fonts/iconFonts/elderberryInn.js';
 import gameIcons     from '../themes/fonts/iconFonts/gameIcons.js';
 import fontAwesome   from '../themes/fonts/iconFonts/fontAwesome.js';
+import config 	 	 from '../server/config.js';
+
 
 const renderer  = new Marked.Renderer();
 const tokenizer = new Marked.Tokenizer();
@@ -376,8 +378,9 @@ const tableTerminators = [
 Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
-
-Marked.use({ extensions: [underline] });
+if(config.get('enable_v4')) {
+	Marked.use({ extensions: [underline] });
+}
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());
 Marked.use(MarkedSubSuperText());
