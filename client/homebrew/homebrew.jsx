@@ -38,12 +38,14 @@ const Homebrew = (props)=>{
 			lang      : ''
 		},
 		userThemes,
-		brews
+		brews,
+		enable_v4
 	} = props;
 
 	global.account       = account;
 	global.version       = version;
 	global.config        = config;
+	global.enable_v4     = enable_v4;
 
 	const backgroundObject = ()=>{
 		if(global.config.deployment || (config.local && config.development)){

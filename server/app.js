@@ -565,7 +565,8 @@ const renderPage = async (req, res)=>{
 		account       : req.account,
 		config        : configuration,
 		ogMeta        : req.ogMeta,
-		userThemes    : req.userThemes
+		userThemes    : req.userThemes,
+		enable_v4     : config.get('enable_v4')
 	};
 	const title = req.brew ? req.brew.title : '';
 	const page = await templateFn('homebrew', title, props)
