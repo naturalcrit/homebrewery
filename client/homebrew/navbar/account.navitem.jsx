@@ -1,9 +1,9 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const Nav = require('naturalcrit/nav/nav.jsx');
-const request = require('superagent');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import request from 'superagent';
+import Nav from './nav.jsx';
 
-const Account = createClass({
+const Account = createReactClass({
 	displayName     : 'AccountNavItem',
 	getInitialState : function() {
 		return {
@@ -70,7 +70,7 @@ const Account = createClass({
 					{global.account.username}
 				</Nav.item>
 				<Nav.item
-					href={`/user/${encodeURI(global.account.username)}`}
+					href={`/user/${encodeURIComponent(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'
 				>
@@ -111,4 +111,4 @@ const Account = createClass({
 	}
 });
 
-module.exports = Account;
+export default Account;

@@ -1,6 +1,6 @@
 
 
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 test('Processes the markdown within an HTML block if its just a class wrapper', function() {
 	const source = '<div>*Bold text*</div>';

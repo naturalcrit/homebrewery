@@ -1,19 +1,16 @@
 /* eslint-disable max-lines */
-require('./metadataEditor.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
+import './metadataEditor.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
 import request from '../../utils/request-middleware.js';
-const Combobox = require('client/components/combobox.jsx');
-const TagInput = require('../tagInput/tagInput.jsx');
+import Combobox from '../../../components/combobox.jsx';
+import TagInput from '../tagInput/tagInput.jsx';
 
+import Themes from 'themes/themes.json';
+import validations from './validations.js';
 
-const Themes = require('themes/themes.json');
-const validations = require('./validations.js');
-
-const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
-
-const homebreweryThumbnail = require('../../thumbnail.png');
+import homebreweryThumbnail from '../../thumbnail.png';
 
 const callIfExists = (val, fn, ...args)=>{
 	if(val[fn]) {
@@ -21,7 +18,7 @@ const callIfExists = (val, fn, ...args)=>{
 	}
 };
 
-const MetadataEditor = createClass({
+const MetadataEditor = createReactClass({
 	displayName     : 'MetadataEditor',
 	getDefaultProps : function() {
 		return {
@@ -34,7 +31,6 @@ const MetadataEditor = createClass({
 				tags        : [],
 				published   : false,
 				authors     : [],
-				systems     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
 				lang        : 'en'
@@ -92,15 +88,6 @@ const MetadataEditor = createClass({
 		}
 	},
 
-	handleSystem : function(system, e){
-		if(e.target.checked){
-			this.props.metadata.systems.push(system);
-		} else {
-			this.props.metadata.systems = _.without(this.props.metadata.systems, system);
-		}
-		this.props.onChange(this.props.metadata);
-	},
-
 	handleRenderer : function(renderer, e){
 		if(e.target.checked){
 			this.props.metadata.renderer = renderer;
@@ -156,18 +143,6 @@ const MetadataEditor = createClass({
 			});
 	},
 
-	renderSystems : function(){
-		return _.map(SYSTEMS, (val)=>{
-			return <label key={val}>
-				<input
-					type='checkbox'
-					checked={_.includes(this.props.metadata.systems, val)}
-					onChange={(e)=>this.handleSystem(val, e)} />
-				{val}
-			</label>;
-		});
-	},
-
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
@@ -207,8 +182,6 @@ const MetadataEditor = createClass({
 	},
 
 	renderThemeDropdown : function(){
-		if(!global.enable_themes) return;
-
 		const mergedThemes = _.merge(Themes, this.props.userThemes);
 
 		const listThemes = (renderer)=>{
@@ -240,7 +213,7 @@ const MetadataEditor = createClass({
 				</div>;
 		} else {
 			dropdown =
-				<div className='value'>
+				<div className='value' data-tooltip-top='Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.'>
 					<Combobox trigger='click'
 						className='themes-dropdown'
 						default={currentThemeDisplay}
@@ -258,7 +231,6 @@ const MetadataEditor = createClass({
 							filterOn                : ['value', 'title']
 						}}
 					/>
-					<small>Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.</small>
 				</div>;
 		}
 
@@ -283,7 +255,7 @@ const MetadataEditor = createClass({
 
 		return <div className='field language'>
 			<label>language</label>
-			<div className='value'>
+			<div className='value' data-tooltip-right='Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.'>
 				<Combobox trigger='click'
 					className='language-dropdown'
 					default={this.props.metadata.lang || ''}
@@ -300,16 +272,13 @@ const MetadataEditor = createClass({
 						filterOn                : ['value', 'detail', 'title']
 					}}
 				/>
-				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
 			</div>
 
 		</div>;
 	},
 
 	renderRenderOptions : function(){
-		if(!global.enable_v3) return;
-
-		return <div className='field systems'>
+		return <div className='field renderers'>
 			<label>Renderer</label>
 			<div className='value'>
 				<label key='legacy'>
@@ -368,18 +337,20 @@ const MetadataEditor = createClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-				placeholder='add tag' unique={true}
-				values={this.props.metadata.tags}
-				onChange={(e)=>this.handleFieldChange('tags', e)}
-			/>
-
-			<div className='field systems'>
-				<label>systems</label>
-				<div className='value'>
-					{this.renderSystems()}
+			<div className="field tags">
+				<label>Tags</label>
+				<div className="value" >
+					<TagInput
+						label='tags'
+						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+						placeholder='add tag' unique={true}
+						values={this.props.metadata.tags}
+						onChange={(e)=>this.handleFieldChange('tags', e)}
+						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+					/>
 				</div>
 			</div>
+			
 
 			{this.renderLanguageDropdown()}
 
@@ -391,13 +362,22 @@ const MetadataEditor = createClass({
 
 			{this.renderAuthors()}
 
-			<TagInput label='invited authors' valuePatterns={[/.+/]}
-				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
-				placeholder='invite author' unique={true}
-				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
-				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-			/>
+			<div className="field invitedAuthors">
+				<label>Invited authors</label>
+				<div className="value">
+					<TagInput
+						label='invited authors'
+						valuePatterns={/.+/}
+						validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
+						placeholder='invite author' unique={true}
+						tooltip={`Invited author usernames are case sensitive.
+							After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.`}
+						values={this.props.metadata.invitedAuthors}
+						onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
+					/>
+				</div>
+			</div>
+			
 
 			<h2>Privacy</h2>
 
@@ -415,4 +395,4 @@ const MetadataEditor = createClass({
 	}
 });
 
-module.exports = MetadataEditor;
+export default MetadataEditor;

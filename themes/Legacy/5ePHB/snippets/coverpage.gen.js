@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const titles = [
 	'The Burning Gallows',
@@ -98,7 +98,7 @@ const subtitles = [
 ];
 
 
-module.exports = ()=>{
+export default ()=>{
 	return `<style>
   .phb#p1{ text-align:center; }
   .phb#p1:after{ display:none; }

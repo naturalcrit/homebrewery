@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const genList = function(list, max){
 	return _.sampleSize(list, _.random(0, max)).join(', ') || 'None';
@@ -137,7 +137,7 @@ const genAction = function(){
 };
 
 
-module.exports = {
+export default {
 
 	full : function(){
 		return `${[

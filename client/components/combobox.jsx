@@ -1,9 +1,9 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const _ = require('lodash');
-require('./combobox.less');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
+import './combobox.less';
 
-const Combobox = createClass({
+const Combobox = createReactClass({
 	displayName     : 'Combobox',
 	getDefaultProps : function() {
 		return {
@@ -11,11 +11,13 @@ const Combobox = createClass({
 			trigger     : 'hover',
 			default     : '',
 			placeholder : '',
+			tooltip: '',
 			autoSuggest : {
 				clearAutoSuggestOnClick : true,
 				suggestMethod           : 'includes',
 				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 			},
+			valuePatterns: /.+/
 		};
 	},
 	getInitialState : function() {
@@ -69,17 +71,26 @@ const Combobox = createClass({
 		return (
 			<div className='dropdown-input item'
 				onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
-				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}>
+				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
+				{...(this.props.tooltip ? { 'data-tooltip-right': this.props.tooltip } : {})}>
 				<input
 					type='text'
 					onChange={(e)=>this.handleInput(e)}
 					value={this.state.value || ''}
+					title=''
+					pattern={this.props.valuePatterns}
 					placeholder={this.props.placeholder}
 					onBlur={(e)=>{
 						if(!e.target.checkValidity()){
 							this.setState({
 								value : this.props.default
 							});
+						}
+					}}
+					onKeyDown={(e)=>{
+						if (e.key === "Enter") {
+							e.preventDefault();
+							this.props.onEntry(e);
 						}
 					}}
 				/>
@@ -126,4 +137,4 @@ const Combobox = createClass({
 	}
 });
 
-module.exports = Combobox;
+export default Combobox;

@@ -1,6 +1,6 @@
 
 
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 describe('Hard Breaks', ()=>{
 	test('Single Break', function() {

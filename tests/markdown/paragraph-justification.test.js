@@ -1,6 +1,6 @@
 
 
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 describe('Justification', ()=>{
 	test('Left Justify', function() {

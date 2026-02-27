@@ -1,6 +1,6 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent';
 
-module.exports = ()=>{
+export default ()=>{
 	return dedent`
 	{{index,wide,columns:5;
 	##### Index

@@ -1,6 +1,6 @@
 
 
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 describe('Non-Breaking Spaces Interactions', ()=>{
 	test('I am actually a single-line definition list!', function() {

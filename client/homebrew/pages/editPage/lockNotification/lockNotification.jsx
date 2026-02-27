@@ -40,4 +40,4 @@ function LockNotification(props) {
 	</Dialog>;
 };
 
-module.exports = LockNotification;
+export default LockNotification;

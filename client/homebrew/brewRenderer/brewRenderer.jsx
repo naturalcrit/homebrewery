@@ -1,20 +1,19 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
-require('./brewRenderer.less');
-const React = require('react');
-const { useState, useRef, useMemo, useEffect } = React;
-const _ = require('lodash');
+import './brewRenderer.less';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import _ from 'lodash';
 
-const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-import Markdown from 'naturalcrit/markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
-const ToolBar  = require('./toolBar/toolBar.jsx');
+import MarkdownLegacy from '../../../shared/markdownLegacy.js';
+import Markdown from '../../../shared/markdown.js';
+import ErrorBar from './errorBar/errorBar.jsx';
+import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
-const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
-const Frame = require('react-frame-component').default;
-const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
+import NotificationPopup from './notificationPopup/notificationPopup.jsx';
+import Frame from 'react-frame-component';
+import dedent from 'dedent';
+import { printCurrentBrew } from '../../../shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import { safeHTML } from './safeHTML.js';
@@ -23,6 +22,8 @@ const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
+
+const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
@@ -122,7 +123,7 @@ const BrewRenderer = (props)=>{
 
 	//useEffect to store or gather toolbar state from storage
 	useEffect(()=>{
-		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		const toolbarState = JSON.parse(window.localStorage.getItem(TOOLBAR_STATE_KEY));
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
@@ -284,7 +285,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
-		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
+		localStorage.setItem(TOOLBAR_STATE_KEY, JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {
@@ -292,12 +293,6 @@ const BrewRenderer = (props)=>{
 		columnGap : `${displayOptions.columnGap}px`,
 		rowGap    : `${displayOptions.rowGap}px`
 	};
-
-	const styleObject = {};
-
-	if(global.config.deployment) {
-		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
-	}
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
@@ -327,10 +322,9 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={ styleObject }
 				>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
@@ -350,4 +344,4 @@ const BrewRenderer = (props)=>{
 	);
 };
 
-module.exports = BrewRenderer;
+export default BrewRenderer;

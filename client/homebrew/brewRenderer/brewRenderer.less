@@ -6,7 +6,6 @@
 	overflow-y    : scroll;
 	will-change   : transform;
 	&:has(.facing, .flow) { padding : 60px 30px; }
-	&.deployment { background-color : darkred; }
 	:where(.pages) {
 		&.facing {
 			display               : grid; 
@@ -60,6 +59,12 @@
 		}
 		&-corner { visibility : hidden; }
 	}
+
+	@supports (break-after:always) {
+		.columnSplit {
+			margin-bottom: 100vh;
+		}
+	}
 }
 
 .pane { position : relative; }
@@ -82,4 +87,5 @@
 		}
 	}
 	.headerNav { visibility : hidden; }
+
 }

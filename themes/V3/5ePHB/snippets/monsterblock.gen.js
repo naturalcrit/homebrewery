@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent';
 
 const genList = function(list, max){
 	return _.sampleSize(list, _.random(0, max)).join(', ') || 'None';
@@ -152,7 +152,7 @@ const genAction = function(){
 };
 
 
-module.exports = {
+export default {
 
 	monster : function(classes, genLines){
 		return dedent`

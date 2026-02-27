@@ -83,10 +83,95 @@ pre {
 .page .exampleTable td,th {
 	border:1px dashed #00000030;
 }
+
+.page .df {
+  font-size: 2em;
+  vertical-align: middle;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Friday 1/11/2026 - v3.20.1
+
+{{taskList
+##### calculuschild
+* [x] Add D100 "ball" dice icons `:d100:` :df_d100_05:
+
+##### G-Ambatte
+* [x] Fix transparent edge on back cover image
+
+Fixes issue [#4551](https://github.com/naturalcrit/homebrewery/issues/4551)
+
+* [x] Fix "Out of sync" error when document contains extended unicode characters
+
+Fixes issue [#4583](https://github.com/naturalcrit/homebrewery/issues/4583)
+
+##### 5e-Cleric
+* [x] Fix page count error on Vault
+
+* [x] Fix cover page footnote set to all-caps
+
+Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
+}}
+
+### Friday 11/14/2025 - v3.20.0
+
+{{taskList
+##### calculuschild
+* [x] Cleanup and removal of redundant code (home/new/edit pages)
+* [x] Compress brew payloads and when saving to speed up saving and reduce bandwidth usage
+
+##### Gazook89
+* [x] Cleanup (reorganizing files and folders)
+
+##### G-Ambatte
+* [x] Fix default save location failing on new documents 
+
+Fixes issue [#4437](https://github.com/naturalcrit/homebrewery/issues/3175)
+* [x] Fix usernames with special symbols unable to open userpage
+
+Fixes issue [#807](https://github.com/naturalcrit/homebrewery/issues/807)
+* [x] Cleanup (tests, documentation, localstorage key names)
+
+Fixes issues [#4119](https://github.com/naturalcrit/homebrewery/issues/4119), [#4443](https://github.com/naturalcrit/homebrewery/issues/4443), [#4454](https://github.com/naturalcrit/homebrewery/issues/4454)
+* [x] Added indexes to Mongo schema for speed improvements on local installs
+
+##### 5e-Cleric
+* [x] Better handling for errors during brew deletion
+* [x] Improve file import error messaging
+* [x] Tweaked editor visuals (scrollbar, dev environment, cursor type)
+
+Fixes issue [#2689](https://github.com/naturalcrit/homebrewery/issues/2689)
+* [x] Add support for math symbols in curly blocks for CSS `calc()`
+
+Fixes issue [#3175](https://github.com/naturalcrit/homebrewery/issues/3175)
+
+##### abquintic
+* [x] Added new {{openSans **:fas_copyright: LICENSE**}} snippets (DriveThruRPG, AELF, GNU, WotC, Mongoose, etc.) with logos
+* [x] Added d100 dice icons via `:icon_name:` syntax
+* [x] Fix Firefox crash from very long blockquotes
+
+Fixes issue [#3426](https://github.com/naturalcrit/homebrewery/issues/3426)
+
+* [x] Allow more symbol characters in CSS vars inside curly blocks 
+
+Fixes issue [#4201](https://github.com/naturalcrit/homebrewery/issues/4201)
+
+* [x] Remove duplicate columnbreak at end of page
+
+Fixes issue [#4401](https://github.com/naturalcrit/homebrewery/issues/4401)
+
+* [x] Fix editor losing scroll position after page resize
+
+Fixes issue [#2963](https://github.com/naturalcrit/homebrewery/issues/2963)
+
+##### Emmanuel Ferdman (first contribution!)
+* [x] Fixed edge case crash on admin page
+}}
+
+\page
 
 ### Wednesday 7/09/2025 - v3.19.3
 

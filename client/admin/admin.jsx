@@ -1,21 +1,23 @@
 import './admin.less';
 import React, { useEffect, useState } from 'react';
-const BrewUtils = require('./brewUtils/brewUtils.jsx');
-const NotificationUtils = require('./notificationUtils/notificationUtils.jsx');
+import BrewUtils from './brewUtils/brewUtils.jsx';
+import NotificationUtils from './notificationUtils/notificationUtils.jsx';
 import AuthorUtils from './authorUtils/authorUtils.jsx';
 import LockTools  from './lockTools/lockTools.jsx';
 
 const tabGroups = ['brew', 'notifications', 'authors', 'locks'];
 
+const ADMIN_TAB = 'HB_adminPage_currentTab';
+
 const Admin = ()=>{
 	const [currentTab, setCurrentTab] = useState('');
 
 	useEffect(()=>{
-		setCurrentTab(localStorage.getItem('hbAdminTab') || 'brew');
+		setCurrentTab(localStorage.getItem(ADMIN_TAB) || 'brew');
 	}, []);
 
 	useEffect(()=>{
-		localStorage.setItem('hbAdminTab', currentTab);
+		localStorage.setItem(ADMIN_TAB, currentTab);
 	}, [currentTab]);
 
 	return (

@@ -1,5 +1,5 @@
-const _ = require('lodash');
-const Markdown = require('markedLegacy');
+import _ from 'lodash';
+import Markdown from 'markedLegacy';
 const renderer = new Markdown.Renderer();
 
 //Processes the markdown within an HTML block if it's just a class-wrapper
@@ -49,7 +49,7 @@ const cleanUrl = function (sanitize, base, href) {
 			prot = decodeURIComponent(unescape(href))
         .replace(nonWordAndColonTest, '')
         .toLowerCase();
-		} catch (e) {
+		} catch {
 			return null;
 		}
 		if(prot.indexOf('javascript:') === 0 || prot.indexOf('vbscript:') === 0 || prot.indexOf('data:') === 0) {
@@ -58,7 +58,7 @@ const cleanUrl = function (sanitize, base, href) {
 	}
 	try {
 		href = encodeURI(href).replace(/%25/g, '%');
-	} catch (e) {
+	} catch {
 		return null;
 	}
 	return href;
@@ -103,7 +103,7 @@ const voidTags = new Set([
 ]);
 
 
-module.exports = {
+export default {
 	marked : Markdown,
 	render : (rawBrewText)=>{
 		return Markdown(

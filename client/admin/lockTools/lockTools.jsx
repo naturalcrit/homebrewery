@@ -1,11 +1,11 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
-require('./lockTools.less');
-const React = require('react');
-const createClass = require('create-react-class');
+import './lockTools.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
 
 import request from '../../homebrew/utils/request-middleware.js';
 
-const LockTools = createClass({
+const LockTools = createReactClass({
 	displayName     : 'LockTools',
 	getInitialState : function() {
 		return {
@@ -55,7 +55,7 @@ const LockTools = createClass({
 	}
 });
 
-const LockBrew = createClass({
+const LockBrew = createReactClass({
 	displayName     : 'LockBrew',
 	getInitialState : function() {
 		// Default values
@@ -183,7 +183,7 @@ const LockBrew = createClass({
 	}
 });
 
-const LockTable = createClass({
+const LockTable = createReactClass({
 	displayName     : 'LockTable',
 	getDefaultProps : function() {
 		return {
@@ -273,7 +273,7 @@ const LockTable = createClass({
 	}
 });
 
-const LockLookup = createClass({
+const LockLookup = createReactClass({
 	displayName     : 'LockLookup',
 	getDefaultProps : function() {
 		return {
@@ -339,4 +339,4 @@ const LockLookup = createClass({
 	}
 });
 
-module.exports = LockTools;
+export default LockTools;

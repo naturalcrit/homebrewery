@@ -1,7 +1,7 @@
-require('./notificationPopup.less');
+import './notificationPopup.less';
 import React, { useEffect, useState } from 'react';
 import request from '../../utils/request-middleware.js';
-import Markdown from 'naturalcrit/markdown.js';
+import Markdown from 'markdown.js';
 
 import Dialog from '../../../components/dialog.jsx';
 
@@ -62,4 +62,4 @@ const NotificationPopup = ()=>{
 	</Dialog>;
 };
 
-module.exports = NotificationPopup;
+export default NotificationPopup;

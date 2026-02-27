@@ -1,11 +1,11 @@
-require('./renderWarnings.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
+import './renderWarnings.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
 
-import Dialog from '../../../client/components/dialog.jsx';
+import Dialog from '../dialog.jsx';
 
-const RenderWarnings = createClass({
+const RenderWarnings = createReactClass({
 	displayName     : 'RenderWarnings',
 	getInitialState : function() {
 		return {
@@ -25,7 +25,7 @@ const RenderWarnings = createClass({
 			if(!isChrome){
 				return <li key='chrome'>
 					<em>Built for Chrome </em> <br />
-					Other browsers have not been tested for compatiblilty. If you
+					Other browsers have not been tested for compatibility. If you
 					experience issues with your document not rendering or printing
 					properly, please try using the latest version of Chrome before
 					submitting a bug report.
@@ -57,4 +57,4 @@ const RenderWarnings = createClass({
 	}
 });
 
-module.exports = RenderWarnings;
+export default RenderWarnings;

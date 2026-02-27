@@ -1,17 +1,17 @@
-const React = require('react');
-const { useState } = React;
-const _ = require('lodash');
+import React, { useState } from 'react';
+import _ from 'lodash';
 
-const ListPage = require('../basePages/listPage/listPage.jsx');
+import ListPage from '../basePages/listPage/listPage.jsx';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const NewBrew = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const VaultNavitem = require('../../navbar/vault.navitem.jsx');
+import Nav from '../../navbar/nav.jsx';
+import Navbar from '../../navbar/navbar.jsx';
+import RecentNavItems from '../../navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+import Account from '../../navbar/account.navitem.jsx';
+import NewBrew from '../../navbar/newbrew.navitem.jsx';
+import HelpNavItem from '../../navbar/help.navitem.jsx';
+import ErrorNavItem from '../../navbar/error-navitem.jsx';
+import VaultNavitem from '../../navbar/vault.navitem.jsx';
 
 const UserPage = (props)=>{
 	props = {
@@ -61,4 +61,4 @@ const UserPage = (props)=>{
 	);
 };
 
-module.exports = UserPage;
+export default UserPage;
