@@ -1,0 +1,22 @@
+diff --git a/node_modules/codemirror/mode/css/css.js b/node_modules/codemirror/mode/css/css.js
+index b0721b4..f592d7f 100644
+--- a/node_modules/codemirror/mode/css/css.js
++++ b/node_modules/codemirror/mode/css/css.js
+@@ -742,6 +742,7 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
+     propertyKeywords: propertyKeywords,
+     nonStandardPropertyKeywords: nonStandardPropertyKeywords,
+     fontProperties: fontProperties,
++    allowNested: true,
+     counterDescriptors: counterDescriptors,
+     colorKeywords: colorKeywords,
+     valueKeywords: valueKeywords,
+@@ -750,6 +751,9 @@ CodeMirror.defineMode("css", function(config, parserConfig) {
+         if (!stream.eat("*")) return false;
+         state.tokenize = tokenCComment;
+         return tokenCComment(stream, state);
++      },
++      "&": function() {
++        return ["atom", "atom"];
+       }
+     },
+     name: "css"
