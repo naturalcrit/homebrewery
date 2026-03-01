@@ -14,7 +14,6 @@
   "scripts": {
     "start": "node server.js",
     "build": "vite build",
-    "preview": "vite preview",
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
