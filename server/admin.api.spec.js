@@ -528,10 +528,10 @@ describe('Tests for admin api', ()=>{
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
-					HBErrorCode : '70',
+					HBErrorCode : '71',
 					code        : 500,
-					message     : `Cannot find a locked brew with ID ${testBrew.shareId}`,
-					name        : 'Brew Not Found',
+					message     : `Review already requested for brew ${testBrew.shareId} - ${testBrew.title}`,
+					name        : 'Review Already Requested',
 					originalUrl : `/api/lock/review/request/${testBrew.shareId}`
 				});
 			});
