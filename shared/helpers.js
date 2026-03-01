@@ -19,7 +19,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						userSnippets.push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1],
+							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -44,7 +44,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1],
+					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
