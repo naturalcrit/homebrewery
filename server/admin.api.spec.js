@@ -521,14 +521,10 @@ describe('Tests for admin api', ()=>{
 				};
 
 				jest.spyOn(HomebrewModel, 'findOne')
-					.mockImplementationOnce(()=>{
-						return Promise.resolve(false);
-					});
+				.mockImplementationOnce(()=>Promise.resolve(testBrew));
 
-
-				const response = await app
-					.put(`/api/lock/review/request/${testBrew.shareId}`)
-					.catch((err)=>{return err;});
+				const response = await request
+				.put(`/api/lock/review/request/${testBrew.shareId}`);
 
 				expect(response.status).toBe(500);
 				expect(response.body).toEqual({
