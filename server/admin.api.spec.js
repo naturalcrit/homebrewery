@@ -503,6 +503,42 @@ describe('Tests for admin api', ()=>{
 				});
 			});
 
+			it('Error when review is already requested', async ()=>{
+				const testLock = {
+					applied         : 'YES',
+					code            : 999,
+					editMessage     : 'edit',
+					shareMessage    : 'share',
+					reviewRequested : 'YES'
+				};
+
+				const testBrew = {
+					shareId      : 'shareId',
+					title        : 'title',
+					markModified : ()=>{ return true; },
+					save         : ()=>{ return Promise.resolve(); },
+					lock         : testLock
+				};
+
+				jest.spyOn(HomebrewModel, 'findOne')
+					.mockImplementationOnce(()=>{
+						return Promise.resolve(false);
+					});
+
+
+				const response = await app
+					.put(`/api/lock/review/request/${testBrew.shareId}`)
+					.catch((err)=>{return err;});
+
+				expect(response.status).toBe(500);
+				expect(response.body).toEqual({
+					HBErrorCode : '70',
+					code        : 500,
+					message     : `Cannot find a locked brew with ID ${testBrew.shareId}`,
+					name        : 'Brew Not Found',
+					originalUrl : `/api/lock/review/request/${testBrew.shareId}`
+				});
+			});
 			it('Handle error while adding review request to a locked brew', async ()=>{
 				const testLock = {
 					applied      : 'YES',
