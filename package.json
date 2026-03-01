@@ -43,7 +43,7 @@
     "test:safehtml": "jest tests/html/safeHTML.test.js --verbose",
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build && patch-package",
     "start": "node --experimental-require-module server.js",
     "docker:build": "docker build -t ${DOCKERID}/homebrewery:$npm_package_version .",
     "docker:publish": "docker login && docker push  ${DOCKERID}/homebrewery:$npm_package_version"
@@ -154,6 +154,7 @@
     "jest-expect-message": "^1.1.3",
     "jsdom": "^28.1.0",
     "jsdom-global": "^3.0.2",
+    "patch-package": "^8.0.1",
     "postcss-less": "^6.0.0",
     "stylelint": "^16.25.0",
     "stylelint-config-recess-order": "^7.3.0",
