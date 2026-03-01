@@ -43,7 +43,7 @@
     "test:safehtml": "jest tests/html/safeHTML.test.js --verbose",
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
-    "postinstall": "npm run build",
+    "postinstall": "npm run build && patch-package",
     "start": "node --experimental-require-module server.js",
     "docker:build": "docker build -t ${DOCKERID}/homebrewery:$npm_package_version .",
     "docker:publish": "docker login && docker push  ${DOCKERID}/homebrewery:$npm_package_version"
