@@ -9,6 +9,7 @@ import assetTransform from 'vitreum/transforms/asset.js';
 import babel          from '@babel/core';
 import babelConfig    from '../babel.config.json' with { type : 'json' };
 import less           from 'less';
+import { copyThemesFiles, updateThemesFile } from './cmThemeUtils/cmUtils.js';
 
 const isDev = !!process.argv.find((arg)=>arg === '--dev');
 
@@ -101,24 +102,10 @@ fs.emptyDirSync('./build');
 	await fs.copy('./themes/assets', './build/assets');
 	await fs.copy('./client/icons', './build/icons');
 
-	//v==---------------------------MOVE CM EDITOR THEMES -----------------------------==v//
+	//v==--------------------------UPDATE CM EDITOR THEMES ----------------------------==v//
 
-	const editorThemesBuildDir = './build/homebrew/cm-themes';
-	await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
-	await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
-	const editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
-
-	const editorThemeFile = './themes/codeMirror/editorThemes.json';
-	if(fs.existsSync(editorThemeFile)) fs.rmSync(editorThemeFile);
-	const stream = fs.createWriteStream(editorThemeFile, { flags: 'a' });
-	stream.write('[\n"default"');
-
-	for (const themeFile of editorThemeFiles) {
-		stream.write(`,\n"${themeFile.slice(0, -4)}"`);
-	}
-	stream.write('\n]\n');
-	stream.end();
-
+	updateThemesFile();
+	copyThemesFiles();
 
 	await fs.copy('./themes/codeMirror', './build/homebrew/codeMirror');
 
