@@ -134,8 +134,7 @@
     "react-frame-component": "^4.1.3",
     "react-router": "^7.9.6",
     "sanitize-filename": "1.6.3",
-    "superagent": "^10.2.1",
-    "vite": "^7.3.1"
+    "superagent": "^10.2.1"
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.0.1",
@@ -153,6 +152,7 @@
     "stylelint": "^17.4.0",
     "stylelint-config-recess-order": "^7.6.1",
     "stylelint-config-recommended": "^18.0.0",
-    "supertest": "^7.1.4"
+    "supertest": "^7.1.4",
+    "vite": "^7.3.1"
   }
 }
