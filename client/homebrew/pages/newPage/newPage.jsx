@@ -28,6 +28,9 @@ const { both: RecentNavItem } = RecentNavItems;
 // Page specific imports
 import { Meta }                  from 'vitreum/headtags';
 
+const UNSAVED_WARNING_TIMEOUT = 9000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
+
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const METAKEY  = 'HB_newPage_metadata';
@@ -35,7 +38,7 @@ const SNIPKEY  = 'HB_newPage_snippets';
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
 const useLocalStorage = true;
-const neverSaved      = true;
+let   neverSaved      = true;
 
 const NewPage = (props)=>{
 	props = {
@@ -45,6 +48,7 @@ const NewPage = (props)=>{
 
 	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
 	const [isSaving                  , setIsSaving                  ] = useState(false);
+	const [lastSavedTime             , setLastSavedTime             ] = useState(new Date());
 	const [saveGoogle                , setSaveGoogle                ] = useState(global.account?.googleId ? true : false);
 	const [error                     , setError                     ] = useState(null);
 	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
@@ -54,11 +58,12 @@ const NewPage = (props)=>{
 	const [themeBundle               , setThemeBundle               ] = useState({});
 	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
 	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(false);
+	const [warnUnsavedChanges        , setWarnUnsavedChanges        ] = useState(true);
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
-	// const warnUnsavedTimeout = useRef(null);
+	const warnUnsavedTimeout = useRef(null);
 	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
@@ -95,13 +100,18 @@ const NewPage = (props)=>{
 			brew.renderer = metaStorage?.renderer ?? brew.renderer;
 			brew.theme    = metaStorage?.theme    ?? brew.theme;
 			brew.lang     = metaStorage?.lang     ?? brew.lang;
+
+			lastSavedBrew.current = brew;
+		}
+		else {	// Brew was cloned, so assume user may want to save immediately without making edits
+			neverSaved = false;
+			lastSavedBrew.current = DEFAULT_BREW;
 		}
 
 		const SAVEKEY = `${SAVEKEYPREFIX}${global.account?.username}`;
 		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
 
 		setCurrentBrew(brew);
-		lastSavedBrew.current = brew;
 		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
 
 		localStorage.setItem(BREWKEY, brew.text);
@@ -151,8 +161,14 @@ const NewPage = (props)=>{
 		}
 	};
 
+	const resetWarnUnsavedTimer = ()=>{
+		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		clearTimeout(warnUnsavedTimeout.current);
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
+	};
+
 	const trySave = async ()=>{
-  	setIsSaving(true);
+		setIsSaving(true);
 
 		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
@@ -180,25 +196,27 @@ const NewPage = (props)=>{
 	};
 
 	const renderSaveButton = ()=>{
+		const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		const warningTimer = elapsedTime >= UNSAVED_WARNING_TIMEOUT / 1000 / 60;
+
 		// #1 - Currently saving, show SAVING
 		if(isSaving)
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		// if(unsavedChanges && warnUnsavedChanges) {
-		// 	resetWarnUnsavedTimer();
-		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-		// 	const text = elapsedTime === 0
-		// 		? 'Autosave is OFF.'
-		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show save reminder
+		if(unsavedChanges && warnUnsavedChanges && warningTimer) {
+			resetWarnUnsavedTimer();
+			const text = neverSaved
+					? `This document has been open for ${elapsedTime} minutes but has never been saved. Click "Save Now" to avoid losing your work.`
+					: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
 
-		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-		// 					Reminder...
-		// 		<div className='errorContainer'>{text}</div>
-		// 	</Nav.item>;
-		// }
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+				Reminder...
+				<div className='errorContainer'>{text}</div>
+			</Nav.item>;
+		}
 
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		// #3 - Unsaved changes exist, or never saved, click to save, show SAVE NOW
 		if(unsavedChanges)
 			return <Nav.item className='save' onClick={trySave} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
