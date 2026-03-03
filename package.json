@@ -149,6 +149,7 @@
     "jest-expect-message": "^1.1.3",
     "jsdom": "^28.1.0",
     "jsdom-global": "^3.0.2",
+    "postcss-less": "^6.0.0",
     "stylelint": "^17.4.0",
     "stylelint-config-recess-order": "^7.6.1",
     "stylelint-config-recommended": "^18.0.0",
