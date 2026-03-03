@@ -4,17 +4,22 @@ import { model as NotificationModel } from './notifications.model.js';
 import express    from 'express';
 import Moment     from 'moment';
 import zlib       from 'zlib';
-import templateFn from '../client/template.js';
+import config  from './config.js';
+import path from 'path';
+import fs      from 'fs-extra';
+
+const nodeEnv = config.get('node_env');
+const isProd = nodeEnv === 'production';
 
 import HomebrewAPI  from './homebrew.api.js';
 import asyncHandler from 'express-async-handler';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
-const router = express.Router();
-
-
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
+
+export default function createAdminApi(vite) {
+	const router = express.Router();
 
 const mw = {
 	adminOnly : (req, res, next)=>{
@@ -371,15 +376,28 @@ router.delete('/admin/notification/delete/:id', mw.adminOnly, async (req, res, n
 	}
 });
 
-router.get('/admin', mw.adminOnly, (req, res)=>{
-	templateFn('admin', {
+router.get('/admin', mw.adminOnly, asyncHandler(async (req, res) => {
+		const props = {
 		url : req.originalUrl
-	})
-	.then((page)=>res.send(page))
-	.catch((err)=>{
-		console.log(err);
-		res.sendStatus(500);
-	});
-});
+	};
 
-export default router;
+	const htmlPath = isProd
+		? path.resolve('build', 'index.html')
+		: path.resolve('index.html');
+
+	let html = fs.readFileSync(htmlPath, 'utf-8');
+
+	if (!isProd && vite?.transformIndexHtml) {
+		html = await vite.transformIndexHtml(req.originalUrl, html);
+	}
+
+	res.send(html.replace(
+		'<head>',
+		`<head>\n<script id="props">window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>`
+	));
+}));
+
+
+	return router;
+}
+
