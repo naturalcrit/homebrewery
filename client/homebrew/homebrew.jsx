@@ -1,8 +1,7 @@
-
-import 'core-js/es/string/to-well-formed.js'; //Polyfill for older browsers
+import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
 import React from 'react';
-import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
+import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
 
@@ -41,24 +40,21 @@ const Homebrew = (props)=>{
 		brews
 	} = props;
 
-	global.account       = account;
-	global.version       = version;
-	global.config        = config;
-
 	const backgroundObject = ()=>{
-		if(global.config.deployment || (config.local && config.development)){
-  			const bgText = global.config.deployment || 'Local';
-  			return {
-    			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
-  			};
+		if(config?.deployment || (config?.local && config?.development)) {
+			const bgText = config?.deployment || 'Local';
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
+			};
 		}
 		return null;
 	};
+
 	updateLocalStorage();
 
 	return (
-		<Router location={url}>
-			<div className={`homebrew${(config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
+		<Router>
+			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
@@ -80,4 +76,4 @@ const Homebrew = (props)=>{
 	);
 };
 
-module.exports = Homebrew;
+export default Homebrew;
