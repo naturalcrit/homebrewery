@@ -11,13 +11,13 @@ const Combobox = createReactClass({
 			trigger     : 'hover',
 			default     : '',
 			placeholder : '',
-			tooltip: '',
+			tooltip     : '',
 			autoSuggest : {
 				clearAutoSuggestOnClick : true,
 				suggestMethod           : 'includes',
 				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 			},
-			valuePatterns: /.+/
+			valuePatterns : /.+/
 		};
 	},
 	getInitialState : function() {
@@ -42,7 +42,7 @@ const Combobox = createReactClass({
 	},
 	handleClickOutside : function(e){
 		// Close dropdown when clicked outside
-		if (this.dropdownRef.current && !this.dropdownRef.current.contains(e.target)) {
+		if(this.dropdownRef.current && !this.dropdownRef.current.contains(e.target)) {
 			this.handleDropdown(false);
 		}
 	},
@@ -89,7 +89,7 @@ const Combobox = createReactClass({
 						}
 					}}
 					onKeyDown={(e)=>{
-						if (e.key === "Enter") {
+						if(e.key === 'Enter') {
 							e.preventDefault();
 							this.props.onEntry(e);
 						}
