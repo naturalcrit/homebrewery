@@ -1,4 +1,4 @@
-/* eslint-disable max-depth */
+
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { marked as Marked }     from 'marked';
