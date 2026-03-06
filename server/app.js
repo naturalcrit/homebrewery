@@ -55,7 +55,7 @@ export default async function createApp(vite) {
 
 	app.set('trust proxy', 1 /* number of proxies between user and server */);
 
-	if (vite) {
+	if(vite) {
 		app.use(vite.middlewares);
 	}
 

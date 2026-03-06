@@ -179,10 +179,10 @@ export default {
 		`;
 	},
 	// Verify Logo redistribution
-	monteCookLogoDarkLarge  : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkLarge.png)`,
-	monteCookLogoDarkSmall  : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkSmall.png)`,
-	monteCookLogoLightLarge : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightLarge.png)`,
-	monteCookLogoLightSmall : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightSmall.png)`,
+	monteCookLogoDarkLarge     : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkLarge.png)`,
+	monteCookLogoDarkSmall     : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkSmall.png)`,
+	monteCookLogoLightLarge    : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightLarge.png)`,
+	monteCookLogoLightSmall    : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightSmall.png)`,
 	// Onyx Path Canis Minor - Verify logos and access
 	onyxPathCanisMinorColophon : function () {
 		return dedent`

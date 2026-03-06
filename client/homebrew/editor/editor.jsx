@@ -88,7 +88,7 @@ const Editor = createReactClass({
 		const snippetBar = document.querySelector('.editor > .snippetBar');
 		if(!snippetBar) return;
 
-		this.resizeObserver = new ResizeObserver(entries=>{
+		this.resizeObserver = new ResizeObserver((entries)=>{
 			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
 			this.setState({ snippetBarHeight: height });
 		});

@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 import './homePage.less';
 
 // Common imports
@@ -8,7 +8,7 @@ import Markdown                               from '@shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -45,16 +45,16 @@ const HomePage =(props)=>{
 		...props
 	};
 
-	const [currentBrew               , setCurrentBrew]                = useState(props.brew);
-	const [error                     , setError]                      = useState(undefined);
-	const [HTMLErrors                , setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
-	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum]   = useState(1);
+	const [currentBrew, setCurrentBrew]                = useState(props.brew);
+	const [error, setError]                      = useState(undefined);
+	const [HTMLErrors, setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
-	const [themeBundle               , setThemeBundle]                = useState({});
-	const [unsavedChanges            , setUnsavedChanges]             = useState(false);
-	const [isSaving                  , setIsSaving]                   = useState(false);
-	const [autoSaveEnabled           , setAutoSaveEnable]             = useState(false);
+	const [themeBundle, setThemeBundle]                = useState({});
+	const [unsavedChanges, setUnsavedChanges]             = useState(false);
+	const [isSaving, setIsSaving]                   = useState(false);
+	const [autoSaveEnabled, setAutoSaveEnable]             = useState(false);
 
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));

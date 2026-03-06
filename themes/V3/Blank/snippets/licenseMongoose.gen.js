@@ -1,6 +1,3 @@
-
-import dedent from 'dedent';
-
 // Mongoose Publishing Licenses
 
 export default {

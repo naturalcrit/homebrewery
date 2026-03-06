@@ -99,7 +99,7 @@ const subtitles = [
 
 
 function coverPageGen() {
-return `<style>
+	return `<style>
   .phb#p1{ text-align:center; }
   .phb#p1:after{ display:none; }
 </style>
