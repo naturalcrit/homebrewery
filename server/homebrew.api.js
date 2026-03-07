@@ -31,6 +31,17 @@ const isStaticTheme = (renderer, themeName)=>{
 // 	});
 // };
 
+const migrateSystemsToTags = (brew) => {
+	if(!brew?.systems?.length) return brew;
+
+	const systemTags = brew.systems.map(s => `system:${s}`);
+	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
+
+	delete brew.systems;
+
+	return brew;
+};
+
 const MAX_TITLE_LENGTH = 100;
 
 const api = {
@@ -193,7 +204,7 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
@@ -392,6 +403,11 @@ const api = {
 		}
 
 		let brew         = _.assign(brewFromServer, brewFromClient);
+
+		migrateSystemsToTags(brew);
+		console.log('migrating systems to tags', !!brew.systems);
+		console.log(brew);
+
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
