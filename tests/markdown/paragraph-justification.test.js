@@ -1,6 +1,6 @@
 
 
-import Markdown from 'markdown.js';
+import Markdown from '../../shared/markdown.js';
 
 describe('Justification', ()=>{
 	test('Left Justify', function() {

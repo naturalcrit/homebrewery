@@ -99,18 +99,18 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	return (
 		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
-				<button title={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{
+				<button data-tooltip-right={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} onClick={()=>{
 					setToolsVisible(!toolsVisible);
 					localStorage.setItem(TOOLBAR_VISIBILITY, !toolsVisible);
 				}}><i className='fas fa-glasses' /></button>
-				<button title={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}><i className='fas fa-rectangle-list' /></button>
+				<button data-tooltip-right={`${headerState ? 'Hide' : 'Show'} Header Navigation`} onClick={()=>{setHeaderState(!headerState);}}><i className='fas fa-rectangle-list' /></button>
 			</div>
 			{/*v=====----------------------< Zoom Controls >---------------------=====v*/}
 			<div className='group' role='group' aria-label='Zoom' aria-hidden={!toolsVisible}>
 				<button
 					id='fill-width'
 					className='tool'
-					title='Set zoom to fill preview with one page'
+					data-tooltip-bottom='Set zoom to fill preview with one page'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fill'))}
 				>
 					<i className='fac fit-width' />
@@ -118,7 +118,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 				<button
 					id='zoom-to-fit'
 					className='tool'
-					title='Set zoom to fit entire page in preview'
+					data-tooltip-bottom='Set zoom to fit entire page in preview'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + calculateChange('fit'))}
 				>
 					<i className='fac zoom-to-fit' />
@@ -128,7 +128,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					className='tool'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel - 20)}
 					disabled={displayOptions.zoomLevel <= MIN_ZOOM}
-					title='Zoom Out'
+					data-tooltip-bottom='Zoom Out'
 				>
 					<i className='fas fa-magnifying-glass-minus' />
 				</button>
@@ -137,7 +137,6 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					className='range-input tool hover-tooltip'
 					type='range'
 					name='zoom'
-					title='Set Zoom'
 					list='zoomLevels'
 					min={MIN_ZOOM}
 					max={MAX_ZOOM}
@@ -154,7 +153,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					className='tool'
 					onClick={()=>handleZoomButton(displayOptions.zoomLevel + 20)}
 					disabled={displayOptions.zoomLevel >= MAX_ZOOM}
-					title='Zoom In'
+					data-tooltip-bottom='Zoom In'
 				>
 					<i className='fas fa-magnifying-glass-plus' />
 				</button>
@@ -166,44 +165,44 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					<button role='radio'
 						id='single-spread'
 						className='tool'
-						title='Single Page'
+						data-tooltip-bottom='Single Page'
 						onClick={()=>{handleOptionChange('spread', 'single');}}
 						aria-checked={displayOptions.spread === 'single'}
 					><i className='fac single-spread' /></button>
 					<button role='radio'
 						id='facing-spread'
 						className='tool'
-						title='Facing Pages'
+						data-tooltip-bottom='Facing Pages'
 						onClick={()=>{handleOptionChange('spread', 'facing');}}
 						aria-checked={displayOptions.spread === 'facing'}
 					><i className='fac facing-spread' /></button>
 					<button role='radio'
 						id='flow-spread'
 						className='tool'
-						title='Flow Pages'
+						data-tooltip-bottom='Flow Pages'
 						onClick={()=>{handleOptionChange('spread', 'flow');}}
 						aria-checked={displayOptions.spread === 'flow'}
 					><i className='fac flow-spread' /></button>
 
 				</div>
 				<Anchored>
-					<AnchoredTrigger id='spread-settings' className='tool' title='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
-					<AnchoredBox title='Options'>
+					<AnchoredTrigger id='spread-settings' className='tool' data-tooltip-bottom='Spread options'><i className='fas fa-gear' /></AnchoredTrigger>
+					<AnchoredBox>
 						<h1>Options</h1>
-						<label title='Modify the horizontal space between pages.'>
+						<label data-tooltip-left='Modify the horizontal space between pages.'>
 							Column gap
 							<input type='range' min={0} max={200} defaultValue={displayOptions.columnGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('columnGap', evt.target.value)} />
 						</label>
-						<label title='Modify the vertical space between rows of pages.'>
+						<label data-tooltip-left='Modify the vertical space between rows of pages.'>
 							Row gap
 							<input type='range' min={0} max={200} defaultValue={displayOptions.rowGap || 10} className='range-input' onChange={(evt)=>handleOptionChange('rowGap', evt.target.value)} />
 						</label>
-						<label title='Start 1st page on the right side, such as if you have cover page.'>
+						<label data-tooltip-left='Start 1st page on the right side, such as if you have cover page.'>
 							Start on right
 							<input type='checkbox' checked={displayOptions.startOnRight} onChange={()=>{handleOptionChange('startOnRight', !displayOptions.startOnRight);}}
-								title={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
+								data-tooltip-right={displayOptions.spread !== 'facing' ? 'Switch to Facing to enable toggle.' : null} />
 						</label>
-						<label title='Toggle the page shadow on every page.'>
+						<label data-tooltip-left='Toggle the page shadow on every page.'>
 							Page shadows
 							<input type='checkbox' checked={displayOptions.pageShadows} onChange={()=>{handleOptionChange('pageShadows', !displayOptions.pageShadows);}} />
 						</label>
@@ -217,7 +216,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 					id='previous-page'
 					className='previousPage tool'
 					type='button'
-					title='Previous Page(s)'
+					data-tooltip-bottom='Previous Page(s)'
 					onClick={()=>scrollToPage(_.min(visiblePages) - visiblePages.length)}
 					disabled={visiblePages.includes(1)}
 				>
@@ -230,7 +229,7 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						className='text-input'
 						type='text'
 						name='page'
-						title='Current page(s) in view'
+						data-tooltip-bottom='Current page(s) in view'
 						inputMode='numeric'
 						pattern='[0-9]'
 						value={pageNum}
@@ -240,14 +239,14 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 						onKeyDown={(e)=>e.key == 'Enter' && scrollToPage(pageNum)}
 						style={{ width: `${pageNum.length}ch` }}
 					/>
-					<span id='page-count' title='Total Page Count'>/ {totalPages}</span>
+					<span id='page-count' data-tooltip-bottom='Total Page Count'>/ {totalPages}</span>
 				</div>
 
 				<button
 					id='next-page'
 					className='tool'
 					type='button'
-					title='Next Page(s)'
+					data-tooltip-bottom='Next Page(s)'
 					onClick={()=>scrollToPage(_.max(visiblePages) + 1)}
 					disabled={visiblePages.includes(totalPages)}
 				>

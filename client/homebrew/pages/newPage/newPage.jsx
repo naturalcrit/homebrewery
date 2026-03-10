@@ -4,29 +4,28 @@ import './newPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from '../../../../shared/markdown.js';
+import Markdown                               from '@shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
 import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from '../../navbar/nav.jsx';
-import Navbar                    from '../../navbar/navbar.jsx';
-import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ErrorNavItem              from '../../navbar/error-navitem.jsx';
-import HelpNavItem               from '../../navbar/help.navitem.jsx';
-import VaultNavItem              from '../../navbar/vault.navitem.jsx';
-import PrintNavItem              from '../../navbar/print.navitem.jsx';
-import RecentNavItems from '../../navbar/recent.navitem.jsx';
+import Nav                       from '@navbar/nav.jsx';
+import Navbar                    from '@navbar/navbar.jsx';
+import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '@navbar/account.navitem.jsx';
+import ErrorNavItem              from '@navbar/error-navitem.jsx';
+import HelpNavItem               from '@navbar/help.navitem.jsx';
+import VaultNavItem              from '@navbar/vault.navitem.jsx';
+import PrintNavItem              from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import { Meta }                  from 'vitreum/headtags';
 
 const UNSAVED_WARNING_TIMEOUT = 9000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
@@ -64,7 +63,7 @@ const NewPage = (props)=>{
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{

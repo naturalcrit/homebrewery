@@ -1,7 +1,7 @@
 import './errorPage.less';
 import React      from 'react';
 import UIPage     from '../basePages/uiPage/uiPage.jsx';
-import Markdown   from '../../../../shared/markdown.js';
+import Markdown   from '@shared/markdown.js';
 import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{
