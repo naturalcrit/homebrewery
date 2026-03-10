@@ -32,13 +32,15 @@ const isStaticTheme = (renderer, themeName)=>{
 // };
 
 const migrateSystemsToTags = (brew) => {
-	if(!brew?.systems?.length) return brew;
-
+	if (!('systems' in brew)) return brew;
+	if (!Array.isArray(brew.systems) || brew.systems.length === 0) {
+		brew.systems = undefined;
+		return brew;
+	}
 	const systemTags = brew.systems.map(s => `system:${s}`);
 	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
 
-	delete brew.systems;
-
+	brew.systems = undefined;
 	return brew;
 };
 
@@ -405,8 +407,6 @@ const api = {
 		let brew         = _.assign(brewFromServer, brewFromClient);
 
 		migrateSystemsToTags(brew);
-		console.log('migrating systems to tags', !!brew.systems);
-		console.log(brew);
 
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
