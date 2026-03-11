@@ -1,5 +1,6 @@
 
 import dedent from 'dedent';
+const domain = window.location.origin;
 
 // DriveThruRPG/OneBookShelf Community Content Programs
 
@@ -101,10 +102,10 @@ export default {
 	},
 	// Verify Logo redistribution
 	greenRoninAgeCreatorsAllianceCover                : `Requires the \[Game Title\] Rulebook from Green Ronin Publishing for use.`,
-	greenRoninAgeCreatorsAllianceLogo                 : `![Age Creators Alliance](https://homebrewery.naturalcrit.com/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_General-Compatibility-Logo.png){width:200px}`,
-	greenRoninAgeCreatorsAllianceBlueRoseLogo         : `![Age Creators Alliance](https://homebrewery.naturalcrit.com/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Blue-Rose-Compatibility-Logo.png){width:200px}`,
-	greenRoninAgeCreatorsAllianceFantasyAgeCompatible : `![Fantasy AGE Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Fantasy-AGE-Compatibility-Logo.png){width:200px}`,
-	greenRoninAgeCreatorsAllianceModernAGECompatible  : `![Modern AGE Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Modern-AGE-Compatibility-Logo.png){width:200px}`,
+	greenRoninAgeCreatorsAllianceLogo                 : `![Age Creators Alliance](${domain}/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_General-Compatibility-Logo.png){width:200px}`,
+	greenRoninAgeCreatorsAllianceBlueRoseLogo         : `![Age Creators Alliance](${domain}/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Blue-Rose-Compatibility-Logo.png){width:200px}`,
+	greenRoninAgeCreatorsAllianceFantasyAgeCompatible : `![Fantasy AGE Compatible](${domain}/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Fantasy-AGE-Compatibility-Logo.png){width:200px}`,
+	greenRoninAgeCreatorsAllianceModernAGECompatible  : `![Modern AGE Compatible](${domain}/assets/license_logos/Green-Ronin_AGE-Creators-Alliance_Modern-AGE-Compatibility-Logo.png){width:200px}`,
 	// Green Ronin's Chronicle - Verify Art and Access
 	greenRoninChronicleSystemGuildColophon            : function() {
 		return dedent`
@@ -179,10 +180,10 @@ export default {
 		`;
 	},
 	// Verify Logo redistribution
-	monteCookLogoDarkLarge     : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkLarge.png)`,
-	monteCookLogoDarkSmall     : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCDarkSmall.png)`,
-	monteCookLogoLightLarge    : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightLarge.png)`,
-	monteCookLogoLightSmall    : `![Cypher System Compatible](https://homebrewery.naturalcrit.com/assets/license_logos/CSCLightSmall.png)`,
+	monteCookLogoDarkLarge     : `![Cypher System Compatible](${domain}/assets/license_logos/CSCDarkLarge.png)`,
+	monteCookLogoDarkSmall     : `![Cypher System Compatible](${domain}/assets/license_logos/CSCDarkSmall.png)`,
+	monteCookLogoLightLarge    : `![Cypher System Compatible](${domain}/assets/license_logos/CSCLightLarge.png)`,
+	monteCookLogoLightSmall    : `![Cypher System Compatible](${domain}/assets/license_logos/CSCLightSmall.png)`,
 	// Onyx Path Canis Minor - Verify logos and access
 	onyxPathCanisMinorColophon : function () {
 		return dedent`

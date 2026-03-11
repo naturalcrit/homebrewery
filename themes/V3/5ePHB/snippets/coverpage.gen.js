@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import dedent from 'dedent';
+const domain = window.location.origin;
 
 const titles = [
 	'The Burning Gallows',                    'The Ring of Nenlast',
@@ -84,7 +85,7 @@ export default {
 		return dedent`
 		  {{frontCover}}
 
-		  {{logo ![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoRed.svg)}}
+		  {{logo ![](${domain}/assets/naturalCritLogoRed.svg)}}
 
 		  # ${_.sample(titles)}
 		  ## ${_.sample(subtitles)}
@@ -96,7 +97,7 @@ export default {
 		    ${_.sample(footnote)}
 		  }}
 
-		  ![background image](https://homebrewery.naturalcrit.com/assets/demontemple.jpg){position:absolute,bottom:0,left:0,height:100%}
+		  ![background image](${domain}/assets/the_departure.webp){position:absolute,bottom:0,right:-400px,height:100%}
 
 		  \page`;
 	},
@@ -110,10 +111,10 @@ export default {
 			___
 
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
-			  ![background image](https://homebrewery.naturalcrit.com/assets/mountaincottage.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![background image](${domain}/assets/the_spirit_of_war.webp){position:absolute,bottom:100px,right:70px,height:70%}
 			}}
 
-			{{logo ![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoRed.svg)}}
+			{{logo ![](${domain}/assets/naturalCritLogoRed.svg)}}
 
 			\page`;
 	},
@@ -126,7 +127,7 @@ export default {
 			## ${_.sample(subtitles)}
 
 			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
-			  ![Background image](https://homebrewery.naturalcrit.com/assets/nightchapel.jpg){position:absolute,bottom:0,left:0,height:100%}
+			  ![Background image](${domain}/assets/frigate.webp){position:absolute,bottom:0,right:0,height:100%}
 			}}
 
 			\page`;
@@ -143,10 +144,10 @@ export default {
 
 			For use with any fantasy roleplaying ruleset. Play the best game of your life!
 
-			![background image](https://homebrewery.naturalcrit.com/assets/shopvials.jpg){position:absolute,bottom:0,left:0,height:100%}
+			![background image](${domain}/assets/ruined_tower.webp){position:absolute,bottom:0,right:-250px,height:100%}
 
 			{{logo
-			![](https://homebrewery.naturalcrit.com/assets/naturalCritLogoWhite.svg)
+			![](${domain}/assets/naturalCritLogoWhite.svg)
 
 			Homebrewery.Naturalcrit.com
 			}}`;

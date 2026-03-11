@@ -1,5 +1,6 @@
 
 import dedent from 'dedent';
+const domain = window.location.origin;
 
 // Small and one-off licenses
 // Licenses in this file consist of one or two functions at most. If something is larger,
@@ -50,10 +51,10 @@ export default {
 	ccbyndBadge               : `![CC BY-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nd.svg)`,
 	ccbyncndBadge             : `![CC BY-NC-ND](https://mirrors.creativecommons.org/presskit/buttons/88x31/svg/by-nc-nd.svg)`,
 	shadowDarkNotice          : `\[Product Name]\ is an independent product published under the Shadowdark RPG Third-Party License and is not affiliated with The Arcane Library, LLC. Shadowdark RPG © 2023 The Arcane Library, LLC.\n`,
-	shadowDarkBlack           : `![Shadowdark Black Logo](https://homebrewery.naturalcrit.com/assets/license_logos/The-Arcane-Library_Third-Party-License_Black.png){width:200px}`,
-	shadowDarkWhite           : `![Shadowdark White Logo](https://homebrewery.naturalcrit.com/assets/license_logos/The-Arcane-Library_Third-Party-License_White.png){width:200px}`,
+	shadowDarkBlack           : `![Shadowdark Black Logo](${domain}/assets/license_logos/The-Arcane-Library_Third-Party-License_Black.png){width:200px}`,
+	shadowDarkWhite           : `![Shadowdark White Logo](${domain}/assets/license_logos/The-Arcane-Library_Third-Party-License_White.png){width:200px}`,
 	bladesDarkNotice          : `This work is based on Blades in the Dark \(found at (http://www.bladesinthedark.com/)\), product of One Seven Design, developed and authored by John Harper, and licensed for our use under the Creative Commons Attribution 3.0 Unported license \(http://creativecommons.org/licenses/by/3.0/\).\n`,
-	bladesDarkLogo            : `![Forged in the Dark](https://homebrewery.naturalcrit.com/assets/license_logos/Evil-Hat_Forged-In-The-Dark_Logo-V2.png)`,
+	bladesDarkLogo            : `![Forged in the Dark](${domain}/assets/license_logos/Evil-Hat_Forged-In-The-Dark_Logo-V2.png)`,
 	bladesDarkLogoAttribution : `*Blades in the Dark^tm^ is a trademark of One Seven Design. The Forged in the Dark Logo is © One Seven Design, and is used with permission.*`,
 	iconsCompatibility        : 'Compatibility with Icons requires Icons Superpowered Roleplaying from Ad Infinitum Adventures. Ad Infinitum Adventures does not guarantee compatibility, and does not endorse this product.',
 	iconsTrademark            : 'Icons Superpowered Roleplaying is a trademark of Steve Kenson, published exclusively by Ad Infinitum Adventures. The Icons Superpowered Roleplaying Compatibility Logo is a trademark of Ad Infinitum Adventures and is used under the Icons Superpowered Roleplaying Compatibility License.',
