@@ -1,4 +1,4 @@
-export default [
+export const tagSuggestionList = [
 	// ############################## Systems
 	// D&D
 	'system:D&D Original',
@@ -207,4 +207,13 @@ export default [
 	'Star Wars',
 	'SW5e',
 	'Star Wars 5e',
+];
+
+// substrings to be normalized to the first value on the array
+export const canonizationList = [
+	['5e 2024', '5.5e', '5e\'24', '5.24', '5e24', '5.5'],
+	['5e', '5th Edition'],
+	['Dungeons & Dragons', 'Dungeons and Dragons', 'Dungeons n dragons'],
+	['D&D', 'DnD', 'dnd', 'Dnd', 'dnD', 'd&d', 'd&D', 'D&d'],
+	['P2e', 'p2e', 'P2E', 'Pathfinder 2e'],
 ];
