@@ -196,7 +196,6 @@ const EditPage = (props)=>{
 		saveTimeout.current = setTimeout(async ()=>{
 			setIsSaving(true);
 			setError(null);
-			console.log(currentBrew);
 			await save(currentBrew, saveGoogle)
 			.catch((err)=>{
 				setError(err);

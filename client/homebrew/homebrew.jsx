@@ -52,6 +52,19 @@ const Homebrew = (props)=>{
 
 	updateLocalStorage();
 
+	if(brew.pureError) {
+		return (
+			<Router>
+				<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
+					<Routes>
+						<Route path={brew.originalUrl} element={<WithRoute el={ErrorPage} brew={brew} />} />
+					</Routes>
+				</div>
+			</Router>
+		);
+	}
+
+
 	return (
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
