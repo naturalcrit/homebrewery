@@ -15,7 +15,7 @@ const HomebrewSchema = mongoose.Schema({
 
 	description    : { type: String, default: '' },
 	tags           : { type: [String], index: true },
-	systems        : [String],
+	systems		   : { type: [String], default: undefined },
 	lang           : { type: String, default: 'en', index: true },
 	renderer       : { type: String, default: '', index: true },
 	authors        : { type: [String], index: true },
