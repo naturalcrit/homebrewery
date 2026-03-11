@@ -31,13 +31,21 @@ const isStaticTheme = (renderer, themeName)=>{
 // 	});
 // };
 
+
 const migrateSystemsToTags = (brew) => {
 	if (!('systems' in brew)) return brew;
+
 	if (!Array.isArray(brew.systems) || brew.systems.length === 0) {
 		brew.systems = undefined;
 		return brew;
 	}
-	const systemTags = brew.systems.map(s => `system:${s}`);
+	const systemMap = {
+		'5e': 'system:D&D 5e',
+		'4e': 'system:D&D 4e',
+		'3.5e': 'system:D&D 3.5e',
+		'Pathfinder': 'system:Pathfinder'
+	};
+	const systemTags = brew.systems.map(s => systemMap[s]);
 	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
 
 	brew.systems = undefined;
