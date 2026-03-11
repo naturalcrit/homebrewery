@@ -43,7 +43,7 @@ const migrateSystemsToTags = (brew) => {
 		'5e': 'system:D&D 5e',
 		'4e': 'system:D&D 4e',
 		'3.5e': 'system:D&D 3.5e',
-		'Pathfinder': 'system:Pathfinder'
+		'Pathfinder': 'system:Pathfinder 2e'
 	};
 	const systemTags = brew.systems.map(s => systemMap[s]);
 	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
