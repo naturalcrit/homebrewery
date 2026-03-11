@@ -98,6 +98,7 @@ export default {
 		  }}
 
 		  ![background image](${domain}/assets/the_departure.webp){position:absolute,bottom:0,right:-400px,height:100%}
+		  <!-- ARt: The Departure, 1837, by Thomas Cole -->
 
 		  \page`;
 	},
@@ -113,6 +114,7 @@ export default {
 			{{imageMaskCenter${_.random(1, 16)},--offsetX:0%,--offsetY:0%,--rotation:0
 			  ![background image](${domain}/assets/the_spirit_of_war.webp){position:absolute,bottom:100px,right:70px,height:70%}
 			}}
+			<!-- Art: The Spirit of War, 1851, by Jasper Francis Cropsey -->
 
 			{{logo ![](${domain}/assets/naturalCritLogoRed.svg)}}
 
@@ -129,6 +131,7 @@ export default {
 			{{imageMaskEdge${_.random(1, 8)},--offset:10cm,--rotation:180
 			  ![Background image](${domain}/assets/frigate.webp){position:absolute,bottom:0,right:0,height:100%}
 			}}
+			<!-- Art: The United States Frigate "President" Engaging the British Squadron, 1815, 1850, by Fitz Henry Lane -->
 
 			\page`;
 	},
@@ -145,6 +148,7 @@ export default {
 			For use with any fantasy roleplaying ruleset. Play the best game of your life!
 
 			![background image](${domain}/assets/ruined_tower.webp){position:absolute,bottom:0,right:-250px,height:100%}
+			<!-- Art: Italian Coast Scene with Ruined Tower, 1838, Thomas Cole -->
 
 			{{logo
 			![](${domain}/assets/naturalCritLogoWhite.svg)
