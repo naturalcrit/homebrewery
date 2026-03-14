@@ -646,7 +646,7 @@ export default [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![bird](${domain}/assets/bird.webp) {width:325px,mix-blend-mode:multiply}
+					![bird](${domain}/assets/bird.webp) {width:325px}
 					<!-- Bird with autumn foliage by L. Prang & Co.-->`
 			},
 			{
