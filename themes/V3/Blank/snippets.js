@@ -646,7 +646,8 @@ export default [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](${domain}/assets/catwarrior.jpg) {width:325px,mix-blend-mode:multiply}`
+					![bird](${domain}/assets/bird.webp) {width:325px,mix-blend-mode:multiply}
+					<!-- Bird with autumn foliage by L. Prang & Co.-->`
 			},
 			{
 				name : 'Image Wrap Left',
