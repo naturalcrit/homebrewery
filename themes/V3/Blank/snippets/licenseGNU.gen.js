@@ -1,9 +1,9 @@
 /* eslint-disable max-lines */
-const dedent = require('dedent');
+import dedent from 'dedent';
 
 // GNU Licenses
 
-module.exports = {
+export default {
 
 	gpl3 : function () {
 		return dedent`{{license,wide

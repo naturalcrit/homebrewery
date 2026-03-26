@@ -1,11 +1,11 @@
-require('./renderWarnings.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
+import './renderWarnings.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+import _ from 'lodash';
 
 import Dialog from '../dialog.jsx';
 
-const RenderWarnings = createClass({
+const RenderWarnings = createReactClass({
 	displayName     : 'RenderWarnings',
 	getInitialState : function() {
 		return {
@@ -57,4 +57,4 @@ const RenderWarnings = createClass({
 	}
 });
 
-module.exports = RenderWarnings;
+export default RenderWarnings;

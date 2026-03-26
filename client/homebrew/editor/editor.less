@@ -1,9 +1,12 @@
-@import 'themes/codeMirror/customEditorStyles.less';
+@import '@sharedStyles/core.less';
+@import '@themes/codeMirror/customEditorStyles.less';
+
 .editor {
 	position  : relative;
 	width     : 100%;
 	height    : 100%;
 	container : editor / inline-size;
+	background:white;
 	.codeEditor {
 		height            : calc(100% - 25px);
 		.CodeMirror { height : 100%; }

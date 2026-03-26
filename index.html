@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
+		<link
+			href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700"
+			rel="stylesheet"
+			type="text/css" />
+		<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+		<meta name="twitter:card" content="summary" />
+		<title>The Homebrewery - NaturalCrit</title>
+	</head>
+
+	<body>
+		<main id="reactRoot"></main>
+
+		<script type="module">
+	    	if (window.location.pathname.startsWith('/admin')) {
+				import('/client/admin/main.jsx');
+			} else {
+				import('/client/homebrew/main.jsx');
+			}
+		</script>
+	</body>
+</html>
