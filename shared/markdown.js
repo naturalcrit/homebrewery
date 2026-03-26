@@ -14,7 +14,7 @@ import { markedVariables,
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
-import MarkedDiagrams from 'marked-diagrams';
+import MarkedDiagramsMarkdeep from 'marked-diagrams-markdeep';
 
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
@@ -355,10 +355,10 @@ const tableTerminators = [
 	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
 ];
 
-const markedDiagramsOptions = { langs: ['asciiArt'] };
+const MarkdeepOptions = { langs: ['asciiArt'] };
 
 Marked.use(markedVariables());
-Marked.use(MarkedDiagrams(markedDiagramsOptions));
+Marked.use(MarkedDiagramsMarkdeep(markedDiagramsOptions));
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
