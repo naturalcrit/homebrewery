@@ -355,10 +355,10 @@ const tableTerminators = [
 	` *{{[^{\n]*\n.*?\n}}`  // mustacheDiv
 ];
 
-const MarkdeepOptions = { langs: ['asciiArt'] };
+const markdeepOptions = { langs: ['asciiArt'] };
 
 Marked.use(markedVariables());
-Marked.use(MarkedDiagramsMarkdeep(markedDiagramsOptions));
+Marked.use(MarkedDiagramsMarkdeep(markdeepOptions));
 Marked.use(MarkedDefinitionLists());
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
