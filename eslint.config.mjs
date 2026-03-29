@@ -32,7 +32,7 @@ export default [{
 				"max-depth"            : ["warn", { max: 4 }],
 				"max-params"           : ["warn", { max: 5 }],
 				"no-restricted-syntax" : ["warn", "ClassDeclaration", "SwitchStatement"],
-				"no-unused-vars"       : ["warn", { vars: "all", args: "none", varsIgnorePattern: "config|_|cx|createClass" }],
+				"no-unused-vars"       : ["warn", { vars: "all", args: "none", varsIgnorePattern: "config|_|cx|createReactClass" }],
 				"react/jsx-uses-vars"  : "warn",
 
 				/** Fixable **/

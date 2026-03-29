@@ -1,20 +1,21 @@
-require('./sharePage.less');
-const  React = require('react');
-const { useState, useEffect, useCallback } = React;
-const { Meta } = require('vitreum/headtags');
+import './sharePage.less';
+import React, { useState, useEffect, useCallback } from 'react';
+import Headtags   from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
-const Navbar = require('client/homebrew/navbar/navbar.jsx');
-const MetadataNav = require('client/homebrew/navbar/metadata.navitem.jsx');
-const PrintNavItem = require('client/homebrew/navbar/print.navitem.jsx');
-const RecentNavItem = require('client/homebrew/navbar/recent.navitem.jsx').both;
-const Account = require('client/homebrew/navbar/account.navitem.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import MetadataNav from '@navbar/metadata.navitem.jsx';
+import PrintNavItem from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+import Account from '@navbar/account.navitem.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-const ErrorPage = require('../errorPage/errorPage.jsx');
+import ErrorPage from '../errorPage/errorPage.jsx';
 
-const { DEFAULT_BREW, DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } = require('../../../../shared/helpers.js');
+import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
 import request from '../../utils/request-middleware.js';
 
@@ -170,4 +171,4 @@ const SharePage = (props)=>{
 	);
 };
 
-module.exports = SharePage;
+export default SharePage;

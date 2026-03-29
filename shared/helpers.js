@@ -19,7 +19,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						userSnippets.push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1],
+							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -44,7 +44,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1],
+					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
@@ -91,7 +91,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('\n```\n\n');
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 		brew.text = brew.text.slice(index + 6);
 	}

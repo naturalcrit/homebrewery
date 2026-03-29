@@ -65,7 +65,6 @@ describe('Tests for api', ()=>{
 			title       : 'some title',
 			description : 'this is a description',
 			tags        : ['something', 'fun'],
-			systems     : ['D&D 5e'],
 			lang        : 'en',
 			renderer    : 'v3',
 			theme       : 'phb',
@@ -353,7 +352,6 @@ describe('Tests for api', ()=>{
 				renderer    : 'legacy',
 				lang        : 'en',
 				shareId     : undefined,
-				systems     : [],
 				tags        : [],
 				theme       : '5ePHB',
 				thumbnail   : '',
@@ -392,7 +390,6 @@ describe('Tests for api', ()=>{
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345'
@@ -404,8 +401,6 @@ description: this is a description
 tags:
   - something
   - fun
-systems:
-  - D&D 5e
 renderer: v3
 theme: phb
 
@@ -421,7 +416,6 @@ brew`);
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345'
@@ -433,8 +427,6 @@ description: this is a description
 tags:
   - something
   - fun
-systems:
-  - D&D 5e
 renderer: v3
 theme: phb
 
@@ -465,7 +457,6 @@ brew`);
 
 			expect(sent).toEqual(googleBrew);
 			expect(result.tags).toBeUndefined();
-			expect(result.systems).toBeUndefined();
 			expect(result.published).toBeUndefined();
 			expect(result.authors).toBeUndefined();
 			expect(result.owner).toBeUndefined();
@@ -560,7 +551,6 @@ brew`);
 				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
-				systems     : [],
 				tags        : [],
 				text        : undefined,
 				textBin     : expect.objectContaining({}),
@@ -620,7 +610,6 @@ brew`);
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
 				style       : undefined,
-				systems     : [],
 				tags        : [],
 				text        : undefined,
 				textBin     : undefined,
@@ -1078,7 +1067,6 @@ brew`);
 					'title: title\n' +
 					'description: description\n' +
 					'tags: [ \'tag a\' , \'tag b\' ]\n' +
-					'systems: [ test system ]\n' +
 					'renderer: legacy\n' +
 					'theme: 5ePHB\n' +
 					'lang: en\n' +
@@ -1099,8 +1087,6 @@ brew`);
 			// Metadata
 			expect(testBrew.title).toEqual('title');
 			expect(testBrew.description).toEqual('description');
-			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
-			expect(testBrew.systems).toEqual(['test system']);
 			expect(testBrew.renderer).toEqual('legacy');
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
@@ -1108,19 +1094,6 @@ brew`);
 			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
 			// Text
 			expect(testBrew.text).toEqual('text\n');
-		});
-
-		it('convert tags string to array', async ()=>{
-			const testBrew = {
-				text : '```metadata\n' +
-					'tags: tag a\n' +
-					'```\n\n'
-			};
-
-			splitTextStyleAndMetadata(testBrew);
-
-			// Metadata
-			expect(testBrew.tags).toEqual(['tag a']);
 		});
 	});
 

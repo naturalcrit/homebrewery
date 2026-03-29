@@ -84,4 +84,4 @@ const authorLookup = ()=>{
 	);
 };
 
-module.exports = authorLookup;
+export default authorLookup;

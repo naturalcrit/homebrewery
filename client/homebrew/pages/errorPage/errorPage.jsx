@@ -1,8 +1,8 @@
-require('./errorPage.less');
-const React      = require('react');
-const UIPage     = require('../basePages/uiPage/uiPage.jsx');
-import Markdown  from '../../../../shared/markdown.js';
-const ErrorIndex = require('./errors/errorIndex.js');
+import './errorPage.less';
+import React      from 'react';
+import UIPage     from '../basePages/uiPage/uiPage.jsx';
+import Markdown   from '@shared/markdown.js';
+import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{
 
@@ -28,4 +28,4 @@ const ErrorPage = ({ brew })=>{
 	);
 };
 
-module.exports = ErrorPage;
+export default ErrorPage;

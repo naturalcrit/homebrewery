@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, height=device-height, interactive-widget=resizes-visual" />
+		<link
+			href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700"
+			rel="stylesheet"
+			type="text/css" />
+		<link rel="icon" href="/assets/favicon.ico" type="image/x-icon" />
+
+		<meta name="twitter:card" content="summary" />
+		<title>The Homebrewery - NaturalCrit</title>
+	</head>
+
+	<body>
+		<main id="reactRoot"></main>
+
+		<script type="module">
+  			const props = window.__INITIAL_PROPS__ || {};
+			const url = props.config?.baseUrl;
+			const title = props.brew?.title;
+
+  			let prefix = '';
+
+  			if (url.includes('://homebrewery-stage.')) {
+  				prefix = `Stage `;
+  			} else if (url.includes('://homebrewery-pr-')) {
+  				const match = url.match(/pr-(\d+)/);
+  				if (match) prefix = `PR-${match[1]} `;
+  			} else if (url.includes('://localhost')) {
+  				prefix = 'Local ';
+  			}
+
+  			if (title) {
+  				document.title = `${prefix} - ${title} - The Homebrewery`;
+  			} else {
+				document.title = `${prefix} - The Homebrewery`;
+			}
+
+			if (window.location.pathname.startsWith('/admin')) {
+				import('/client/admin/main.jsx');
+			} else {
+				import('/client/homebrew/main.jsx');
+			}
+		</script>
+	</body>
+</html>
