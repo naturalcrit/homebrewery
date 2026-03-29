@@ -12,8 +12,6 @@ const { both: RecentNavItem } = RecentNavItems;
 import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import ErrorPage from '../errorPage/errorPage.jsx';
-
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
@@ -117,8 +115,6 @@ const SharePage = (props)=>{
 			{brew.title}
 		</Nav.item>
 	);
-
-	if(error) return <ErrorPage brew={error} />;
 
 	return (
 		<div className='sharePage sitePage'>
