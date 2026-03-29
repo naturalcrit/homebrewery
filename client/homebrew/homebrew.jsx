@@ -52,37 +52,33 @@ const Homebrew = (props)=>{
 
 	updateLocalStorage();
 
-	if(brew.pureError) {
-		return (
-			<Router>
-				<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
-					<Routes>
-						<Route path={brew.originalUrl} element={<WithRoute el={ErrorPage} brew={brew} />} />
-					</Routes>
-				</div>
-			</Router>
-		);
-	}
-
 
 	return (
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
-					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
-					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
-					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
-					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
-					<Route path='/legacy' element={<WithRoute el={HomePage} brew={brew} />} />
-					<Route path='/error' element={<WithRoute el={ErrorPage} brew={brew} />} />
-					<Route path='/' element={<WithRoute el={HomePage} brew={brew} />} />
-					<Route path='/*' element={<WithRoute el={HomePage} brew={brew} />} />
+					{ brew.pureError ?
+						<>
+							<Route path={brew.originalUrl} element={<WithRoute el={ErrorPage} brew={brew} />} />
+						</>
+						:
+						<>
+							<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
+							<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
+							<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
+							<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
+							<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
+							<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
+							<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} fixedText='changelog' fixedTitle='Changelog' disableMeta={true} />} />
+							<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} fixedText='faq' fixedTitle='FAQ' disableMeta={true} />} />
+							<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} fixedText='migrate' disableMeta={true} />} />
+							<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
+							<Route path='/legacy' element={<WithRoute el={HomePage} brew={brew} />} />
+							<Route path='/error' element={<WithRoute el={ErrorPage} brew={brew} />} />
+							<Route path='/' element={<WithRoute el={HomePage} brew={brew} />} />
+							<Route path='/*' element={<WithRoute el={HomePage} brew={brew} />} />
+						</>
+					}
 				</Routes>
 			</div>
 		</Router>
