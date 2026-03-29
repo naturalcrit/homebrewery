@@ -12,10 +12,10 @@ const { both: RecentNavItem } = RecentNavItems;
 import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
+import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-import request from '../../utils/request-middleware.js';
+import fetchData from '../../utils/fetchData.js';
 
 const SharePage = (props)=>{
 	const { disableMeta = false, id, fixedText, fixedTitle = '' } = props;
@@ -41,58 +41,25 @@ const SharePage = (props)=>{
 	};
 
 	useEffect(()=>{
-		const fetchData = async ()=>{
-
-			let brewData;
-
-			if(fixedText){
-				const data = await request
-					.get(`/api/text/${fixedText}`)
-					.catch((err)=>{
-						return err.response;
-					});
-
-				brewData = Object.assign(DEFAULT_BREW, { text: data.text, title: fixedTitle });
-
-				if(!data.ok) {
-					setError(brewData);
-					return;
-				}
-			}
-
-			if(id){
-				const data = await request
-					.get(`/api/share/${id}`)
-					.catch((err)=>{
-						return err.response;
-					});
-				brewData = data.body;
-				if(!data.ok) {
-					setError(brewData);
-					return;
-				}
-			}
-
-			splitTextStyleAndMetadata(brewData);
-
-			await fetchThemeBundle(
-				setError,
-				setThemeBundle,
-				brewData.renderer,
-				brewData.theme
-			);
-
-			setBrew(brewData);
-		};
-		fetchData();
+		fetchData(
+			fixedText || id,
+			fixedText ? 'text' : 'share',
+			fixedTitle,
+			setBrew,
+			setError
+		);
 
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+		// fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
+
+	useEffect(()=>{
+		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+	}, [brew]);
 
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
