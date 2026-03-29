@@ -211,7 +211,7 @@ const api = {
 	},
 
 	getMeta : async (req, res, next)=>{
-		await api.getBrew('share', false)(req, res, ()=>{});
+		await api.getBrew('share', true)(req, res, ()=>{});
 
 		const metaTagData = {
 			title       : req.brew?.title || undefined,
@@ -573,18 +573,23 @@ const api = {
 		res.status(204).send();
 	},
 	returnBrew : async (req, res)=>{
+		req.brew.__v = undefined;
+		// If logged in user is not an author:
+		if(!req.brew?.authors?.includes(req?.account?.username)){
+			// Remove author-only properties
+			req.brew.editId = undefined;
+		};
 		return res.status(200).json(req.brew);
 	},
 	shareAuthorChecks : async (req, res, next)=>{
 		// If logged in user is not an author:
 		if(!req.brew.authors.includes(req?.account?.username)){
-			// Remove author-only properties
-			req.brew._id = undefined;
-			req.brew.__v = undefined;
-			req.brew.editId = undefined;
 			// Increase view count and lastViewed property
-			await HomebrewModel.increaseView({ shareId: req.params.id });
+			await HomebrewModel.increaseView({ _id: req.brew._id });
 		};
+
+		// Remove internal MongoDB ID
+		req.brew._id = undefined;
 		next();
 	},
 	getStaticText : async (req, res)=>{
@@ -609,6 +614,7 @@ router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', fals
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
 router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/share/:id', checkClientVersion, asyncHandler(api.getBrew('share', false)), asyncHandler(api.shareAuthorChecks), asyncHandler(api.returnBrew));
+router.get('/api/edit/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.returnBrew));
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 router.get('/api/text/:file', checkClientVersion, asyncHandler(api.getStaticText));
