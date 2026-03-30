@@ -132,7 +132,7 @@
     "node": "^25.8.2",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "react-frame-component": "^5.3.1",
+    "react-frame-component": "^5.3.2",
     "react-router": "^7.13.2",
     "sanitize-filename": "1.6.4",
     "superagent": "^10.2.1"
