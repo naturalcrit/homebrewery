@@ -1,6 +1,26 @@
 /* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo } from '@codemirror/commands';
+import * as prettier from "prettier/standalone";
+import * as postcssPlugin from "prettier/plugins/postcss";
+
+async function formatCSS(view) {
+  const code = view.state.doc.toString();
+
+  const formatted = await prettier.format(code, {
+    parser: "css",
+    plugins: [postcssPlugin]
+  });
+
+  view.dispatch({
+    changes: {
+      from: 0,
+      to: view.state.doc.length,
+      insert: formatted
+    }
+  });
+}
+
 
 const insertTabAtCursor = (view)=>{
 	const { from } = view.state.selection.main;
@@ -235,4 +255,5 @@ export default keymap.of([
 	{ key: 'Mod-Enter', run: newPage },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
+	{ key: 'alt-Shift-f', run: formatCSS },
 ]);
