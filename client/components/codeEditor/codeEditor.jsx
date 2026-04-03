@@ -145,7 +145,7 @@ const CodeEditor = forwardRef(
 			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
 
 			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
-			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : [];
+			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[0];
 
 			return [
 				history(), //allows for undo and redo
