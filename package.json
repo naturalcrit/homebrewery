@@ -138,7 +138,7 @@
     "superagent": "^10.2.1"
   },
   "devDependencies": {
-    "@stylistic/stylelint-plugin": "^5.0.1",
+    "@stylistic/stylelint-plugin": "^5.1.0",
     "babel-jest": "^30.3.0",
     "babel-plugin-transform-import-meta": "^2.3.3",
     "eslint": "9.7",
