@@ -76,9 +76,6 @@ const Editor = createReactClass({
 		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
-		this.codeEditor.current.codeMirror?.on('cursorActivity', (cm)=>{this.updateCurrentCursorPage(cm.getCursor());});
-		this.codeEditor.current.codeMirror?.on('scroll', _.throttle(()=>{this.updateCurrentViewPage(this.codeEditor.current.getTopVisibleLine());}, 200));
-
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 		if(editorTheme) {
 			this.setState({
@@ -436,6 +433,29 @@ const Editor = createReactClass({
 		this.forceUpdate();
 	},
 
+	//temporary fix until cm6 comes next update
+	attachCodeMirrorListeners : function(cm) {
+		if(!cm) return;
+		// detach previous (important on remount / view switch)
+		if(this._cm) {
+			this._cm.off('cursorActivity', this._onCursor);
+			this._cm.off('scroll', this._onScroll);
+		}
+
+		this._cm = cm;
+
+		this._onCursor = ()=>{
+			this.updateCurrentCursorPage(cm.getCursor());
+		};
+
+		this._onScroll = _.throttle(()=>{
+			const topLine = cm.lineAtHeight(cm.getScrollInfo().top, 'local');
+			this.updateCurrentViewPage(topLine);
+		}, 200);
+
+		cm.on('cursorActivity', this._onCursor);
+		cm.on('scroll', this._onScroll);
+	},
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
@@ -448,7 +468,8 @@ const Editor = createReactClass({
 					onChange={this.props.onBrewChange('text')}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}
+					onReady={this.attachCodeMirrorListeners}/>
 			</>;
 		}
 		if(this.isStyle()){
@@ -463,7 +484,8 @@ const Editor = createReactClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}
+					onReady={this.attachCodeMirrorListeners}/>
 			</>;
 		}
 		if(this.isMeta()){
@@ -493,7 +515,8 @@ const Editor = createReactClass({
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }} />
+					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }}
+					onReady={this.attachCodeMirrorListeners}/>
 			</>;
 		}
 	},

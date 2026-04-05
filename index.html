@@ -25,18 +25,18 @@
 
   			let prefix = '';
 
-  			if (url.includes('://homebrewery-stage.')) {
+  			if (url && url?.includes('://homebrewery-stage.')) {
   				prefix = `Stage `;
-  			} else if (url.includes('://homebrewery-pr-')) {
+  			} else if (url?.includes('://homebrewery-pr-')) {
   				const match = url.match(/pr-(\d+)/);
   				if (match) prefix = `PR-${match[1]} `;
-  			} else if (url.includes('://localhost')) {
+  			} else if (url?.includes('://localhost')) {
   				prefix = 'Local ';
   			}
 
   			if (title) {
   				document.title = `${prefix} - ${title} - The Homebrewery`;
-  			} else {
+  			} else if (prefix) {
 				document.title = `${prefix} - The Homebrewery`;
 			}
 

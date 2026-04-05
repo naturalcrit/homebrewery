@@ -1,14 +1,6 @@
-/* eslint-disable max-lines */
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
-import Markdown from '../shared/markdown.js';
-import packageJSON from '../package.json' with { type: 'json' };
-
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
-const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
-
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -138,7 +130,7 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	setThemeBundle(themeBundle);
-	if(setError) { setError(null); }
+	setError(null);
 };
 
 const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
@@ -220,11 +212,11 @@ const scrapeBrewHTML = ()=>{
 };
 
 export {
+	scrapeBrewHTML,
+	scrapeBrewZip,
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch,
-	scrapeBrewHTML,
-	scrapeBrewZip,
+	debugTextMismatch
 };

@@ -12,7 +12,7 @@ import _       from 'lodash';
 import jwt     from 'jwt-simple';
 import express from 'express';
 import config  from './config.js';
-import path    from 'path';
+import path from 'path';
 import fs      from 'fs-extra';
 
 import api from './homebrew.api.js';
@@ -80,9 +80,10 @@ export default async function createApp(vite) {
 
 			const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
-			if(!origin || origin === 'null' || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
+			if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 				callback(null, true);
 			} else {
+				console.log(origin, 'not allowed');
 				callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
 			}
 		},
@@ -437,9 +438,8 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
-
-	const shareEmbedCommon = async(req, res)=>{
-
+	//Share Page
+	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 		const { brew } = req;
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
@@ -462,17 +462,6 @@ export default async function createApp(vite) {
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 		splitTextStyleAndMetadata(req.brew);
-	};
-
-	//Share Page
-	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		await shareEmbedCommon(req,res);
-		return next();
-	}));
-
-	//Embed Page - More work will be done on this later...
-	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		await shareEmbedCommon(req,res);
 		return next();
 	}));
 

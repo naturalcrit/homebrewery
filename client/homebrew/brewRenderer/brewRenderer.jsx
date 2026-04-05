@@ -33,7 +33,7 @@ const INITIAL_CONTENT = dedent`
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
-	<base target=_blank>
+	<base target="_top">
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 
@@ -106,7 +106,6 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
-		showToolbar                : true,
 		...props
 	};
 
@@ -272,6 +271,14 @@ const BrewRenderer = (props)=>{
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
+
+		navigation.addEventListener('navigate', (e)=>{
+			if(e.hashChange && e.destination.sameDocument){
+				const dest = e.destination.url.slice(e.destination.url.indexOf('#'));
+				scrollToHash(dest);
+			}
+		});
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
@@ -301,53 +308,6 @@ const BrewRenderer = (props)=>{
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
-	const toolbarEl = <ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>;
-
-	const brewRenderFrameContents = (
-		<>
-			<div className='brewRenderer'
-				onKeyDown={handleControlKeys}
-				tabIndex={-1}
-			>
-
-				{/* Apply CSS from Style tab and render pages from Markdown tab */}
-				{state.isMounted
-					&&
-					<>
-						{renderedStyle}
-						<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
-							{renderedPages}
-						</div>
-					</>
-				}
-			</div>
-			{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
-		</>
-	);
-
-	const brewRenderFrameWrapper = (
-		<>
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
-				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
-			>
-				{brewRenderFrameContents}
-			</Frame>
-		</>
-	);
-
-	const brewRenderDivWrapper = (
-		<>
-			<div id='BrewRendererFlat'
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
-			>
-				{brewRenderFrameContents}
-			</div>
-		</>
-	);
-
-	if (!props.showToolbar && state.visibility != 'visible') { frameDidMount(); }
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -365,13 +325,32 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			{props.showToolbar ? toolbarEl : ''}
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			{props.showToolbar ? brewRenderFrameWrapper:brewRenderDivWrapper}
-			{state.isMounted &&
-			  <div id='brewRendered'></div>
-			}
+			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				contentDidMount={frameDidMount}
+				onClick={()=>{emitClick();}}
+			>
+				<div className='brewRenderer'
+					onKeyDown={handleControlKeys}
+					tabIndex={-1}
+				>
+
+					{/* Apply CSS from Style tab and render pages from Markdown tab */}
+					{state.isMounted
+						&&
+						<>
+							{renderedStyle}
+							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
+								{renderedPages}
+							</div>
+						</>
+					}
+				</div>
+				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
+			</Frame>
 		</>
 	);
 };

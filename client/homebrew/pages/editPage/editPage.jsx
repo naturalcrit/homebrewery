@@ -362,7 +362,7 @@ const EditPage = (props)=>{
 						{renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
-				<PrintNavItem brew={currentBrew}/>
+				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
 				<ShareNavItem brew={currentBrew} />
