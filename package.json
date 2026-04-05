@@ -39,6 +39,7 @@
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "test:safehtml": "jest tests/html/safeHTML.test.js --verbose",
+    "test:underline": "jest tests/markdown/underline.test.js --verbose --noStackTrace",
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
