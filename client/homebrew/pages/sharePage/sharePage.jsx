@@ -102,7 +102,7 @@ const SharePage = (props)=>{
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{share ? showNav : ''}
+			{share ? showNav : '' }
 			<div className='content'>
 				<BrewRenderer
 					text={brew.text}

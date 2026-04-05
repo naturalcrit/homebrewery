@@ -83,6 +83,7 @@ export default async function createApp(vite) {
 			if(!origin || origin === 'null' || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 				callback(null, true);
 			} else {
+				console.log(origin, 'not allowed');
 				callback(new Error('Not allowed by CORS, if you think this is an error, please contact us'));
 			}
 		},
@@ -437,9 +438,7 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
-
 	const shareEmbedCommon = async(req, res)=>{
-
 		const { brew } = req;
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
@@ -461,18 +460,18 @@ export default async function createApp(vite) {
 		};
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 	};
 
 	//Share Page
 	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		await shareEmbedCommon(req,res);
+		await shareEmbedCommon(req, res);
 		return next();
 	}));
 
 	//Embed Page - More work will be done on this later...
 	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		await shareEmbedCommon(req,res);
+		await shareEmbedCommon(req, res);
 		return next();
 	}));
 

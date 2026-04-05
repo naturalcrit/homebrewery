@@ -34,6 +34,5 @@ export default defineConfig({
 		fs   : {
 			allow : ['.'],
 		},
-		allowedHosts : ['fedora.copy.to']
 	},
 });
