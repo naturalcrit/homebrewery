@@ -85,7 +85,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 	return snippetsText;
 };
 
-const splitTextStyleAndMetadata = (brew)=>{
+const splitTextStyleAndMetadata = async (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('\n```\n\n');

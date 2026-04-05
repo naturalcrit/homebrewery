@@ -472,6 +472,7 @@ export default async function createApp(vite) {
 	//Embed Page - More work will be done on this later...
 	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 		await shareEmbedCommon(req, res);
+		return next();
 	}));
 
 	//Account Page
