@@ -207,6 +207,13 @@ const downloadBlob = (brewContents, fileName)=>{
 
 const scrapeBrewZip = ()=>{
 	const htmlBody = scrapeBrew();
+
+	const fauxDoc = document.createElement('div');
+	fauxDoc.innerHTML = htmlBody;
+	console.log('Should be here!');
+	console.log(fauxDoc.getElementsByTagName('img'));
+	console.log('Should be here!');
+
 	// DO STUFF!
 	const archive = new jszip();
 
