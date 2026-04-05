@@ -106,6 +106,7 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
+		showToolbar                : true,
 		...props
 	};
 
@@ -308,6 +309,54 @@ const BrewRenderer = (props)=>{
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
+	const toolbarEl = <ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>;
+
+	const brewRenderFrameContents = (
+		<>
+			<div className='brewRenderer'
+				onKeyDown={handleControlKeys}
+				tabIndex={-1}
+			>
+
+				{/* Apply CSS from Style tab and render pages from Markdown tab */}
+				{state.isMounted
+					&&
+					<>
+						{renderedStyle}
+						<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
+							{renderedPages}
+						</div>
+					</>
+				}
+			</div>
+			{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
+		</>
+	);
+
+	const brewRenderFrameWrapper = (
+		<>
+			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+				contentDidMount={frameDidMount}
+				onClick={()=>{emitClick();}}
+			>
+				{brewRenderFrameContents}
+			</Frame>
+		</>
+	);
+
+	const brewRenderDivWrapper = (
+		<>
+			<div id='BrewRendererFlat'
+				style={{ width: '100%', height: '100%', visibility: state.visibility }}
+			>
+				{brewRenderFrameContents}
+			</div>
+		</>
+	);
+
+	if(!props.showToolbar && state.visibility != 'visible') { frameDidMount(); }
+
 	return (
 		<>
 			{/*render dummy page while iFrame is mounting.*/}
@@ -325,32 +374,13 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			{props.showToolbar ? toolbarEl : ''}
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
-				style={{ width: '100%', height: '100%', visibility: state.visibility }}
-				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
-			>
-				<div className='brewRenderer'
-					onKeyDown={handleControlKeys}
-					tabIndex={-1}
-				>
-
-					{/* Apply CSS from Style tab and render pages from Markdown tab */}
-					{state.isMounted
-						&&
-						<>
-							{renderedStyle}
-							<div className={`pages ${displayOptions.startOnRight ? 'recto' : 'verso'}	${displayOptions.spread}`} lang={`${props.lang || 'en'}`} style={pagesStyle} ref={pagesRef}>
-								{renderedPages}
-							</div>
-						</>
-					}
-				</div>
-				{headerState ? <HeaderNav ref={pagesRef} /> : <></>}
-			</Frame>
+			{props.showToolbar ? brewRenderFrameWrapper:brewRenderDivWrapper}
+			{state.isMounted &&
+			  <div id='brewRendered'></div>
+			}			
 		</>
 	);
 };

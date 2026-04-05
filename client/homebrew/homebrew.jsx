@@ -9,6 +9,7 @@ import HomePage    from './pages/homePage/homePage.jsx';
 import EditPage    from './pages/editPage/editPage.jsx';
 import UserPage    from './pages/userPage/userPage.jsx';
 import SharePage   from './pages/sharePage/sharePage.jsx';
+import EmbedPage   from './pages/embedPage/embedPage.jsx';
 import NewPage     from './pages/newPage/newPage.jsx';
 import ErrorPage   from './pages/errorPage/errorPage.jsx';
 import VaultPage   from './pages/vaultPage/vaultPage.jsx';
@@ -70,7 +71,8 @@ const Homebrew = (props)=>{
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
+					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} share={true} />} />
+					<Route path='/embed/:id' element={<WithRoute el={EmbedPage} brew={brew} share={false} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
 					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
