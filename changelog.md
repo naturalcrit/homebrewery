@@ -85,13 +85,39 @@ pre {
 }
 
 .page .df {
-  font-size: 2em;
-  vertical-align: middle;
+	font-size: 2em;
+	vertical-align: middle;
 }
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Saturday 4/04/2026 - v3.21.0
+
+{{taskList
+##### Gazook89
+* [x] Allow custom {{openSans **:fas_table_list: SNIPPETS**}} to be inserted mid-line
+
+##### abquintic
+* [x] Move example snippet images out of imgur (for folks without imgur access)
+
+##### 5e-Cleric
+* [x] Add auto-suggest to tag entry input box
+* [x] Replace all example artwork with
+* [x] Added tooltips to the {{openSans :fas_circle_info: **Properties**}} menu
+* [x] Removed {{openSans **SYSTEMS**}} checkboxes from {{openSans :fas_circle_info: **Properties**}} menu; instead {{openSans **TAGS**}} should be used for this purpose
+* [x] Replace all AI-generated art with public domain art
+* [x] Major backend refactor to use Vite
+
+##### A1Asriel (new contributor!)
+* [x] Add fix for column breaks on Firefox 
+
+Fixes issues [#543](https://github.com/naturalcrit/homebrewery/issues/543), [#2473](https://github.com/naturalcrit/homebrewery/issues/2473), [#3712](https://github.com/naturalcrit/homebrewery/issues/3712)
+
+##### G-Ambatte, abquintic, 5e-Cleric
+* [x] Multiple other backend fixes and refactors
+}}
 
 ### Friday 1/11/2026 - v3.20.1
 
