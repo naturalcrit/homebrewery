@@ -33,7 +33,7 @@ const INITIAL_CONTENT = dedent`
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
-	<base target=_blank>
+	<base target="_top">
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 
@@ -271,6 +271,13 @@ const BrewRenderer = (props)=>{
 
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
+
+		navigation.addEventListener('navigate', (e)=>{
+			if(e.hashChange && e.destination.sameDocument){
+				const dest = e.destination.url.slice(e.destination.url.indexOf('#'));
+				scrollToHash(dest);
+			}
+		});
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
