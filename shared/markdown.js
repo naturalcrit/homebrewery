@@ -360,7 +360,7 @@ const tableTerminators = [
 Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
 // If V4
-Marked.use(MarkedUnderline());
+Marked.use(MarkedUnderline({ justUnderline: true }));
 // If V4
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
