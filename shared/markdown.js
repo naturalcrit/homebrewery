@@ -14,6 +14,10 @@ import { markedVariables,
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
+// If V4
+import MarkedUnderline from 'marked-underline';
+// If V4
+
 
 //Icon fonts included so they can appear in emoji autosuggest dropdown
 import diceFont      from '../themes/fonts/iconFonts/diceFont.js';
@@ -355,6 +359,9 @@ const tableTerminators = [
 
 Marked.use(markedVariables());
 Marked.use(MarkedDefinitionLists());
+// If V4
+Marked.use(MarkedUnderline({ justUnderline: true }));
+// If V4
 Marked.use({ extensions: [forcedParagraphBreaks, mustacheSpans, mustacheDivs, mustacheInjectInline] });
 Marked.use(mustacheInjectBlock);
 Marked.use(MarkedAlignedParagraphs());

@@ -196,7 +196,7 @@ const CodeEditor = createReactClass({
 	},
 
 	isBrewText : function() {
-		if(this.isGFM()) return true;
+		if(this.props.tab === 'brewText') return true;
 		return false;
 	},
 
