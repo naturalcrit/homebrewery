@@ -16,6 +16,7 @@ const CodeEditor = createReactClass({
 			value         : '',
 			wrap          : true,
 			onChange      : ()=>{},
+			onReady : ()=>{},
 			enableFolding : true,
 			editorTheme   : 'default'
 		};
@@ -177,7 +178,7 @@ const CodeEditor = createReactClass({
 			// 	return el;
 			// }
 		});
-
+		this.props.onReady?.(this.codeMirror);
 		// Add custom behaviors (auto-close curlies and auto-complete emojis)
 		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
 		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
@@ -189,7 +190,8 @@ const CodeEditor = createReactClass({
 
 	// Use for GFM tabs that use common hot-keys
 	isGFM : function() {
-		if((this.isGFM()) || (this.props.tab === 'brewSnippets')) return true;
+		console.log(this.props.tab);
+		if( this.props.tab === 'brewText' || this.props.tab === 'brewSnippets') return true;
 		return false;
 	},
 
@@ -226,7 +228,9 @@ const CodeEditor = createReactClass({
 	},
 
 	makeBold : function() {
+		console.log('hello');
 		if(!this.isGFM()) return;
+		console.log(this.isGFM());
 		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '**' && selection.slice(-2) === '**';
 		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `**${selection}**`, 'around');
 		if(selection.length === 0){

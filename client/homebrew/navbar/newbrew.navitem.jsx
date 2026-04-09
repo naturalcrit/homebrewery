@@ -24,7 +24,7 @@ const NewBrew = ()=>{
 				localStorage.setItem(BREWKEY, newBrew.text);
 				localStorage.setItem(STYLEKEY, newBrew.style);
 				localStorage.setItem(METAKEY, JSON.stringify(
-					_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])
+					_.pick(newBrew, ['title', 'description', 'tags', 'renderer', 'theme', 'lang'])
 				));
 				window.location.href = '/new';
 				return;

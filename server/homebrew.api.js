@@ -31,6 +31,27 @@ const isStaticTheme = (renderer, themeName)=>{
 // 	});
 // };
 
+
+const migrateSystemsToTags = (brew) => {
+	if (!('systems' in brew)) return brew;
+
+	if (!Array.isArray(brew.systems) || brew.systems.length === 0) {
+		brew.systems = undefined;
+		return brew;
+	}
+	const systemMap = {
+		'5e': 'system:D&D 5e',
+		'4e': 'system:D&D 4e',
+		'3.5e': 'system:D&D 3.5e',
+		'Pathfinder': 'system:Pathfinder 2e'
+	};
+	const systemTags = brew.systems.map(s => systemMap[s]);
+	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
+
+	brew.systems = undefined;
+	return brew;
+};
+
 const MAX_TITLE_LENGTH = 100;
 
 const api = {
@@ -167,7 +188,10 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			req.brew = stub;
+			
+
+			const fixedStub = migrateSystemsToTags(stub);
+			req.brew = fixedStub;
 			next();
 		};
 	},
@@ -193,7 +217,7 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
@@ -392,6 +416,9 @@ const api = {
 		}
 
 		let brew         = _.assign(brewFromServer, brewFromClient);
+
+		migrateSystemsToTags(brew);
+
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);

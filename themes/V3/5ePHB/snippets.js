@@ -143,8 +143,8 @@ export default [
 				gen  : function(){
 					return dedent`
 						{{artist,top:90px,right:30px
-						##### Starry Night
-						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						##### Bird with autumn foliage
+						[by L. Prang & Co.](https://www.loc.gov/resource/pga.14148)
 						}}
 						\n`;
 				},

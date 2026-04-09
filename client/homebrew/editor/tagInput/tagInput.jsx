@@ -2,7 +2,7 @@ import './tagInput.less';
 import React, { useState, useEffect } from 'react';
 import Combobox from '../../../components/combobox.jsx';
 
-import tagSuggestionList from './curatedTagSuggestionList.js';
+import { tagSuggestionList, canonizationList } from './curatedTagSuggestionList.js';
 
 const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, placeholder = '', smallText = '', onChange })=>{
 	const [tagList, setTagList] = useState(
@@ -35,20 +35,11 @@ const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, p
 		});
 	}, [tagList]);
 
-	// substrings to be normalized to the first value on the array
-	const duplicateGroups = [
-		['5e 2024', '5.5e', '5e\'24', '5.24', '5e24', '5.5'],
-		['5e', '5th Edition'],
-		['Dungeons & Dragons', 'Dungeons and Dragons', 'Dungeons n dragons'],
-		['D&D', 'DnD', 'dnd', 'Dnd', 'dnD', 'd&d', 'd&D', 'D&d'],
-		['P2e', 'p2e', 'P2E', 'Pathfinder 2e'],
-	];
-
 	const normalizeValue = (input)=>{
 		const lowerInput = input.toLowerCase();
 		let normalizedTag = input;
 
-		for (const group of duplicateGroups) {
+		for (const group of canonizationList) {
 			for (const tag of group) {
 				if(!tag) continue;
 
