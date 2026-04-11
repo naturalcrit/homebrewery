@@ -390,13 +390,7 @@ describe('Tests for api', ()=>{
 				tags        : ['something', 'fun'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345',
-    			bleed       : {
-								top    : '.125in',
-    							bottom : '.125in',
-    							left   : '.125in',
-    							right  : '.125in'
-							  }
+				googleId    : '12345'
 			});
 
 			expect(result).toEqual(`\`\`\`metadata
