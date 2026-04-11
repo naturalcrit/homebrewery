@@ -407,10 +407,10 @@ bleed:
   left: .125in
   right: .125in
 safetySpace:
-  top: .125in
-  bottom: .125in
-  left: .125in
-  right: .125in
+  top: .25in
+  bottom: .25in
+  outer: .25in
+  inner: .5in
 trimSize:
   width: 8.5in
   height: 11in
@@ -450,10 +450,10 @@ bleed:
   left: .125in
   right: .125in
 safetySpace:
-  top: .125in
-  bottom: .125in
-  left: .125in
-  right: .125in
+  top: .25in
+  bottom: .25in
+  outer: .25in
+  inner: .5in
 trimSize:
   width: 8.5in
   height: 11in

@@ -230,10 +230,10 @@ const api = {
 
 		// Copy Required Safe Space or Use defaults
 		metadata.safetySpace = {
-			top    : brew?.safetySpace?.top || '.125in',
-			bottom : brew?.safetySpace?.bottom || '.125in',
-			left   : brew?.safetySpace?.left || '.125in',
-			right  : brew?.safetySpace?.right || '.125in',
+			top    : brew?.safetySpace?.top || '.25in',
+			bottom : brew?.safetySpace?.bottom || '.25in',
+			outer  : brew?.safetySpace?.outer || '.25in',
+			inner  : brew?.safetySpace?.inner || '.5in',
 		};
 
 		// Set brew paper trim size or default to US Letter

@@ -104,10 +104,10 @@ const splitTextStyleAndMetadata = (brew)=>{
 
 		// Copy Required Safe Space or Use defaults
 		brew.safetySpace = {
-			top    : _.pick(metadata, ['safetySpace']).top || '.125in',
-			bottom : _.pick(metadata, ['safetySpace']).bottom || '.125in',
-			left   : _.pick(metadata, ['safetySpace']).left || '.125in',
-			right  : _.pick(metadata, ['safetySpace']).right || '.125in',
+			top    : _.pick(metadata, ['safetySpace']).top || '.25in',
+			bottom : _.pick(metadata, ['safetySpace']).bottom || '.25in',
+			outer  : _.pick(metadata, ['safetySpace']).outer || '.25in',
+			inner  : _.pick(metadata, ['safetySpace']).inner || '.5in',
 		};
 
 		// Set brew paper trim size or default to US Letter
@@ -125,7 +125,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 
 		// Set Authors legal names or to empty.
 		brew.legalAuthors = _.pick(metadata, ['legalAuthors']) || '';
-		
+
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
