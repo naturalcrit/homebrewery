@@ -93,6 +93,39 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+
+		// Copy Required Bleed Space or Use defaults
+		brew.bleed = {
+			top    : _.pick(metadata, ['bleed']).top || '.125in',
+			bottom : _.pick(metadata, ['bleed']).bottom || '.125in',
+			left   : _.pick(metadata, ['bleed']).left || '.125in',
+			right  : _.pick(metadata, ['bleed']).right || '.125in',
+		};
+
+		// Copy Required Safe Space or Use defaults
+		brew.safetySpace = {
+			top    : _.pick(metadata, ['safetySpace']).top || '.125in',
+			bottom : _.pick(metadata, ['safetySpace']).bottom || '.125in',
+			left   : _.pick(metadata, ['safetySpace']).left || '.125in',
+			right  : _.pick(metadata, ['safetySpace']).right || '.125in',
+		};
+
+		// Set brew paper trim size or default to US Letter
+		brew.trimSize  = {
+			width  : _.pick(metadata, ['trimSize']).width || '8.5in',
+			height : _.pick(metadata, ['trimSize']).height || '11in',
+		};
+
+		// Set Column specs or use defaults
+		brew.columns = _.pick(metadata, ['columns']) || '2';
+		brew.columnGutter = _.pick(metadata, ['columnGutter']) || '.125in';
+
+		// Set License or set to Unlicensed
+		brew.license = _.pick(metadata, ['license']) || 'None';
+
+		// Set Authors legal names or to empty.
+		brew.legalAuthors = _.pick(metadata, ['legalAuthors']) || '';
+		
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
