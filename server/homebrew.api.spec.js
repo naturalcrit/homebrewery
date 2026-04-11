@@ -390,7 +390,13 @@ describe('Tests for api', ()=>{
 				tags        : ['something', 'fun'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345'
+				googleId    : '12345',
+    			bleed       : {
+								top    : '.125in',
+    							bottom : '.125in',
+    							left   : '.125in',
+    							right  : '.125in'
+							  }
 			});
 
 			expect(result).toEqual(`\`\`\`metadata
@@ -401,6 +407,23 @@ tags:
   - fun
 renderer: v3
 theme: phb
+bleed:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+safetySpace:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+trimSize:
+  width: 8.5in
+  height: 11in
+columns: '2'
+columnGutter: .125in
+license: None
+legalAuthors: ''
 
 \`\`\`
 
@@ -416,7 +439,7 @@ brew`);
 				tags        : ['something', 'fun'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345'
+				googleId    : '12345',
 			});
 
 			expect(result).toEqual(`\`\`\`metadata
@@ -427,6 +450,23 @@ tags:
   - fun
 renderer: v3
 theme: phb
+bleed:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+safetySpace:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+trimSize:
+  width: 8.5in
+  height: 11in
+columns: '2'
+columnGutter: .125in
+license: None
+legalAuthors: ''
 
 \`\`\`
 
@@ -537,16 +577,16 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				tags        : [],
@@ -595,28 +635,28 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
-				shareId     : expect.any(String),
-				googleId    : expect.any(String),
-				style       : undefined,
-				tags        : [],
-				text        : undefined,
-				textBin     : undefined,
-				theme       : '5ePHB',
-				thumbnail   : '',
-				title       : 'asdf',
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
+				shareId      : expect.any(String),
+				googleId     : expect.any(String),
+				style        : undefined,
+				tags         : [],
+				text         : undefined,
+				textBin      : undefined,
+				theme        : '5ePHB',
+				thumbnail    : '',
+				title        : 'asdf',
+				trashed      : false,
+				updatedAt    : undefined,
+				views        : 0
 			});
 		});
 	});
