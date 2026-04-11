@@ -95,36 +95,37 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 
 		// Copy Required Bleed Space or Use defaults
+
 		brew.bleed = {
-			top    : _.pick(metadata, ['bleed']).top || '.125in',
-			bottom : _.pick(metadata, ['bleed']).bottom || '.125in',
-			left   : _.pick(metadata, ['bleed']).left || '.125in',
-			right  : _.pick(metadata, ['bleed']).right || '.125in',
+			top    : _.pick(metadata, ['bleed']).bleed?.top || '.125in',
+			bottom : _.pick(metadata, ['bleed']).bleed?.bottom || '.125in',
+			left   : _.pick(metadata, ['bleed']).bleed?.left || '.125in',
+			right  : _.pick(metadata, ['bleed']).bleed?.right || '.125in',
 		};
 
 		// Copy Required Safe Space or Use defaults
 		brew.safetySpace = {
-			top    : _.pick(metadata, ['safetySpace']).top || '.25in',
-			bottom : _.pick(metadata, ['safetySpace']).bottom || '.25in',
-			outer  : _.pick(metadata, ['safetySpace']).outer || '.25in',
-			inner  : _.pick(metadata, ['safetySpace']).inner || '.5in',
+			top    : _.pick(metadata, ['safetySpace']).safetySpace?.top || '.25in',
+			bottom : _.pick(metadata, ['safetySpace']).safetySpace?.bottom || '.25in',
+			outer  : _.pick(metadata, ['safetySpace']).safetySpace?.outer || '.25in',
+			inner  : _.pick(metadata, ['safetySpace']).safetySpace?.inner || '.5in',
 		};
 
 		// Set brew paper trim size or default to US Letter
 		brew.trimSize  = {
-			width  : _.pick(metadata, ['trimSize']).width || '8.5in',
-			height : _.pick(metadata, ['trimSize']).height || '11in',
+			width  : _.pick(metadata, ['trimSize']).trimSize?.width || '8.5in',
+			height : _.pick(metadata, ['trimSize']).trimSize?.height || '11in',
 		};
 
 		// Set Column specs or use defaults
-		brew.columns = _.pick(metadata, ['columns']) || '2';
-		brew.columnGutter = _.pick(metadata, ['columnGutter']) || '.125in';
+		brew.columns = metadata?.columns || 2;
+		brew.columnGutter = metadata?.columnGutter || '.125in';
 
 		// Set License or set to Unlicensed
-		brew.license = _.pick(metadata, ['license']) || 'None';
+		brew.license = metadata?.license || 'None';
 
 		// Set Authors legal names or to empty.
-		brew.legalAuthors = _.pick(metadata, ['legalAuthors']) || '';
+		brew.legalAuthors = metadata.legalAuthors || '';
 
 		brew.text = brew.text.slice(index + 6);
 	}
