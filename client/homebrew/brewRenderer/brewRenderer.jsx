@@ -220,7 +220,8 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const renderPages = ()=>{
+	const renderPages = (forceRender = false)=>{
+
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
@@ -232,7 +233,7 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
@@ -280,7 +281,7 @@ const BrewRenderer = (props)=>{
 		});
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			renderPages(); //Make sure page is renderable before showing
+			renderPages(true); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
 				isMounted  : true,
