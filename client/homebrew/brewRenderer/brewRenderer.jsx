@@ -220,7 +220,7 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const renderPages = (forceRender = false)=>{
+	const renderPages = (checkHoists = false)=>{
 
 		if(props.errors && props.errors.length)
 			return renderedPages;
@@ -233,6 +233,7 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
+			const forceRender = checkHoists && (page.match(/([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g));
 			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
