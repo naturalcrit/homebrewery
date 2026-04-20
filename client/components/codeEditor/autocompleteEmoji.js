@@ -13,7 +13,7 @@ const emojis = {
 };
 
 const emojiCompletionList = (context)=>{
-	const word = context.matchBefore(/:[^\s:]*/);
+	const word = context.matchBefore(/:[^\s:]+/);
 	if(!word) return null;
 
 	const line = context.state.doc.lineAt(context.pos);
@@ -49,8 +49,9 @@ const emojiCompletionList = (context)=>{
 	//Info is the tooltip
 
 	return {
-		from : word.from + 1,
+		from   : word.from + 1,
 		options,
+		filter : false,
 	};
 };
 

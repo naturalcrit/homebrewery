@@ -11,7 +11,21 @@ import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+import * as themesImport from '@uiw/codemirror-themes-all';
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+
+const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
+
+const EditorThemes = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+	!name.endsWith('Init') &&
+	!name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+
+//const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 //const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
@@ -29,6 +43,7 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
 let isJumping = false;
+let jumpSource = null;
 
 const Editor = createReactClass({
 	displayName     : 'Editor',
@@ -71,14 +86,15 @@ const Editor = createReactClass({
 
 	componentDidMount : function() {
 
-		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		const brewRenderer = document.getElementById('BrewRenderer');
+		brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-		if(editorTheme) {
-			this.setState({
-				editorTheme : editorTheme
-			});
+		if(editorTheme && EditorThemes.includes(editorTheme)) {
+  			this.setState({ editorTheme });
+		} else {
+  			this.setState({ editorTheme: 'default' });
 		}
 		const snippetBar = document.querySelector('.editor > .snippetBar');
 		if(!snippetBar) return;
@@ -126,22 +142,16 @@ const Editor = createReactClass({
 		}
 	},
 
-	updateCurrentCursorPage : function(lineNumber) {
-		const lines = this.props.brew.text.split('\n').slice(0, lineNumber);
-		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
-		this.props.onCursorPageChange(currentPage);
+	updateCurrentCursorPage : function(pageNumber) {
+		this.props.onCursorPageChange(pageNumber);
 	},
 
-	updateCurrentViewPage : function(topLine) {
-		const lines = this.props.brew.text.split('\n').slice(0, topLine);
-		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
-		this.props.onViewPageChange(currentPage);
+	updateCurrentViewPage : function(pageNumber) {
+		this.props.onViewPageChange(pageNumber);
 	},
 
 	handleInject : function(injectText){
-		this.codeEditor.current?.injectText(injectText, false);
+		this.codeEditor.current?.injectText(injectText);
 	},
 
 	handleViewChange : function(newView){
@@ -150,12 +160,12 @@ const Editor = createReactClass({
 		this.setState({
 			view : newView
 		}, ()=>{
-			this.codeEditor.current?.codeMirror?.focus();
+			this.codeEditor.current?.focus();
 		});
 	},
 
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || !this.isText() || isJumping)
+		if(!window || !this.isText() || isJumping || jumpSource === 'source')
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
@@ -168,11 +178,13 @@ const Editor = createReactClass({
 			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
+				jumpSource = null;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
 			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 		};
 
 		isJumping = true;
+		jumpSource = 'brew';
 		checkIfScrollComplete();
 		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
 
@@ -196,46 +208,19 @@ const Editor = createReactClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText() || isJumping)
+		if(!this.isText() || isJumping || jumpSource === 'brew')
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
-		const targetLine = textString.match('\n') ? textString.split('\n').length : 1;
-
 		const editor = this.codeEditor.current;
+		if(!editor) return;
+		jumpSource = 'source';
 
-		let currentY = editor.getScrollTop();
-		const targetY  = editor.getLineTop(targetLine);
-
-		let scrollingTimeout;
-		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
-			scrollingTimeout = setTimeout(()=>{
-				isJumping = false;
-			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
-		};
-
-		isJumping = true;
-		checkIfScrollComplete();
-
-		if(smooth) {
-			//Scroll 1/10 of the way every 10ms until 1px off.
-			const incrementalScroll = setInterval(()=>{
-				currentY += (targetY - currentY) / 10;
-				editor.scrollToY(currentY);
-
-				if(Math.abs(targetY - currentY) < 1) {
-					editor.scrollToY(targetY);
-					editor.setCursorToLine(targetLine);
-					clearInterval(incrementalScroll);
-				}
-			}, 10);
-		} else {
-			editor.scrollToY(targetY);
-			editor.setCursorToLine(targetLine);
-		}
+		editor.scrollToPage(targetPage);
+		setTimeout(()=>{
+			jumpSource = null;
+		}, 200);
 	},
+
 	//Called when there are changes to the editor's dimensions
 	update : function(){},
 
@@ -261,12 +246,11 @@ const Editor = createReactClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onBrewChange('text')}
-					onCursorChange={(line)=>this.updateCurrentCursorPage(line)}
-					onViewChange={(line)=>this.updateCurrentViewPage(line)}
+					onCursorChange={(page)=>this.updateCurrentCursorPage(page)}
+					onViewChange={(page)=>this.updateCurrentViewPage(page)}
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
-					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isStyle()){
@@ -278,19 +262,16 @@ const Editor = createReactClass({
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onBrewChange('style')}
-					enableFolding={true}
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
-					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }} />
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isMeta()){
 			return <>
 				<CodeEditor key='codeEditor'
 					view={this.state.view}
-					style={{ display: 'none' }}
-					rerenderParent={this.rerenderParent} />
+					style={{ display: 'none' }}/>
 				<MetadataEditor
 					metadata={this.props.brew}
 					themeBundle={this.props.themeBundle}
@@ -313,7 +294,7 @@ const Editor = createReactClass({
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - 25px)` }} />
+					style={{  height: `calc(100% - 25px)` }}/>
 			</>;
 		}
 	},
@@ -330,13 +311,13 @@ const Editor = createReactClass({
 		return this.codeEditor.current?.undo();
 	},
 
-foldCode: function() {
-    return this.codeEditor.current?.foldAll();
-},
+	foldCode : function() {
+    	return this.codeEditor.current?.foldAll();
+	},
 
-unfoldCode: function() {
-    return this.codeEditor.current?.unfoldAll();
-},
+	unfoldCode : function() {
+		return this.codeEditor.current?.unfoldAll();
+	},
 	render : function(){
 		return (
 			<div className='editor' ref={this.editor}>

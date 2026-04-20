@@ -11,22 +11,21 @@ import {
 	scrollPastEnd,
 	Decoration,
 	ViewPlugin,
-	WidgetType,
 	drawSelection,
 	dropCursor,
 } from '@codemirror/view';
-import { EditorState, Compartment } from '@codemirror/state';
+import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
 import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, syntaxHighlighting } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
-import { css, cssLanguage } from '@codemirror/lang-css';
+import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
 import { autocompleteEmoji } from './autocompleteEmoji.js';
 import { searchKeymap, search } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
 
-const customClose = closeBrackets({ brackets: ['()', '[]', '{{}}'] });
+const autoCloseBrackets = closeBrackets({ brackets: ['()', '[]', '{{}}'] });
 
 import * as themesImport from '@uiw/codemirror-themes-all';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
@@ -36,10 +35,12 @@ const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-import customKeymap from './customKeyMap.js';
-import pageFoldExtension from './customFolding.js';
+import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
+import foldOnPages from './customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
+
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 
 const createHighlightPlugin = (renderer, tab)=>{
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
@@ -84,7 +85,7 @@ const createHighlightPlugin = (renderer, tab)=>{
 						}
 						if(tok.type === 'snippetLine' && tab === 'brewSnippets') {
 							snippetCount++;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
+							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
 						}
 					}
 				});
@@ -97,17 +98,45 @@ const createHighlightPlugin = (renderer, tab)=>{
 	);
 };
 
+const setProgrammaticCursorLine = StateEffect.define();
+
+const programmaticCursorLineField = StateField.define({
+	create() {
+		return Decoration.none;
+	},
+	update(decorations, transitionState) {
+		//deco is the decoratiions object
+		//tr is the transition state object, tr.effects is an array of stateEffects
+		//seems to be the easiest way of setting a class programatically only when called
+		for (const effects of transitionState.effects) {
+			if(effects.is(setProgrammaticCursorLine)) {
+				const pos = effects.value;
+				if(pos == null) return Decoration.none;
+				const line = transitionState.state.doc.lineAt(pos);
+
+				return Decoration.set([
+					Decoration.line({
+						class : 'sourceMoveFlash'
+					}).range(line.from)
+				]);
+			}
+		}
+		return decorations;
+	},
+	provide : (decorationSet)=>EditorView.decorations.from(decorationSet)
+});
+
 const CodeEditor = forwardRef(
 	(
 		{
+			language = '',
+			tab = 'brewText',
+			view,
 			value = '',
 			onChange = ()=>{},
 			onCursorChange = ()=>{},
 			onViewChange = ()=>{},
-			language = '',
-			tab = 'brewText',
 			editorTheme = 'default',
-			view,
 			style,
 			renderer,
 			...props
@@ -119,22 +148,44 @@ const CodeEditor = forwardRef(
 		const docsRef = useRef({});
 		const prevTabRef = useRef(tab);
 
+		const pageMap = useRef([]);
+
+		const recomputePages = (doc)=>{
+			const pages = [0];
+			const text = doc.toString();
+			let offset = 0;
+
+			for (const line of text.split('\n')) {
+				if(PAGEBREAK_REGEX_V3.test(line)) {
+					pages.push(offset);
+				}
+				offset += line.length + 1;
+			}
+
+			pageMap.current = pages;
+		};
+
+		const findPageFromPos = (pos)=>{
+			const pages = pageMap.current;
+			let page = 1;
+
+			for (let i = 1; i < pages.length; i++) {
+				if(pos >= pages[i]) page = i + 1;
+			}
+
+			return page;
+		};
+
 		const createExtensions = ({ onChange, language, editorTheme })=>{
 			const setEventListeners = EditorView.updateListener.of((update)=>{
 				if(update.docChanged) {
+					recomputePages(update.state.doc);
 					onChange(update.state.doc.toString());
 				}
 				if(update.selectionSet) {
 					const pos = update.state.selection.main.head;
-					const line = update.state.doc.lineAt(pos).number;
-
-					onCursorChange(line);
-				}
-				if(update.viewportChanged) {
-					const { from } = update.view.viewport;
-					const line = update.state.doc.lineAt(from).number;
-
-					onViewChange(line);
+					const page = findPageFromPos(pos);
+					onCursorChange(page);
 				}
 			});
 
@@ -145,34 +196,42 @@ const CodeEditor = forwardRef(
 			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
 
 			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
-			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[0];
+			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
 			return [
-				history(), //allows for undo and redo
-				setEventListeners,
 				EditorView.lineWrapping,
-				scrollPastEnd(),
+				setEventListeners,
 				languageExtension,
+				autoCloseBrackets,
 				lineNumbers(),
-				pageFoldExtension,
+				scrollPastEnd(),
+				search(),
+				history(), //allows for undo and redo
+				...(tab !== 'brewStyles' ? [autocompleteEmoji] : []),
 
+				//folding
+				foldOnPages,
 				foldGutter({
 					openText   : '▾',
 					closedText : '▸'
 				}),
 
-				highlightActiveLine(),
-				highlightActiveLineGutter(),
+				//highlights
 				highlightCompartment.of([customHighlightPlugin, highlightExtension]),
 				themeCompartment.of(themeExtension),
-				...(tab !== 'brewStyles' ? [autocompleteEmoji] : []),
-				search(),
+				highlightActiveLine(),
+				highlightActiveLineGutter(),
+
+				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
-				customKeymap,
+				generalKeymap,
+				...(tab !== 'brewStyles' ? [markdownKeymap] : []),
+
+				//multiple cursors and selections
 				drawSelection(),
 				EditorState.allowMultipleSelections.of(true),
-				customClose,
 				dropCursor(),
+				programmaticCursorLineField,
 			];
 		};
 
@@ -184,14 +243,40 @@ const CodeEditor = forwardRef(
 				extensions : createExtensions({ onChange, language, editorTheme }),
 			});
 
+			recomputePages(state.doc);
+
 			viewRef.current = new EditorView({
 				state,
 				parent : editorRef.current,
 			});
 
+			const view = viewRef.current;
+
+			let ticking = false;
+
+			const handleScroll = ()=>{
+				if(ticking) return;
+
+				ticking = true;
+				requestAnimationFrame(()=>{
+					const top = view.scrollDOM.scrollTop;
+					const block = view.lineBlockAtHeight(top);
+
+					const page = findPageFromPos(block.from); // CHANGED
+					onViewChange(page);
+
+					ticking = false;
+				});
+			};
+
+			view.scrollDOM.addEventListener('scroll', handleScroll);
+
 			docsRef.current[tab] = state;
 
-			return ()=>viewRef.current?.destroy();
+			return ()=>{
+				view.scrollDOM.removeEventListener('scroll', handleScroll);
+				viewRef.current?.destroy();
+			};
 		}, []);
 
 		useEffect(()=>{
@@ -215,6 +300,7 @@ const CodeEditor = forwardRef(
 				view.setState(nextState);
 				prevTabRef.current = tab;
 			}
+			view.focus();
 		}, [tab]);
 
 		useEffect(()=>{
@@ -234,13 +320,15 @@ const CodeEditor = forwardRef(
 			const view = viewRef.current;
 			if(!view) return;
 
-			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : [];
+			const themeExtension = Array.isArray(themes[editorTheme])? themes[editorTheme]: themes[editorTheme] || themes['default'];
 
 			view.dispatch({
 				effects : themeCompartment.reconfigure(themeExtension),
 			});
 		}, [editorTheme]);
+
 		useEffect(()=>{
+			//rebuild syntax highlight when changing tab or renderer
 			const view = viewRef.current;
 			if(!view) return;
 
@@ -256,59 +344,36 @@ const CodeEditor = forwardRef(
 		}, [renderer, tab]);
 
 		useImperativeHandle(ref, ()=>({
-			getValue : ()=>viewRef.current.state.doc.toString(),
-
-			setValue : (text)=>{
-				const view = viewRef.current;
-				view.dispatch({
-					changes : { from: 0, to: view.state.doc.length, insert: text },
-				});
-			},
 
 			injectText : (text)=>{
 				const view = viewRef.current;
-				const changes = view.state.selection.ranges.map((range)=>({
-					from   : range.from,
-					to     : range.to,
-					insert : text
-				}));
 
-				const newRanges = view.state.selection.ranges.map((range)=>({
-					anchor : range.from + text.length
-				}));
 
-				view.dispatch({
-					changes,
-					selection : { ranges: newRanges }
-				});
-
+				view.dispatch(
+					view.state.replaceSelection(text)
+				);
 				view.focus();
 			},
 			getCursorPosition : ()=>viewRef.current.state.selection.main.head,
 
-			getScrollTop : ()=>viewRef.current.scrollDOM.scrollTop,
-
-			scrollToY : (y)=>{
-				viewRef.current.scrollDOM.scrollTo({ top: y });
-			},
-
-			getLineTop : (lineNumber)=>{
+			scrollToPage : (pageNumber, smooth = true)=>{
 				const view = viewRef.current;
-				if(!view) return 0;
+				if(!view) return;
 
-				const line = view.state.doc.line(lineNumber);
-				return view.coordsAtPos(line.from)?.top ?? 0;
-			},
-
-			setCursorToLine : (lineNumber)=>{
-				const view = viewRef.current;
-				const line = view.state.doc.line(lineNumber);
+				const pos = pageMap.current[pageNumber - 1] ?? 0;
 
 				view.dispatch({
-					selection : { anchor: line.from }
+					selection : { anchor: pos },
+					effects   : [setProgrammaticCursorLine.of(pos), EditorView.scrollIntoView(pos, { y: 'start' })],
 				});
 
 				view.focus();
+
+				setTimeout(()=>{
+					view.dispatch({
+						effects : setProgrammaticCursorLine.of(null)
+					});
+				}, 400);
 			},
 
 			undo : ()=>undo(viewRef.current),

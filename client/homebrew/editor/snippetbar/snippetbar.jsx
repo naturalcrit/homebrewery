@@ -23,7 +23,6 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-//import EditorThemes from '../../../../build/homebrew/codeMirror/editorThemes.json';
 import * as themesImport from '@uiw/codemirror-themes-all';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';

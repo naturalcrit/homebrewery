@@ -26,6 +26,8 @@ export function tokenizeCustomMarkdown(text) {
 	const tokens = [];
 	const lines = text.split('\n');
 
+	//tokens without a `from` or `to` are interpreted by the custom plugin as line tokens
+
 	lines.forEach((lineText, lineNumber)=>{
 		// --- Page / snippet lines ---
 		if(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m.test(lineText)) tokens.push({ line: lineNumber, type: customTags.pageLine });
@@ -79,8 +81,8 @@ export function tokenizeCustomMarkdown(text) {
 			}
 		}
 
-		const singleLineRegex = /^([^:\n]*\S)(\s*)(::)([^\n]*)$/dmy;
-
+		// --- single line def list ---
+		const singleLineRegex = /^(?=.*[^:])(.+?)(\s*)(::)([^\n]*)$/dmy;
 		const match = singleLineRegex.exec(lineText);
 
 		if(match) {
@@ -127,7 +129,7 @@ export function tokenizeCustomMarkdown(text) {
 			return;
 		}
 
-		// multiline def list
+		//  --- multiline def list ---
 		if(!/^::/.test(lines[lineNumber]) && lineNumber + 1 < lines.length && /^::/.test(lines[lineNumber + 1])) {
 			const startLine = lineNumber;
 			const defs = [];
@@ -187,8 +189,8 @@ export function tokenizeCustomMarkdown(text) {
 			while ((match = injectionRegex.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
-					from : match.index +1,
-					to   : match.index + match[1].length +1,
+					from : match.index,
+					to   : match.index + match[1].length,
 					type : customTags.injection,
 				});
 			}

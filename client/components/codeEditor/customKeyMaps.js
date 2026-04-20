@@ -1,6 +1,6 @@
 /* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
-import { undo, redo } from '@codemirror/commands';
+import { undo, redo, indentMore } from '@codemirror/commands';
 import * as prettier from "prettier/standalone";
 import * as postcssPlugin from "prettier/plugins/postcss";
 
@@ -20,27 +20,6 @@ async function formatCSS(view) {
     }
   });
 }
-
-
-const insertTabAtCursor = (view)=>{
-	const { from } = view.state.selection.main;
-	view.dispatch({
-		changes   : { from, insert: '	' },
-		selection : { anchor: from + 1 }
-	});
-	return true;
-};
-
-const indentMore = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const lines = [];
-	for (let l = view.state.doc.lineAt(from).number; l <= view.state.doc.lineAt(to).number; l++) {
-		const line = view.state.doc.line(l);
-		lines.push({ from: line.from, to: line.from, insert: '  ' }); // 2 spaces for tab
-	}
-	view.dispatch({ changes: lines });
-	return true;
-};
 
 const indentLess = (view)=>{
 	const { from, to } = view.state.selection.main;
@@ -227,8 +206,13 @@ const newPage = (view)=>{
 	return true;
 };
 
-export default keymap.of([
-	{ key: 'Tab', run: insertTabAtCursor },
+export const generalKeymap = keymap.of([
+	{ key: 'Tab', run: indentMore },
+	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
+	{ key: 'Mod-Shift-z', run: redo },
+]);
+
+export const markdownKeymap = keymap.of([
 	//{ key: 'Shift-Tab', run: indentMore },
 	{ key: 'Shift-Tab', run: indentLess },
 	{ key: 'Mod-b', run: makeBold },
@@ -253,7 +237,5 @@ export default keymap.of([
 	{ key: 'Shift-Mod-6', run: makeHeader(6) },
 	{ key: 'Shift-Mod-Enter', run: newColumn },
 	{ key: 'Mod-Enter', run: newPage },
-	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
-	{ key: 'Mod-Shift-z', run: redo },
-	{ key: 'alt-Shift-f', run: formatCSS },
+	{ key: 'Mod-Shift-f', run: formatCSS },
 ]);

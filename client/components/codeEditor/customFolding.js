@@ -1,6 +1,6 @@
 import { foldService, codeFolding } from '@codemirror/language';
 
-const pageFoldExtension = [
+const foldOnPages = [
 	foldService.of((state, lineStart)=>{ //tells where to fold
 		const doc = state.doc;
 		const matcher = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
@@ -43,4 +43,4 @@ const pageFoldExtension = [
 	}),
 ];
 
-export default pageFoldExtension;
+export default foldOnPages;
