@@ -4,7 +4,6 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import dedent from 'dedent';
-import Markdown from '@shared/markdown.js';
 
 import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
@@ -12,8 +11,22 @@ import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
+import * as themesImport from '@uiw/codemirror-themes-all';
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+
+const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
+
+const EditorThemes = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+	!name.endsWith('Init') &&
+	!name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+
+//const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+//const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
@@ -30,6 +43,7 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
 let isJumping = false;
+let jumpSource = null;
 
 const Editor = createReactClass({
 	displayName     : 'Editor',
@@ -72,15 +86,15 @@ const Editor = createReactClass({
 
 	componentDidMount : function() {
 
-		this.highlightCustomMarkdown();
-		document.getElementById('BrewRenderer').addEventListener('keydown', this.handleControlKeys);
+		const brewRenderer = document.getElementById('BrewRenderer');
+		brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', this.handleControlKeys);
 		document.addEventListener('keydown', this.handleControlKeys);
 
 		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-		if(editorTheme) {
-			this.setState({
-				editorTheme : editorTheme
-			});
+		if(editorTheme && EditorThemes.includes(editorTheme)) {
+  			this.setState({ editorTheme });
+		} else {
+  			this.setState({ editorTheme: 'default' });
 		}
 		const snippetBar = document.querySelector('.editor > .snippetBar');
 		if(!snippetBar) return;
@@ -95,7 +109,6 @@ const Editor = createReactClass({
 
 	componentDidUpdate : function(prevProps, prevState, snapshot) {
 
-		this.highlightCustomMarkdown();
 		if(prevProps.moveBrew !== this.props.moveBrew)
 			this.brewJump();
 
@@ -129,22 +142,16 @@ const Editor = createReactClass({
 		}
 	},
 
-	updateCurrentCursorPage : function(cursor) {
-		const lines = this.props.brew.text.split('\n').slice(1, cursor.line + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
-		this.props.onCursorPageChange(currentPage);
+	updateCurrentCursorPage : function(pageNumber) {
+		this.props.onCursorPageChange(pageNumber);
 	},
 
-	updateCurrentViewPage : function(topScrollLine) {
-		const lines = this.props.brew.text.split('\n').slice(1, topScrollLine + 1);
-		const pageRegex = this.props.brew.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const currentPage = lines.reduce((count, line)=>count + (pageRegex.test(line) ? 1 : 0), 1);
-		this.props.onViewPageChange(currentPage);
+	updateCurrentViewPage : function(pageNumber) {
+		this.props.onViewPageChange(pageNumber);
 	},
 
 	handleInject : function(injectText){
-		this.codeEditor.current?.injectText(injectText, false);
+		this.codeEditor.current?.injectText(injectText);
 	},
 
 	handleViewChange : function(newView){
@@ -153,181 +160,12 @@ const Editor = createReactClass({
 		this.setState({
 			view : newView
 		}, ()=>{
-			this.codeEditor.current?.codeMirror?.focus();
+			this.codeEditor.current?.focus();
 		});
 	},
 
-	highlightCustomMarkdown : function(){
-		if(!this.codeEditor.current?.codeMirror) return;
-		if((this.state.view === 'text') ||(this.state.view === 'snippet')) {
-			const codeMirror = this.codeEditor.current.codeMirror;
-
-			codeMirror?.operation(()=>{ // Batch CodeMirror styling
-
-				const foldLines = [];
-
-				//reset custom text styles
-				const customHighlights = codeMirror?.getAllMarks().filter((mark)=>{
-					// Record details of folded sections
-					if(mark.__isFold) {
-						const fold = mark.find();
-						foldLines.push({ from: fold.from?.line, to: fold.to?.line });
-					}
-					return !mark.__isFold;
-				}); //Don't undo code folding
-
-				for (let i=customHighlights.length - 1;i>=0;i--) customHighlights[i].clear();
-
-				let userSnippetCount = 1; // start snippet count from snippet 1
-				let editorPageCount = 1; // start page count from page 1
-
-				const whichSource = this.state.view === 'text' ? this.props.brew.text : this.props.brew.snippets;
-				_.forEach(whichSource?.split('\n'), (line, lineNumber)=>{
-
-					const tabHighlight = this.state.view === 'text' ? 'pageLine' : 'snippetLine';
-					const textOrSnip = this.state.view === 'text';
-
-					//reset custom line styles
-					codeMirror?.removeLineClass(lineNumber, 'background', 'pageLine');
-					codeMirror?.removeLineClass(lineNumber, 'background', 'snippetLine');
-					codeMirror?.removeLineClass(lineNumber, 'text');
-					codeMirror?.removeLineClass(lineNumber, 'wrap', 'sourceMoveFlash');
-
-					// Don't process lines inside folded text
-					// If the current lineNumber is inside any folded marks, skip line styling
-					if(foldLines.some((fold)=>lineNumber >= fold.from && lineNumber <= fold.to))
-						return;
-
-					// Styling for \page breaks
-					if((this.props.renderer == 'legacy' && line.includes('\\page')) ||
-				     (this.props.renderer == 'V3'     && line.match(textOrSnip ? PAGEBREAK_REGEX_V3 : SNIPPETBREAK_REGEX_V3))) {
-
-						if((lineNumber > 0) && (textOrSnip))      // Since \page is optional on first line of document,
-							editorPageCount += 1; // don't use it to increment page count; stay at 1
-						else if(this.state.view !== 'text')	userSnippetCount += 1;
-
-						// add back the original class 'background' but also add the new class '.pageline'
-						codeMirror?.addLineClass(lineNumber, 'background', tabHighlight);
-						const pageCountElement = Object.assign(document.createElement('span'), {
-							className   : 'editor-page-count',
-							textContent : textOrSnip ? editorPageCount : userSnippetCount
-						});
-						codeMirror?.setBookmark({ line: lineNumber, ch: line.length }, pageCountElement);
-					};
-
-
-					// New CodeMirror styling for V3 renderer
-					if(this.props.renderer === 'V3') {
-						if(line.match(/^\\column(?:break)?$/)){
-							codeMirror?.addLineClass(lineNumber, 'text', 'columnSplit');
-						}
-
-						// definition lists
-						if(line.includes('::')){
-							if(/^:*$/.test(line) == true){ return; };
-							const regex = /^([^\n]*?:?\s?)(::[^\n]*)(?:\n|$)/ymd;  // the `d` flag, for match indices, throws an ESLint error.
-							let match;
-							while ((match = regex.exec(line)) != null){
-								codeMirror?.markText({ line: lineNumber, ch: match.indices[0][0] }, { line: lineNumber, ch: match.indices[0][1] }, { className: 'dl-highlight' });
-								codeMirror?.markText({ line: lineNumber, ch: match.indices[1][0] }, { line: lineNumber, ch: match.indices[1][1] }, { className: 'dt-highlight' });
-								codeMirror?.markText({ line: lineNumber, ch: match.indices[2][0] }, { line: lineNumber, ch: match.indices[2][1] }, { className: 'dd-highlight' });
-								const ddIndex = match.indices[2][0];
-								const colons = /::/g;
-								const colonMatches = colons.exec(match[2]);
-								if(colonMatches !== null){
-									codeMirror?.markText({ line: lineNumber, ch: colonMatches.index + ddIndex }, { line: lineNumber, ch: colonMatches.index + colonMatches[0].length + ddIndex }, { className: 'dl-colon-highlight' });
-								}
-							}
-						}
-
-						// Subscript & Superscript
-						if(line.includes('^')) {
-							let startIndex = line.indexOf('^');
-							const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
-							const subRegex   = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
-
-							while (startIndex >= 0) {
-								superRegex.lastIndex = subRegex.lastIndex = startIndex;
-								let isSuper = false;
-								const match = subRegex.exec(line) || superRegex.exec(line);
-								if(match) {
-									isSuper = !subRegex.lastIndex;
-									codeMirror?.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: isSuper ? 'superscript' : 'subscript' });
-								}
-								startIndex = line.indexOf('^', Math.max(startIndex + 1, subRegex.lastIndex, superRegex.lastIndex));
-							}
-						}
-
-						// Highlight injectors {style}
-						if(line.includes('{') && line.includes('}')){
-							const regex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
-							let match;
-							while ((match = regex.exec(line)) != null) {
-								codeMirror?.markText({ line: lineNumber, ch: line.indexOf(match[1]) }, { line: lineNumber, ch: line.indexOf(match[1]) + match[1].length }, { className: 'injection' });
-							}
-						}
-						// Highlight inline spans {{content}}
-						if(line.includes('{{') && line.includes('}}')){
-							const regex = /{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *|}}/g;
-							let match;
-							let blockCount = 0;
-							while ((match = regex.exec(line)) != null) {
-								if(match[0].startsWith('{')) {
-									blockCount += 1;
-								} else {
-									blockCount -= 1;
-								}
-								if(blockCount < 0) {
-									blockCount = 0;
-									continue;
-								}
-								codeMirror?.markText({ line: lineNumber, ch: match.index }, { line: lineNumber, ch: match.index + match[0].length }, { className: 'inline-block' });
-							}
-						} else if(line.trimLeft().startsWith('{{') || line.trimLeft().startsWith('}}')){
-							// Highlight block divs {{\n Content \n}}
-							let endCh = line.length+1;
-
-							const match = line.match(/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/);
-							if(match)
-								endCh = match.index+match[0].length;
-							codeMirror?.markText({ line: lineNumber, ch: 0 }, { line: lineNumber, ch: endCh }, { className: 'block' });
-						}
-
-						// Emojis
-						if(line.match(/:[^\s:]+:/g)) {
-							let startIndex = line.indexOf(':');
-							const emojiRegex = /:[^\s:]+:/gy;
-
-							while (startIndex >= 0) {
-								emojiRegex.lastIndex = startIndex;
-								const match = emojiRegex.exec(line);
-								if(match) {
-									let tokens = Markdown.marked.lexer(match[0]);
-									tokens = tokens[0].tokens.filter((t)=>t.type == 'emoji');
-									if(!tokens.length)
-										return;
-
-									const startPos = { line: lineNumber, ch: match.index };
-									const endPos   = { line: lineNumber, ch: match.index + match[0].length };
-
-									// Iterate over conflicting marks and clear them
-									const marks = codeMirror?.findMarks(startPos, endPos);
-									marks.forEach(function(marker) {
-										if(!marker.__isFold) marker.clear();
-									});
-									codeMirror?.markText(startPos, endPos, { className: 'emoji' });
-								}
-								startIndex = line.indexOf(':', Math.max(startIndex + 1, emojiRegex.lastIndex));
-							}
-						}
-					}
-				});
-			});
-		}
-	},
-
 	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || !this.isText() || isJumping)
+		if(!window || !this.isText() || isJumping || jumpSource === 'source')
 			return;
 
 		// Get current brewRenderer scroll position and calculate target position
@@ -340,11 +178,13 @@ const Editor = createReactClass({
 			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
 			scrollingTimeout = setTimeout(()=>{
 				isJumping = false;
+				jumpSource = null;
 				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
 			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 		};
 
 		isJumping = true;
+		jumpSource = 'brew';
 		checkIfScrollComplete();
 		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
 
@@ -368,54 +208,17 @@ const Editor = createReactClass({
 	},
 
 	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText() || isJumping)
+		if(!this.isText() || isJumping || jumpSource === 'brew')
 			return;
 
-		const textSplit  = this.props.renderer == 'V3' ? PAGEBREAK_REGEX_V3 : /\\page/;
-		const textString = this.props.brew.text.split(textSplit).slice(0, targetPage-1).join(textSplit);
-		const targetLine = textString.match('\n') ? textString.split('\n').length - 1 : -1;
+		const editor = this.codeEditor.current;
+		if(!editor) return;
+		jumpSource = 'source';
 
-		let currentY = this.codeEditor.current.codeMirror?.getScrollInfo().top;
-		let targetY  = this.codeEditor.current.codeMirror?.heightAtLine(targetLine, 'local', true);
-
-		let scrollingTimeout;
-		const checkIfScrollComplete = ()=>{ // Prevent interrupting a scroll in progress if user clicks multiple times
-			clearTimeout(scrollingTimeout); // Reset the timer every time a scroll event occurs
-			scrollingTimeout = setTimeout(()=>{
-				isJumping = false;
-				this.codeEditor.current.codeMirror?.off('scroll', checkIfScrollComplete);
-			}, 150); // If 150 ms pass without a scroll event, assume scrolling is done
-		};
-
-		isJumping = true;
-		checkIfScrollComplete();
-		if(this.codeEditor.current?.codeMirror) {
-			this.codeEditor.current.codeMirror?.on('scroll', checkIfScrollComplete);
-		}
-
-		if(smooth) {
-			//Scroll 1/10 of the way every 10ms until 1px off.
-			const incrementalScroll = setInterval(()=>{
-				currentY += (targetY - currentY) / 10;
-				this.codeEditor.current.codeMirror?.scrollTo(null, currentY);
-
-				// Update target: target height is not accurate until within +-10 lines of the visible window
-				if(Math.abs(targetY - currentY > 100))
-					targetY = this.codeEditor.current.codeMirror?.heightAtLine(targetLine, 'local', true);
-
-				// End when close enough
-				if(Math.abs(targetY - currentY) < 1) {
-					this.codeEditor.current.codeMirror?.scrollTo(null, targetY);  // Scroll any remaining difference
-					this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-					this.codeEditor.current.codeMirror?.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
-					clearInterval(incrementalScroll);
-				}
-			}, 10);
-		} else {
-			this.codeEditor.current.codeMirror?.scrollTo(null, targetY);  // Scroll any remaining difference
-			this.codeEditor.current.setCursorPosition({ line: targetLine + 1, ch: 0 });
-			this.codeEditor.current.codeMirror?.addLineClass(targetLine + 1, 'wrap', 'sourceMoveFlash');
-		}
+		editor.scrollToPage(targetPage);
+		setTimeout(()=>{
+			jumpSource = null;
+		}, 200);
 	},
 
 	//Called when there are changes to the editor's dimensions
@@ -433,29 +236,6 @@ const Editor = createReactClass({
 		this.forceUpdate();
 	},
 
-	//temporary fix until cm6 comes next update
-	attachCodeMirrorListeners : function(cm) {
-		if(!cm) return;
-		// detach previous (important on remount / view switch)
-		if(this._cm) {
-			this._cm.off('cursorActivity', this._onCursor);
-			this._cm.off('scroll', this._onScroll);
-		}
-
-		this._cm = cm;
-
-		this._onCursor = ()=>{
-			this.updateCurrentCursorPage(cm.getCursor());
-		};
-
-		this._onScroll = _.throttle(()=>{
-			const topLine = cm.lineAtHeight(cm.getScrollInfo().top, 'local');
-			this.updateCurrentViewPage(topLine);
-		}, 200);
-
-		cm.on('cursorActivity', this._onCursor);
-		cm.on('scroll', this._onScroll);
-	},
 	renderEditor : function(){
 		if(this.isText()){
 			return <>
@@ -466,10 +246,11 @@ const Editor = createReactClass({
 					view={this.state.view}
 					value={this.props.brew.text}
 					onChange={this.props.onBrewChange('text')}
+					onCursorChange={(page)=>this.updateCurrentCursorPage(page)}
+					onViewChange={(page)=>this.updateCurrentViewPage(page)}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}
-					onReady={this.attachCodeMirrorListeners}/>
+					renderer={this.props.brew.renderer}
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isStyle()){
@@ -481,19 +262,16 @@ const Editor = createReactClass({
 					view={this.state.view}
 					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
 					onChange={this.props.onBrewChange('style')}
-					enableFolding={true}
 					editorTheme={this.state.editorTheme}
-					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}
-					onReady={this.attachCodeMirrorListeners}/>
+					renderer={this.props.brew.renderer}
+					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isMeta()){
 			return <>
 				<CodeEditor key='codeEditor'
 					view={this.state.view}
-					style={{ display: 'none' }}
-					rerenderParent={this.rerenderParent} />
+					style={{ display: 'none' }}/>
 				<MetadataEditor
 					metadata={this.props.brew}
 					themeBundle={this.props.themeBundle}
@@ -514,9 +292,9 @@ const Editor = createReactClass({
 					onChange={this.props.onBrewChange('snippets')}
 					enableFolding={true}
 					editorTheme={this.state.editorTheme}
+					renderer={this.props.brew.renderer}
 					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% -${this.state.snippetBarHeight}px)` }}
-					onReady={this.attachCodeMirrorListeners}/>
+					style={{  height: `calc(100% - 25px)` }}/>
 			</>;
 		}
 	},
@@ -533,14 +311,13 @@ const Editor = createReactClass({
 		return this.codeEditor.current?.undo();
 	},
 
-	foldCode : function(){
-		return this.codeEditor.current?.foldAllCode();
+	foldCode : function() {
+    	return this.codeEditor.current?.foldAll();
 	},
 
-	unfoldCode : function(){
-		return this.codeEditor.current?.unfoldAllCode();
+	unfoldCode : function() {
+		return this.codeEditor.current?.unfoldAll();
 	},
-
 	render : function(){
 		return (
 			<div className='editor' ref={this.editor}>

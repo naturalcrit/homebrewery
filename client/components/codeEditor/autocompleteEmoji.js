@@ -1,3 +1,5 @@
+import { autocompletion } from '@codemirror/autocomplete';
+
 import diceFont      from '@themes/fonts/iconFonts/diceFont.js';
 import elderberryInn from '@themes/fonts/iconFonts/elderberryInn.js';
 import fontAwesome   from '@themes/fonts/iconFonts/fontAwesome.js';
@@ -10,75 +12,65 @@ const emojis = {
 	...gameIcons
 };
 
-const showAutocompleteEmoji = function(CodeMirror, editor) {
-	CodeMirror.commands.autocomplete = function(editor) {
-		editor.showHint({
-			completeSingle : false,
-			hint           : function(editor) {
-				const cursor = editor.getCursor();
-				const line = cursor.line;
-				const lineContent = editor.getLine(line);
-				const start = lineContent.lastIndexOf(':', cursor.ch - 1) + 1;
-				const end = cursor.ch;
-				const currentWord = lineContent.slice(start, end);
+const emojiCompletionList = (context)=>{
+	const word = context.matchBefore(/:[^\s:]+/);
+	if(!word) return null;
 
+	const line = context.state.doc.lineAt(context.pos);
+	const textToCursor = line.text.slice(0, context.pos - line.from);
 
-				const list = Object.keys(emojis).filter(function(emoji) {
-					return emoji.toLowerCase().indexOf(currentWord.toLowerCase()) >= 0;
-				}).sort((a, b)=>{
-					const lowerA = a.replace(/\d+/g, function(match) {	// Temporarily convert any numbers in emoji string
-						return match.padStart(4, '0');										// to 4-digits, left-padded with 0's, to aid in
-					}).toLowerCase();																		// sorting numbers, i.e., "d6, d10, d20", not "d10, d20, d6"
-					const lowerB = b.replace(/\d+/g, function(match) {	// Also make lowercase for case-insensitive alpha sorting
-						return match.padStart(4, '0');
-					}).toLowerCase();
+	if(textToCursor.includes('{')) {
+		const curlyToCursor = textToCursor.slice(textToCursor.indexOf('{'));
+		const curlySpanRegex = /{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1$/g;
+		if(curlySpanRegex.test(curlyToCursor)) return null;
+	}
 
-					if(lowerA < lowerB)
-						return -1;
-					return 1;
-				}).map(function(emoji) {
-					return {
-						text   : `${emoji}:`,														// Text to output to editor when option is selected
-						render : function(element, self, data) {				// How to display the option in the dropdown
-							const div = document.createElement('div');
-							div.innerHTML = `<i class="emojiPreview ${emojis[emoji]}"></i> ${emoji}`;
-							element.appendChild(div);
-						}
-					};
-				});
+	const currentWord = word.text.slice(1); // remove ':'
 
-				return {
-					list : list.length ? list : [],
-					from : CodeMirror.Pos(line, start),
-					to   : CodeMirror.Pos(line, end)
-				};
-			}
-		});
+	const options = Object.keys(emojis)
+    .filter((e)=>e.toLowerCase().includes(currentWord.toLowerCase()))
+    .sort((a, b)=>{
+    	const normalize = (str)=>str.replace(/\d+/g, (m)=>m.padStart(4, '0')).toLowerCase();
+    	return normalize(a) < normalize(b) ? -1 : 1;
+    })
+    .map((e)=>({
+    	label : e,
+    	apply	: `${e}:`,
+    	type  : 'text',
+    	info  : ()=>{
+    		const div = document.createElement('div');
+    		div.innerHTML = `<i class="emojiPreview ${emojis[e]}"></i> ${e}`;
+    		return div;
+    	}
+    }));
+	//Label is the text in the list, comes with an icon that just
+		//renders example text "abc", hid that with css because i didn't see other choice
+	//Apply is the text that is set when the choice is selected
+	//Info is the tooltip
+
+	return {
+		from   : word.from + 1,
+		options,
+		filter : false,
 	};
-
-	editor.on('inputRead', function(instance, change) {
-		const cursor = editor.getCursor();
-		const line = editor.getLine(cursor.line);
-
-		// Get the text from the start of the line to the cursor
-		const textToCursor = line.slice(0, cursor.ch);
-
-		// Do not autosuggest emojis in curly span/div/injector properties
-		if(line.includes('{')) {
-			const curlyToCursor = textToCursor.slice(textToCursor.indexOf(`{`));
-			const curlySpanRegex = /{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1$/g;
-
-			if(curlySpanRegex.test(curlyToCursor))
-				return;
-		}
-
-		// Check if the text ends with ':xyz'
-		if(/:[^\s:]+$/.test(textToCursor)) {
-			CodeMirror.commands.autocomplete(editor);
-		}
-	});
 };
 
-export default {
-	showAutocompleteEmoji
-};
+export const autocompleteEmoji = autocompletion({
+	override         : [emojiCompletionList],
+	activateOnTyping : true,
+	 addToOptions     : [
+		{
+			render(completion) {
+				const e = completion.label;
+
+				const icon = document.createElement('i');
+				icon.className = `emojiPreview ${emojis[e]}`;
+
+				const fragment = document.createDocumentFragment();
+				fragment.appendChild(icon);
+
+				return fragment;
+			}
+		}
+	]
+});

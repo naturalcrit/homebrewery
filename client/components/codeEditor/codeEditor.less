@@ -1,60 +1,72 @@
-@import (less) 'codemirror/lib/codemirror.css';
-@import (less) 'codemirror/addon/fold/foldgutter.css';
-@import (less) 'codemirror/addon/search/matchesonscrollbar.css';
-@import (less) 'codemirror/addon/dialog/dialog.css';
-@import (less) 'codemirror/addon/hint/show-hint.css';
-
-//Icon fonts included so they can appear in emoji autosuggest dropdown
-@import (less) '@themes/fonts/iconFonts/diceFont.less';
-@import (less) '@themes/fonts/iconFonts/elderberryInn.less';
-@import (less) '@themes/fonts/iconFonts/gameIcons.less';
-@import (less) '@themes/fonts/iconFonts/fontAwesome.less';
+// Icon fonts for emoji/autocomplete
+@import (less) "@themes/fonts/iconFonts/diceFont.less";
+@import (less) "@themes/fonts/iconFonts/elderberryInn.less";
+@import (less) "@themes/fonts/iconFonts/gameIcons.less";
+@import (less) "@themes/fonts/iconFonts/fontAwesome.less";
 
 @keyframes sourceMoveAnimation {
-	50% {   color            : white;background-color : red;}
-	100% { color            : unset;background-color : unset;}
+	50% {
+		color: white;
+		background-color: red;
+	}
+	100% {
+		color: unset;
+		background-color: unset;
+	}
 }
 
-.codeEditor {
-	@media screen and (pointer : coarse) {
-		font-size : 16px;
+:where(.codeEditor) {
+	font-family: monospace;
+	height: 100%;
+	width:100%;
+	
+	.cm-content {
+		tab-size:2 !important;
 	}
-	.CodeMirror-foldmarker {
+
+	@media screen and (pointer: coarse) {
+		font-size: 16px;
+	}
+
+	.cm-gutterElement span {
 		font-family : inherit;
 		font-weight : 600;
 		color       : grey;
 		text-shadow : none;
 	}
 
-	.CodeMirror-foldgutter {
+	.cm-foldGutter {
 		cursor      : pointer;
 		border-left : 1px solid #EEEEEE;
 		transition  : background 0.1s;
 		&:hover { background : #DDDDDD; }
 	}
 
-	.sourceMoveFlash .CodeMirror-line {
-		animation-name     : sourceMoveAnimation;
-		animation-duration : 0.4s;
+	/* Flash animation for source moves */
+	.cm-line.sourceMoveFlash {
+		animation-name: sourceMoveAnimation;
+		animation-duration: 0.4s;
 	}
 
-	.CodeMirror-search-field {
-		width:25em !important;
-		outline:1px inset #00000055 !important;
+	/* Search input */
+	.cm-searchField {
+		width: 25em !important;
+		outline: 1px inset #00000055 !important;
 	}
 
+	/* Tab character visualization (optional) */
 	//.cm-tab {
-	//  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAMCAQAAACOs/baAAAARUlEQVR4nGJgIAG8JkXxUAcCtDWemcGR1lY4MvgzCEKY7jSBjgxBDAG09UEQzAe0AMwMHrSOAwEGRtpaMIwAAAAA//8DAG4ID9EKs6YqAAAAAElFTkSuQmCC) no-repeat right;
+	//  background: url(...) no-repeat right;
 	//}
 
-	//.cm-trailingspace {
-	//  .cm-space {
-	//    background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAQAgMAAABW5NbuAAAACVBMVEVHcEwAAAAAAAAWawmTAAAAA3RSTlMAPBJ6PMxpAAAACXBIWXMAAC4jAAAuIwF4pT92AAAAFUlEQVQI12NgwACcCQysASAEZGAAACMuAX06aCQUAAAAAElFTkSuQmCC) no-repeat right;
-	//  }
+	/* Trailing space visualization (optional) */
+	//.cm-trailingSpace .cm-space {
+	//  background: url(...) no-repeat right;
 	//}
 }
 
+/* Emoji preview styling */
 .emojiPreview {
-	font-size   : 1.5em;
-	line-height : 1.2em;
+	font-size: 1.5em;
+	line-height: 1.2em;
 }
