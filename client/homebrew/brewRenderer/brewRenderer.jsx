@@ -135,6 +135,7 @@ const BrewRenderer = (props)=>{
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
+	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
@@ -274,12 +275,7 @@ const BrewRenderer = (props)=>{
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
 
-		navigation.addEventListener('navigate', (e)=>{
-			if(e.hashChange && e.destination.sameDocument){
-				const dest = e.destination.url.slice(e.destination.url.indexOf('#'));
-				scrollToHash(dest);
-			}
-		});
+		window.addEventListener('hashchange', ()=>scrollToHash(window.location.hash));
 
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(true); //Make sure page is renderable before showing

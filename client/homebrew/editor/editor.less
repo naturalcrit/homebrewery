@@ -1,89 +1,120 @@
 @import '@sharedStyles/core.less';
-@import '@themes/codeMirror/customEditorStyles.less';
 
-.editor {
-	position  : relative;
-	width     : 100%;
-	height    : 100%;
-	container : editor / inline-size;
-	background:white;
-	.codeEditor {
+:where(.editor) {
+	position   : relative;
+	width      : 100%;
+	height     : 100%;
+	container  : editor / inline-size;
+	background : white;
+	:where(.codeEditor) {
 		height            : calc(100% - 25px);
-		.CodeMirror { height : 100%; }
-		.pageLine, .snippetLine {
+		.cm-editor { height : 100%;
+			outline:none !important;
+		}
+		&.brewSnippets .cm-snippetLine {
 			background : #33333328;
 			border-top : #333399 solid 1px;
 		}
-		.editor-page-count {
-			float : right;
-			color : grey;
+
+		:where(&.brewText) .cm-pageLine {
+			background : #33333328;
+			border-top : #333399 solid 1px;
 		}
-		.editor-snippet-count {
-			float : right;
-			color : grey;
-		}
-		.columnSplit {
-			font-style        : italic;
-			color             : grey;
-			background-color  : fade(#229999, 15%);
-			border-bottom     : #229999 solid 1px;
-		}
-		.define {
-			&:not(.term):not(.definition) {
-				font-weight   : bold;
-				color         : #949494;
-				background    : #E5E5E5;
-				border-radius : 3px;
+
+		&.brewSnippets {
+			.cm-pageLine {
+				background : #3e4e3e1b;
+				border-top : #3399423b solid 1px;
+				color:#777;
 			}
-			&.term { color : rgb(96, 117, 143); }
-			&.definition { color : rgb(97, 57, 178); }
 		}
-		.block:not(.cm-comment) {
-			font-weight : bold;
-			color       : purple;
-			//font-style: italic;
-		}
-		.inline-block:not(.cm-comment) {
-			font-weight : bold;
-			color       : red;
-			//font-style: italic;
-		}
-		.injection:not(.cm-comment) {
-			font-weight : bold;
-			color       : green;
-		}
-		.emoji:not(.cm-comment) {
-			padding-bottom : 1px;
-			margin-left    : 2px;
-			font-weight    : bold;
-			color          : #360034;
-			outline        : solid 2px #FF96FC;
-			outline-offset : -2px;
-			background     : #FFC8FF;
-			border-radius  : 6px;
-		}
-		.superscript:not(.cm-comment) {
-			font-size      : 0.9em;
-			font-weight    : bold;
-			vertical-align : super;
-			color          : goldenrod;
-		}
-		.subscript:not(.cm-comment) {
-			font-size      : 0.9em;
-			font-weight    : bold;
-			vertical-align : sub;
-			color          : rgb(123, 123, 15);
-		}
-		.dl-highlight {
-			&.dl-colon-highlight {
-				font-weight   : bold;
-				color         : #949494;
-				background    : #E5E5E5;
-				border-radius : 3px;
+
+		&:where(.brewText),  &.brewSnippets {
+
+
+			.cm-tooltip-autocomplete {
+
+				li {
+					display         : flex;
+					gap             : 10px;
+					align-items     : center;
+					justify-content : flex-start;
+
+					.cm-completionIcon { display : none; }
+					.cm-tooltip-autocomplete .cm-completionLabel { translate : 0 -2px; }
+				}
 			}
-			&.dt-highlight { color : rgb(96, 117, 143); }
-			&.dd-highlight { color : rgb(97, 57, 178); }
-		}		
+		
+			.cm-pageLine[data-page-number]::after {
+				content:attr(data-page-number);
+				float:right;
+				color : grey;
+			}
+			.cm-columnSplit {
+				font-style        : italic;
+				color             : grey;
+				background-color  : fade(#229999, 15%);
+				border-bottom     : #229999 solid 1px;
+			}
+			.cm-define {
+				&:not(.term):not(.definition) {
+					font-weight   : bold;
+					color         : #949494;
+					background    : #E5E5E5;
+					border-radius : 3px;
+				}
+				&.term { color : rgb(96, 117, 143); }
+				&.definition { color : rgb(97, 57, 178); }
+			}
+			.cm-block:not(.cm-comment) {
+				font-weight : bold;
+				color       : purple;
+			}
+			.cm-inline-block:not(.cm-comment) {
+				font-weight : bold;
+				color       : red ;
+				span { color : inherit }
+			}
+			.cm-injection:not(.cm-comment) {
+				font-weight : bold;
+				color       : green;
+				span { color : inherit }
+			}
+			.cm-emoji:not(.cm-comment) {
+				padding-bottom : 1px;
+				margin-left    : 2px;
+				font-weight    : bold;
+				color          : #360034;
+				outline        : solid 2px #FF96FC;
+				outline-offset : -2px;
+				background     : #FFC8FF;
+				border-radius  : 6px;
+			}
+			.cm-superscript:not(.cm-comment) {
+				font-size      : 0.9em;
+				font-weight    : bold;
+				vertical-align : super;
+				color          : goldenrod;
+			}
+			.cm-subscript:not(.cm-comment) {
+				font-size      : 0.9em;
+				font-weight    : bold;
+				vertical-align : sub;
+				color          : rgb(123, 123, 15);
+			}
+			.cm-definitionList {
+				.cm-definitionTerm { color : rgb(96, 117, 143); }
+				.cm-definitionColon {
+					font-weight   : bold;
+					color         : #949494;
+					background    : #E5E5E5;
+					border-radius : 3px;
+				}
+				.cm-definitionDesc { color : rgb(97, 57, 178); }
+			}		
+
+		}
+
 	}
 
 	.brewJump {

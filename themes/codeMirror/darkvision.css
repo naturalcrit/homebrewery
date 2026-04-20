@@ -1,3 +1,8 @@
+/*This document is old, from back when Codemirror was version 5, 
+if someone wants to update it, feel free, it needs to be like default.js or darkbrewery.js
+Then imported in snippetbar.jsx and codeEditor.jsx.
+*/
+
 .CodeMirror {
 	background: #0C0C0C;
 	color: #B9BDB6;
@@ -18,13 +23,13 @@
     }
 
     /* Line number stuff */
-    .CodeMirror-gutter-elt {
+    .cm-gutter-elt {
         color: #81969A;
     }
     .CodeMirror-linenumber {
         background-color: #0C0C0C;
     }
-    .CodeMirror-gutter {
+    .cm-gutter {
         background-color: #0C0C0C;
     }
 
