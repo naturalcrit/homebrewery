@@ -30,12 +30,11 @@ import darkbrewery from '@themes/codeMirror/darkbrewery.js';
 const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
 
 const EditorThemes = Object.entries(themes)
-  .filter(([name, value]) =>
-    Array.isArray(value) &&
+  .filter(([name, value])=>Array.isArray(value) &&
     !name.endsWith('Init') &&
     !name.endsWith('Style')
   )
-  .map(([name]) => name);
+  .map(([name])=>name);
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
@@ -81,6 +80,26 @@ const Snippetbar = createReactClass({
 		this.setState({
 			snippets : snippets
 		});
+	},
+
+	// Skip re-render when only `brew.text` changed. SnippetBar reads renderer/theme/themeBundle/
+	// view/cursorPos and `brew.snippets` — text edits don't affect any of these. Without this guard
+	// every Performance-Mode flush re-runs `componentDidUpdate`, which calls `loadHistory(brew)` →
+	// IndexedDB.getMany on every flush. Whitelisting known-used props is safer than a generic
+	// shallow check because the brew object is recreated each parent render.
+	shouldComponentUpdate : function(nextProps, nextState){
+		if(nextState !== this.state) return true;
+		if(nextProps.renderer !== this.props.renderer) return true;
+		if(nextProps.theme !== this.props.theme) return true;
+		if(nextProps.themeBundle !== this.props.themeBundle) return true;
+		if(nextProps.view !== this.props.view) return true;
+		if(nextProps.cursorPos !== this.props.cursorPos) return true;
+		const a = nextProps.brew, b = this.props.brew;
+		if(a === b) return false;
+		if(!a || !b) return true;
+		if(a.snippets !== b.snippets) return true;
+		if(a.shareId !== b.shareId) return true;
+		return false;
 	},
 
 	componentDidUpdate : async function(prevProps, prevState) {

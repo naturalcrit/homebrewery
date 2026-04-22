@@ -1,8 +1,9 @@
-/*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 320, "skipBlankLines": true, "skipComments": true}]*/
 import brewRendererStylesUrl from './brewRenderer.less?url';
 import headerNavStylesUrl from './headerNav/headerNav.less?url';
 import './brewRenderer.less';
-import React, { useState, useRef, useMemo, useEffect } from 'react';
+import React, { useState, useRef, useMemo, useEffect, useDeferredValue } from 'react';
+import { flushSync } from 'react-dom';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
@@ -19,10 +20,8 @@ import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
+import { PAGEBREAK_REGEX_V3, PAGEBREAK_REGEX_LEGACY, COLUMNBREAK_REGEX_LEGACY } from '@shared/pageBreaks.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
-const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
 
 const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
@@ -106,8 +105,19 @@ const BrewRenderer = (props)=>{
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
+		performanceMode            : false,
 		...props
 	};
+
+	// In performance mode, defer the text used for rendering so React can keep typing input
+	// snappy and yield the heavy markdown re-render to a lower-priority commit. The active
+	// (cursor) page is still rendered first inside renderPages, so it stays responsive.
+	const deferredText = useDeferredValue(props.text);
+	// When the user triggers print, we must render the freshest text — otherwise the print
+	// dialog captures a stale deferred snapshot. `isPrinting` is flipped via flushSync inside
+	// a `beforeprint` listener below so the sync commit lands before the print dialog paints.
+	const [isPrinting, setIsPrinting] = useState(false);
+	const textForRender = (props.performanceMode && !isPrinting) ? deferredText : props.text;
 
 	const [state, setState] = useState({
 		isMounted    : false,
@@ -131,17 +141,42 @@ const BrewRenderer = (props)=>{
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
+	// Bind beforeprint/afterprint listeners on both the outer window and the iframe window.
+	// `printCurrentBrew` calls `iframe.contentWindow.print()` so the iframe's beforeprint
+	// fires; but the outer window may also print (Ctrl+P from outside the iframe, browser
+	// menu). `flushSync` guarantees the re-render with non-deferred text commits before
+	// the print dialog captures the DOM.
+	useEffect(()=>{
+		if(!state.isMounted) return;
+		const onBeforePrint = ()=>flushSync(()=>setIsPrinting(true));
+		const onAfterPrint  = ()=>setIsPrinting(false);
+		const iframeWin = document.getElementById('BrewRenderer')?.contentWindow;
+
+		window.addEventListener('beforeprint', onBeforePrint);
+		window.addEventListener('afterprint',  onAfterPrint);
+		iframeWin?.addEventListener('beforeprint', onBeforePrint);
+		iframeWin?.addEventListener('afterprint',  onAfterPrint);
+		return ()=>{
+			window.removeEventListener('beforeprint', onBeforePrint);
+			window.removeEventListener('afterprint',  onAfterPrint);
+			iframeWin?.removeEventListener('beforeprint', onBeforePrint);
+			iframeWin?.removeEventListener('afterprint',  onAfterPrint);
+		};
+	}, [state.isMounted]);
+
 	const [headerState, setHeaderState] = useState(false);
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
 	const urlRef = useRef('');
 
-	if(props.renderer == 'legacy') {
-		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
-	} else {
-		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
-	}
+	// Memoize the page split — for a 50k-line brew this regex split is ~50ms per render
+	// and was running on every parent re-render even when the text hadn't changed.
+	rawPages = useMemo(()=>{
+		return props.renderer == 'legacy'
+			? textForRender.split(PAGEBREAK_REGEX_LEGACY)
+			: textForRender.split(PAGEBREAK_REGEX_V3);
+	}, [textForRender, props.renderer]);
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
 		setState((prevState)=>{
@@ -302,7 +337,10 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
+	// Of `displayOptions`, only `pageShadows` affects per-page output (zoom/spread/gap are CSS-only
+	// on the `.pages` wrapper). Narrowing the dep stops every toolbar tweak from invalidating the
+	// 800-page render cache.
+	renderedPages = useMemo(()=>renderPages(), [textForRender, displayOptions.pageShadows]);
 
 	return (
 		<>

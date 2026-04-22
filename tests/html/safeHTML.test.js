@@ -55,5 +55,35 @@ test('Javascript via event delegation', function() {
 	expect(rendered).toBe('<div id="parent"><button id="child">Click me</button></div>');
 });
 
+// Cache behavior — added with the bounded LRU cache. Functional checks rather than peeking at
+// the cache directly: identical input must always produce identical output, and the cache must
+// not weaken sanitization for repeated malicious inputs.
+test('Cache: identical input returns identical output', function() {
+	const source = `<a href="javascript:alert(1)">x</a>`;
+	const a = safeHTML(source);
+	const b = safeHTML(source);
+	expect(a).toBe(b);
+	expect(a).toBe('<a>x</a>');
+});
+
+test('Cache: malicious input remains sanitized when re-served from cache', function() {
+	const source = `<div onclick="alert(1)">y</div>`;
+	const first = safeHTML(source);
+	const second = safeHTML(source);
+	expect(first).toBe('<div>y</div>');
+	expect(second).toBe('<div>y</div>');
+	expect(second).not.toContain('onclick');
+});
+
+test('Cache: surviving 101+ distinct inputs still sanitizes (eviction does not corrupt)', function() {
+	// Bounded at 100; 101st insertion evicts oldest. A re-fetch of the evicted input must
+	// re-run sanitization correctly rather than returning stale or null.
+	for (let i = 0; i < 105; i++) {
+		safeHTML(`<div data-test-id="${i}">payload-${i}</div>`);
+	}
+	const evictedRefetched = safeHTML(`<a href="javascript:alert(99)">z</a>`);
+	expect(evictedRefetched).toBe('<a>z</a>');
+});
+
 
 

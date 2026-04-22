@@ -79,6 +79,11 @@ const Editor = createReactClass({
 	editor     : React.createRef(null),
 	codeEditor : React.createRef(null),
 
+	// Last non-meta CodeEditor `tab` value. The meta (Properties) branch renders a phantom
+	// CodeEditor with this tab so `prevTab === tab` and CodeEditor's tab-change effect
+	// no-ops — otherwise entering meta would overwrite docsRef[prevTab] with hidden state.
+	lastEditorTab : 'brewText',
+
 	isText  : function() {return this.state.view == 'text';},
 	isStyle : function() {return this.state.view == 'style';},
 	isMeta  : function() {return this.state.view == 'meta';},
@@ -224,6 +229,11 @@ const Editor = createReactClass({
 	//Called when there are changes to the editor's dimensions
 	update : function(){},
 
+	//Force any debounced editor work (perf mode) to run immediately so React state catches up.
+	flushPending : function(){
+		this.codeEditor.current?.flushPending();
+	},
+
 	updateEditorTheme : function(newTheme){
 		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
 		this.setState({
@@ -238,6 +248,7 @@ const Editor = createReactClass({
 
 	renderEditor : function(){
 		if(this.isText()){
+			this.lastEditorTab = 'brewText';
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
@@ -250,10 +261,12 @@ const Editor = createReactClass({
 					onViewChange={(page)=>this.updateCurrentViewPage(page)}
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
+					performanceMode={this.props.performanceMode}
 					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isStyle()){
+			this.lastEditorTab = 'brewStyles';
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
@@ -264,12 +277,21 @@ const Editor = createReactClass({
 					onChange={this.props.onBrewChange('style')}
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
+					performanceMode={this.props.performanceMode}
 					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
 			</>;
 		}
 		if(this.isMeta()){
+			// Mirror the active tab's value so CodeEditor's `[value]` effect sees no change
+			// and doesn't dispatch a clear-the-doc transaction (default '' != live state).
+			const hiddenValue =
+				this.lastEditorTab === 'brewStyles'   ? (this.props.brew.style ?? DEFAULT_STYLE_TEXT) :
+				this.lastEditorTab === 'brewSnippets' ? (this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT) :
+				                                        this.props.brew.text;
 			return <>
 				<CodeEditor key='codeEditor'
+					tab={this.lastEditorTab}
+					value={hiddenValue}
 					view={this.state.view}
 					style={{ display: 'none' }}/>
 				<MetadataEditor
@@ -277,11 +299,14 @@ const Editor = createReactClass({
 					themeBundle={this.props.themeBundle}
 					onChange={this.props.onBrewChange('metadata')}
 					reportError={this.props.reportError}
-					userThemes={this.props.userThemes}/>
+					userThemes={this.props.userThemes}
+					performanceMode={this.props.performanceMode}
+					onTogglePerformanceMode={this.props.onTogglePerformanceMode}/>
 			</>;
 		}
 		if(this.isSnip()){
 			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
+			this.lastEditorTab = 'brewSnippets';
 			return <>
 				<CodeEditor key='codeEditor'
 					ref={this.codeEditor}
@@ -294,6 +319,7 @@ const Editor = createReactClass({
 					editorTheme={this.state.editorTheme}
 					renderer={this.props.brew.renderer}
 					rerenderParent={this.rerenderParent}
+					performanceMode={this.props.performanceMode}
 					style={{  height: `calc(100% - 25px)` }}/>
 			</>;
 		}

@@ -13,6 +13,8 @@ import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@
 import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
+import brewsEqual   from '../editPage/brewsEqual.js';
+import { PERFORMANCE_MODE_KEY, readPerformanceModePref } from '../../utils/editorPrefs.js';
 
 import Nav                       from '@navbar/nav.jsx';
 import Navbar                    from '@navbar/navbar.jsx';
@@ -53,6 +55,9 @@ const NewPage = (props)=>{
 	const [themeBundle, setThemeBundle] = useState({});
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
+	// Lazy initializer — see editPage.jsx for rationale (avoids a redundant CodeMirror plugin
+	// rebuild on mount when the user already has perf mode enabled).
+	const [performanceMode, setPerformanceMode] = useState(readPerformanceModePref);
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
@@ -67,7 +72,10 @@ const NewPage = (props)=>{
 
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 83) {
+				editorRef.current?.flushPending();
+				setTimeout(()=>trySaveRef.current(true), 0);
+			}
 			if(e.keyCode === 80) printCurrentBrew();
 			if([83, 80].includes(e.keyCode)) {
 				e.stopPropagation();
@@ -75,12 +83,25 @@ const NewPage = (props)=>{
 			}
 		};
 
+		const handleStorage = (e)=>{
+			if(e.key === PERFORMANCE_MODE_KEY)
+				setPerformanceMode(e.newValue === 'true');
+		};
+
 		document.addEventListener('keydown', handleControlKeys);
+		window.addEventListener('storage', handleStorage);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.removeEventListener('storage', handleStorage);
 		};
 	}, []);
+
+	const togglePerformanceMode = ()=>{
+		const next = !performanceMode;
+		localStorage.setItem(PERFORMANCE_MODE_KEY, String(next));
+		setPerformanceMode(next);
+	};
 
 	const loadBrew = ()=>{
 		const brew = { ...currentBrew };
@@ -112,7 +133,7 @@ const NewPage = (props)=>{
 	};
 
 	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		const hasChange = !brewsEqual(currentBrew, lastSavedBrew.current);
 		setUnsavedChanges(hasChange);
 
 		if(autoSaveEnabled) trySave(false, hasChange);
@@ -131,8 +152,9 @@ const NewPage = (props)=>{
 		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+		//If there are HTML errors, run the validator on every change to give quick feedback.
+		//In performance mode validation is skipped during typing (still runs on save) to keep input snappy.
+		if(!performanceMode && HTMLErrors.length && (field == 'text' || field == 'snippets'))
 			setHTMLErrors(Markdown.validate(value));
 
 		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
@@ -255,6 +277,8 @@ const NewPage = (props)=>{
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						performanceMode={performanceMode}
+						onTogglePerformanceMode={togglePerformanceMode}
 					/>
 					<BrewRenderer
 						text={currentBrew.text}
@@ -268,6 +292,7 @@ const NewPage = (props)=>{
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						performanceMode={performanceMode}
 						allowPrint={true}
 					/>
 				</SplitPane>

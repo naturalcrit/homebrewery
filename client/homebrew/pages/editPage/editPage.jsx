@@ -29,11 +29,21 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags from '../../../../vitreum/headtags.js';
 const Meta = Headtags.Meta;
 import { md5 }                           from 'hash-wasm';
-import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
 import ShareNavItem              from '@navbar/share.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
+import Dialog from '../../../components/dialog.jsx';
+import brewsEqual from './brewsEqual.js';
+import {
+	AUTOSAVE_KEY,
+	PERFORMANCE_MODE_KEY,
+	PERFORMANCE_MODE_SUGGESTED_KEY,
+	PERFORMANCE_MODE_SUGGEST_THRESHOLD,
+	readPerformanceModePref,
+	isPerformanceModeAvailable
+} from '../../utils/editorPrefs.js';
+import { compressJsonForUpload } from '../../utils/compress.js';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
@@ -41,8 +51,6 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-
-const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -73,11 +81,20 @@ const EditPage = (props)=>{
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
+	// Lazy initializer reads localStorage once on mount — otherwise the initial render uses
+	// perfMode=false and the subsequent `setPerformanceMode(true)` triggers CodeMirror to
+	// rebuild its highlight plugin, tokenizing a 50k-line doc twice on startup.
+	const [performanceMode, setPerformanceMode] = useState(readPerformanceModePref);
+	const [showPerfModeSuggest, setShowPerfModeSuggest] = useState(false);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
+	// Monotonic token for deferred post-save validate. Prevents an earlier save's validate
+	// (queued on requestIdleCallback with up to 2s timeout) from overwriting a later save's
+	// errors if the user saves twice in quick succession.
+	const latestValidateToken = useRef(0);
 	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
@@ -85,12 +102,38 @@ const EditPage = (props)=>{
 		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(Markdown.validate(currentBrew.text));
+		// HTMLErrors state was already initialized via Markdown.validate(props.brew.text) at the
+		// top of this component; re-running it here on mount is a redundant blocking pass on the
+		// full text (slow on a 50k-line brew). The next validate call comes from save() or, when
+		// perf mode is off, from handleBrewChange on edit.
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		// One-time suggestion when opening a large brew without perf mode enabled. Perf-mode
+		// pref itself is read eagerly by the useState lazy initializer above; this block only
+		// handles the orthogonal "should we suggest it?" flow.
+		const alreadySuggested = localStorage.getItem(PERFORMANCE_MODE_SUGGESTED_KEY) === 'true';
+		if(!performanceMode && !alreadySuggested && isPerformanceModeAvailable()
+			&& (currentBrew.text?.length ?? 0) >= PERFORMANCE_MODE_SUGGEST_THRESHOLD) {
+			setShowPerfModeSuggest(true);
+			localStorage.setItem(PERFORMANCE_MODE_SUGGESTED_KEY, 'true');
+		}
+
+		// Cross-tab sync: if the user toggles perf mode in another tab, reflect it here.
+		// Storage events don't fire in the originating tab so there's no feedback loop.
+		const handleStorage = (e)=>{
+			if(e.key === PERFORMANCE_MODE_KEY)
+				setPerformanceMode(e.newValue === 'true');
+		};
+		window.addEventListener('storage', handleStorage);
 
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 83) {
+				// Flush any debounced text propagation (perf mode) so React state is current
+				// before save reads from currentBrew. Defer save by one tick to let state commit.
+				editorRef.current?.flushPending();
+				setTimeout(()=>trySaveRef.current(true), 0);
+			}
 			if(e.keyCode === 80) printCurrentBrew();
 			if([83, 80].includes(e.keyCode)) {
 				e.stopPropagation();
@@ -100,11 +143,13 @@ const EditPage = (props)=>{
 
 		document.addEventListener('keydown', handleControlKeys);
 		window.onbeforeunload = ()=>{
+			editorRef.current?.flushPending();
 			if(unsavedChangesRef.current)
 				return 'You have unsaved changes!';
 		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.removeEventListener('storage', handleStorage);
 			window.onBeforeUnload = null;
 		};
 	}, []);
@@ -115,7 +160,7 @@ const EditPage = (props)=>{
 	});
 
 	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		const hasChange = !brewsEqual(currentBrew, lastSavedBrew.current);
 		setUnsavedChanges(hasChange);
 
 		if(autoSaveEnabled) trySave(false, hasChange);
@@ -133,8 +178,9 @@ const EditPage = (props)=>{
 		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+		//If there are HTML errors, run the validator on every change to give quick feedback.
+		//In performance mode validation is skipped during typing (still runs on save) to keep input snappy.
+		if(!performanceMode && HTMLErrors.length && (field == 'text' || field == 'snippets'))
 			setHTMLErrors(Markdown.validate(value));
 
 		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
@@ -207,7 +253,23 @@ const EditPage = (props)=>{
 	};
 
 	const save = async (brew, saveToGoogle)=>{
-		setHTMLErrors(Markdown.validate(brew.text));
+		// Normalize once; previous code re-ran NFC+encodeURI up to 3 times on the full text.
+		const normalizedText = brew.text.normalize('NFC');
+		const normalizedLastSaved = lastSavedBrew.current.text.normalize('NFC');
+		const textUnchanged = normalizedText === normalizedLastSaved;
+
+		// Schedule the full-text Markdown.validate off the save's critical path. Runs regardless
+		// of request outcome (success, network error, 409) so HTMLErrors stay in sync with the
+		// attempted-save text. requestIdleCallback yields to typing / painting; setTimeout is
+		// the SSR/Safari fallback. The token guard discards stale validates if the user saved
+		// again before the idle callback fired.
+		const myToken = ++latestValidateToken.current;
+		const runValidate = ()=>{
+			if(myToken !== latestValidateToken.current) return;
+			setHTMLErrors(Markdown.validate(normalizedText));
+		};
+		if(typeof requestIdleCallback === 'function') requestIdleCallback(runValidate, { timeout: 2000 });
+		else                                          setTimeout(runValidate, 0);
 
 		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
@@ -215,15 +277,16 @@ const EditPage = (props)=>{
 		//Prepare content to send to server
 		const brewToSave = {
 			...brew,
-			text      : brew.text.normalize('NFC'),
+			text      : normalizedText,
 			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
-			patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
-			hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
+			// Skip the O(n) diff on the main thread when the text is identical (metadata-only save).
+			patches   : textUnchanged ? '' : stringifyPatches(makePatches(encodeURI(normalizedLastSaved), encodeURI(normalizedText))),
+			hash      : await md5(normalizedLastSaved),
 			textBin   : undefined,
 			version   : lastSavedBrew.current.version
 		};
 
-		const compressedBrew = gzipSync(strToU8(JSON.stringify(brewToSave)));
+		const compressedBrew = await compressJsonForUpload(brewToSave);
 		const transfer = saveToGoogle === _.isNil(brew.googleId);
 		const params = transfer ? `?${saveToGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : '';
 
@@ -337,10 +400,34 @@ const EditPage = (props)=>{
 	};
 
 	const renderAutoSaveButton = ()=>(
-		<Nav.item onClick={toggleAutoSave}>
+		<Nav.item onClick={toggleAutoSave} aria-pressed={autoSaveEnabled} aria-label='Toggle autosave'>
 			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>
 	);
+
+	const togglePerformanceMode = ()=>{
+		const next = !performanceMode;
+		localStorage.setItem(PERFORMANCE_MODE_KEY, String(next));
+		setPerformanceMode(next);
+		setShowPerfModeSuggest(false);
+	};
+
+	const renderPerfModeSuggestDialog = ()=>{
+		if(!showPerfModeSuggest) return null;
+		return (
+			<Dialog className='perfModeSuggest' closeText='Dismiss'
+				aria-labelledby='perfModeSuggestTitle'
+				aria-describedby='perfModeSuggestBody'
+				dismisskeys={[PERFORMANCE_MODE_SUGGESTED_KEY]}>
+				<h3 id='perfModeSuggestTitle'>Large brew detected</h3>
+				<p id='perfModeSuggestBody'>Performance Mode can keep typing snappy by deferring preview re-renders and skipping per-keystroke HTML validation. Find the toggle in the <strong>Properties</strong> tab under <strong>Renderer</strong>.</p>
+				<button type='button' className='enable' onClick={()=>{
+					togglePerformanceMode();
+					setShowPerfModeSuggest(false);
+				}}>Enable Performance Mode</button>
+			</Dialog>
+		);
+	};
 
 	const clearError = ()=>{
 		setError(null);
@@ -365,7 +452,7 @@ const EditPage = (props)=>{
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
-				<ShareNavItem brew={currentBrew} />
+				<ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>
 			</Nav.section>
@@ -379,6 +466,8 @@ const EditPage = (props)=>{
 			{renderNavbar()}
 
 			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
+
+			{renderPerfModeSuggestDialog()}
 
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>
@@ -396,6 +485,8 @@ const EditPage = (props)=>{
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						performanceMode={performanceMode}
+						onTogglePerformanceMode={togglePerformanceMode}
 					/>
 					<BrewRenderer
 						text={currentBrew.text}
@@ -409,6 +500,7 @@ const EditPage = (props)=>{
 						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						performanceMode={performanceMode}
 						allowPrint={true}
 					/>
 				</SplitPane>

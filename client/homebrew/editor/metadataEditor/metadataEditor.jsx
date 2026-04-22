@@ -10,6 +10,7 @@ import TagInput from '../tagInput/tagInput.jsx';
 
 import Themes from '@themes/themes.json';
 import validations from './validations.js';
+import { isPerformanceModeAvailable } from '../../utils/editorPrefs.js';
 
 import homebreweryThumbnail from '../../thumbnail.png';
 
@@ -301,6 +302,17 @@ const MetadataEditor = createReactClass({
 						onChange={(e)=>this.handleRenderer('V3', e)} />
 					V3
 				</label>
+				{isPerformanceModeAvailable() && (
+					<label className='performanceMode' title='Defers preview re-render and skips per-keystroke HTML validation. Useful for very large brews. Validation still runs on save.'>
+						<input
+							type='checkbox'
+							aria-label='Performance Mode — defer preview during typing'
+							checked={!!this.props.performanceMode}
+							onChange={()=>this.props.onTogglePerformanceMode?.()} />
+						Performance Mode
+						<small> (defer preview during typing — for very large brews)</small>
+					</label>
+				)}
 				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
