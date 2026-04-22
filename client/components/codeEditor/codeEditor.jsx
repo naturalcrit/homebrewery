@@ -1,8 +1,8 @@
-/* eslint max-lines: ["error", { "max": 600 }] */
+/* eslint max-lines: ["error", { "max": 650 }] */
 // Bumped from 500: Performance Mode adds the viewport-only highlighter, the debounce/idle/
-// startTransition pipeline for onChange and recomputePages, and binary-search page lookup.
-// Splitting the file would scatter tightly-coupled state (debounced fns, refs, useEffects)
-// across modules without making either half easier to read.
+// startTransition pipeline for onChange and recomputePages, binary-search page lookup, and
+// per-tab scroll snapshot persistence. Splitting the file would scatter tightly-coupled state
+// (debounced fns, refs, useEffects) across modules without making either half easier to read.
 import './codeEditor.less';
 import React, { useEffect, useRef, useMemo, forwardRef, useImperativeHandle, startTransition } from 'react';
 import _ from 'lodash';

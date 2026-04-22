@@ -284,10 +284,12 @@ const Editor = createReactClass({
 		if(this.isMeta()){
 			// Mirror the active tab's value so CodeEditor's `[value]` effect sees no change
 			// and doesn't dispatch a clear-the-doc transaction (default '' != live state).
-			const hiddenValue =
-				this.lastEditorTab === 'brewStyles'   ? (this.props.brew.style ?? DEFAULT_STYLE_TEXT) :
-				this.lastEditorTab === 'brewSnippets' ? (this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT) :
-				                                        this.props.brew.text;
+			const hiddenValueByTab = {
+				brewStyles   : this.props.brew.style    ?? DEFAULT_STYLE_TEXT,
+				brewSnippets : this.props.brew.snippets ?? DEFAULT_SNIPPET_TEXT,
+				brewText     : this.props.brew.text,
+			};
+			const hiddenValue = hiddenValueByTab[this.lastEditorTab] ?? this.props.brew.text;
 			return <>
 				<CodeEditor key='codeEditor'
 					tab={this.lastEditorTab}
