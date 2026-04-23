@@ -11,11 +11,11 @@ import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
-import * as themesImport from '@uiw/codemirror-themes-all';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
 
-const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
 const EditorThemes = Object.entries(themes)
   .filter(([name, value])=>Array.isArray(value) &&

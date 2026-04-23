@@ -1,31 +1,134 @@
 // Icon fonts for emoji/autocomplete
-@import (less) "@themes/fonts/iconFonts/diceFont.less";
-@import (less) "@themes/fonts/iconFonts/elderberryInn.less";
-@import (less) "@themes/fonts/iconFonts/gameIcons.less";
-@import (less) "@themes/fonts/iconFonts/fontAwesome.less";
+@import (less) '@themes/fonts/iconFonts/diceFont.less';
+@import (less) '@themes/fonts/iconFonts/elderberryInn.less';
+@import (less) '@themes/fonts/iconFonts/gameIcons.less';
+@import (less) '@themes/fonts/iconFonts/fontAwesome.less';
 
 @keyframes sourceMoveAnimation {
 	50% {
-		color: white;
-		background-color: red;
+		color            : white;
+		background-color : red;
 	}
 	100% {
-		color: unset;
-		background-color: unset;
+		color            : unset;
+		background-color : unset;
 	}
 }
 
 :where(.codeEditor) {
-	font-family: monospace;
-	height: 100%;
-	width:100%;
-	
-	.cm-content {
-		tab-size:2 !important;
+	width             : 100%;
+	height            : calc(100% - 25px);
+	font-family       : monospace;
+
+	.cm-editor { 
+		height  : 100%;
+		outline : none !important;
 	}
 
-	@media screen and (pointer: coarse) {
-		font-size: 16px;
+	&.brewSnippets .cm-snippetLine,
+	:where(&.brewText) .cm-pageLine {
+		background : #33333328;
+		border-top : #333399 solid 1px;
+	}
+
+	&.brewSnippets {
+		.cm-pageLine {
+			color      : #777777;
+			background : #3E4E3E1B;
+			border-top : #3399423B solid 1px;
+		}
+	}
+
+	&:where(.brewText), &.brewSnippets {
+
+	
+		.cm-pageLine[data-page-number]::after {
+			float   : right;
+			color   : grey;
+			content : attr(data-page-number);
+		}
+		.cm-columnSplit {
+			font-style        : italic;
+			color             : grey;
+			background-color  : fade(#229999, 15%);
+			border-bottom     : #229999 solid 1px;
+		}
+		.cm-define {
+			&:not(.term):not(.definition) {
+				font-weight   : bold;
+				color         : #949494;
+				background    : #E5E5E5;
+				border-radius : 3px;
+			}
+			&.term { color : rgb(96, 117, 143); }
+			&.definition { color : rgb(97, 57, 178); }
+		}
+		.cm-block:not(.cm-comment) {
+			font-weight : bold;
+			color       : purple;
+		}
+		.cm-inline-block,
+		.cm-define .cm-inline-block {
+			font-weight : bold;
+			color       : red;
+			span:not(.cm-comment) { color : inherit; }
+		}
+		.cm-injection:not(.cm-comment) {
+			font-weight : bold;
+			color       : green;
+			span { color : inherit; }
+		}
+		.cm-emoji:not(.cm-comment) {
+			padding-bottom : 1px;
+			margin-left    : 2px;
+			font-weight    : bold;
+			color          : #360034;
+			outline        : solid 2px #FF96FC;
+			outline-offset : -2px;
+			background     : #FFC8FF;
+			border-radius  : 6px;
+		}
+		.cm-superscript:not(.cm-comment) {
+			font-size      : 0.9em;
+			font-weight    : bold;
+			vertical-align : super;
+			color          : goldenrod;
+		}
+		.cm-subscript:not(.cm-comment) {
+			font-size      : 0.9em;
+			font-weight    : bold;
+			vertical-align : sub;
+			color          : rgb(123, 123, 15);
+		}
+		.cm-definitionList {
+			.cm-definitionTerm { color : rgb(96, 117, 143); }
+			.cm-definitionColon:not(:has(.cm-comment)) {
+				font-weight   : bold;
+				color         : #949494;
+				background    : #E5E5E5;
+				border-radius : 3px;
+			}
+			.cm-definitionDesc { color : rgb(97, 57, 178); }
+		}		
+
+		.cm-tooltip-autocomplete {
+
+			li {
+				display         : flex;
+				gap             : 10px;
+				align-items     : center;
+				justify-content : flex-start;
+
+				.cm-completionIcon { display : none; }
+				.cm-tooltip-autocomplete .cm-completionLabel { translate : 0 -2px; }
+			}
+		}
+	}
+	
+	.cm-content { tab-size : 2 !important; }
+
+	@media screen and (pointer : coarse) {
+		font-size : 16px;
 	}
 
 	.cm-gutterElement span {
@@ -44,14 +147,14 @@
 
 	/* Flash animation for source moves */
 	.cm-line.sourceMoveFlash {
-		animation-name: sourceMoveAnimation;
-		animation-duration: 0.4s;
+		animation-name     : sourceMoveAnimation;
+		animation-duration : 0.4s;
 	}
 
 	/* Search input */
 	.cm-searchField {
-		width: 25em !important;
-		outline: 1px inset #00000055 !important;
+		width   : 25em !important;
+		outline : 1px inset #00000055 !important;
 	}
 
 	/* Tab character visualization (optional) */
@@ -67,6 +170,6 @@
 
 /* Emoji preview styling */
 .emojiPreview {
-	font-size: 1.5em;
-	line-height: 1.2em;
+	font-size   : 1.5em;
+	line-height : 1.2em;
 }

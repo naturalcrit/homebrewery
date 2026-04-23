@@ -1,7 +1,7 @@
 {
   "name": "homebrewery",
   "description": "Create authentic looking D&D homebrews using only markdown",
-  "version": "3.21.0",
+  "version": "3.22.0",
   "type": "module",
   "engines": {
     "npm": ">=10.8 <12",
@@ -58,7 +58,7 @@
       "server"
     ],
     "transformIgnorePatterns": [
-      "node_modules/(?!(nanoid|@exodus/bytes|parse5|@asamuzakjp|@csstools)/)"
+      "node_modules/(?!(nanoid|@exodus/bytes|parse5|@asamuzakjp|@csstools|entities)/)"
     ],
     "transform": {
       "^.+\\.[jt]s$": "babel-jest",
@@ -106,10 +106,11 @@
     "@googleapis/drive": "^20.1.0",
     "@lezer/highlight": "^1.2.3",
     "@sanity/diff-match-patch": "^3.2.0",
-    "@uiw/codemirror-themes-all": "^4.25.8",
     "@vitejs/plugin-react": "^5.1.2",
     "body-parser": "^2.2.0",
     "classnames": "^2.5.1",
+    "codemirror-5-themes": "^1.4.0",
+    "codemirror-colorpicker": "^1.9.80",
     "cookie-parser": "^1.4.7",
     "core-js": "^3.49.0",
     "cors": "^2.8.5",

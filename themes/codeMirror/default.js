@@ -42,7 +42,7 @@ export default EditorView.theme({
 	'.cm-gutterElement.cm-activeLineGutter' : {
 		backgroundColor : '#becee374',
 	},
-	'.cm-selected' : {
+	'.cm-selectionBackground ' : {
 		backgroundColor : '#d7d4f0',
 	},
 	'.cm-foldmarker' : {
