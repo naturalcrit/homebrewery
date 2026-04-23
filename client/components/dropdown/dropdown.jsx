@@ -40,7 +40,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, i
 	const trigger = (groupName)=>{
 		if(!customTrigger){
 			return <>
-				<span className='menu-name'>{groupName}</span>
+				<span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
 			</>;
 		} else {
 			return customTrigger;
@@ -54,7 +54,6 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, i
 				className={['menu-item', color, className].join(' ')}
 				popoverTarget={menuId}
 				icon={icon}
-				ismenu={{ caretDirection: isSubMenu ? 'right' : 'down' }}
 				aria-haspopup='menu'
 				role='menuitem'
 			>
