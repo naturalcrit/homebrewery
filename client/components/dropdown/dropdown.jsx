@@ -1,0 +1,78 @@
+// A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
+// Anchor Positioning is now supported in all major browsers.  If support is needed for older browsers (namely, older firefox) 
+// it is possible to use absolute positioning and calculations/resize observers to position things well enough, but adds another layer of complexity to the code.
+import './dropdown.less';
+import React, { useEffect } from 'react';
+import _ from 'lodash';
+
+// use react context to keep track of the menu depth (menus in menus)
+const MenuDepthContext = React.createContext(0);
+
+const Dropdown = ({ groupName, className = null, icon, children, color = null, id, customTrigger, dir = 'right', ...props })=>{
+	const menuId = `${_.kebabCase(groupName)}-menu`;
+	const anchorName = `--${menuId}`;
+	const depth = React.useContext(MenuDepthContext);
+
+	// A menu is a submenu if depth > 0
+	const isSubMenu = depth > 0;
+
+
+	// hide popover with click inside iframe (not supported by light dismiss)
+	useEffect(()=>{
+		const menuElement = document.getElementById(menuId);
+		if(!menuElement) return;
+
+		const handleClick = ()=>{
+			if(menuElement.matches(':popover-open')) {
+				menuElement.hidePopover();
+			}
+		};
+		// Listen for clicks from both the main document and the iframe
+		document.addEventListener('iframe-click', handleClick);
+		return ()=>{
+			document.removeEventListener('iframe-click', handleClick);
+		};
+	}, [menuId]);
+
+	// the trigger is the piece placed inside the opening button of the menu.
+	// This method allows for creating a generic span with the group name,
+	// or using a bespoke element (like a graphic) passed in from props to be used as the trigger
+	const trigger = (groupName)=>{
+		if(!customTrigger){
+			return <>
+				<span className='menu-name'>{groupName}</span>
+			</>;
+		} else {
+			return customTrigger;
+		}
+	};
+
+	return (
+		<div className='menu-wrapper' style={{ anchorName }} role='none'>
+			<button
+				id={groupName.replace(' ', '-')}
+				className={['menu-item', color, className].join(' ')}
+				popoverTarget={menuId}
+				icon={icon}
+				ismenu={{ caretDirection: isSubMenu ? 'right' : 'down' }}
+				aria-haspopup='menu'
+				role='menuitem'
+			>
+				{trigger(groupName)}
+			</button>
+			<MenuDepthContext.Provider value={depth + 1}>
+				<div
+					id={menuId}
+					className='menu-list'
+					popover='auto'
+					style={{ positionAnchor: anchorName }}
+					role='menu'
+				>
+					{children}
+				</div>
+			</MenuDepthContext.Provider>
+		</div>
+	);
+};
+
+export { Dropdown };
