@@ -23,7 +23,26 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-import EditorThemes from '../../../../build/homebrew/codeMirror/editorThemes.json';
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
+
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
+
+const themeNames = Object.entries(themes)
+  .filter(([name, value]) =>
+    Array.isArray(value) &&
+    !name.endsWith('Init') &&
+    !name.endsWith('Style')
+  )
+  .map(([name]) => name);
+
+const EditorThemes = [
+  'default',
+  ...themeNames
+    .filter(name => name !== 'default')
+    .sort((a, b) => a.localeCompare(b))
+];
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
@@ -232,11 +251,11 @@ const Snippetbar = createReactClass({
 						<i className='fas fa-clock-rotate-left' />
 						{ this.state.showHistory && this.renderHistoryItems() }
 					</div>
-					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					<div className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
 					</div>
-					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					<div className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
 					</div>
