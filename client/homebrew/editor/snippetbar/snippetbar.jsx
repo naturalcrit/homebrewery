@@ -2,6 +2,7 @@
 import './snippetbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
+import { Dropdown } from '../../../components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
 import cx from 'classnames';
@@ -189,6 +190,13 @@ const Snippetbar = createReactClass({
 		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>
+			<Dropdown groupName='test' id='test-menu'>
+				<div>car</div>
+				<Dropdown groupName='submenu test' id='test-submenu'>
+					<div>bike</div>
+					<div>truck</div>
+				</Dropdown>
+			</Dropdown>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -326,31 +334,30 @@ const SnippetGroup = createReactClass({
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
+			if(!snippet.subsnippets){
+				return (
+					<div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
+						<i className={snippet.icon} />
+						<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
+						{snippet.experimental && <span className='beta'>beta</span>}
+						{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+					</div>
+				);
+			} else if(snippet.subsnippets){
+				return (
+					<Dropdown groupName={snippet.name} className='dropdown side'>
 						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+					</Dropdown>
+				)
+			}
 
 		});
 	},
 
 	render : function(){
 		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
-		return <div className={snippetGroup}>
-			<div className='text'>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon} className={snippetGroup}>
+			{this.renderSnippets(this.props.snippets)}
+		</Dropdown>;
 	},
 });
