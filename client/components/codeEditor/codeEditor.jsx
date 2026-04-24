@@ -51,9 +51,9 @@ function getUrl(node, doc) {
 
 	const cursor = node.node.cursor();
 
-	if (cursor.firstChild()) {
+	if(cursor.firstChild()) {
 		do {
-			if (cursor.name === "URL") {
+			if(cursor.name === 'URL') {
 				url = doc.sliceString(cursor.from, cursor.to);
 				break;
 			}
@@ -92,24 +92,24 @@ const createHighlightPlugin = (renderer, tab)=>{
 				let snippetCount = 0;
 
 				const tree = syntaxTree(view.state);
-tree.iterate({
-	enter: (node) => {
-		if (node.name === "Image") {
-			const url = getUrl(node, view.state.doc);
+				tree.iterate({
+					enter : (node)=>{
+						if(node.name === 'Image') {
+							const url = getUrl(node, view.state.doc);
 
-			if (!url) return;
+							if(!url) return;
 
-			decos.push(
-				Decoration.mark({
-					class: "cm-image",
-					attributes: {
-						"style": `--preview-img:url(${url});`
+							decos.push(
+								Decoration.mark({
+									class      : 'cm-image',
+									attributes : {
+										'style' : `--preview-img:url(${url});`
+									}
+								}).range(node.from, node.to)
+							);
+						}
 					}
-				}).range(node.from, node.to)
-			);
-		}
-	}
-});
+				});
 
 
 				tokens.forEach((tok)=>{
