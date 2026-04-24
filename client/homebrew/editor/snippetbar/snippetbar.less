@@ -156,27 +156,28 @@
 		position    : relative;
 		display     : flex;
 		justify-content: space-between;
-		align-items : center;
+		align-items : center; 
 		min-width   : max-content;
 		padding     : 5px;
 		cursor      : pointer;
 		width: 100%;
 		.animate(background-color);
+		.menu-name {
+			flex: 1;
+			text-align: left;
+			text-box-trim: trim-end;
+		}
 		i {
 			min-width    : 25px;
-			height       : 1.2em;
-			margin-right : 8px;
+			height       : .85rem;
 			font-size    : 1.2em;
 			text-align   : center;
+			&:first-child { margin-right: 5px }
 			&.caret {
 				margin-right: 0;
 			}
 			&.caret:is(.menu-wrapper .menu-wrapper * ) {
 				text-align: right;
-			}
-			& ~ i {
-				margin-right : 0;
-				margin-left  : 5px;
 			}
 			/* Fonts */
 			&.font {

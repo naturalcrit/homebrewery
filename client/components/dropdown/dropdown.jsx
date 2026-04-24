@@ -40,7 +40,8 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, i
 	const trigger = (groupName)=>{
 		if(!customTrigger){
 			return <>
-				<span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
+				
+			<i className={icon}></i><span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
 			</>;
 		} else {
 			return customTrigger;
