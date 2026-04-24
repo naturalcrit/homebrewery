@@ -157,6 +157,44 @@
 		outline : 1px inset #00000055 !important;
 	}
 
+	.cm-image[style] {
+		position: relative;
+
+		&::before, &::after {
+			content:"";
+			width:100px;
+			height:100px;
+			position:absolute;
+			bottom:0;
+			left:0;
+			translate:0 100%;
+			display:block;
+			z-index:1000;
+			pointer-events: none;
+			opacity:0;
+			transition:0.2s opacity;
+		}
+
+		&::before{
+			background-color: #fff;
+			border-radius:10px;
+			border:3px solid grey;
+		}
+
+		&::after {
+			background-image: var(--preview-img);
+			background-size:80%;
+			background-repeat:no-repeat;
+			background-position:center;
+			filter:drop-shadow(0 0 5px #0008);
+		}
+
+		&:hover::before,
+		&:hover::after {
+			opacity:1;
+		}
+	}
+
 	/* Tab character visualization (optional) */
 	//.cm-tab {
 	//  background: url(...) no-repeat right;

@@ -182,13 +182,15 @@ export function tokenizeCustomMarkdown(text) {
 		}
 
 		if(lineText.includes('{') && lineText.includes('}')) {
-			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
+			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gmd;
 			let match;
+			
 			while ((match = injectionRegex.exec(lineText)) !== null) {
+				console.log(match.indices[1][0]);
 				tokens.push({
 					line : lineNumber,
-					from : match.index,
-					to   : match.index + match[1].length,
+					from : match.indices[1][0],
+					to   : match.indices[1][0] + match[1].length,
 					type : customTags.injection,
 				});
 			}

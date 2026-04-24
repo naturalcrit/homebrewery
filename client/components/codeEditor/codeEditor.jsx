@@ -38,15 +38,30 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-console.log(themes);
-
 import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './extensions/customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './extensions/legacyCustomHighlight.js';
+import { syntaxTree } from '@codemirror/language';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 
+function getUrl(node, doc) {
+	let url = null;
+
+	const cursor = node.node.cursor();
+
+	if (cursor.firstChild()) {
+		do {
+			if (cursor.name === "URL") {
+				url = doc.sliceString(cursor.from, cursor.to);
+				break;
+			}
+		} while (cursor.nextSibling());
+	}
+
+	return url;
+}
 const createHighlightPlugin = (renderer, tab)=>{
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
 	//takes the tokens defined by that function and assigns classes to them
@@ -76,21 +91,84 @@ const createHighlightPlugin = (renderer, tab)=>{
 				let pageCount = 1;
 				let snippetCount = 0;
 
+				const tree = syntaxTree(view.state);
+tree.iterate({
+	enter: (node) => {
+		if (node.name === "Image") {
+			const url = getUrl(node, view.state.doc);
+
+			if (!url) return;
+
+			decos.push(
+				Decoration.mark({
+					class: "cm-image",
+					attributes: {
+						"style": `--preview-img:url(${url});`
+					}
+				}).range(node.from, node.to)
+			);
+		}
+	}
+});
+
+
 				tokens.forEach((tok)=>{
 					const line = view.state.doc.line(tok.line + 1);
 
+					// INLINE TOKENS (marks)
 					if(tok.from != null && tok.to != null && tok.from < tok.to) {
-						decos.push(Decoration.mark({ class: `cm-${tok.type}` }).range(line.from + tok.from, line.from + tok.to));
-					} else {
-						decos.push(Decoration.line({ class: `cm-${tok.type}` }).range(line.from));
-						if(tok.type === 'pageLine'  && tab === 'brewText') {
-							pageCount++;
-							line.from === 0 && pageCount--;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
+						const from = line.from + tok.from;
+						const to = line.from + tok.to;
+
+						const attrs = {};
+						console.log(tok);
+						// attach URL only for links
+						if(tok.type === 'Image' && tok.url) {
+
+							attrs['data-url'] = tok.url;
 						}
+
+						decos.push(
+							Decoration.mark({
+								class : `cm-${tok.type}`,
+								...(Object.keys(attrs).length
+									? { attributes: attrs }
+									: {})
+							}).range(from, to)
+						);
+					}
+
+					// LINE TOKENS
+					else {
+						decos.push(
+							Decoration.line({
+								class : `cm-${tok.type}`
+							}).range(line.from)
+						);
+
+						if(tok.type === 'pageLine' && tab === 'brewText') {
+							pageCount++;
+							if(line.from === 0) pageCount--;
+
+							decos.push(
+								Decoration.line({
+									attributes : {
+										'data-page-number' : pageCount
+									}
+								}).range(line.from)
+							);
+						}
+
 						if(tok.type === 'snippetLine' && tab === 'brewSnippets') {
 							snippetCount++;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
+
+							decos.push(
+								Decoration.line({
+									attributes : {
+										'data-page-number' : snippetCount
+									}
+								}).range(line.from)
+							);
 						}
 					}
 				});
@@ -99,7 +177,9 @@ const createHighlightPlugin = (renderer, tab)=>{
 				return Decoration.set(decos);
 			}
 		},
-		{ decorations: (v)=>v.decorations }
+		{
+			decorations : (v)=>v.decorations
+		}
 	);
 };
 
