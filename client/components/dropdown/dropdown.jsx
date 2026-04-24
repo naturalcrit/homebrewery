@@ -56,6 +56,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, i
 				icon={icon}
 				aria-haspopup='menu'
 				role='menuitem'
+				disabled={children.length > 0 ? false : true}
 			>
 				{trigger(groupName)}
 			</button>
