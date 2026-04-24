@@ -24,7 +24,7 @@ import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
-import { autocompleteEmoji } from './autocompleteEmoji.js';
+import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
 import { searchKeymap, search } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
 
@@ -40,10 +40,10 @@ const highlightCompartment = new Compartment();
 
 console.log(themes);
 
-import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
-import foldOnPages from './customFolding.js';
-import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
-import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
+import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
+import foldOnPages from './extensions/customFolding.js';
+import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './extensions/customHighlight.js';
+import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './extensions/legacyCustomHighlight.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 
