@@ -8,7 +8,7 @@ import _ from 'lodash';
 // use react context to keep track of the menu depth (menus in menus)
 const MenuDepthContext = React.createContext(0);
 
-const Dropdown = ({ groupName, className = null, icon, children, color = null, id, customTrigger, dir = 'right', ...props })=>{
+const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, dir = 'right', ...props })=>{
 	const menuId = `${_.kebabCase(groupName)}-menu`;
 	const anchorName = `--${menuId}`;
 	const depth = React.useContext(MenuDepthContext);
