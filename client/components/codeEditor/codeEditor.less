@@ -162,8 +162,6 @@
 
 		&::before, &::after {
 			content:"";
-			width:100px;
-			height:100px;
 			position:absolute;
 			bottom:0;
 			left:0;
@@ -176,14 +174,20 @@
 		}
 
 		&::before{
+			width:200px;
+			height:200px;
 			background-color: #fff;
 			border-radius:10px;
 			border:3px solid grey;
 		}
 
 		&::after {
+			width:190px;
+			height:190px;
+			//padding of 5px + 3px border: 8px
+			translate:8px calc(100% + 8px);
 			background-image: var(--preview-img);
-			background-size:80%;
+			background-size:contain;
 			background-repeat:no-repeat;
 			background-position:center;
 			filter:drop-shadow(0 0 5px #0008);
