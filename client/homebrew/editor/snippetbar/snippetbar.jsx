@@ -336,7 +336,7 @@ const SnippetGroup = createReactClass({
 		return _.map(snippets, (snippet)=>{
 			if(!snippet.subsnippets){
 				return (
-					<div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
+					<div className='menu-item' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
 						<i className={snippet.icon} />
 						<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
 						{snippet.experimental && <span className='beta'>beta</span>}
@@ -345,7 +345,7 @@ const SnippetGroup = createReactClass({
 				);
 			} else if(snippet.subsnippets){
 				return (
-					<Dropdown groupName={snippet.name} className='dropdown side'>
+					<Dropdown groupName={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
 					</Dropdown>
 				)
@@ -355,8 +355,7 @@ const SnippetGroup = createReactClass({
 	},
 
 	render : function(){
-		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
-		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon} className={snippetGroup}>
+		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon}>
 			{this.renderSnippets(this.props.snippets)}
 		</Dropdown>;
 	},

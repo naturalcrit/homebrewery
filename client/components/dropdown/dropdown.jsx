@@ -48,10 +48,10 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, i
 	};
 
 	return (
-		<div className='menu-wrapper' style={{ anchorName }} role='none'>
+		<div className={['menu-wrapper', className].join(' ')} style={{ anchorName }} role='none' >
 			<button
 				id={groupName.replace(' ', '-')}
-				className={['menu-item', color, className].join(' ')}
+				className={['menu-item', color].join(' ')}
 				popoverTarget={menuId}
 				icon={icon}
 				aria-haspopup='menu'
