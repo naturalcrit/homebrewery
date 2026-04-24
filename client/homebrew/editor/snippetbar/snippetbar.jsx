@@ -190,13 +190,6 @@ const Snippetbar = createReactClass({
 		if(snippets.length === 0) return null;
 
 		return <div className='snippets'>
-			<Dropdown groupName='test' id='test-menu'>
-				<div>car</div>
-				<Dropdown groupName='submenu test' id='test-submenu'>
-					<div>bike</div>
-					<div>truck</div>
-				</Dropdown>
-			</Dropdown>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
