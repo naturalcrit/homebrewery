@@ -1,6 +1,17 @@
-// A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
-// Anchor Positioning is now supported in all major browsers.  If support is needed for older browsers (namely, older firefox) 
-// it is possible to use absolute positioning and calculations/resize observers to position things well enough, but adds another layer of complexity to the code.
+/**
+ * A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
+ * Anchor Positioning is now supported in all major browsers.  If support is needed for older browsers (namely, older firefox)
+ * it is possible to use absolute positioning and calculations/resize observers to position things well enough, but adds another layer of complexity to the code.
+ * @param {string} props.groupName - Name of the menu. Appears as the trigger text.
+ * @param {string} [props.icon] - Icon to display in the trigger.
+ * @param {string} [props.color] - Color class to add to the trigger.
+ * @param {string} [props.className] - Additional classes for the menu wrapper.
+ * @param {React.ReactNode} [props.customTrigger] - Custom element to use as a trigger.
+ * @param {React.ReactNode} [props.children] - Child elements to render in the menu.
+ * @param {'right'|'left'} [props.dir] - Preferred menu open direction.  Currently does nothing.
+ * @returns {React.JSX.Element}
+ */
+
 import './dropdown.less';
 import React, { useEffect } from 'react';
 import _ from 'lodash';
@@ -40,8 +51,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	const trigger = (groupName)=>{
 		if(!customTrigger){
 			return <>
-				
-			<i className={icon}></i><span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
+				<span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
 			</>;
 		} else {
 			return customTrigger;
