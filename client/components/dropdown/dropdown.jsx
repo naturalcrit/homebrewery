@@ -13,7 +13,7 @@
  */
 
 import './dropdown.less';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import _ from 'lodash';
 
 // use react context to keep track of the menu depth (menus in menus)
@@ -27,6 +27,16 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	// A menu is a submenu if depth > 0
 	const isSubMenu = depth > 0;
 
+	const wrapperRef = useRef(null);
+	const menuRef = useRef(null);
+
+	// Use setAttribute instead of the React style prop because React silently strips unknown CSS
+	// properties (like anchor-name) from inline styles in browsers that don't support them.
+	// setAttribute writes raw CSS text that the anchor positioning polyfill can read.
+	useEffect(()=>{
+		wrapperRef.current?.setAttribute('style', `anchor-name: ${anchorName}`);
+		menuRef.current?.setAttribute('style', `position-anchor: ${anchorName}`);
+	}, [anchorName]);
 
 	// hide popover with click inside iframe (not supported by light dismiss)
 	useEffect(()=>{
@@ -59,7 +69,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	};
 
 	return (
-		<div className={['menu-wrapper', className].join(' ')} style={{ anchorName }} role='none' >
+		<div ref={wrapperRef} className={['menu-wrapper', className].join(' ')} role='none' >
 			<button
 				id={groupName.replace(' ', '-')}
 				className={['menu-item', color].join(' ')}
@@ -73,10 +83,10 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 			</button>
 			<MenuDepthContext.Provider value={depth + 1}>
 				<div
+					ref={menuRef}
 					id={menuId}
 					className='menu-list'
 					popover='auto'
-					style={{ positionAnchor: anchorName }}
 					role='menu'
 				>
 					{children}
