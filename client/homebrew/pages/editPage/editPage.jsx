@@ -365,7 +365,7 @@ const EditPage = (props)=>{
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
-				<ShareNavItem brew={currentBrew} />
+				<ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>
 			</Nav.section>

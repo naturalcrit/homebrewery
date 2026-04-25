@@ -13,9 +13,12 @@ import {
 	ViewPlugin,
 	drawSelection,
 	dropCursor,
+	rectangularSelection,
+	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
 import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, syntaxHighlighting } from '@codemirror/language';
+import { foldEffect } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
@@ -27,13 +30,15 @@ import { closeBrackets } from '@codemirror/autocomplete';
 
 const autoCloseBrackets = closeBrackets({ brackets: ['()', '[]', '{{}}'] });
 
-import * as themesImport from '@uiw/codemirror-themes-all';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
 
-const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
+
+console.log(themes);
 
 import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
 import foldOnPages from './customFolding.js';
@@ -229,6 +234,8 @@ const CodeEditor = forwardRef(
 
 				//multiple cursors and selections
 				drawSelection(),
+				rectangularSelection(),
+				crosshairCursor(),
 				EditorState.allowMultipleSelections.of(true),
 				dropCursor(),
 				programmaticCursorLineField,
@@ -392,7 +399,19 @@ const CodeEditor = forwardRef(
 			foldAll : ()=>{
 				const view = viewRef.current;
 				if(!view) return;
-				view.dispatch(foldAllCmd(view));
+
+				const doc = view.state.doc;
+				const pages = pageMap.current;
+
+				const effects = pages.map((start, i)=>{
+					const next = pages[i + 1] || doc.length;
+					const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
+					const to = doc.line(doc.lineAt(next).number).from - 1;
+
+					return to > from ? foldEffect.of({ from, to }) : null;
+				}).filter(Boolean);
+
+				view.dispatch({ effects });
 			},
 			unfoldAll : ()=>{
 				const view = viewRef.current;

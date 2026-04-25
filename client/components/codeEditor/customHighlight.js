@@ -125,8 +125,6 @@ export function tokenizeCustomMarkdown(text) {
 				from : offset,
 				to   : offset + desc.length,
 			});
-
-			return;
 		}
 
 		//  --- multiline def list ---
@@ -139,14 +137,14 @@ export function tokenizeCustomMarkdown(text) {
 			for (let i = lineNumber + 1; i < lines.length; i++) {
 				const nextLine = lines[i];
 				const onlyColonsMatch = /^:*$/.test(nextLine);
-				const defMatch = /^(::)(.*\S.*)?\s*$/.exec(nextLine);
+				const defMatch = /^(::)(.+)$/.exec(nextLine);
 				if(!onlyColonsMatch && defMatch) {
 					defs.push({ colons: defMatch[1], desc: defMatch[2], line: i });
 					endLine = i;
 				} else break;
 			}
 
-			if(defs.length > 0) {
+			if(defs.length > 0 && lineText.trim().length > 0) {
 				tokens.push({
 					line : startLine,
 					type : customTags.definitionList,
@@ -177,7 +175,7 @@ export function tokenizeCustomMarkdown(text) {
 						line : d.line,
 						type : customTags.definitionDesc,
 						from : d.colons.length,
-						to   : d.colons.length + d.desc.length,
+						to   : d.colons.length + d.desc?.length,
 					});
 				});
 			}
