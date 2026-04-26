@@ -78,7 +78,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				icon={icon}
 				aria-haspopup='menu'
 				role='menuitem'
-				disabled={children.length > 0 ? false : true}
+				disabled={!React.Children.count(children)}
 				ref={triggerRef}
 			>
 				{trigger(groupName)}
