@@ -28,13 +28,14 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	const isSubMenu = depth > 0;
 
 	const wrapperRef = useRef(null);
+	const triggerRef = useRef(null);
 	const menuRef = useRef(null);
 
-	// Use setAttribute instead of the React style prop because React silently strips unknown CSS
+	// use setAttribute instead of the React style prop because React strips unknown CSS
 	// properties (like anchor-name) from inline styles in browsers that don't support them.
-	// setAttribute writes raw CSS text that the anchor positioning polyfill can read.
+	// setAttribute writes raw CSS text that the anchor positioning polyfill can read
 	useEffect(()=>{
-		wrapperRef.current?.setAttribute('style', `anchor-name: ${anchorName}`);
+		triggerRef.current?.setAttribute('style', `anchor-name: ${anchorName}`);
 		menuRef.current?.setAttribute('style', `position-anchor: ${anchorName}`);
 	}, [anchorName]);
 
@@ -78,6 +79,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				aria-haspopup='menu'
 				role='menuitem'
 				disabled={children.length > 0 ? false : true}
+				ref={triggerRef}
 			>
 				{trigger(groupName)}
 			</button>
