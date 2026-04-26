@@ -1,5 +1,3 @@
-import './anchorPositioningPolyfill.less';
-
 let polyfillPromise;
 
 const supportsAnchorPositioning = ()=>'anchorName' in document.documentElement.style;
