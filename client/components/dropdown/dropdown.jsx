@@ -2,13 +2,17 @@
  * A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
  * Anchor Positioning is now supported in all major browsers.  If support is needed for older browsers (namely, older firefox)
  * it is possible to use absolute positioning and calculations/resize observers to position things well enough, but adds another layer of complexity to the code.
+ * 
+ * As-is, the menus will always open down aligned on left to trigger, submenus open to the right initially.
+ * If no space, menus will still open down, but aligned to the right of the trigger.  Submenus will flip to the other side of the top menu.
+ * This could be customized either in more specific CSS, or as a `direction` prop on the component (in future iterations).
+ * 
  * @param {string} props.groupName - Name of the menu. Appears as the trigger text.
  * @param {string} [props.icon] - Icon to display in the trigger.
  * @param {string} [props.color] - Color class to add to the trigger.
  * @param {string} [props.className] - Additional classes for the menu wrapper.
  * @param {React.ReactNode} [props.customTrigger] - Custom element to use as a trigger.
  * @param {React.ReactNode} [props.children] - Child elements to render in the menu.
- * @param {'right'|'left'} [props.dir] - Preferred menu open direction.  Currently does nothing.
  * @returns {React.JSX.Element}
  */
 
@@ -19,7 +23,7 @@ import _ from 'lodash';
 // use react context to keep track of the menu depth (menus in menus)
 const MenuDepthContext = React.createContext(0);
 
-const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, dir = 'right', ...props })=>{
+const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, ...props })=>{
 	const menuId = `${_.kebabCase(groupName)}-menu`;
 	const anchorName = `--${menuId}`;
 	const depth = React.useContext(MenuDepthContext);
@@ -27,7 +31,6 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	// A menu is a submenu if depth > 0
 	const isSubMenu = depth > 0;
 
-	const wrapperRef = useRef(null);
 	const triggerRef = useRef(null);
 	const menuRef = useRef(null);
 
@@ -70,7 +73,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	};
 
 	return (
-		<div ref={wrapperRef} className={['menu-wrapper', className].join(' ')} role='none' >
+		<div className={['menu-wrapper', className].join(' ')} role='none' >
 			<button
 				id={groupName.replace(' ', '-')}
 				className={['menu-item', color].join(' ')}
