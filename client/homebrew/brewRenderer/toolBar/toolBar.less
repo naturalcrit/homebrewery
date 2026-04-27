@@ -15,15 +15,15 @@
 	font-size        : 13px;
 	color            : #CCCCCC;
 	background-color : #555555;
-	opacity    : 1;
-	interpolate-size: allow-keywords;
-	transition : all 0.2s ease;
+	opacity          : 1;
+	interpolate-size : allow-keywords;
+	transition       : all 0.2s ease;
 	> .tools {
-		flex: 1 1 auto;
 		display          : flex;
+		flex             : 1 1 auto;
 		flex-wrap        : wrap;
 		gap              : 8px 20px;
-		justify-content: center;
+		justify-content  : center;
 	}
 
 	.group {
@@ -33,10 +33,9 @@
 		align-items      : center;
 		justify-content  : center;
 		height           : 28px;
-		&:has(.toolBarToggle){
-			height: -webkit-fill-available;
-			height: stretch;
-
+		&:has(.toolBarToggle) {
+			height : -webkit-fill-available;
+			height : stretch;
 		}
 	}
 
@@ -173,39 +172,35 @@
 		}
 		i { font-size : 1.2em; }
 		&.toolBarToggle {
-			justify-content:left;
-			padding-left: 5px;
-			height: 100%;
+			justify-content : left;
+			height          : 100%;
+			padding-left    : 5px;
 		}
 	}
 
 	&.hidden {
 		flex-wrap        : nowrap;
 		width            : auto;
-		background-color : #0000;
+		background-color : #00000000;
 		opacity          : 0.7;
-		transition       : opacity 0.2s ease, background-color 0.2s ease, width .2s linear;
+		transition       : opacity 0.2s ease, background-color 0.2s ease, width 0.2s linear;
 
-		.group {
-			height : 28px;
-		}
+		.group { height : 28px; }
 
 		.toolBarToggle {
 			
-			&:focus {outline : none;
-				border  : 1px solid #D3D3D3;
-				border-radius: 8px;
-				background-color: #555;
-				transition: border-radius .5s ease;
+			&:focus {outline          : none;
+				background-color : #555555;
+				border           : 1px solid #D3D3D3;
+				border-radius    : 8px;
+				transition       : border-radius 0.5s ease;
 			}
 			&:hover {
-				border-radius: 8px;
-				background-color: #555;
-				color: white;
+				color            : white;
+				background-color : #555555;
+				border-radius    : 8px;
 			}
-			i {
-				filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
-			}
+			i { filter : drop-shadow(0 0 2px black) drop-shadow(0 0 1px black); }
 		}
 	}
 }
