@@ -34,8 +34,12 @@
 		justify-content  : center;
 		height           : 28px;
 		&:has(.toolBarToggle) {
-			height : -webkit-fill-available;
-			height : stretch;
+			height : revert-rule;
+			/* `stretch` not supported by firefox/safari (Apr 27, 2026), but is not much of a problem, the button is still visible and clickable.
+			* 	https://caniuse.com/?search=stretch
+			* 	https://bugzilla.mozilla.org/show_bug.cgi?id=1789477
+			*/
+			height : stretch;  
 		}
 	}
 
