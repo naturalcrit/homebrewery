@@ -92,6 +92,19 @@ const SharePage = (props)=>{
 								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
 									clone to new
 								</Nav.item>
+								<Nav.item
+									color='blue'
+									icon='fas fa-link'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+									copy url
+								</Nav.item>
+								{currentBrewRendererPageNum > 1 &&
+									<Nav.item
+										color='blue'
+										icon='fas fa-hashtag'
+										onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+										copy url (page {currentBrewRendererPageNum})
+									</Nav.item>}
 							</Nav.dropdown>
 						</>
 					)}
