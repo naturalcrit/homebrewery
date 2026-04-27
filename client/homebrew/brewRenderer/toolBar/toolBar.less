@@ -11,15 +11,14 @@
 	justify-content  : center;
 	width            : 100%;
 	height           : auto;
-	padding          : 2px 10px 2px 90px;
+	padding          : 2px 10px 2px;
 	font-family      : 'Open Sans', sans-serif;
 	font-size        : 13px;
 	color            : #CCCCCC;
 	background-color : #555555;
-	& > *:not(.toggleButton) {
-		opacity    : 1;
-		transition : all 0.2s ease;
-	}
+	opacity    : 1;
+	interpolate-size: allow-keywords;
+	transition : all 0.2s ease;
 
 	.group {
 		box-sizing       : border-box;
@@ -166,26 +165,19 @@
 
 	&.hidden {
 		flex-wrap        : nowrap;
-		width            : 50%;
-		overflow         : hidden;
-		background-color : unset;
+		width            : auto;
+		background-color : #0000;
 		opacity          : 0.7;
-		transition       : all 0.3s ease;
-		& > *:not(.toggleButton) {
-			opacity    : 0;
-			transition : all 0.2s ease;
-		}
+		transition       : opacity 0.2s ease, background-color 1s 0.2s ease, width .2s linear;
 
-		.toggleButton button i {
-			filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
+		.toggleButton button {
+			&:hover {
+				background-color: unset;
+				color: white;
+			}
+			i {
+				filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
+			}
 		}
 	}
-}
-
-.toggleButton {
-	position  : absolute;
-	left      : 0;
-	z-index   : 5;
-	display   : flex;
-	height    : 100%;
 }
