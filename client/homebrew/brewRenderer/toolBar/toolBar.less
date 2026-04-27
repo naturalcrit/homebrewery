@@ -5,13 +5,12 @@
 	z-index          : 1;
 	box-sizing       : border-box;
 	display          : flex;
-	flex-wrap        : wrap;
-	gap              : 8px 20px;
+	gap              : 8px;
 	align-items      : center;
-	justify-content  : center;
+	justify-content  : left;
 	width            : 100%;
 	height           : auto;
-	padding          : 2px 10px 2px;
+	padding          : 2px;
 	font-family      : 'Open Sans', sans-serif;
 	font-size        : 13px;
 	color            : #CCCCCC;
@@ -19,6 +18,13 @@
 	opacity    : 1;
 	interpolate-size: allow-keywords;
 	transition : all 0.2s ease;
+	> .tools {
+		flex: 1 1 auto;
+		display          : flex;
+		flex-wrap        : wrap;
+		gap              : 8px 20px;
+		justify-content: center;
+	}
 
 	.group {
 		box-sizing       : border-box;
@@ -27,6 +33,11 @@
 		align-items      : center;
 		justify-content  : center;
 		height           : 28px;
+		&:has(.toolBarToggle){
+			height: -webkit-fill-available;
+			height: stretch;
+
+		}
 	}
 
 	.tool {
@@ -161,6 +172,11 @@
 			background-color : unset !important;
 		}
 		i { font-size : 1.2em; }
+		&.toolBarToggle {
+			justify-content:left;
+			padding-left: 5px;
+			height: 100%;
+		}
 	}
 
 	&.hidden {
@@ -168,11 +184,23 @@
 		width            : auto;
 		background-color : #0000;
 		opacity          : 0.7;
-		transition       : opacity 0.2s ease, background-color 1s 0.2s ease, width .2s linear;
+		transition       : opacity 0.2s ease, background-color 0.2s ease, width .2s linear;
 
-		.toggleButton button {
+		.group {
+			height : 28px;
+		}
+
+		.toolBarToggle {
+			
+			&:focus {outline : none;
+				border  : 1px solid #D3D3D3;
+				border-radius: 8px;
+				background-color: #555;
+				transition: border-radius .5s ease;
+			}
 			&:hover {
-				background-color: unset;
+				border-radius: 8px;
+				background-color: #555;
 				color: white;
 			}
 			i {
