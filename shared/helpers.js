@@ -105,11 +105,25 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
-const printCurrentBrew = ()=>{
+const printCurrentBrew = async ()=>{
 	if(window.typeof !== 'undefined') {
+		const iframeDoc = window.frames['BrewRenderer'].contentDocument;
+
+		// get all img elements with lazy loading (currently only elements generated through MarkedJS)
+		const lazyImages = [...iframeDoc.querySelectorAll('img[loading="lazy"]')];
+		lazyImages.forEach((img)=>{ img.loading = 'eager'; });
+
+		// waits for images to load before resolving promise and opening print dialog
+		await Promise.all(
+			lazyImages
+							.filter((img)=>!img.complete)
+							.map((img)=>new Promise((resolve)=>{ img.onload = resolve; img.onerror = resolve; }))
+		);
+
 		window.frames['BrewRenderer'].contentWindow.print();
+
 		//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-		const node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
+		const node = iframeDoc.getElementsByClassName('brewRenderer').item(0);
 		node.style.display='none';
 		node.offsetHeight; // accessing this is enough to trigger a reflow
 		node.style.display='';
