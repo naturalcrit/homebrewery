@@ -820,7 +820,7 @@ export default [
 			{
 				name : 'Open Sans',
 				icon : 'font OpenSans',
-				gen	 : dedent`{{font-family:OpenSans Dummy Text}}`
+				gen	 : dedent`{{font-family:"Open Sans" Dummy Text}}`
 			},
 			{
 				name : 'Code Bold',
