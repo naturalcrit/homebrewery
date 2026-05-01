@@ -107,26 +107,33 @@ const splitTextStyleAndMetadata = (brew)=>{
 
 const printCurrentBrew = async ()=>{
 	if(window.typeof !== 'undefined') {
-		const iframeDoc = window.frames['BrewRenderer'].contentDocument;
+		// fire a custom event for the print cycle
+		document.dispatchEvent(new CustomEvent('print:startprep'));
+		try {
+			const iframeDoc = window.frames['BrewRenderer'].contentDocument;
 
-		// get all img elements with lazy loading (currently only elements generated through MarkedJS)
-		const lazyImages = [...iframeDoc.querySelectorAll('img[loading="lazy"]')];
-		lazyImages.forEach((img)=>{ img.loading = 'eager'; });
+			// get all img elements with lazy loading (currently only elements generated through MarkedJS)
+			const lazyImages = [...iframeDoc.querySelectorAll('img[loading="lazy"]')];
+			lazyImages.forEach((img)=>{ img.loading = 'eager'; });
 
-		// waits for images to load before resolving promise and opening print dialog
-		await Promise.all(
-			lazyImages
-							.filter((img)=>!img.complete)
-							.map((img)=>new Promise((resolve)=>{ img.onload = resolve; img.onerror = resolve; }))
-		);
+			// waits for images to load before resolving promise and opening print dialog
+			await Promise.all(
+				lazyImages
+								.filter((img)=>!img.complete)
+								.map((img)=>new Promise((resolve)=>{ img.onload = resolve; img.onerror = resolve; }))
+			);
 
-		window.frames['BrewRenderer'].contentWindow.print();
+			window.frames['BrewRenderer'].contentWindow.print();
 
-		//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-		const node = iframeDoc.getElementsByClassName('brewRenderer').item(0);
-		node.style.display='none';
-		node.offsetHeight; // accessing this is enough to trigger a reflow
-		node.style.display='';
+			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+			const node = iframeDoc.getElementsByClassName('brewRenderer').item(0);
+			node.style.display='none';
+			node.offsetHeight; // accessing this is enough to trigger a reflow
+			node.style.display='';
+		} finally {
+			// when lazy load images have all been loaded, and the doc re-rendered for print preview, emit 'finished' event.
+			document.dispatchEvent(new CustomEvent('print:finishedprep'));
+		}
 	}
 };
 
