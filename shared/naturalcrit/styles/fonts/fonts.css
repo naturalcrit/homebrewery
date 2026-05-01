@@ -1,12 +1,4 @@
 /* open-sans-latin-wght-normal */
-@font-face {
-	font-family   : 'Open Sans';
-	font-style    : normal;
-	font-weight   : 300;
-	src           : url('open-sans-latin-300-normal.woff2') format('woff2');
-	font-display  : swap;
-	unicode-range : U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
 
 @font-face {
 	font-family   : 'Open Sans';
@@ -17,15 +9,11 @@
 	unicode-range : U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
 }
 
-@font-face {
-	font-family   : 'Open Sans';
-	font-style    : normal;
-	font-weight   : 600;
-	src           : url('open-sans-latin-600-normal.woff2') format('woff2');
-	font-display  : swap;
-	unicode-range : U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
-}
-
+/*
+* Nowhere is font-weight: 700 actually used with Open Sans, everything is set to 800.
+* But, 800 *is* too bold.  And since we don't have an 800 font file, it's just using the 
+* 700 font file and it looks fine.  Not sure it's worth changing everything to 700?
+*/
 @font-face {
 	font-family   : 'Open Sans';
 	font-style    : normal;
