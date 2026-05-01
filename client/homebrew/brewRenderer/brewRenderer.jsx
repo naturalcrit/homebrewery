@@ -29,7 +29,6 @@ const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
