@@ -17,125 +17,28 @@ const indentLess = (view)=>{
 	return true;
 };
 
-const makeBold = (view)=>{
+const wrapSelection = (prefix, suffix) => (view) => {
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
 
-	let text, cursor;
+	let text, selection;
 
 	if(from === to) {
-		text = '****';
-		cursor = from + 2;
-	} else if(selected.startsWith('**') && selected.endsWith('**')) {
-		text = selected.slice(2, -2);
-		cursor = from + text.length;
-	} else {
-		text = `**${selected}**`;
-		cursor = from + text.length;
+		text = prefix + suffix;
+		selection = { anchor: from + prefix.length, head: from + prefix.length };
+	}
+	else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
+		text = selected.slice(prefix.length, -suffix.length);
+		selection = { anchor: from, head: from + text.length };
+	}
+	else {
+		text = `${prefix}${selected}${suffix}`;
+		selection = { anchor: from, head: from + text.length };
 	}
 
 	view.dispatch({
 		changes   : { from, to, insert: text },
-		selection : { anchor: cursor },
-	});
-
-	return true;
-};
-
-const makeItalic = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-
-	let text, cursor;
-
-	if(from === to) {
-		text = '**';
-		cursor = from + 1;
-	} else if(selected.startsWith('*') && selected.endsWith('*')) {
-		text = selected.slice(2, -2);
-		cursor = from + text.length;
-	} else {
-		text = `*${selected}*`;
-		cursor = from + text.length;
-	}
-
-	view.dispatch({
-		changes   : { from, to, insert: text },
-		selection : { anchor: cursor },
-	});
-
-	return true;
-};
-
-const makeUnderline = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-
-	let text, cursor;
-
-	if(from === to) {
-		text = '<u></u>';
-		cursor = from + 3;
-	} else if(selected.startsWith('<u>') && selected.endsWith('</u>')) {
-		text = selected.slice(3, -4);
-		cursor = from + text.length;
-	} else {
-		text = `<u>${selected}</u>`;
-		cursor = from + text.length;
-	}
-
-	view.dispatch({
-		changes   : { from, to, insert: text },
-		selection : { anchor: cursor },
-	});
-
-	return true;
-};
-const makeSuper = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-
-	let text, cursor;
-
-	if(from === to) {
-		text = '^^';
-		cursor = from + 1;
-	} else if(selected.startsWith('^') && selected.endsWith('^')) {
-		text = selected.slice(1, -1);
-		cursor = from + text.length;
-	} else {
-		text = `^${selected}^`;
-		cursor = from + text.length;
-	}
-
-	view.dispatch({
-		changes   : { from, to, insert: text },
-		selection : { anchor: cursor },
-	});
-
-	return true;
-};
-
-const makeSub = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-
-	let text, cursor;
-
-	if(from === to) {
-		text = '^^^^';
-		cursor = from + 2;
-	} else if(selected.startsWith('^^') && selected.endsWith('^^')) {
-		text = selected.slice(2, -2);
-		cursor = from + text.length;
-	} else {
-		text = `^^${selected}^^`;
-		cursor = from + text.length;
-	}
-
-	view.dispatch({
-		changes   : { from, to, insert: text },
-		selection : { anchor: cursor },
+		selection
 	});
 
 	return true;
@@ -151,8 +54,8 @@ const makeNbsp = (view) => {
   const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
 
   view.dispatch({
-    changes: { from, to: from, insert },
-    selection: { anchor: from + insert.length },
+    changes   : { from, to: from, insert },
+    selection : { anchor: from + insert.length },
   });
 
   return true;
@@ -268,27 +171,27 @@ export const generalKeymap = Prec.high(keymap.of([
 
 export const markdownKeymap = Prec.highest(keymap.of([
 	//{ key: 'Shift-Tab', run: indentMore },
-	{ key: 'Shift-Tab', run: indentLess },
-	{ key: 'Mod-b', run: makeBold },
-	{ key: 'Mod-i', run: makeItalic },
-	{ key: 'Mod-u', run: makeUnderline },
-	{ key: 'Shift-Mod-=', run: makeSuper },
-	{ key: 'Mod-=', run: makeSub },
-	{ key: 'Mod-.', run: makeNbsp },
-	{ key: 'Shift-Mod-.', run: makeSpace },
-	{ key: 'Shift-Mod-,', run: removeSpace },
-	{ key: 'Mod-m', run: makeSpan },
-	{ key: 'Shift-Mod-m', run: makeDiv },
-	{ key: 'Mod-/', run: makeComment },
-	{ key: 'Mod-k', run: makeLink },
-	{ key: 'Mod-l', run: makeList('UL') },
-	{ key: 'Shift-Mod-l', run: makeList('OL') },
-	{ key: 'Shift-Mod-1', run: makeHeader(1) },
-	{ key: 'Shift-Mod-2', run: makeHeader(2) },
-	{ key: 'Shift-Mod-3', run: makeHeader(3) },
-	{ key: 'Shift-Mod-4', run: makeHeader(4) },
-	{ key: 'Shift-Mod-5', run: makeHeader(5) },
-	{ key: 'Shift-Mod-6', run: makeHeader(6) },
+	{ key: 'Shift-Tab',       run: indentLess },
+	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
+	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
+	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline
+	{ key: 'Shift-Mod-=',     run: wrapSelection('^', '^') },      // makeSuper
+	{ key: 'Mod-=',           run: wrapSelection('^^', '^^') },    // makeSub
+	{ key: 'Mod-.',           run: makeNbsp },
+	{ key: 'Shift-Mod-.',     run: makeSpace },
+	{ key: 'Shift-Mod-,',     run: removeSpace },
+	{ key: 'Mod-m',           run: makeSpan },
+	{ key: 'Shift-Mod-m',     run: makeDiv },
+	{ key: 'Mod-/',           run: makeComment },
+	{ key: 'Mod-k',           run: makeLink },
+	{ key: 'Mod-l',           run: makeList('UL') },
+	{ key: 'Shift-Mod-l',     run: makeList('OL') },
+	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
+	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
+	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
+	{ key: 'Shift-Mod-4',     run: makeHeader(4) },
+	{ key: 'Shift-Mod-5',     run: makeHeader(5) },
+	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
+	{ key: 'Mod-Enter',       run: newPage },
 	{ key: 'Shift-Mod-Enter', run: newColumn },
-	{ key: 'Mod-Enter', run: newPage },
 ]));
