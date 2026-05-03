@@ -1,17 +1,16 @@
 import { foldService, codeFolding } from '@codemirror/language';
+import regexGroups from '../../homebrew/utils/markdownRegexes.js';
 
 const foldOnPages = [
 	foldService.of((state, lineStart)=>{ //tells where to fold
 		const doc = state.doc;
-		const matcher = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-
 		const startLine = doc.lineAt(lineStart);
 		const prevLineText = startLine.number > 1 ? doc.line(startLine.number - 1).text : '';
 
-		if(!matcher.test(prevLineText)) return null;
+		if(!regexGroups.v3.pageBreak.test(prevLineText)) return null;
 
 		let endLine = startLine.number;
-		while (endLine < doc.lines && !matcher.test(doc.line(endLine + 1).text)) {
+		while (endLine < doc.lines && !regexGroups.v3.pageBreak.test(doc.line(endLine + 1).text)) {
 			endLine++;
 		}
 

@@ -17,8 +17,7 @@ import {
 	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
-import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, syntaxHighlighting } from '@codemirror/language';
-import { foldEffect } from '@codemirror/language';
+import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, foldEffect, syntaxHighlighting } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
@@ -38,14 +37,13 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-console.log(themes);
-
 import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
 import foldOnPages from './customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
+import regexGroups from '../../homebrew/utils/markdownRegexes.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = regexGroups.v3.pageBreak;
 
 const createHighlightPlugin = (renderer, tab)=>{
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
@@ -156,6 +154,7 @@ const CodeEditor = forwardRef(
 		const pageMap = useRef([]);
 
 		const recomputePages = (doc)=>{
+			if (tab !== 'brewText') return;
 			const pages = [0];
 			const text = doc.toString();
 			let offset = 0;
