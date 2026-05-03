@@ -3,7 +3,7 @@
 
 export default {
 	"v3": {
-		"pageBreak": /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m,
+		"pageBreak": /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm,
         "snippetBreak": /^\\snippet\ .*$/,
 		"columnBreak": /^\\column(?:break)?$/,
 		"emoji": /(:\w+?:)/g,

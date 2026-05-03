@@ -24,9 +24,6 @@ const EditorThemes = Object.entries(themes)
   )
   .map(([name])=>name);
 
-
-//const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-//const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
 				/*=======---  Example CSS styling  ---=======*/
 				/* Any CSS here will apply to your document! */
