@@ -41,8 +41,9 @@ import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
 import foldOnPages from './customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
+import regexGroups from '../../homebrew/utils/markdownRegexes.js';
 
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_V3 = regexGroups.v3.pageBreak;
 
 const createHighlightPlugin = (renderer, tab)=>{
 	//this function takes the custom tokens created in the tokenize function in customhighlight files

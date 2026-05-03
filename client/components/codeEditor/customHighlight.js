@@ -1,5 +1,6 @@
 import { HighlightStyle } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
+import regexGroups from '../../homebrew/utils/markdownRegexes.js';
 
 // Making the tokens
 const customTags = {
@@ -30,15 +31,14 @@ export function tokenizeCustomMarkdown(text) {
 
 	lines.forEach((lineText, lineNumber)=>{
 		// --- Page / snippet lines ---
-		if(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m.test(lineText)) tokens.push({ line: lineNumber, type: customTags.pageLine });
-		if(/^\\snippet\ .*$/.test(lineText)) tokens.push({ line: lineNumber, type: customTags.snippetLine });
-		if(/^\\column(?:break)?$/.test(lineText)) tokens.push({ line: lineNumber, type: customTags.columnSplit });
+		if(regexGroups.v3.pageBreak.test(lineText)) tokens.push({ line: lineNumber, type: customTags.pageLine });
+		if(regexGroups.v3.snippetBreak.test(lineText)) tokens.push({ line: lineNumber, type: customTags.snippetLine });
+		if(regexGroups.v3.columnBreak.test(lineText)) tokens.push({ line: lineNumber, type: customTags.columnSplit });
 
 		// --- Emoji ---
-		if(/:.\w+?:/.test(lineText)) {
-			const emojiRegex = /(:\w+?:)/g;
+		if(regexGroups.v3.emoji.test(lineText)) {
 			let match;
-			while ((match = emojiRegex.exec(lineText)) !== null) {
+			while ((match = regexGroups.v3.emoji.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
 					type : customTags.emoji,
@@ -51,8 +51,8 @@ export function tokenizeCustomMarkdown(text) {
 		// --- Superscript / Subscript ---
 		if(/\^/.test(lineText)) {
 			let startIndex = lineText.indexOf('^');
-			const superRegex = /\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^/gy;
-			const subRegex = /\^\^(?!\s)(?=([^\n\^]*[^\s\^]))\1\^\^/gy;
+			const superRegex = regexGroups.v3.superscript;
+			const subRegex = regexGroups.v3.subscript;
 
 			while (startIndex >= 0) {
 				superRegex.lastIndex = subRegex.lastIndex = startIndex;
@@ -82,8 +82,7 @@ export function tokenizeCustomMarkdown(text) {
 		}
 
 		// --- single line def list ---
-		const singleLineRegex = /^(?=.*[^:])(.+?)(\s*)(::)([^\n]*)$/dmy;
-		const match = singleLineRegex.exec(lineText);
+		const match = regexGroups.v3.defListSingleLine.exec(lineText);
 
 		if(match) {
 			const [full, term, spaces, colons, desc] = match;
@@ -182,9 +181,8 @@ export function tokenizeCustomMarkdown(text) {
 		}
 
 		if(lineText.includes('{') && lineText.includes('}')) {
-			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
 			let match;
-			while ((match = injectionRegex.exec(lineText)) !== null) {
+			while ((match = regexGroups.v3.injection.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
 					from : match.index,
@@ -195,10 +193,9 @@ export function tokenizeCustomMarkdown(text) {
 		}
 		if(lineText.includes('{{') && lineText.includes('}}')) {
 			// Inline blocks: single-line {{…}}
-			const spanRegex = /{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *|}}/g;
 			let match;
 			let blockCount = 0;
-			while ((match = spanRegex.exec(lineText)) !== null) {
+			while ((match = regexGroups.v3.inline_block.exec(lineText)) !== null) {
 				if(match[0].startsWith('{{')) {
 					blockCount += 1;
 				} else {
@@ -219,9 +216,7 @@ export function tokenizeCustomMarkdown(text) {
 			// Highlight block divs {{\n Content \n}}
 			let endCh = lineText.length + 1;
 
-			const match = lineText.match(
-				/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/,
-			);
+			const match = lineText.match(regexGroups.v3.block);
 			if(match) endCh = match.index + match[0].length;
 			tokens.push({ line: lineNumber, type: customTags.block });
 		}
@@ -236,10 +231,9 @@ export function tokenizeCustomCSS(text) {
 
 	lines.forEach((lineText, lineNumber)=>{
 
-		if(/--[a-zA-Z0-9-_]+/gm.test(lineText)) {
-			const varRegex =/--[a-zA-Z0-9-_]+/gm;
+		if(regexGroups.css.variable.test(lineText)) {
 			let match;
-			while ((match = varRegex.exec(lineText)) !== null) {
+			while ((match = regexGroups.css.variable.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
 					from : match.index +1,
@@ -288,6 +282,3 @@ export const customHighlightStyle = HighlightStyle.define([
 	{ tag: tags.invalid,  class: 'cm-error' },
 
 ]);
-
-
-
