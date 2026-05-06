@@ -88,7 +88,7 @@
   "dependencies": {
     "@babel/core": "^7.29.0",
     "@babel/plugin-transform-runtime": "^7.29.0",
-    "@babel/preset-env": "^7.29.3",
+    "@babel/preset-env": "^7.29.5",
     "@babel/preset-react": "^7.28.5",
     "@babel/runtime": "^7.29.2",
     "@codemirror/autocomplete": "^6.20.1",
@@ -145,7 +145,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-frame-component": "^5.3.2",
-    "react-router": "^7.14.0",
+    "react-router": "^7.15.0",
     "sanitize-filename": "1.6.4",
     "superagent": "^10.2.1"
   },
