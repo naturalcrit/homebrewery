@@ -162,13 +162,21 @@ const makeHeader = (level)=>(view)=>{
 
 const newColumn = (view)=>{
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\column\n\n' } });
+	const insert = '\n\\column\n\n';
+	view.dispatch({
+		changes   : { from, to, insert: insert },
+		selection : { anchor: from + insert.length }
+	});
 	return true;
 };
 
 const newPage = (view)=>{
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\page\n\n' } });
+	const insert = '\n\\page\n\n';
+	view.dispatch({
+		changes   : { from, to, insert: insert },
+		selection : { anchor: from + insert.length }
+	});
 	return true;
 };
 
