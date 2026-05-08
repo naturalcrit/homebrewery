@@ -103,23 +103,33 @@ const removeSpace = (view)=>{
 	return true;
 };
 
+// Wraps text in braces on same line, leaves cursor ready to add attributes.  Or, removes braces, ready to continue typing content.
 const makeSpan = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
+	const alreadyWrapped = selected.startsWith('{{') && selected.endsWith('}}');
+	const text = alreadyWrapped
 		? selected.slice(2, -2)
-		: `{{${selected}}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
+		: `{{ ${selected}}}`;
+	view.dispatch({
+		changes   : { from, to, insert: text },
+		selection : { anchor: alreadyWrapped ? from + text.length : from + 2 }
+	});
 	return true;
 };
 
+// Wraps text in braces on new lines, leaves cursor ready to add attributes.  Or, removes braces and new lines, ready to continue typing content.
 const makeDiv = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
-		? selected.slice(2, -2)
+	const alreadyWrapped = selected.startsWith('{{\n') && selected.endsWith('\n}}');
+	const text = alreadyWrapped
+		? selected.slice(3, -3)
 		: `{{\n${selected}\n}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
+	view.dispatch({
+		changes   : { from, to, insert: text },
+		selection : { anchor: alreadyWrapped ? from + text.length : from + 2 }
+	});
 	return true;
 };
 
