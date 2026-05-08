@@ -81,7 +81,10 @@ const makeSpace = (view)=>{
 		const percent = Math.min(parseInt(match[1], 10) + 10, 100);
 		newText = `{{width:${percent}% }}`;
 	}
-	view.dispatch({ changes: { from, to, insert: newText } });
+	view.dispatch({ 
+		changes   : { from, to, insert: newText },
+		selection : { anchor: from, head: from + newText.length }
+	});
 	return true;
 };
 
@@ -92,7 +95,10 @@ const removeSpace = (view)=>{
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
 		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
-		view.dispatch({ changes: { from, to, insert: newText } });
+		view.dispatch({ 
+			changes   : { from, to, insert: newText },
+			selection : { anchor: from, head: from + newText.length }
+		});
 	}
 	return true;
 };
