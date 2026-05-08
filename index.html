@@ -42,8 +42,10 @@
 
 			if (window.location.pathname.startsWith('/admin')) {
 				import('/client/admin/main.jsx');
-			} else {
+			} else if (window.location.pathname.startsWith('/legacy') || window.location.pathname.startsWith('/classic')) {
 				import('/client/homebrew/main.jsx');
+			} else {
+				import('/client/reborn/main.jsx');
 			}
 		</script>
 	</body>

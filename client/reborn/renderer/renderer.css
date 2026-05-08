@@ -1,0 +1,112 @@
+/*
+ * Reborn renderer page wrappers.
+ *
+ * IMPORTANT: This file MUST NOT contain any rules that style content inside
+ * `.page`. Everything inside the page (sizing, padding, typography, colour,
+ * callouts, stat blocks, page accents...) is owned by the canonical Blank +
+ * 5ePHB theme stylesheets loaded at runtime in main.jsx. Adding a `.page p
+ * { ... }` rule here is a bug. Adding a `.page { ... }` rule is also a bug —
+ * Blank already sizes the page to 215.9mm x 279.4mm with the proper padding,
+ * box-sizing, overflow, and column setup.
+ *
+ * What this file owns: the dark scrollable container around the pages and the
+ * inter-page gap / drop-shadow. These mirror the legacy brewRenderer.less
+ * wrappers so the reborn client doesn't depend on the legacy app's bundle.
+ */
+
+.brewRenderer {
+	width: 100%;
+	height: 100vh;
+	padding: 30px 0;
+	overflow-y: auto;
+	background-color: #2f3135;
+}
+
+.brewRenderer .pages {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 30px;
+}
+
+.brewRenderer .pages > .page {
+	box-shadow: 1px 4px 14px #000000;
+}
+
+.brewRenderer .pages > .page [id] {
+	scroll-margin-top: 100px;
+}
+
+/*
+ * Wave 5 paginator: complement the column-flow by telling the browser
+ * NOT to split keep-together blocks across columns. The manifest layer
+ * already declared `keepTogether: true` for these types; these CSS rules
+ * are the visual half of that contract. The canonical theme already
+ * emits `break-inside: avoid` for tables and blockquotes; we add the
+ * remaining keep-together block types here.
+ *
+ * Adding a new keep-together block type means: (1) declare it in the
+ * manifest, (2) add its DOM class here.
+ */
+.brewRenderer .pages > .page .monster.frame,
+.brewRenderer .pages > .page .note,
+.brewRenderer .pages > .page .descriptive,
+.brewRenderer .pages > .page .spell {
+	-webkit-column-break-inside: avoid;
+	page-break-inside: avoid;
+	break-inside: avoid;
+}
+
+/*
+ * Wave 5 paginator: the offscreen measurement DOM. The canonical .page
+ * rule sets `content-visibility: auto` and `contain: strict`, which both
+ * cause the browser to skip rendering descendants when the element is
+ * not visible on screen — making their heights read back as 0. We force
+ * them off so block heights measure correctly while the host remains
+ * visually hidden. !important is necessary because the canonical rule
+ * is loaded after our stylesheet (themes/V3/Blank/style.css).
+ */
+.reborn-measure-host {
+	position: absolute !important;
+	top: 0 !important;
+	left: 0 !important;
+	width: 0 !important;
+	height: 0 !important;
+	overflow: visible !important;
+	pointer-events: none !important;
+	z-index: -1 !important;
+	clip-path: inset(100%) !important;
+}
+.reborn-measure-host .page,
+.reborn-measure-host .pages,
+.reborn-measure-host.reborn-measure-host {
+	content-visibility: visible !important;
+	contain: none !important;
+}
+.reborn-measure-host .reborn-measure-column {
+	width: 11.8cm !important;
+	height: auto !important;
+	column-count: 1 !important;
+	-webkit-column-count: 1 !important;
+	-moz-column-count: 1 !important;
+	column-width: auto !important;
+	column-fill: auto !important;
+	overflow: visible !important;
+	box-shadow: none !important;
+}
+/*
+ * `column-span: all` (used on h1 in the canonical 5ePHB theme) makes the
+ * h1 span every column of its container. In our single-column measurer
+ * that *should* be a no-op, but in practice it causes the h1 to lay out
+ * with zero height because there's no multi-column context to span. We
+ * neutralize it for measurement so heading heights are read correctly.
+ */
+.reborn-measure-host .reborn-measure-column h1,
+.reborn-measure-host .reborn-measure-column h2,
+.reborn-measure-host .reborn-measure-column h3,
+.reborn-measure-host .reborn-measure-column h4,
+.reborn-measure-host .reborn-measure-column h5,
+.reborn-measure-host .reborn-measure-column h6 {
+	column-span: none !important;
+	-webkit-column-span: none !important;
+}

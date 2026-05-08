@@ -1,0 +1,142 @@
+/* Wave 3 editor chrome.
+ *
+ * Critical rule: nothing inside `.page` may be styled here. The canonical PHB
+ * stylesheet owns that surface. We only style the host wrapper, the slash
+ * popup, the in-monster form inputs (stripped down so the canonical .monster
+ * styling shows through), and the dark surrounding chrome.
+ */
+
+.reborn-pm-host {
+	outline: none;
+}
+.reborn-pm-host:focus-within {
+	outline: none;
+}
+
+/* PM ProseMirror element gets contentEditable=true; remove the default focus
+ * ring so it doesn't fight with the parchment look. */
+.reborn-pm-host .ProseMirror {
+	outline: none;
+	min-height: 100px;
+}
+
+/* ---- stat block in-edit form inputs ---- */
+
+/* Keep field inputs visually invisible — just blend into the canonical
+ * .monster typography. The canonical .monster stylesheet sets font, color,
+ * and sizing on the surrounding tags; we only need to remove browser chrome
+ * from <input>. */
+.monster.frame .sb-input {
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	color: inherit;
+	background: transparent;
+	border: 0;
+	outline: none;
+	width: auto;
+	min-width: 1.5em;
+	box-sizing: content-box;
+}
+.monster.frame .sb-input:focus {
+	background: rgba(159, 35, 12, 0.07);
+	border-radius: 2px;
+}
+.monster.frame .sb-input[type='number'] {
+	-moz-appearance: textfield;
+	width: 3em;
+	text-align: center;
+}
+.monster.frame .sb-input[type='number']::-webkit-outer-spin-button,
+.monster.frame .sb-input[type='number']::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+.monster.frame .sb-name {
+	font: inherit;
+	width: 100%;
+}
+.monster.frame .sb-mod {
+	font-size: 0.85em;
+	opacity: 0.85;
+}
+.monster.frame .sb-addBtn,
+.monster.frame .sb-removeBtn {
+	font: inherit;
+	color: inherit;
+	background: transparent;
+	border: 1px dashed currentColor;
+	border-radius: 3px;
+	padding: 1px 6px;
+	margin-left: 4px;
+	cursor: pointer;
+	opacity: 0.6;
+}
+.monster.frame .sb-addBtn:hover,
+.monster.frame .sb-removeBtn:hover {
+	opacity: 1;
+}
+/* PM "selected" outline on the NodeView. */
+.monster.frame.sb-selected {
+	box-shadow: 0 0 0 2px rgba(67, 124, 207, 0.65);
+}
+
+/* ---- slash popup ---- */
+
+.slash-popup {
+	min-width: 200px;
+	max-height: 320px;
+	overflow-y: auto;
+	background: #2a2c30;
+	color: #f4efe5;
+	border: 1px solid #4b5058;
+	border-radius: 6px;
+	box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+	font-family: 'ScalySansRemake', Arial, sans-serif;
+	font-size: 14px;
+}
+.slash-item {
+	padding: 6px 12px;
+	cursor: pointer;
+}
+.slash-item.active,
+.slash-item:hover {
+	background: #3a3e44;
+}
+.slash-empty {
+	padding: 8px 12px;
+	color: #8b8d92;
+	font-style: italic;
+}
+
+/* ---- editor toolbar ---- */
+
+.reborn-toolbar {
+	position: sticky;
+	top: 0;
+	z-index: 100;
+	display: flex;
+	gap: 8px;
+	padding: 8px 16px;
+	background: #1f2125;
+	border-bottom: 1px solid #3a3d42;
+	color: #cfc7ba;
+	font-family: 'ScalySansRemake', Arial, sans-serif;
+	font-size: 13px;
+}
+.reborn-toolbar button {
+	padding: 4px 10px;
+	background: #2a2c30;
+	color: #f4efe5;
+	border: 1px solid #4b5058;
+	border-radius: 4px;
+	cursor: pointer;
+	font: inherit;
+}
+.reborn-toolbar button:hover {
+	background: #3a3e44;
+}
+.reborn-toolbar button:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}

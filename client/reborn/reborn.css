@@ -1,0 +1,41 @@
+:root {
+	color-scheme: light;
+	background: #2f3135;
+}
+
+body {
+	margin: 0;
+	font-family: 'BookInsanityRemake', Georgia, serif;
+}
+
+.reborn-shell {
+	display: grid;
+	place-items: center;
+	width: 100vw;
+	height: 100vh;
+	color: #f4efe5;
+	background: #2f3135;
+	font-family: 'ScalySansRemake', Arial, sans-serif;
+}
+
+.reborn-shell-message {
+	max-width: 460px;
+	padding: 24px 28px;
+	text-align: center;
+	border: 1px solid #4b5058;
+	border-radius: 10px;
+	background: #25282d;
+}
+
+.reborn-shell-message h1 {
+	margin: 0 0 8px;
+	font-family: 'NodestoCapsCondensed', Georgia, serif;
+	font-size: 28px;
+	color: #d6bd83;
+}
+
+.reborn-shell-message p {
+	margin: 0;
+	color: #cfc7ba;
+	font-size: 14px;
+}

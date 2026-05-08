@@ -19,6 +19,7 @@ import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
+import rebornPdfApi                from './reborn-pdf.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
@@ -115,6 +116,7 @@ export default async function createApp(vite) {
 	app.use(homebrewApi);
 	app.use(adminApi(vite));
 	app.use(vaultApi);
+	app.use(rebornPdfApi);
 
 	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');

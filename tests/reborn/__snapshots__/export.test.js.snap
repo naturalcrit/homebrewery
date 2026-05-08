@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`exportMarkdown snapshot — first 1200 chars are stable 1`] = `
+"---
+title: The Sunken Grove
+author: Homebrewery Reborn — Wave 2 Demo
+theme: 5ePHB
+pageSize: Letter
+---
+
+# The Sunken Grove
+
+Centuries before the Sword Coast was charted, an emerald spring fed a grove so vast that druids called it the world tree’s shadow. Today little remains above the silt, save for moss-blanketed standing stones and the brittle memory of a faith that once held the wilderness in trust. Adventurers who descend into the grove return changed, if they return at all, and the few who do speak of voices answering questions never asked aloud.
+
+The grove is a dungeon of damp tunnels carved by water and root. Its *warden* is a corrupted druid known as **Vael of the Hollow**, a former protector who broke under the strain of a forgotten oath. The party may meet her as foe, supplicant, or both, depending on what they have already done above ground.
+
+> ##### Running the Grove
+> Encounters in the Sunken Grove should feel like riddles whose answers are half-remembered. When in doubt, let the wilderness reply with another question — a deer that lifts its head at exactly the wrong moment, or a wind that carries one player’s name and no one else’s.
+
+## Approaches to the Grove
+
+Three "
+`;
