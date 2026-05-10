@@ -119,7 +119,6 @@ const createHighlightPlugin = (renderer, tab)=>{
 					}
 				});
 
-
 				tokens.forEach((tok)=>{
 					const line = view.state.doc.line(tok.line + 1);
 
@@ -449,7 +448,6 @@ const CodeEditor = forwardRef(
 
 			injectText : (text)=>{
 				const view = viewRef.current;
-
 
 				view.dispatch(
 					view.state.replaceSelection(text)
