@@ -17,13 +17,13 @@ import {
 	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
-import { 
-	foldAll as foldAllCmd, 
+import {
+	foldAll as foldAllCmd,
 	unfoldAll as unfoldAllCmd,
-	foldGutter, 
-	foldKeymap, 
-	foldEffect, 
-	foldState, 
+	foldGutter,
+	foldKeymap,
+	foldEffect,
+	foldState,
 	syntaxHighlighting,
 	syntaxTree,
 	ensureSyntaxTree
@@ -152,30 +152,14 @@ const createHighlightPlugin = (renderer, tab)=>{
 								class : `cm-${tok.type}`
 							}).range(line.from)
 						);
-
 						if(tok.type === 'pageLine' && tab === 'brewText') {
 							pageCount++;
 							if(line.from === 0) pageCount--;
-
-							decos.push(
-								Decoration.line({
-									attributes : {
-										'data-page-number' : pageCount
-									}
-								}).range(line.from)
-							);
+							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
 						}
-
 						if(tok.type === 'snippetLine' && tab === 'brewSnippets') {
 							snippetCount++;
-
-							decos.push(
-								Decoration.line({
-									attributes : {
-										'data-page-number' : snippetCount
-									}
-								}).range(line.from)
-							);
+							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
 						}
 					}
 				});
