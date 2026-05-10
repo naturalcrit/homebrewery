@@ -123,13 +123,11 @@ const createHighlightPlugin = (renderer, tab)=>{
 				tokens.forEach((tok)=>{
 					const line = view.state.doc.line(tok.line + 1);
 
-					// INLINE TOKENS (marks)
 					if(tok.from != null && tok.to != null && tok.from < tok.to) {
 						const from = line.from + tok.from;
 						const to = line.from + tok.to;
 
 						const attrs = {};
-						// attach URL only for links
 						if(tok.type === 'Image' && tok.url) {
 
 							attrs['data-url'] = tok.url;
@@ -143,10 +141,7 @@ const createHighlightPlugin = (renderer, tab)=>{
 									: {})
 							}).range(from, to)
 						);
-					}
-
-					// LINE TOKENS
-					else {
+					} else {
 						decos.push(
 							Decoration.line({
 								class : `cm-${tok.type}`
@@ -168,9 +163,7 @@ const createHighlightPlugin = (renderer, tab)=>{
 				return Decoration.set(decos);
 			}
 		},
-		{
-			decorations : (v)=>v.decorations
-		}
+		{ decorations: (v)=>v.decorations }
 	);
 };
 
