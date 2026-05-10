@@ -17,7 +17,17 @@ import {
 	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
-import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, foldEffect, foldState, syntaxHighlighting } from '@codemirror/language';
+import { 
+	foldAll as foldAllCmd, 
+	unfoldAll as unfoldAllCmd,
+	foldGutter, 
+	foldKeymap, 
+	foldEffect, 
+	foldState, 
+	syntaxHighlighting,
+	syntaxTree,
+	ensureSyntaxTree
+} from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
@@ -41,7 +51,6 @@ import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './extensions/customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './extensions/legacyCustomHighlight.js';
-import { syntaxTree } from '@codemirror/language';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 
@@ -90,7 +99,7 @@ const createHighlightPlugin = (renderer, tab)=>{
 				let pageCount = 1;
 				let snippetCount = 0;
 
-				const tree = syntaxTree(view.state);
+				const tree = ensureSyntaxTree(view.state, view.state.doc.length, 50) || syntaxTree(view.state);
 				tree.iterate({
 					enter : (node)=>{
 						if(node.name === 'Image') {
@@ -120,7 +129,6 @@ const createHighlightPlugin = (renderer, tab)=>{
 						const to = line.from + tok.to;
 
 						const attrs = {};
-						console.log(tok);
 						// attach URL only for links
 						if(tok.type === 'Image' && tok.url) {
 

@@ -204,7 +204,6 @@ export function tokenizeCustomMarkdown(text) {
 			let match;
 			
 			while ((match = injectionRegex.exec(lineText)) !== null) {
-				console.log(match.indices[1][0]);
 				tokens.push({
 					line : lineNumber,
 					from : match.indices[1][0],
