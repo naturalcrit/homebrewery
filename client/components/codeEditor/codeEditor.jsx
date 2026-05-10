@@ -17,8 +17,7 @@ import {
 	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
-import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, syntaxHighlighting } from '@codemirror/language';
-import { foldEffect } from '@codemirror/language';
+import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, foldEffect, foldState, syntaxHighlighting } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
@@ -231,11 +230,14 @@ const CodeEditor = forwardRef(
 		const editorRef = useRef(null);
 		const viewRef = useRef(null);
 		const docsRef = useRef({});
+		const tabRef = useRef(tab);
 		const prevTabRef = useRef(tab);
-
+		const scrollRef = useRef({});
+		const foldsRef = useRef({});
 		const pageMap = useRef([]);
 
 		const recomputePages = (doc)=>{
+			if(tab !== 'brewText') return;
 			const pages = [0];
 			const text = doc.toString();
 			let offset = 0;
@@ -259,6 +261,14 @@ const CodeEditor = forwardRef(
 			}
 
 			return page;
+		};
+
+		const getFoldRanges = (state)=>{
+			const folds = [];
+			state.field(foldState, false)?.between(0, state.doc.length, (from, to)=>{
+				folds.push({ from, to });
+			});
+			return folds;
 		};
 
 		const createExtensions = ({ onChange, language, editorTheme })=>{
@@ -347,11 +357,10 @@ const CodeEditor = forwardRef(
 				ticking = true;
 				requestAnimationFrame(()=>{
 					const top = view.scrollDOM.scrollTop;
+					scrollRef.current[tabRef.current] = top;
 					const block = view.lineBlockAtHeight(top);
-
-					const page = findPageFromPos(block.from); // CHANGED
+					const page = findPageFromPos(block.from);
 					onViewChange(page);
-
 					ticking = false;
 				});
 			};
@@ -366,11 +375,22 @@ const CodeEditor = forwardRef(
 			};
 		}, []);
 
+		const restoreFolds = (view, folds)=>{
+  			if(!folds?.length) return;
+
+  			view.dispatch({
+    			effects : folds.map((f)=>foldEffect.of(f))
+  			});
+		};
+
 		useEffect(()=>{
 			const view = viewRef.current;
 			if(!view) return;
 
+			tabRef.current = tab;
 			const prevTab = prevTabRef.current;
+
+			foldsRef.current[prevTab] = getFoldRanges(view.state);
 
 			if(prevTab !== tab) {
 				docsRef.current[prevTab] = view.state;
@@ -385,6 +405,16 @@ const CodeEditor = forwardRef(
 				}
 
 				view.setState(nextState);
+				restoreFolds(view, foldsRef.current[tab]);
+
+				const savedScroll = scrollRef.current[tab];
+
+				if(savedScroll != null) {
+					requestAnimationFrame(()=>{
+						view.scrollDOM.scrollTop = savedScroll;
+					});
+				}
+
 				prevTabRef.current = tab;
 			}
 			view.focus();

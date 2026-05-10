@@ -3,6 +3,17 @@ import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
 import { Prec } from '@codemirror/state';
 
+const insertTab = (view) => {
+  const { from, to } = view.state.selection.main;
+
+  view.dispatch({
+    changes: { from, to, insert: '  ' },
+    selection: { anchor: from + 2 }
+  });
+
+  return true;
+};
+
 const indentLess = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const lines = [];
@@ -162,7 +173,7 @@ const newPage = (view)=>{
 };
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: indentMore },
+	{ key: 'Tab', run: insertTab },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },
