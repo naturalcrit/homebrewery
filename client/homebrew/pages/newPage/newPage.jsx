@@ -36,7 +36,7 @@ const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 const useLocalStorage = true;
 const neverSaved      = true;
 
-import regexGroups from '../../utils/markdownRegexes.js';
+import { regexList } from '@shared/helpers.js';
 
 const NewPage = (props)=>{
 	props = {
@@ -158,7 +158,7 @@ const NewPage = (props)=>{
 		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
-		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : regexGroups.v3.pageBreak;
+		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : regexList.v3.pageBreak;
 		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
 
 		const res = await request

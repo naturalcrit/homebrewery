@@ -41,7 +41,7 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-import regexGroups from '../../utils/markdownRegexes.js';
+import { regexList } from '@shared/helpers.js';
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
@@ -217,7 +217,7 @@ const EditPage = (props)=>{
 		const brewToSave = {
 			...brew,
 			text      : brew.text.normalize('NFC'),
-			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(regexGroups.v3.pageBreak)) || []).length + 1,
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(regexList.v3.pageBreak)) || []).length + 1,
 			patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
 			hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
 			textBin   : undefined,

@@ -20,9 +20,9 @@ import { printCurrentBrew } from '@shared/helpers.js';
 import HeaderNav from './headerNav/headerNav.jsx';
 import safeHTML from './safeHTML.js';
 
-import regexGroups from '../utils/markdownRegexes.js';
+import { regexList } from '@shared/helpers.js';
 
-const PAGEBREAK_REGEX_V3 = regexGroups.v3.pageBreak;
+const PAGEBREAK_REGEX_V3 = regexList.v3.pageBreak;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
