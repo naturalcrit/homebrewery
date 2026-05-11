@@ -82,48 +82,46 @@ export function tokenizeCustomMarkdown(text) {
 		}
 
 		// --- single line def list ---
-		const match = regexGroups.v3.defListSingleLine.exec(lineText);
+		if(lineText.includes('::')) {
+			const match = regexGroups.v3.defListSingleLine.exec(lineText);
 
-		if(match) {
-			const [full, term, spaces, colons, desc] = match;
+			if(match) {
+				const [full, term, spaces, colons, desc] = match;
 
-			let offset = 0;
+				let offset = 0;
 
-			tokens.push({
-				line : lineNumber,
-				type : customTags.definitionList,
-			});
+				tokens.push({
+					line : lineNumber,
+					type : customTags.definitionList,
+				});
 
-			// Term
-			tokens.push({
-				line : lineNumber,
-				type : customTags.definitionTerm,
-				from : offset,
-				to   : offset + term.length,
-			});
-			offset += term.length;
+				tokens.push({
+					line : lineNumber,
+					type : customTags.definitionTerm,
+					from : offset,
+					to   : offset + term.length,
+				});
+				offset += term.length;
 
-			// Spaces before ::
-			if(spaces) {
-				offset += spaces.length;
+				if(spaces) {
+					offset += spaces.length;
+				}
+
+				tokens.push({
+					line : lineNumber,
+					type : customTags.definitionColon,
+					from : offset,
+					to   : offset + colons.length,
+				});
+				offset += colons.length;
+
+				tokens.push({
+					line : lineNumber,
+					type : customTags.definitionDesc,
+					from : offset,
+					to   : offset + desc.length,
+				});
 			}
-
-			// :: colons
-			tokens.push({
-				line : lineNumber,
-				type : customTags.definitionColon,
-				from : offset,
-				to   : offset + colons.length,
-			});
-			offset += colons.length;
-
-			// Definition
-			tokens.push({
-				line : lineNumber,
-				type : customTags.definitionDesc,
-				from : offset,
-				to   : offset + desc.length,
-			});
 		}
 
 		//  --- multiline def list ---
