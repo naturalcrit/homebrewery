@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 400 }] */
+/* eslint max-lines: ["error", { "max": 500 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -37,7 +37,7 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-import { generalKeymap, markdownKeymap, cssKeymap } from './customKeyMaps.js';
+import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './customKeyMaps.js';
 import foldOnPages from './customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
@@ -410,6 +410,8 @@ const CodeEditor = forwardRef(
 					});
 				}, 400);
 			},
+
+			formatCode : ()=>formatCSS(viewRef.current),
 
 			undo : ()=>undo(viewRef.current),
 			redo : ()=>redo(viewRef.current),

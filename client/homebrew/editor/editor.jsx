@@ -154,6 +154,10 @@ const Editor = createReactClass({
 		this.codeEditor.current?.injectText(injectText);
 	},
 
+	handleFormatCode: function () {
+		this.codeEditor.current?.formatCode();
+	},
+
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
 
@@ -333,6 +337,7 @@ const Editor = createReactClass({
 					redo={this.redo}
 					foldCode={this.foldCode}
 					unfoldCode={this.unfoldCode}
+					formatCode={this.isStyle() ? this.handleFormatCode : null}
 					historySize={this.historySize()}
 					currentEditorTheme={this.state.editorTheme}
 					updateEditorTheme={this.updateEditorTheme}

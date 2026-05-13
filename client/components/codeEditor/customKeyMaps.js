@@ -12,14 +12,24 @@ export async function formatCSS(view) {
 		parser  : 'css',
 		plugins : [postcssPlugin]
 	});
+	if(formatted === code) return;
 
-	view.dispatch({
-		changes : {
-			from   : 0,
-			to     : view.state.doc.length,
-			insert : formatted
-		}
-	});
+
+	 const dom = view.dom;
+
+  	dom.classList.add('cm-flash');
+
+  	setTimeout(()=>{
+    	dom.classList.remove('cm-flash');
+		view.dispatch({
+			changes : {
+				from   : 0,
+				to     : view.state.doc.length,
+				insert : formatted
+			}
+		});
+
+  	}, 500);
 }
 
 const indentLess = (view)=>{
