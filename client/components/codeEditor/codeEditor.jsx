@@ -119,22 +119,22 @@ const createHighlightPlugin = (renderer, tab)=>{
 					}
 				});
 
-				tokens.forEach((tok)=>{
-					const line = view.state.doc.line(tok.line + 1);
+				tokens.forEach((token)=>{
+					const line = view.state.doc.line(token.line + 1);
 
-					if(tok.from != null && tok.to != null && tok.from < tok.to) {
-						const from = line.from + tok.from;
-						const to = line.from + tok.to;
+					if(token.from != null && token.to != null && token.from < token.to) {
+						const from = line.from + token.from;
+						const to = line.from + token.to;
 
 						const attrs = {};
-						if(tok.type === 'Image' && tok.url) {
+						if(token.type === 'Image' && token.url) {
 
-							attrs['data-url'] = tok.url;
+							attrs['data-url'] = token.url;
 						}
 
 						decos.push(
 							Decoration.mark({
-								class : `cm-${tok.type}`,
+								class : `cm-${token.type}`,
 								...(Object.keys(attrs).length
 									? { attributes: attrs }
 									: {})
@@ -143,15 +143,15 @@ const createHighlightPlugin = (renderer, tab)=>{
 					} else {
 						decos.push(
 							Decoration.line({
-								class : `cm-${tok.type}`
+								class : `cm-${token.type}`
 							}).range(line.from)
 						);
-						if(tok.type === 'pageLine' && tab === 'brewText') {
+						if(token.type === 'pageLine' && tab === 'brewText') {
 							pageCount++;
 							if(line.from === 0) pageCount--;
 							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
 						}
-						if(tok.type === 'snippetLine' && tab === 'brewSnippets') {
+						if(token.type === 'snippetLine' && tab === 'brewSnippets') {
 							snippetCount++;
 							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
 						}
