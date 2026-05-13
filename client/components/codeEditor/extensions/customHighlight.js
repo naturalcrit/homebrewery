@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 450 }] */
+/* eslint max-lines: ["error", { "max": 500 }] */
 import { HighlightStyle } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
 import { legacyTokenizeCustomMarkdown } from './legacyCustomHighlight';
