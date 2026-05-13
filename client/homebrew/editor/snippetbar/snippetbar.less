@@ -15,13 +15,13 @@
 	.snippets {
 		display         : flex;
 		justify-content : flex-start;
-		min-width       : 499.35px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
+		min-width       : 470px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 	}
 
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
-		min-width       : 250px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
+		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 
 		&:only-child {min-width   : unset; margin-left : auto;}
 
@@ -244,7 +244,7 @@
 	}
 
 }
-@container editor (width < 750px) {
+@container editor (width < 745px) {
 	.snippetBar {
 		.editors { 
 			flex            : 1;
