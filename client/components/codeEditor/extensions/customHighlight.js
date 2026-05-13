@@ -333,6 +333,33 @@ function getUrl(node, doc) {
 	return url;
 }
 
+import { WidgetType } from '@codemirror/view';
+
+class ImageWidget extends WidgetType {
+	constructor(url) {
+		super();
+		this.url = url;
+	}
+
+	toDOM() {
+		const img = document.createElement('img');
+		img.loading = "lazy";
+		img.className = 'cm-preview';
+		img.src = this.url;
+		
+
+		img.onerror = ()=>{
+			img.src = 'client/icons/Broken-image-icon-in-Chrome.png';
+		};
+
+		return img;
+	}
+
+	eq(other) {
+		return other.url === this.url;
+	}
+}
+
 export function customHighlightPlugin(renderer, tab) {
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
 	//takes the tokens defined by that function and assigns classes to them
@@ -368,15 +395,20 @@ export function customHighlightPlugin(renderer, tab) {
 						if(node.name === 'Image') {
 							const url = getUrl(node, view.state.doc);
 
+							console.log(node.node.lastChild.from);
+
 							if(!url) return;
 
 							decos.push(
 								Decoration.mark({
-									class      : 'cm-image',
-									attributes : {
-										'style' : `--preview-img:url(${url});`
-									}
+									class : 'cm-image'
 								}).range(node.from, node.to)
+							);
+							decos.push(
+								Decoration.widget({
+									widget : new ImageWidget(url),
+									side   : 1
+								}).range(node.node.lastChild.from)
 							);
 						}
 					}

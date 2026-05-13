@@ -161,44 +161,28 @@
 		outline : 1px inset #00000055 !important;
 	}
 
-	.cm-image[style] {
-		position: relative;
-
-		&::before, &::after {
-			content:"";
+	.cm-image {
+		position:relative;
+		
+		.cm-preview {
+			object-fit: contain;
 			position:absolute;
 			bottom:0;
 			left:0;
-			translate:0 100%;
-			display:block;
-			z-index:1000;
-			pointer-events: none;
-			opacity:0;
-			transition:0.2s opacity 0.5s;
-		}
-
-		&::before{
+			height:200px;
 			width:200px;
 			height:200px;
 			background-color: #fff;
 			border-radius:10px;
 			border:3px solid grey;
+			pointer-events: none;
+			opacity:0;
+			transition:0.2s opacity 0.5s;
+			translate:0 100%;
+			z-index:1000;
 		}
 
-		&::after {
-			width:190px;
-			height:190px;
-			//padding of 5px + 3px border: 8px
-			translate:8px calc(100% + 8px);
-			background-image: var(--preview-img);
-			background-size:contain;
-			background-repeat:no-repeat;
-			background-position:center;
-			filter:drop-shadow(0 0 5px #0008);
-		}
-
-		&:hover::before,
-		&:hover::after {
+		&:hover .cm-preview {
 			opacity:1;
 		}
 	}
