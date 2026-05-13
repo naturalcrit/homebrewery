@@ -16,6 +16,7 @@ const customTags = {
 	definitionTerm  : 'definitionTerm', // .cm-definitionTerm
 	definitionDesc  : 'definitionDesc', // .cm-definitionDesc
 	definitionColon : 'definitionColon', // .cm-definitionColon
+	strikethrough   : 'strikethrough', // .cm-strikethrough
 
 	//CSS
 
@@ -78,6 +79,23 @@ export function tokenizeCustomMarkdown(text) {
 					'^',
 					Math.max(startIndex + 1, superRegex.lastIndex || 0, subRegex.lastIndex || 0),
 				);
+			}
+		}
+
+		// --- Strikethrough ---
+		if(/\~/.test(lineText)) {
+			const strikethroughRegex = /~(?!\s)(.+?)(?<!\s)~/g;
+
+			let match = strikethroughRegex.exec(lineText);
+			let type = customTags.strikethrough;
+
+			if(match) {
+				tokens.push({
+					line : lineNumber,
+					type,
+					from : match.index,
+					to   : match.index + match[0].length,
+				});
 			}
 		}
 
@@ -182,13 +200,13 @@ export function tokenizeCustomMarkdown(text) {
 		}
 
 		if(lineText.includes('{') && lineText.includes('}')) {
-			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gm;
+			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gmd;
 			let match;
 			while ((match = injectionRegex.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
-					from : match.index,
-					to   : match.index + match[1].length,
+					from : match.indices[1][0],
+					to   : match.indices[1][1],
 					type : customTags.injection,
 				});
 			}
