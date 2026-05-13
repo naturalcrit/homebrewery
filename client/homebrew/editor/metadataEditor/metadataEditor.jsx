@@ -261,6 +261,7 @@ const MetadataEditor = createReactClass({
 					className='language-dropdown'
 					default={this.props.metadata.lang || ''}
 					placeholder='en'
+					valuePatterns='^[a-z]{2,3}(-[A-Z][a-z]{3})?(-[A-Z]{2})?$'
 					onSelect={(value)=>this.handleLanguage(value)}
 					onEntry={(e)=>{
 						e.target.setCustomValidity('');	//Clear the validation popup while typing

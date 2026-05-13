@@ -17,8 +17,7 @@ const Combobox = createReactClass({
 				suggestMethod           : 'includes',
 				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 			},
-			valuePatterns : /.+/
-		};
+			valuePatterns : '.+';
 	},
 	getInitialState : function() {
 		this.dropdownRef = React.createRef();
