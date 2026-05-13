@@ -6,30 +6,38 @@ import * as prettier from 'prettier/standalone';
 import * as postcssPlugin from 'prettier/plugins/postcss';
 
 export async function formatCSS(view) {
-	const code = view.state.doc.toString();
+	try {
+		const { from, to, empty } = view.state.selection.main;
+		const fullDoc = view.state.doc.toString();
+		const selection = view.state.doc.sliceString(from, to);
+		const code = empty ? fullDoc : selection;
 
-	const formatted = await prettier.format(code, {
-		parser  : 'css',
-		plugins : [postcssPlugin]
-	});
-	if(formatted === code) return;
-
-
-	 const dom = view.dom;
-
-  	dom.classList.add('cm-flash');
-
-  	setTimeout(()=>{
-    	dom.classList.remove('cm-flash');
-		view.dispatch({
-			changes : {
-				from   : 0,
-				to     : view.state.doc.length,
-				insert : formatted
-			}
+		const formatted = await prettier.format(code, {
+			parser  : 'css',
+			plugins : [postcssPlugin]
 		});
+		if(formatted === code) return true;
 
-  	}, 500);
+		const dom = view.dom;
+		dom.classList.add('cm-flash');
+
+		setTimeout(()=>{
+			dom.classList.remove('cm-flash');
+
+			view.dispatch({
+				changes : {
+					from   : empty ? 0 : from,
+					to     : empty ? view.state.doc.length : to,
+					insert : formatted
+				}
+			});
+
+		}, 500);
+	} catch (err) {
+		console.error('Error formatting css: ', err);
+	}
+
+	return true;
 }
 
 const indentLess = (view)=>{
