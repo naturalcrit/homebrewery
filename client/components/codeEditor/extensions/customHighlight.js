@@ -316,7 +316,6 @@ export const customHighlightStyle = HighlightStyle.define([
 
 ]);
 
-
 function getUrl(node, doc) {
 	let url = null;
 
@@ -333,6 +332,7 @@ function getUrl(node, doc) {
 
 	return url;
 }
+
 export function customHighlightPlugin(renderer, tab) {
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
 	//takes the tokens defined by that function and assigns classes to them
