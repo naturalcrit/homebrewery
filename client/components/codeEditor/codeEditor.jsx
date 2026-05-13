@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 400 }] */
+/* eslint max-lines: ["error", { "max": 405 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -10,7 +10,6 @@ import {
 	highlightActiveLine,
 	scrollPastEnd,
 	Decoration,
-	ViewPlugin,
 	drawSelection,
 	dropCursor,
 	rectangularSelection,
@@ -18,15 +17,12 @@ import {
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
 import {
-	foldAll as foldAllCmd,
 	unfoldAll as unfoldAllCmd,
 	foldGutter,
 	foldKeymap,
 	foldEffect,
 	foldState,
 	syntaxHighlighting,
-	syntaxTree,
-	ensureSyntaxTree
 } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
@@ -49,122 +45,10 @@ const highlightCompartment = new Compartment();
 
 import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
-import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './extensions/customHighlight.js';
-import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './extensions/legacyCustomHighlight.js';
+import { customHighlightPlugin, customHighlightStyle } from './extensions/customHighlight.js';
+import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-
-function getUrl(node, doc) {
-	let url = null;
-
-	const cursor = node.node.cursor();
-
-	if(cursor.firstChild()) {
-		do {
-			if(cursor.name === 'URL') {
-				url = doc.sliceString(cursor.from, cursor.to);
-				break;
-			}
-		} while (cursor.nextSibling());
-	}
-
-	return url;
-}
-const createHighlightPlugin = (renderer, tab)=>{
-	//this function takes the custom tokens created in the tokenize function in customhighlight files
-	//takes the tokens defined by that function and assigns classes to them
-	//it also creates page number and snippet number widgets
-
-	let tokenize;
-
-	if(tab === 'brewStyles') {
-		tokenize = tokenizeCustomCSS;
-	} else {
-		tokenize = renderer === 'V3' ? tokenizeCustomMarkdown : legacyTokenizeCustomMarkdown;
-	}
-
-	return ViewPlugin.fromClass(
-		class {
-			constructor(view) {
-				this.decorations = this.buildDecorations(view);
-			}
-			update(update) {
-				if(update.docChanged) {
-					this.decorations = this.buildDecorations(update.view);
-				}
-			}
-			buildDecorations(view) {
-				const decos = [];
-				const tokens = tokenize(view.state.doc.toString());
-				let pageCount = 1;
-				let snippetCount = 0;
-
-				const tree = ensureSyntaxTree(view.state, view.state.doc.length, 50) || syntaxTree(view.state);
-				tree.iterate({
-					enter : (node)=>{
-						if(node.name === 'Image') {
-							const url = getUrl(node, view.state.doc);
-
-							if(!url) return;
-
-							decos.push(
-								Decoration.mark({
-									class      : 'cm-image',
-									attributes : {
-										'style' : `--preview-img:url(${url});`
-									}
-								}).range(node.from, node.to)
-							);
-						}
-					}
-				});
-
-				tokens.forEach((token)=>{
-					const line = view.state.doc.line(token.line + 1);
-
-					if(token.from != null && token.to != null && token.from < token.to) {
-						const from = line.from + token.from;
-						const to = line.from + token.to;
-
-						const attrs = {};
-						if(token.type === 'Image' && token.url) {
-
-							attrs['data-url'] = token.url;
-						}
-
-						decos.push(
-							Decoration.mark({
-								class : `cm-${token.type}`,
-								...(Object.keys(attrs).length
-									? { attributes: attrs }
-									: {})
-							}).range(from, to)
-						);
-					} else {
-						decos.push(
-							Decoration.line({
-								class : `cm-${token.type}`
-							}).range(line.from)
-						);
-						if(token.type === 'pageLine' && tab === 'brewText') {
-							pageCount++;
-							if(line.from === 0) pageCount--;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
-						}
-						if(token.type === 'snippetLine' && tab === 'brewSnippets') {
-							snippetCount++;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
-						}
-					}
-				});
-
-				decos.sort((a, b)=>a.from - b.from || a.to - b.to);
-				return Decoration.set(decos);
-			}
-		},
-		{ decorations: (v)=>v.decorations }
-	);
-};
 
 const setProgrammaticCursorLine = StateEffect.define();
 
@@ -272,8 +156,6 @@ const CodeEditor = forwardRef(
   			? syntaxHighlighting(customHighlightStyle)
   			: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
-
 			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
 			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
@@ -296,7 +178,7 @@ const CodeEditor = forwardRef(
 				}),
 
 				//highlights
-				highlightCompartment.of([customHighlightPlugin, highlightExtension]),
+				highlightCompartment.of([customHighlightPlugin(renderer, tab), highlightExtension]),
 				themeCompartment.of(themeExtension),
 				highlightActiveLine(),
 				highlightActiveLineGutter(),
@@ -437,10 +319,8 @@ const CodeEditor = forwardRef(
     		? syntaxHighlighting(customHighlightStyle)
     		: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
-
 			view.dispatch({
-				effects : highlightCompartment.reconfigure([customHighlightPlugin, highlightExtension]),
+				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab), highlightExtension]),
 			});
 		}, [renderer, tab]);
 
