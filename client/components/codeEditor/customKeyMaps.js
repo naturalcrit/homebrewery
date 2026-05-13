@@ -22,6 +22,17 @@ async function formatCSS(view) {
   });
 }
 
+const insertTab = (view) => {
+  const { from, to } = view.state.selection.main;
+
+  view.dispatch({
+    changes: { from, to, insert: '  ' },
+    selection: { anchor: from + 2 }
+  });
+
+  return true;
+};
+
 const indentLess = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const lines = [];
@@ -37,27 +48,25 @@ const indentLess = (view)=>{
 };
 
 const wrapSelection = (prefix, suffix) => (view) => {
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
+	const changes = [];
 
-	let text, selection;
+	for(const range of view.state.selection.ranges) {
+		const { from, to } = range;
+		const selected = view.state.doc.sliceString(from, to);
 
-	if(from === to) {
-		text = prefix + suffix;
-		selection = { anchor: from + prefix.length, head: from + prefix.length };
-	}
-	else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
-		text = selected.slice(prefix.length, -suffix.length);
-		selection = { anchor: from, head: from + text.length };
-	}
-	else {
-		text = `${prefix}${selected}${suffix}`;
-		selection = { anchor: from, head: from + text.length };
+		let text;
+
+		if(from === to) { text = prefix + suffix }
+		else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
+			text = selected.slice(prefix.length, -suffix.length);
+		}
+		else {text = `${prefix}${selected}${suffix}`}
+
+		changes.push({ from, to, insert: text });
 	}
 
 	view.dispatch({
-		changes   : { from, to, insert: text },
-		selection
+		changes
 	});
 
 	return true;
@@ -181,7 +190,7 @@ const newPage = (view)=>{
 };
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: indentMore },
+	{ key: 'Tab', run: insertTab },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },

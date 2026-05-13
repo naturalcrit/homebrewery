@@ -170,7 +170,7 @@ const Snippetbar = createReactClass({
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
-			showThemeSelector : false,
+			themeSelector : false,
 		});
 	},
 
