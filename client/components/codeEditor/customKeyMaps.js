@@ -2,36 +2,25 @@
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
 import { Prec } from '@codemirror/state';
-import * as prettier from "prettier/standalone";
-import * as postcssPlugin from "prettier/plugins/postcss";
+import * as prettier from 'prettier/standalone';
+import * as postcssPlugin from 'prettier/plugins/postcss';
 
-async function formatCSS(view) {
-  const code = view.state.doc.toString();
+export async function formatCSS(view) {
+	const code = view.state.doc.toString();
 
-  const formatted = await prettier.format(code, {
-    parser: "css",
-    plugins: [postcssPlugin]
-  });
+	const formatted = await prettier.format(code, {
+		parser  : 'css',
+		plugins : [postcssPlugin]
+	});
 
-  view.dispatch({
-    changes: {
-      from: 0,
-      to: view.state.doc.length,
-      insert: formatted
-    }
-  });
+	view.dispatch({
+		changes : {
+			from   : 0,
+			to     : view.state.doc.length,
+			insert : formatted
+		}
+	});
 }
-
-const insertTab = (view) => {
-  const { from, to } = view.state.selection.main;
-
-  view.dispatch({
-    changes: { from, to, insert: '  ' },
-    selection: { anchor: from + 2 }
-  });
-
-  return true;
-};
 
 const indentLess = (view)=>{
 	const { from, to } = view.state.selection.main;
@@ -47,46 +36,46 @@ const indentLess = (view)=>{
 	return true;
 };
 
-const wrapSelection = (prefix, suffix) => (view) => {
-	const changes = [];
+const wrapSelection = (prefix, suffix)=>(view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
 
-	for(const range of view.state.selection.ranges) {
-		const { from, to } = range;
-		const selected = view.state.doc.sliceString(from, to);
+	let text, selection;
 
-		let text;
-
-		if(from === to) { text = prefix + suffix }
-		else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
-			text = selected.slice(prefix.length, -suffix.length);
-		}
-		else {text = `${prefix}${selected}${suffix}`}
-
-		changes.push({ from, to, insert: text });
+	if(from === to) {
+		text = prefix + suffix;
+		selection = { anchor: from + prefix.length, head: from + prefix.length };
+	} else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
+		text = selected.slice(prefix.length, -suffix.length);
+		selection = { anchor: from, head: from + text.length };
+	} else {
+		text = `${prefix}${selected}${suffix}`;
+		selection = { anchor: from, head: from + text.length };
 	}
 
 	view.dispatch({
-		changes
+		changes : { from, to, insert: text },
+		selection
 	});
 
 	return true;
 };
 
-const makeNbsp = (view) => {
-  const { from } = view.state.selection.main;
+const makeNbsp = (view)=>{
+	const { from } = view.state.selection.main;
 
-  const prev2 = from >= 2
-    ? view.state.doc.sliceString(from - 2, from)
-    : '';
+	const prev2 = from >= 2
+		? view.state.doc.sliceString(from - 2, from)
+		: '';
 
-  const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
+	const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
 
-  view.dispatch({
-    changes   : { from, to: from, insert },
-    selection : { anchor: from + insert.length },
-  });
+	view.dispatch({
+		changes   : { from, to: from, insert },
+		selection : { anchor: from + insert.length },
+	});
 
-  return true;
+	return true;
 };
 
 const makeSpace = (view)=>{
@@ -190,11 +179,15 @@ const newPage = (view)=>{
 };
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: insertTab },
+	{ key: 'Tab', run: indentMore },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },
 	{ key: 'Mod-d', run: deleteLine },
+]));
+
+export const cssKeymap = Prec.highest(keymap.of([
+	{ key: 'Mod-Shift-f', run: formatCSS },
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
@@ -222,5 +215,4 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
 	{ key: 'Mod-Enter',       run: newPage },
 	{ key: 'Shift-Mod-Enter', run: newColumn },
-	{ key: 'Mod-Shift-f', 	  run: formatCSS },
 ]));

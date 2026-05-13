@@ -37,7 +37,7 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-import { generalKeymap, markdownKeymap } from './customKeyMaps.js';
+import { generalKeymap, markdownKeymap, cssKeymap } from './customKeyMaps.js';
 import foldOnPages from './customFolding.js';
 import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
 import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
@@ -238,7 +238,7 @@ const CodeEditor = forwardRef(
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
 				generalKeymap,
-				...(tab !== 'brewStyles' ? [markdownKeymap] : []),
+				...(tab === 'brewStyles' ? [cssKeymap] : [markdownKeymap]),
 
 				//multiple cursors and selections
 				drawSelection(),
