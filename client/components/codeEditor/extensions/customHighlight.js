@@ -395,7 +395,10 @@ export function customHighlightPlugin(renderer, tab) {
 						if(node.name === 'Image') {
 							const url = getUrl(node, view.state.doc);
 
-							console.log(node.node.lastChild.from);
+							const widgetPosition = node.node.lastChild.from;
+							//this is not exactly standard, but should hold, 
+							//and is the shortest way i could find of positioning 
+							//the image inside the cm-image node
 
 							if(!url) return;
 
@@ -408,7 +411,7 @@ export function customHighlightPlugin(renderer, tab) {
 								Decoration.widget({
 									widget : new ImageWidget(url),
 									side   : 1
-								}).range(node.node.lastChild.from)
+								}).range(widgetPosition)
 							);
 						}
 					}
