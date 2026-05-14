@@ -397,17 +397,24 @@ const api = {
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
+		let result = [];
 		try {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
-			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
-			if(patchedResult != brewFromClient.text)
+			result = applyPatches(patches, encodeURI(brewFromServer.text));
+			const failedPatches = patches.map((patch, index)=>{if(!result[1][index]){ return patch; }});
+			if(failedPatches > 0){
+				throw (`Patch failure: ${failedPatches}/${result[1].length} did not apply`);
+			}
+			if(decodeURI(result[0]) != brewFromClient.text){
 				throw ('Patches did not apply cleanly, text mismatch detected');
+			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
 			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				//patches : brewFromClient.patches,
+				// patches : brewFromClient.patches,
+				// result  : result,
 				brewId : brewFromClient.editId || 'unknown',
 				error  : err
 			});
