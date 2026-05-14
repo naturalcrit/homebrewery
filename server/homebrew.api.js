@@ -413,10 +413,10 @@ const api = {
 		} catch (err) {
 			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				patches : brewFromClient.patches,
-				result  : result,
-				brewId  : brewFromClient.editId || 'unknown',
-				error   : err
+				// patches : brewFromClient.patches,
+				// result  : result,
+				brewId : brewFromClient.editId || 'unknown',
+				error  : err
 			});
 			// While running in parallel, don't throw the error upstream.
 			// throw err; // rethrow to preserve the 500 behavior
