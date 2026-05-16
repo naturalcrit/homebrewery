@@ -1,10 +1,9 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-const ClassFeatureGen = require('./classfeature.gen.js');
+import ClassFeatureGen from './classfeature.gen.js';
+import ClassTableGen from './classtable.gen.js';
 
-const ClassTableGen = require('./classtable.gen.js');
-
-module.exports = function(){
+export default function(){
 
 	const classname = _.sample(['Archivist', 'Fancyman', 'Linguist', 'Fletcher',
 		'Notary', 'Berserker-Typist', 'Fishmongerer', 'Manicurist', 'Haberdasher', 'Concierge']);

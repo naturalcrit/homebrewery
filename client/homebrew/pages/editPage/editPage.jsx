@@ -4,33 +4,35 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from 'naturalcrit/markdown.js';
+import Markdown                               from '@shared/markdown.js';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-import SplitPane    from 'client/components/splitPane/splitPane.jsx';
+import SplitPane    from '../../../components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from 'naturalcrit/nav/nav.jsx';
-import Navbar                    from '../../navbar/navbar.jsx';
-import NewBrewItem               from '../../navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '../../navbar/account.navitem.jsx';
-import ErrorNavItem              from '../../navbar/error-navitem.jsx';
-import HelpNavItem               from '../../navbar/help.navitem.jsx';
-import VaultNavItem              from '../../navbar/vault.navitem.jsx';
-import PrintNavItem              from '../../navbar/print.navitem.jsx';
-import { both as RecentNavItem } from '../../navbar/recent.navitem.jsx';
+import Nav                       from '@navbar/nav.jsx';
+import Navbar                    from '@navbar/navbar.jsx';
+import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '@navbar/account.navitem.jsx';
+import ErrorNavItem              from '@navbar/error-navitem.jsx';
+import HelpNavItem               from '@navbar/help.navitem.jsx';
+import VaultNavItem              from '@navbar/vault.navitem.jsx';
+import PrintNavItem              from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-import { Meta }                          from 'vitreum/headtags';
+import Headtags from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
-import ShareNavItem              from '../../navbar/share.navitem.jsx';
+import ShareNavItem              from '@navbar/share.navitem.jsx';
 import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
@@ -55,28 +57,28 @@ const EditPage = (props)=>{
 		...props
 	};
 
-	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
-	const [isSaving                  , setIsSaving                  ] = useState(false);
-	const [lastSavedTime             , setLastSavedTime             ] = useState(new Date());
-  const [saveGoogle                , setSaveGoogle                ] = useState(!!props.brew.googleId);
-	const [error                     , setError                     ] = useState(null);
-	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
-	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum  ] = useState(1);
+	const [currentBrew, setCurrentBrew] = useState(props.brew);
+	const [isSaving, setIsSaving] = useState(false);
+	const [lastSavedTime, setLastSavedTime] = useState(new Date());
+	const [saveGoogle, setSaveGoogle] = useState(!!props.brew.googleId);
+	const [error, setError] = useState(null);
+	const [HTMLErrors, setHTMLErrors] = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
-	const [themeBundle               , setThemeBundle               ] = useState({});
-	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
-	const [alertTrashedGoogleBrew    , setAlertTrashedGoogleBrew    ] = useState(props.brew.trashed);
-	const [alertLoginToTransfer      , setAlertLoginToTransfer      ] = useState(false);
-	const [confirmGoogleTransfer     , setConfirmGoogleTransfer     ] = useState(false);
-	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(true);
-	const [warnUnsavedChanges        , setWarnUnsavedChanges        ] = useState(true);
+	const [themeBundle, setThemeBundle] = useState({});
+	const [unsavedChanges, setUnsavedChanges] = useState(false);
+	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
+	const [alertLoginToTransfer, setAlertLoginToTransfer] = useState(false);
+	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
+	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
+	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(trySave); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
+	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
@@ -88,7 +90,7 @@ const EditPage = (props)=>{
 
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 83) trySaveRef.current(true, true, saveGoogle);
 			if(e.keyCode === 80) printCurrentBrew();
 			if([83, 80].includes(e.keyCode)) {
 				e.stopPropagation();
@@ -116,7 +118,7 @@ const EditPage = (props)=>{
 		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
 		setUnsavedChanges(hasChange);
 
-		if(autoSaveEnabled) trySave(false, hasChange);
+		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
 	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
@@ -177,12 +179,13 @@ const EditPage = (props)=>{
 	};
 
 	const toggleGoogleStorage = ()=>{
+		const newSaveGoogle = !saveGoogle;
 		setSaveGoogle((prev)=>!prev);
 		setError(null);
-		trySave(true);
+		trySave(true, true, newSaveGoogle);
 	};
 
-	const trySave = (immediate = false, hasChanges = true)=>{
+	const trySave = (immediate = false, hasChanges = true, saveToGoogle = false)=>{
 		clearTimeout(saveTimeout.current);
 		if(isSaving) return;
 		if(!hasChanges && !immediate) return;
@@ -191,7 +194,7 @@ const EditPage = (props)=>{
 		saveTimeout.current = setTimeout(async ()=>{
 			setIsSaving(true);
 			setError(null);
-			await save(currentBrew, saveGoogle)
+			await save(currentBrew, saveToGoogle)
 			.catch((err)=>{
 				setError(err);
 			});
@@ -211,9 +214,9 @@ const EditPage = (props)=>{
 		const brewToSave = {
 			...brew,
 			text      : brew.text.normalize('NFC'),
-			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^\\page$/gm)) || []).length + 1,
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
 			patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
-			hash      : await md5(lastSavedBrew.current.text),
+			hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
 			textBin   : undefined,
 			version   : lastSavedBrew.current.version
 		};
@@ -309,7 +312,7 @@ const EditPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true)} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
@@ -360,7 +363,7 @@ const EditPage = (props)=>{
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
-				<ShareNavItem brew={currentBrew} />
+				<ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />
 				<RecentNavItem brew={currentBrew} storageKey='edit' />
 				<AccountNavItem/>
 			</Nav.section>
@@ -412,4 +415,4 @@ const EditPage = (props)=>{
 	);
 };
 
-module.exports = EditPage;
+export default EditPage;

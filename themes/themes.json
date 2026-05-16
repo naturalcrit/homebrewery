@@ -39,7 +39,7 @@
     "UnearthedArcana": {
       "name": "UnearthedArcana",
       "renderer": "V3",
-      "baseTheme": false,
+      "baseTheme": "Blank",
       "baseSnippets": false,
       "path": "UnearthedArcana"
     }

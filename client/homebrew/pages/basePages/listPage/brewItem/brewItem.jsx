@@ -1,12 +1,11 @@
-require('./brewItem.less');
-const React = require('react');
-const { useCallback } = React;
-const moment = require('moment');
+import './brewItem.less';
+import React, { useCallback } from 'react';
+import moment from 'moment';
 import request from '../../../../utils/request-middleware.js';
 
-const googleDriveIcon = require('../../../../googleDrive.svg');
-const homebreweryIcon = require('../../../../thumbnail.svg');
-const dedent = require('dedent-tabs').default;
+import googleDriveIcon from '../../../../googleDrive.svg';
+import homebreweryIcon from '../../../../thumbnail.svg';
+import dedent from 'dedent';
 
 const BrewItem = ({
 	brew = {
@@ -143,7 +142,7 @@ const BrewItem = ({
 								<span title="Username contained an email address; hidden to protect user's privacy">
 									{author}
 								</span>
-							) : (<a href={`/user/${author}`}>{author}</a>)}
+							) : (<a href={`/user/${encodeURIComponent(author)}`}>{author}</a>)}
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}
@@ -176,4 +175,4 @@ const BrewItem = ({
 	);
 };
 
-module.exports = BrewItem;
+export default BrewItem;

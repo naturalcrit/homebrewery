@@ -19,7 +19,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						userSnippets.push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1],
+							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -44,7 +44,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1],
+					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
@@ -91,7 +91,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('\n```\n\n');
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 		brew.text = brew.text.slice(index + 6);
 	}
@@ -160,9 +160,35 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	// Char-level diff
 	for (let i = 0; i < Math.min(clientText.length, serverText.length); i++) {
 		if(clientText[i] !== serverText[i]) {
+			const getMismatchContext = (text, index, name, size = 10)=>{
+				const lower = Math.max(index - size, 0);
+				const upper = Math.min(index + size, text.length);
+				const slice = `${JSON.stringify(text.slice(lower, index)).slice(1, -1)}\u001B[31m${JSON.stringify(text[i]).slice(1, -1)}\u001B[0m${JSON.stringify(text.slice(index+1, upper)).slice(1, -1)}`;
+				const lineNo = text.slice(0, index).split('\n').length;
+				const code = `U+${text.charCodeAt(i).toString(16).toUpperCase()}`;
+
+				return {
+					name,
+					lineNo,
+					code,
+					lower,
+					upper,
+					slice
+				};
+			};
+
+			const boundSize = 10;
+
+			const clientContext = getMismatchContext(clientText, i, 'Client', boundSize);
+			const serverContext = getMismatchContext(serverText, i, 'Server', boundSize);
+
+			const logContext = (context)=>{
+				console.log(`  ${context.name} - line ${context.lineNo} : (${context.code})\t${context.slice}`);
+			};
+
 			console.log(`Char mismatch at index ${i}:`);
-			console.log(`  Client: '${clientText[i]}' (U+${clientText.charCodeAt(i).toString(16).toUpperCase()})`);
-			console.log(`  Server: '${serverText[i]}' (U+${serverText.charCodeAt(i).toString(16).toUpperCase()})`);
+			logContext(clientContext);
+			logContext(serverContext);
 			break;
 		}
 	}

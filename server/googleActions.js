@@ -6,6 +6,7 @@ import config      from './config.js';
 
 
 let serviceAuth;
+let clientEmail;
 if(!config.get('service_account')){
 	const reset = '\x1b[0m'; // Reset to default style
 	const yellow = '\x1b[33m'; // yellow color
@@ -14,6 +15,10 @@ if(!config.get('service_account')){
 	const keys = typeof(config.get('service_account')) == 'string' ?
 		JSON.parse(config.get('service_account')) :
 		config.get('service_account');
+
+	if(keys?.client_email) {
+		clientEmail = keys.client_email;
+	}
 
 	try {
 		serviceAuth = googleDrive.auth.fromJSON(keys);
@@ -146,7 +151,6 @@ const GoogleActions = {
 				description : file.description,
 				views       : parseInt(file.properties.views),
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				systems     : [],
 				lang        : file.properties.lang,
 				thumbnail   : file.properties.thumbnail,
 				webViewLink : file.webViewLink
@@ -227,14 +231,30 @@ const GoogleActions = {
 
 		if(!obj) return;
 
+		if(clientEmail) {
+			await drive.permissions.create({
+				resource : {
+					type         : 'user',
+					emailAddress : clientEmail,
+					role         : 'writer'
+				},
+				fileId : obj.data.id,
+				fields : 'id',
+			})
+			.catch((err)=>{
+				console.log('Error adding Service Account permissions on Google Drive file');
+				console.error(err);
+			});
+		}
+
 		await drive.permissions.create({
 			resource : { type : 'anyone',
-									 role : 'writer' },
+			             role : 'writer' },
 			fileId : obj.data.id,
 			fields : 'id',
 		})
 		.catch((err)=>{
-			console.log('Error updating permissions');
+			console.log('Error adding "Anyone" permissions on Google Drive file');
 			console.error(err);
 		});
 
@@ -277,7 +297,6 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				lang        : obj.data.properties.lang,
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,

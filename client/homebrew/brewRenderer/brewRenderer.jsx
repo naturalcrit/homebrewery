@@ -1,23 +1,24 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
-require('./brewRenderer.less');
-const React = require('react');
-const { useState, useRef, useMemo, useEffect } = React;
-const _ = require('lodash');
+import brewRendererStylesUrl from './brewRenderer.less?url';
+import headerNavStylesUrl from './headerNav/headerNav.less?url';
+import './brewRenderer.less';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import _ from 'lodash';
 
-const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-import Markdown from 'naturalcrit/markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
-const ToolBar  = require('./toolBar/toolBar.jsx');
+import MarkdownLegacy from '@shared/markdownLegacy.js';
+import Markdown from '@shared/markdown.js';
+import ErrorBar from './errorBar/errorBar.jsx';
+import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
-const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
-const Frame = require('react-frame-component').default;
-const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
+import NotificationPopup from './notificationPopup/notificationPopup.jsx';
+import Frame from 'react-frame-component';
+import dedent from 'dedent';
+import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
-import { safeHTML } from './safeHTML.js';
+import safeHTML from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -30,7 +31,9 @@ const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
 	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
-	<base target=_blank>
+	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
+	<link href="${headerNavStylesUrl}" rel="stylesheet" />
+	<base target="_top">
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 
@@ -132,6 +135,7 @@ const BrewRenderer = (props)=>{
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
+	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
@@ -269,6 +273,8 @@ const BrewRenderer = (props)=>{
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
 
+		window.addEventListener('hashchange', ()=>scrollToHash(window.location.hash));
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
 			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
@@ -345,4 +351,4 @@ const BrewRenderer = (props)=>{
 	);
 };
 
-module.exports = BrewRenderer;
+export default BrewRenderer;
