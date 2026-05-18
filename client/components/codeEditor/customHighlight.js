@@ -86,8 +86,8 @@ export function tokenizeCustomMarkdown(text) {
 		if(/\~/.test(lineText)) {
 			const strikethroughRegex = /~(?!\s)(.+?)(?<!\s)~/g;
 
-			let match = strikethroughRegex.exec(lineText);
-			let type = customTags.strikethrough;
+			const match = strikethroughRegex.exec(lineText);
+			const type = customTags.strikethrough;
 
 			if(match) {
 				tokens.push({
