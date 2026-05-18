@@ -32,20 +32,20 @@ const isStaticTheme = (renderer, themeName)=>{
 // };
 
 
-const migrateSystemsToTags = (brew) => {
-	if (!('systems' in brew)) return brew;
+const migrateSystemsToTags = (brew)=>{
+	if(!('systems' in brew)) return brew;
 
-	if (!Array.isArray(brew.systems) || brew.systems.length === 0) {
+	if(!Array.isArray(brew.systems) || brew.systems.length === 0) {
 		brew.systems = undefined;
 		return brew;
 	}
 	const systemMap = {
-		'5e': 'system:D&D 5e',
-		'4e': 'system:D&D 4e',
-		'3.5e': 'system:D&D 3.5e',
-		'Pathfinder': 'system:Pathfinder 2e'
+		'5e'         : 'system:D&D 5e',
+		'4e'         : 'system:D&D 4e',
+		'3.5e'       : 'system:D&D 3.5e',
+		'Pathfinder' : 'system:Pathfinder 2e'
 	};
-	const systemTags = brew.systems.map(s => systemMap[s]);
+	const systemTags = brew.systems.map((s)=>systemMap[s]);
 	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
 
 	brew.systems = undefined;
@@ -188,7 +188,7 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			
+
 
 			const fixedStub = migrateSystemsToTags(stub);
 			req.brew = fixedStub;
