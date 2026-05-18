@@ -93,7 +93,7 @@ export default EditorView.theme({
 	'.cm-strong'                         : { color: '#309dd2', fontWeight: 'bold' },
 	'.cm-em'                             : { fontStyle: 'italic' },
 	'.cm-keyword'                        : { color: '#fff' },
-	'.cm-atom, .cm-value, .cm-color'       : { color: '#c1939a' },
+	'.cm-atom, .cm-value, .cm-color'     : { color: '#c1939a' },
 	'.cm-number'                         : { color: '#2986cc' },
 	'.cm-def'                            : { color: '#2986cc' },
 	'.cm-list'                           : { color: '#3cbf30' },
