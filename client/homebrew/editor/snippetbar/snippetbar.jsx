@@ -23,19 +23,25 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-import * as themesImport from '@uiw/codemirror-themes-all';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
 
-const themes = { default: defaultCM5Theme, darkbrewery, ...themesImport };
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
-const EditorThemes = Object.entries(themes)
-  .filter(([name, value]) =>
-    Array.isArray(value) &&
+const themeNames = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
     !name.endsWith('Init') &&
     !name.endsWith('Style')
   )
-  .map(([name]) => name);
+  .map(([name])=>name);
+
+const EditorThemes = [
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
+];
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
@@ -163,7 +169,7 @@ const Snippetbar = createReactClass({
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
-			showThemeSelector : false,
+			themeSelector : false,
 		});
 	},
 
