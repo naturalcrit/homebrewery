@@ -42,6 +42,7 @@ const BrewPage = (props)=>{
 	props = {
 		contents : '',
 		index    : 0,
+		hoisted  : false,
 		...props
 	};
 	const pageRef   = useRef(null);
@@ -234,11 +235,16 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
-			const forceRender = checkHoists && (page.match(/([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g));
+			const varsOnPageRegex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g; // Find out if there are any vars on the page.
+			const forceRender = checkHoists &&
+				!props.hoisted &&
+				(page.match(varsOnPageRegex));  // forceRender forces pages outside of the PPR range to render if true.
+			                                    // This is necessary on the first load to fully populate the variable table.
 			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
+		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
 		return renderedPages;
 	};
 
