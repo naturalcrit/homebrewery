@@ -3,15 +3,15 @@ import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
 import { Prec } from '@codemirror/state';
 
-const insertTab = (view) => {
-  const { from, to } = view.state.selection.main;
+const insertTab = (view)=>{
+	const { from, to } = view.state.selection.main;
 
-  view.dispatch({
-    changes: { from, to, insert: '  ' },
-    selection: { anchor: from + 2 }
-  });
+	view.dispatch({
+		changes   : { from, to, insert: '  ' },
+		selection : { anchor: from + 2 }
+	});
 
-  return true;
+	return true;
 };
 
 const indentLess = (view)=>{
@@ -28,20 +28,18 @@ const indentLess = (view)=>{
 	return true;
 };
 
-const wrapSelection = (prefix, suffix) => (view) => {
+const wrapSelection = (prefix, suffix)=>(view)=>{
 	const changes = [];
 
-	for(const range of view.state.selection.ranges) {
+	for (const range of view.state.selection.ranges) {
 		const { from, to } = range;
 		const selected = view.state.doc.sliceString(from, to);
 
 		let text;
 
-		if(from === to) { text = prefix + suffix }
-		else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
+		if(from === to) { text = prefix + suffix; } else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
 			text = selected.slice(prefix.length, -suffix.length);
-		}
-		else {text = `${prefix}${selected}${suffix}`}
+		} else {text = `${prefix}${selected}${suffix}`;}
 
 		changes.push({ from, to, insert: text });
 	}
@@ -53,21 +51,21 @@ const wrapSelection = (prefix, suffix) => (view) => {
 	return true;
 };
 
-const makeNbsp = (view) => {
-  const { from } = view.state.selection.main;
+const makeNbsp = (view)=>{
+	const { from } = view.state.selection.main;
 
-  const prev2 = from >= 2
-    ? view.state.doc.sliceString(from - 2, from)
-    : '';
+	const prev2 = from >= 2
+		? view.state.doc.sliceString(from - 2, from)
+		: '';
 
-  const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
+	const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
 
-  view.dispatch({
-    changes   : { from, to: from, insert },
-    selection : { anchor: from + insert.length },
-  });
+	view.dispatch({
+		changes   : { from, to: from, insert },
+		selection : { anchor: from + insert.length },
+	});
 
-  return true;
+	return true;
 };
 
 const makeSpace = (view)=>{
