@@ -77,7 +77,10 @@ const makeSpace = (view)=>{
 		const percent = Math.min(parseInt(match[1], 10) + 10, 100);
 		newText = `{{width:${percent}% }}`;
 	}
-	view.dispatch({ changes: { from, to, insert: newText } });
+	view.dispatch({ 
+		changes   : { from, to, insert: newText },
+		selection : { anchor: from, head: from + newText.length }
+	});
 	return true;
 };
 
@@ -88,28 +91,41 @@ const removeSpace = (view)=>{
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
 		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
-		view.dispatch({ changes: { from, to, insert: newText } });
+		view.dispatch({ 
+			changes   : { from, to, insert: newText },
+			selection : { anchor: from, head: from + newText.length }
+		});
 	}
 	return true;
 };
 
+// Wraps text in braces on same line, leaves cursor ready to add attributes.  Or, removes braces, ready to continue typing content.
 const makeSpan = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
+	const alreadyWrapped = selected.startsWith('{{') && selected.endsWith('}}');
+	const text = alreadyWrapped
 		? selected.slice(2, -2)
-		: `{{${selected}}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
+		: `{{ ${selected}}}`;
+	view.dispatch({
+		changes   : { from, to, insert: text },
+		selection : { anchor: alreadyWrapped ? from + text.length : from + 2 }
+	});
 	return true;
 };
 
+// Wraps text in braces on new lines, leaves cursor ready to add attributes.  Or, removes braces and new lines, ready to continue typing content.
 const makeDiv = (view)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
-		? selected.slice(2, -2)
+	const alreadyWrapped = selected.startsWith('{{\n') && selected.endsWith('\n}}');
+	const text = alreadyWrapped
+		? selected.slice(3, -3)
 		: `{{\n${selected}\n}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
+	view.dispatch({
+		changes   : { from, to, insert: text },
+		selection : { anchor: alreadyWrapped ? from + text.length : from + 2 }
+	});
 	return true;
 };
 
@@ -158,13 +174,21 @@ const makeHeader = (level)=>(view)=>{
 
 const newColumn = (view)=>{
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\column\n\n' } });
+	const insert = '\n\\column\n\n';
+	view.dispatch({
+		changes   : { from, to, insert: insert },
+		selection : { anchor: from + insert.length }
+	});
 	return true;
 };
 
 const newPage = (view)=>{
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\page\n\n' } });
+	const insert = '\n\\page\n\n';
+	view.dispatch({
+		changes   : { from, to, insert: insert },
+		selection : { anchor: from + insert.length }
+	});
 	return true;
 };
 
