@@ -205,7 +205,7 @@ const newPage = (view)=>{
 };
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: indentMore },
+	{ key: 'Tab', run: insertTab },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },
