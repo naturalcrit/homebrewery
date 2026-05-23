@@ -81,8 +81,7 @@ const wrapSelection = (prefix, suffix)=>(view)=>{
 	}
 
 	view.dispatch({
-		changes : { from, to, insert: text },
-		selection
+		changes
 	});
 
 	return true;
