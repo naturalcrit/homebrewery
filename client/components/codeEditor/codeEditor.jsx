@@ -45,7 +45,7 @@ const highlightCompartment = new Compartment();
 
 import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
-import { customHighlightStyle } from './extensions/customHighlight.js';
+import { customHighlightStyle , customHighlightPlugin } from './extensions/customHighlight.js';
 import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
