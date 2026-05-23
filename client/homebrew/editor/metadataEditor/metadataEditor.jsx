@@ -242,7 +242,16 @@ const MetadataEditor = createReactClass({
 	},
 
 	renderLanguageDropdown : function(){
-		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
+		const langCodes = [
+			'en', 'de', 'de-ch','de-AT','ca', 'fr', 'ja', 
+			'es', 'es-AR', 'es-BO', 'es-CL', 'es-CO',
+			'es-CR', 'es-CU', 'es-DO', 'es-EC', 'ES-GQ',
+			'es-GT', 'es-HN', 'es-MX', 'es-NI', 'es-PA',
+			'es-PE', 'es-PH', 'es-PR', 'es-PY', 'es-SV',
+			'es-UY', 'es-VE', 'it', 'sv', 'sv-FL','sv-SE',
+			'no', 'nb-NO','nn-NO','pt-BR','pt-PT', 'ru',
+			'zh-Hans', 'zh-Hant'
+		];
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
 				const localName = new Intl.DisplayNames([code], { type: 'language' });

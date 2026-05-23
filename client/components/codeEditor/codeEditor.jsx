@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 405 }] */
+/* eslint max-lines: ["error", { "max": 455 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -47,6 +47,7 @@ import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
 import { customHighlightPlugin, customHighlightStyle } from './extensions/customHighlight.js';
 import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
+import { spellChecker } from 'codemirror-v6-spell-checker';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 
@@ -195,6 +196,14 @@ const CodeEditor = forwardRef(
 				EditorState.allowMultipleSelections.of(true),
 				dropCursor(),
 				programmaticCursorLineField,
+				spellChecker(
+					"en_US", 
+					["homebrewery", "homebrew", "homebrewing",
+					 "DnD", "naturalcrit", "pageNumber", "fas",
+					 "renderer", "renderers", "UnearthedArcana"
+					],
+					1000
+				),
 			];
 		};
 
