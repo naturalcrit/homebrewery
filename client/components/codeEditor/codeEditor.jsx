@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 500 }] */
+/* eslint max-lines: ["error", { "max": 405 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -10,20 +10,26 @@ import {
 	highlightActiveLine,
 	scrollPastEnd,
 	Decoration,
-	ViewPlugin,
 	drawSelection,
 	dropCursor,
 	rectangularSelection,
 	crosshairCursor,
 } from '@codemirror/view';
 import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
-import { foldAll as foldAllCmd, unfoldAll as unfoldAllCmd, foldGutter, foldKeymap, foldEffect, foldState, syntaxHighlighting } from '@codemirror/language';
+import {
+	unfoldAll as unfoldAllCmd,
+	foldGutter,
+	foldKeymap,
+	foldEffect,
+	foldState,
+	syntaxHighlighting,
+} from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
-import { autocompleteEmoji } from './autocompleteEmoji.js';
+import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
 import { searchKeymap, search } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
 
@@ -37,68 +43,12 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './customKeyMaps.js';
-import foldOnPages from './customFolding.js';
-import { customHighlightStyle, tokenizeCustomMarkdown, tokenizeCustomCSS } from './customHighlight.js';
-import { legacyCustomHighlightStyle, legacyTokenizeCustomMarkdown } from './legacyCustomHighlight.js';
+import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './extensions/customKeyMaps.js';
+import foldOnPages from './extensions/customFolding.js';
+import { customHighlightStyle } from './extensions/customHighlight.js';
+import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-
-const createHighlightPlugin = (renderer, tab)=>{
-	//this function takes the custom tokens created in the tokenize function in customhighlight files
-	//takes the tokens defined by that function and assigns classes to them
-	//it also creates page number and snippet number widgets
-
-	let tokenize;
-
-	if(tab === 'brewStyles') {
-		tokenize = tokenizeCustomCSS;
-	} else {
-		tokenize = renderer === 'V3' ? tokenizeCustomMarkdown : legacyTokenizeCustomMarkdown;
-	}
-
-	return ViewPlugin.fromClass(
-		class {
-			constructor(view) {
-				this.decorations = this.buildDecorations(view);
-			}
-			update(update) {
-				if(update.docChanged) {
-					this.decorations = this.buildDecorations(update.view);
-				}
-			}
-			buildDecorations(view) {
-				const decos = [];
-				const tokens = tokenize(view.state.doc.toString());
-				let pageCount = 1;
-				let snippetCount = 0;
-
-				tokens.forEach((tok)=>{
-					const line = view.state.doc.line(tok.line + 1);
-
-					if(tok.from != null && tok.to != null && tok.from < tok.to) {
-						decos.push(Decoration.mark({ class: `cm-${tok.type}` }).range(line.from + tok.from, line.from + tok.to));
-					} else {
-						decos.push(Decoration.line({ class: `cm-${tok.type}` }).range(line.from));
-						if(tok.type === 'pageLine'  && tab === 'brewText') {
-							pageCount++;
-							line.from === 0 && pageCount--;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
-						}
-						if(tok.type === 'snippetLine' && tab === 'brewSnippets') {
-							snippetCount++;
-							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
-						}
-					}
-				});
-
-				decos.sort((a, b)=>a.from - b.from || a.to - b.to);
-				return Decoration.set(decos);
-			}
-		},
-		{ decorations: (v)=>v.decorations }
-	);
-};
 
 const setProgrammaticCursorLine = StateEffect.define();
 
@@ -206,8 +156,6 @@ const CodeEditor = forwardRef(
   			? syntaxHighlighting(customHighlightStyle)
   			: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
-
 			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
 			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
@@ -230,7 +178,7 @@ const CodeEditor = forwardRef(
 				}),
 
 				//highlights
-				highlightCompartment.of([customHighlightPlugin, highlightExtension]),
+				highlightCompartment.of([customHighlightPlugin(renderer, tab), highlightExtension]),
 				themeCompartment.of(themeExtension),
 				highlightActiveLine(),
 				highlightActiveLineGutter(),
@@ -371,10 +319,8 @@ const CodeEditor = forwardRef(
     		? syntaxHighlighting(customHighlightStyle)
     		: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const customHighlightPlugin = createHighlightPlugin(renderer, tab);
-
 			view.dispatch({
-				effects : highlightCompartment.reconfigure([customHighlightPlugin, highlightExtension]),
+				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab), highlightExtension]),
 			});
 		}, [renderer, tab]);
 
@@ -382,7 +328,6 @@ const CodeEditor = forwardRef(
 
 			injectText : (text)=>{
 				const view = viewRef.current;
-
 
 				view.dispatch(
 					view.state.replaceSelection(text)
