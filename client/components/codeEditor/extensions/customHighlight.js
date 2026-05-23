@@ -253,8 +253,6 @@ function tokenizeCustomMarkdown(text) {
 			const closingMatch = lineText.match(/ *(}})/d);
 			
 			if(closingMatch) {
-				console.log('closing', closingMatch);
-				console.log(closingMatch.indices[1][0], closingMatch.indices[1][1])
 				tokens.push({ line: lineNumber, from: closingMatch.indices[1][0], to: closingMatch.indices[1][1], type: customTags.block });
 			} else {
 				tokens.push({ line: lineNumber, type: customTags.block });
@@ -358,7 +356,7 @@ class ImageWidget extends WidgetType {
 		
 
 		img.onerror = ()=>{
-			img.src = 'client/icons/Broken-image-icon-in-Chrome.png';
+			img.src  = 'client/icons/broken-image.jpg';
 		};
 
 		return img;
