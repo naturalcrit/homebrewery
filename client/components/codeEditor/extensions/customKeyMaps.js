@@ -214,6 +214,7 @@ export const generalKeymap = Prec.high(keymap.of([
 
 export const cssKeymap = Prec.highest(keymap.of([
 	{ key: 'Mod-Shift-f', run: formatCSS },
+  	{ key: 'Alt-Shift-f', run: formatCSS },
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
