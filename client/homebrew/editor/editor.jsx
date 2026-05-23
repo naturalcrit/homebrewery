@@ -154,7 +154,7 @@ const Editor = createReactClass({
 		this.codeEditor.current?.injectText(injectText);
 	},
 
-	handleFormatCode: function () {
+	handleFormatCode : function () {
 		this.codeEditor.current?.formatCode();
 	},
 
