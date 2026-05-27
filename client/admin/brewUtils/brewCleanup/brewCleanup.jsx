@@ -7,21 +7,34 @@ const BrewCleanup = ({})=>{
 	const [primed, setPrimed] = useState(false);
 	const [error, setError] = useState(null);
 
-	const prime = ()=>{
+	const prime = async ()=>{
 		setPending(true);
 
-		request.get('/admin/cleanup')
-			.then((res)=>{setCount(res.body.count);setPrimed(true);})
-			.catch((err)=>setError(err))
-			.finally(()=>setPending(false));
+		try {
+			const res = await request.get('/admin/cleanup');
+
+			setCount(res.body.count);
+			setPrimed(true);
+		} catch (err) {
+			setError(err);
+		} finally {
+			setPending(false);
+		}
 	};
-	const cleanup = ()=>{
+
+	const cleanup = async ()=>{
 		setPending(true);
 
-		request.post('/admin/cleanup')
-			.then((res)=>setCount(res.body.count))
-			.catch((err)=>setError(err))
-			.finally(()=>{setPending(false);setPrimed(false);});
+		try {
+			const res = await request.post('/admin/cleanup');
+
+			setCount(res.body.count);
+		} catch (err) {
+			setError(err);
+		} finally {
+			setPending(false);
+			setPrimed(false);
+		}
 	};
 	const renderPrimed = ()=>{
 		if(!primed) return;
