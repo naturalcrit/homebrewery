@@ -41,12 +41,13 @@ export default function createAdminApi(vite) {
 
 	const junkBrewPipeline = [
 		{	$match : {
-			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
-			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
-		} },
-		{ $project: { textBinSize: { $binarySize: '$textBin' } } },
-		{ $match: { textBinSize: { $lt: 140 } } },
-		{ $limit: 100 }
+			updatedAt  : { $lt: Moment().subtract(365, 'days').toDate() },
+			lastViewed : { $lt: Moment().subtract(365, 'days').toDate() }
+		}},
+		{ $match: {
+			authors : [],
+		}},
+		{ $limit: 300 }
 	];
 
 	/* Search for brews that aren't compressed (missing the compressed text field) */
@@ -54,10 +55,10 @@ export default function createAdminApi(vite) {
 		'text' : { '$exists': true }
 	}).lean().limit(10000).select('_id');
 
-	// Search for up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
+	// Search for up to 100 brews that have not been viewed or updated in a year
 	router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
 		HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
-		.then((objs)=>res.json({ count: objs.length }))
+		.then((objs)=>res.json({ count: objs.length, brewCollection : objs }))
 		.catch((error)=>{
 			console.error(error);
 			res.status(500).json({ error: 'Internal Server Error' });
