@@ -1,71 +1,59 @@
-import React from 'react';
-import createReactClass from 'create-react-class';
+import React, { useState } from 'react';
 import request from 'superagent';
 
-const BrewCleanup = createReactClass({
-	displayName : 'BrewCleanup',
-	getDefaultProps(){
-		return {};
-	},
-	getInitialState() {
-		return {
-			count : 0,
+const BrewCleanup = ({})=>{
+	const [count, setCount] = useState(0);
+	const [pending, setPending] = useState(false);
+	const [primed, setPrimed] = useState(false);
+	const [error, setError] = useState(null);
 
-			pending : false,
-			primed  : false,
-			err     : null
-		};
-	},
-	prime(){
-		this.setState({ pending: true });
+	const prime = ()=>{
+		setPending(true);
 
 		request.get('/admin/cleanup')
-			.then((res)=>this.setState({ count: res.body.count, primed: true }))
-			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ pending: false }));
-	},
-	cleanup(){
-		this.setState({ pending: true });
+			.then((res)=>{setCount(res.body.count);setPrimed(true);})
+			.catch((err)=>setError(err))
+			.finally(()=>setPending(false));
+	};
+	const cleanup = ()=>{
+		setPending(true);
 
 		request.post('/admin/cleanup')
-			.then((res)=>this.setState({ count: res.body.count }))
-			.catch((err)=>this.setState({ error: err }))
-			.finally(()=>this.setState({ pending: false, primed: false }));
-	},
-	renderPrimed(){
-		if(!this.state.primed) return;
+			.then((res)=>setCount(res.body.count))
+			.catch((err)=>setError(err))
+			.finally(()=>{setPending(false);setPrimed(false);});
+	};
+	const renderPrimed = ()=>{
+		if(!primed) return;
 
-		if(!this.state.count){
-			return <div className='result noBrews'>No Matching Brews found.</div>;
-		}
+		if(!count) return <div className='result noBrews'>No Matching Brews found.</div>;
+
 		return <div className='result'>
-			<button onClick={this.cleanup} className='remove'>
-				{this.state.pending
+			<button onClick={()=>cleanup()} className='remove'>
+				{pending
 					? <i className='fas fa-spin fa-spinner' />
 					: <span><i className='fas fa-times' /> Remove</span>
 				}
 			</button>
-			<span>Found {this.state.count} Brews that could be removed. </span>
+			<span>Found {count} Brews that could be removed. </span>
 		</div>;
-	},
-	render(){
-		return <div className='brewUtil brewCleanup'>
-			<h2> Brew Cleanup </h2>
-			<p>Removes very short brews to tidy up the database</p>
+	};
 
-			<button onClick={this.prime} className='query'>
-				{this.state.pending
-					? <i className='fas fa-spin fa-spinner' />
-					: 'Query Brews'
-				}
-			</button>
-			{this.renderPrimed()}
+	return <div className='brewUtil brewCleanup'>
+		<h2> Brew Cleanup </h2>
+		<p>Removes very short brews to tidy up the database</p>
 
-			{this.state.error
-				&& <div className='error noBrews'>{this.state.error.toString()}</div>
+		<button onClick={()=>prime()} className='query'>
+			{pending
+				? <i className='fas fa-spin fa-spinner' />
+				: 'Query Brews'
 			}
-		</div>;
-	}
-});
+		</button>
+		{renderPrimed()}
+
+		{error && <div className='error noBrews'>{error.toString()}</div>}
+	</div>;
+
+};
 
 export default BrewCleanup;
