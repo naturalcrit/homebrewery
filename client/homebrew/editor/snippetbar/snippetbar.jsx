@@ -31,18 +31,17 @@ import cm5Themes from 'codemirror-5-themes';
 const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
 const themeNames = Object.entries(themes)
-  .filter(([name, value]) =>
-    Array.isArray(value) &&
+  .filter(([name, value])=>Array.isArray(value) &&
     !name.endsWith('Init') &&
     !name.endsWith('Style')
   )
-  .map(([name]) => name);
+  .map(([name])=>name);
 
 const EditorThemes = [
-  'default',
-  ...themeNames
-    .filter(name => name !== 'default')
-    .sort((a, b) => a.localeCompare(b))
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
 ];
 
 const execute = function(val, props){
@@ -171,7 +170,7 @@ const Snippetbar = createReactClass({
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
-			showThemeSelector : false,
+			themeSelector : false,
 		});
 	},
 
