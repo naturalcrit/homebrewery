@@ -336,7 +336,7 @@ const SnippetGroup = createReactClass({
 				);
 			} else if(snippet.subsnippets){
 				return (
-					<Dropdown groupName={snippet.name}>
+					<Dropdown groupName={snippet.name} icon={snippet.icon}>
 						{this.renderSnippets(snippet.subsnippets)}
 					</Dropdown>
 				)
