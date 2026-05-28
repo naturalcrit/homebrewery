@@ -322,7 +322,6 @@ const SnippetGroup = createReactClass({
 		};
 	},
 	handleSnippetClick : function(e, snippet){
-		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){

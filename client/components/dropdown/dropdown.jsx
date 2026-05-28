@@ -72,6 +72,24 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 		}
 	};
 
+	// handle clicks on menu items. By default, actions do dismiss.
+	const handleMenuActionClick = (event)=>{
+		const menuElement = menuRef.current;
+		if(!menuElement) return;
+
+		const menuAction = event.target.closest('button, a, [role="menuitem"]');
+		if(!menuAction || !menuElement.contains(menuAction)) return;
+
+		// don't dismiss if the target triggers a submenu
+		if(menuAction.hasAttribute('popoverTarget')) return;
+
+		// don't dismiss if the target has `no-dismiss` attribute
+		const noDismissValue = menuAction.getAttribute('no-dismiss')?.toLowerCase();
+		if(noDismissValue === '' || noDismissValue === 'true') return;
+
+		document.querySelectorAll('.menu-list:popover-open').forEach((openMenu)=>openMenu.hidePopover());
+	};
+
 	return (
 		<div className={['menu-wrapper', className].join(' ')} role='none' >
 			<button
@@ -93,6 +111,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 					className='menu-list'
 					popover='auto'
 					role='menu'
+					onClick={handleMenuActionClick}
 				>
 					{children}
 				</div>
