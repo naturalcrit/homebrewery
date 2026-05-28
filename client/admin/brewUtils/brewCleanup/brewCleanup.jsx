@@ -6,10 +6,10 @@ const BrewCleanup = ({})=>{
 	const [count, setCount] = useState(0);
 	const [brewCollection, setBrewCollection] = useState([]);
 	const [pending, setPending] = useState(false);
-	const [primed, setPrimed] = useState(false);
+	const [found, setFound] = useState(false);
 	const [error, setError] = useState(null);
 
-	const prime = async ()=>{
+	const find = async ()=>{
 		setPending(true);
 
 		try {
@@ -17,7 +17,7 @@ const BrewCleanup = ({})=>{
 
 			setCount(res.body.count);
 			setBrewCollection(res.body.brewCollection);
-			setPrimed(true);
+			setFound(true);
 		} catch (err) {
 			setError(err);
 		} finally {
@@ -36,7 +36,7 @@ const BrewCleanup = ({})=>{
 			setError(err);
 		} finally {
 			setPending(false);
-			setPrimed(false);
+			setFound(false);
 		}
 	};
 	const renderBrewList = ()=>{
@@ -51,7 +51,6 @@ const BrewCleanup = ({})=>{
 				<thead>
 					<tr>
 						<th>Title</th>
-						<th>Share</th>
 						<th>Last Update</th>
 						<th>Created</th>
 						<th>Storage</th>
@@ -66,7 +65,8 @@ const BrewCleanup = ({})=>{
 						.map((brew, idx)=>{
 							return <tr key={idx}>
 								<td><strong>{brew.title || 'No Title'}</strong></td>
-								<td><a href={`/share/${brew.shareId}`}>{brew.shareId}</a></td>
+								{//<td><a href={`/share/${brew.shareId}`}>{brew.shareId}</a></td>
+								}
 								<td style={{ width: '200px' }}>{Moment(brew.updatedAt).fromNow()}</td>
 								<td>{brew.createdAt ? Moment(brew.createdAt).fromNow() : 'No creation date'}</td>
 								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
@@ -76,8 +76,8 @@ const BrewCleanup = ({})=>{
 			</table>
 		</>;
 	};
-	const renderPrimed = ()=>{
-		if(!primed) return;
+	const renderFound = ()=>{
+		if(!found) return;
 
 		if(!count) return <div className='result noBrews'>No Matching Brews found.</div>;
 
@@ -97,13 +97,13 @@ const BrewCleanup = ({})=>{
 		<h2> Brew Cleanup </h2>
 		<p>Removes very short brews to tidy up the database</p>
 
-		<button onClick={()=>prime()} className='query'>
+		<button onClick={()=>find('lost')} className='query'>
 			{pending
 				? <i className='fas fa-spin fa-spinner' />
 				: 'Query Brews'
 			}
 		</button>
-		{renderPrimed()}
+		{renderFound()}
 
 		{error && <div className='error noBrews'>{error.toString()}</div>}
 	</div>;
