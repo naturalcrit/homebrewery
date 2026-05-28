@@ -17,14 +17,16 @@
  */
 
 import './dropdown.less';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useId, useRef } from 'react';
 import _ from 'lodash';
 
 // use react context to keep track of the menu depth (menus in menus)
 const MenuDepthContext = React.createContext(0);
 
 const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, ...props })=>{
-	const menuId = `${_.kebabCase(groupName)}-menu`;
+	const reactId = useId();
+	const safeId = reactId.replace(/[^a-zA-Z0-9_-]/g, '');
+	const menuId = `${_.kebabCase(groupName)}-${safeId}-menu`;
 	const anchorName = `--${menuId}`;
 	const depth = React.useContext(MenuDepthContext);
 
@@ -93,7 +95,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	return (
 		<div className={['menu-wrapper', className].join(' ')} role='none' >
 			<button
-				id={groupName.replace(' ', '-')}
+				id={`${menuId}-trigger`}
 				className={['menu-item', color].join(' ')}
 				popoverTarget={menuId}
 				icon={icon}
