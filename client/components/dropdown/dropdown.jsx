@@ -64,10 +64,10 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	// the trigger is the piece placed inside the opening button of the menu.
 	// This method allows for creating a generic span with the group name,
 	// or using a bespoke element (like a graphic) passed in from props to be used as the trigger
-	const trigger = (groupName)=>{
+	const trigger = (groupName, icon)=>{
 		if(!customTrigger){
 			return <>
-				<span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
+				<i className={icon}></i><span className='menu-name'>{groupName}</span><i className={`caret fas fa-caret-${isSubMenu ? 'right' : 'down'}`}></i>
 			</>;
 		} else {
 			return customTrigger;
@@ -104,7 +104,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				disabled={!React.Children.count(children)}
 				ref={triggerRef}
 			>
-				{trigger(groupName)}
+				{trigger(groupName, icon)}
 			</button>
 			<MenuDepthContext.Provider value={depth + 1}>
 				<div
