@@ -83,7 +83,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 		if(!menuAction || !menuElement.contains(menuAction)) return;
 
 		// don't dismiss if the target triggers a submenu
-		if(menuAction.hasAttribute('popoverTarget')) return;
+		if(menuAction.hasAttribute('popovertarget')) return;
 
 		// don't dismiss if the target has `no-dismiss` attribute
 		const noDismissValue = menuAction.getAttribute('no-dismiss')?.toLowerCase();
