@@ -16,17 +16,17 @@ export default {
 	edge : (side = 'bottom')=>{
 		const styles = ()=>{
 			switch (side) {
-				case 'bottom':
-					return `{width:100%,bottom:0%}`
-					break;
-				case 'top':
-					return `{width:100%,top:0%}`
-					break;		
-				default:
-					return `{height:100%}`
-					break;
+			case 'bottom':
+				return `{width:100%,bottom:0%}`;
+				break;
+			case 'top':
+				return `{width:100%,top:0%}`;
+				break;
+			default:
+				return `{height:100%}`;
+				break;
 			}
-		}
+		};
 
 		const rotation = {
 			'bottom' : 0,
