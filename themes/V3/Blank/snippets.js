@@ -520,7 +520,7 @@ export default [
 
 			{
 				name : 'MIT License',
-				icon : 'fas fa-mit',
+				icon : null,
 				gen  : LicenseGen.mit,
 			},
 
@@ -554,7 +554,7 @@ export default [
 
 			{
 				name : 'ORC Notice',
-				icon : 'fas fa-Paizo',
+				icon : null,
 				gen	 : LicenseGen.orc1,
 			},
 
