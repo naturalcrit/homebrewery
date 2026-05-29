@@ -44,7 +44,7 @@ export default function createAdminApi(vite) {
 			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
 			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
 		} },
-		{ $project: { textBinSize: { $binarySize: '$textBin' } } },
+		{ $project: { _id: 1, textBinSize: { $binarySize: '$textBin' } } },
 		{ $match: { textBinSize: { $lt: 140 } } },
 		{ $limit: 300 }
 	];
@@ -77,9 +77,11 @@ export default function createAdminApi(vite) {
 
 	// Delete up to 300 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
 	router.post('/admin/cleanupJunk', mw.adminOnly, (req, res)=>{
-		HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
+		console.log('deleting');
+		HomebrewModel.aggregate(junkBrewsPipeline).option({ maxTimeMS: 60000 })
 		.then((docs)=>{
 			const ids = docs.map((doc)=>doc._id);
+			console.log(ids);
 			return HomebrewModel.deleteMany({ _id: { $in: ids } });
 		}).then((result)=>{
 			res.json({ count: result.deletedCount });
@@ -101,7 +103,7 @@ export default function createAdminApi(vite) {
 
 	// Delete up to 300 unauthored brews that have not been viewed or updated in a year
 	router.post('/admin/cleanupLost', mw.adminOnly, (req, res)=>{
-		HomebrewModel.aggregate(lostBrewPipeline).option({ maxTimeMS: 60000 })
+		HomebrewModel.aggregate(lostBrewsPipeline).option({ maxTimeMS: 60000 })
 		.then((docs)=>{
 			const ids = docs.map((doc)=>doc._id);
 			return HomebrewModel.deleteMany({ _id: { $in: ids } });
