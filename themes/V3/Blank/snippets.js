@@ -330,7 +330,7 @@ export default [
 			},
 			{
 				name        : 'DTRPG Community Content',
-				incon       : 'fab fa-dtrpg',
+				icon       : null,
 				subsnippets : [
 					{
 						name : 'Chronicle System Guild Colophon',
@@ -526,7 +526,7 @@ export default [
 
 			{
 				name        : 'Mongoose Publishing Fair Use',
-				icon        : 'fas fa-mongoosepub',
+				icon        : null,
 				subsnippets : [
 					{
 						name : 'Long Form Fair Use',
@@ -561,7 +561,7 @@ export default [
 
 			{
 				name        : 'Shadowdark',
-				icon        : 'fab fa-shadowdark',
+				icon        : null,
 				subsnippets : [
 					{
 						name        : 'Logos',
