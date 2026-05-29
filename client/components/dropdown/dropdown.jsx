@@ -1,7 +1,6 @@
 /**
  * A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
- * Anchor Positioning is now supported in all major browsers.  If support is needed for older browsers (namely, older firefox)
- * it is possible to use absolute positioning and calculations/resize observers to position things well enough, but adds another layer of complexity to the code.
+ * Anchor Positioning is now supported in all major browsers.  A polyfill is conditionally loaded for older browsers.
  * 
  * As-is, the menus will always open down aligned on left to trigger, submenus open to the right initially.
  * If no space, menus will still open down, but aligned to the right of the trigger.  Submenus will flip to the other side of the top menu.
