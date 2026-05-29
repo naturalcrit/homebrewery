@@ -77,11 +77,9 @@ export default function createAdminApi(vite) {
 
 	// Delete up to 300 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
 	router.post('/admin/cleanupJunk', mw.adminOnly, (req, res)=>{
-		console.log('deleting');
 		HomebrewModel.aggregate(junkBrewsPipeline).option({ maxTimeMS: 60000 })
 		.then((docs)=>{
 			const ids = docs.map((doc)=>doc._id);
-			console.log(ids);
 			return HomebrewModel.deleteMany({ _id: { $in: ids } });
 		}).then((result)=>{
 			res.json({ count: result.deletedCount });
