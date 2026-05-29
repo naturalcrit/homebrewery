@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown } from './dropdown.jsx';
+import { Dropdown } from '../../../client/components/dropdown/dropdown.jsx';
 import { createOpenMenu, renderDropdown, setupDropdownTestLifecycle } from './dropdown.testUtils.js';
 
 setupDropdownTestLifecycle();

@@ -29,7 +29,7 @@
     "test:coverage": "jest --coverage --silent --runInBand",
     "test:dev": "jest --verbose --watch",
     "test:basic": "jest tests/markdown/basic.test.js --verbose",
-    "test:components": "jest \"client/components/.*\\.test\\.(js|jsx)$\" --verbose",
+    "test:components": "jest \"tests/components/.*\\.test\\.(js|jsx)$\" --verbose",
     "test:variables": "jest tests/markdown/variables.test.js --verbose",
     "test:mustache-syntax": "jest \".*(mustache-syntax).*\" --verbose --noStackTrace",
     "test:mustache-syntax:inline": "jest \".*(mustache-syntax).*\" -t '^Inline:.*' --verbose --noStackTrace",
