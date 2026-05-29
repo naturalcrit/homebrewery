@@ -50,14 +50,16 @@ export default function createAdminApi(vite) {
 	];
 
 	const lostBrewsPipeline = [
-		{	$match : {
-			updatedAt  : { $lt: Moment().subtract(365, 'days').toDate() },
-			lastViewed : { $lt: Moment().subtract(365, 'days').toDate() }
-		}},
-		{ $match: {
-			authors : [],
-		}},
-		{ $limit: 300 }
+		{
+			$match: {
+				authors: [],
+				updatedAt:  { $lt: Moment().subtract(9, 'years').toDate() },
+				lastViewed: { $lt: Moment().subtract(9, 'years').toDate() }
+			}
+		},
+		{
+			$limit: 1000
+		}
 	];
 
 	/* Search for brews that aren't compressed (missing the compressed text field) */

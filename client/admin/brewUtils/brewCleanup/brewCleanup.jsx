@@ -67,6 +67,7 @@ const BrewCleanup = ({})=>{
 			return null;
 		}
 
+		
 		return <>
 			<h2>{`Results - ${brewList.length} brews` }</h2>
 			<table className='resultsTable'>
@@ -74,21 +75,21 @@ const BrewCleanup = ({})=>{
 					<tr>
 						<th>Title</th>
 						<th>Last Update</th>
-						<th>Created</th>
+						<th>last viewed</th>
 						<th>Storage</th>
 					</tr>
 				</thead>
 				<tbody>
 					{brewList
 						.sort((a, b)=>{         // Sort brews from most recently updated
-							if(a.updatedAt > b.updatedAt) return -1;
+							if(a.lastViewed > b.lastViewed) return -1;
 							return 1;
 						})
 						.map((brew, idx)=>{
 							return <tr key={idx}>
 								<td><strong>{brew.title || 'No Title'}</strong></td>
 								<td style={{ width: '200px' }}>{Moment(brew.updatedAt).fromNow()}</td>
-								<td>{brew.createdAt ? Moment(brew.createdAt).fromNow() : 'No creation date'}</td>
+								<td>{brew.lastViewed ? Moment(brew.lastViewed).fromNow() : 'No creation date'}</td>
 								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
 							</tr>;
 						})}
@@ -101,7 +102,7 @@ const BrewCleanup = ({})=>{
 		if(type === 'junk' && junkBrewCollection.length === 0 || type === 'lost' && lostBrewCollection.length === 0) return <div className='result noBrews'>No Matching Brews found.</div>;
 
 		return <div className='result'>
-			{renderBrewList(type)}
+			
 			<button onClick={()=>cleanup(type)} className='remove'>
 				{pending
 					? <i className='fas fa-spin fa-spinner' />
@@ -109,7 +110,7 @@ const BrewCleanup = ({})=>{
 				}
 			</button>
 			<span>Found {type === 'junk' ? junkBrewCollection.length : lostBrewCollection.length} Brews that could be removed. </span>
-			
+			{renderBrewList(type)}
 		</div>;
 	};
 	const renderJunkBrewCleanup = ()=>{
