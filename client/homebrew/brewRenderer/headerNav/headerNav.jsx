@@ -1,7 +1,7 @@
-require('./headerNav.less');
+import './headerNav.less';
 
-import * as React from 'react';
-import * as _ from 'lodash';
+import React from 'react';
+import _ from 'lodash';
 
 const MAX_TEXT_LENGTH = 40;
 
@@ -104,7 +104,7 @@ const HeaderNavItem = ({ link, text, depth, className })=>{
 	if(!link || !text) return;
 
 	return <li>
-		<a href={`#${link}`} target='_self' className={`depth-${depth} ${className ?? ''}`}>
+		<a href={`#${link}`} className={`depth-${depth} ${className ?? ''}`}>
 			{trimString(text, depth)}
 		</a>
 	</li>;

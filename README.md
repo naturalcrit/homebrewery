@@ -75,8 +75,9 @@ it using the two commands:
 1. `npm install`
 1. `npm start`
 
-You should now be able to go to [http://localhost:8000](http://localhost:8000)
-in your browser and use The Homebrewery offline.
+When the Homebrewery server is started for the first time, it will modify the database to create the indexes required for better Homebrewery performance. This may take a few moments to complete for each index, dependent on how much content is in your local database - a brand new, empty database should be done in seconds.
+
+On completion, you should be able to go to [http://localhost:8000](http://localhost:8000) in your browser and use The Homebrewery offline.
 
 If you had any issue at all, here are some links that may be useful:
 - [Course](https://learn.mongodb.com/courses/m103-basic-cluster-administration) on cluster administration, useful for beginners
@@ -144,4 +145,5 @@ your contribution to the project, please join our [gitter chat][gitter-url].
 [github-mark-duplicate-url]: https://docs.github.com/en/free-pro-team@latest/github/managing-your-work-on-github/about-duplicate-issues-and-pull-requests
 [github-pr-docs-url]: https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request
 [gitter-url]: https://gitter.im/naturalcrit/Lobby
+
 

@@ -1,8 +1,17 @@
+import globalJsdom from 'jsdom-global';
+globalJsdom();
+import safeHTML from '../../client/homebrew/brewRenderer/safeHTML';
 
+test('Exit if no document', function() {
+	const doc = document;
+	document = undefined;
 
-require('jsdom-global')();
+	const result = safeHTML('');
 
-import { safeHTML } from '../../client/homebrew/brewRenderer/safeHTML';
+	document = doc;
+
+	expect(result).toBe(null);
+});
 
 test('Javascript via href', function() {
 	const source = `<a href="javascript:alert('This is a JavaScript injection via href attribute')">Click me</a>`;

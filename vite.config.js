@@ -1,0 +1,38 @@
+// vite.config.js
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { generateAssetsPlugin } from './vitePlugins/generateAssetsPlugin.js';
+
+export default defineConfig({
+	plugins : [react(), generateAssetsPlugin()],
+	resolve : {
+		alias : {
+			'@vitreum'      : path.resolve(__dirname, './vitreum'),
+			'@shared'       : path.resolve(__dirname, './shared'),
+			'@sharedStyles' : path.resolve(__dirname, './shared/naturalcrit/styles'),
+			'@navbar'       : path.resolve(__dirname, './client/homebrew/navbar'),
+			'@themes'       : path.resolve(__dirname, './themes'),
+		},
+	},
+	build : {
+		outDir        : 'build',
+		emptyOutDir   : false,
+		rollupOptions : {
+			output : {
+				entryFileNames : '[name]/bundle.js',
+				chunkFileNames : '[name]/[name]-[hash].js',
+				assetFileNames : '[name]/[name].[ext]',
+			},
+		},
+	},
+	define : {
+		global : 'window.__INITIAL_PROPS__',
+	},
+	server : {
+		port : 8000,
+		fs   : {
+			allow : ['.'],
+		},
+	},
+});

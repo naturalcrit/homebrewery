@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 
-const dedent = require('dedent-tabs').default;
-import Markdown from 'naturalcrit/markdown.js';
+import dedent from 'dedent';
+import Markdown from '../../shared/markdown.js';
 
 // Marked.js adds line returns after closing tags on some default tokens.
 // This removes those line returns for comparison sake.
@@ -315,21 +315,21 @@ describe('Normal Links and Images', ()=>{
 		const source = `![alt text](url)`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img src="url" alt="alt text" style="--HB_src:url(url);"></p>`.trimReturns());
+			<p><img loading="lazy" src="url" alt="alt text" style="--HB_src:url(url);"></p>`.trimReturns());
 	});
 
 	it('Renders normal images with a title', function() {
 		const source = 'An image ![alt text](url "and title")!';
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p>An image <img src="url" alt="alt text" style="--HB_src:url(url);" title="and title">!</p>`.trimReturns());
+			<p>An image <img loading="lazy" src="url" alt="alt text" style="--HB_src:url(url);" title="and title">!</p>`.trimReturns());
 	});
 
 	it('Applies curly injectors to images', function() {
 		const source = `![alt text](url){width:100px}`;
 		const rendered = Markdown.render(source).trimReturns();
 		expect(rendered, `Input:\n${source}`, { showPrefix: false }).toBe(dedent`
-			<p><img style="--HB_src:url(url); width:100px;" src="url" alt="alt text"></p>`.trimReturns());
+			<p><img style="--HB_src:url(url); width:100px;" loading="lazy" src="url" alt="alt text"></p>`.trimReturns());
 	});
 
 	it('Renders normal links', function() {
@@ -438,25 +438,25 @@ describe('Regression Tests', ()=>{
 	it('Handle Extra spaces in image alt-text 1', function(){
 		const source='![ where is my image??](http://i.imgur.com/hMna6G0.png)';
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+		expect(rendered).toBe('<p><img loading="lazy" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
 	});
 
 	it('Handle Extra spaces in image alt-text 2', function(){
 		const source='![where  is my image??](http://i.imgur.com/hMna6G0.png)';
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+		expect(rendered).toBe('<p><img loading="lazy" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
 	});
 
 	it('Handle Extra spaces in image alt-text 3', function(){
 		const source='![where is my image?? ](http://i.imgur.com/hMna6G0.png)';
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered).toBe('<p><img src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
+		expect(rendered).toBe('<p><img loading="lazy" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\"></p>');
 	});
 
 	it('Handle Extra spaces in image alt-text 4', function(){
 		const source='![where is my image??](http://i.imgur.com/hMna6G0.png){height=20%,width=20%}';
 		const rendered = Markdown.render(source).trimReturns();
-		expect(rendered).toBe('<p><img style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" height=\"20%\" width=\"20%\"></p>');
+		expect(rendered).toBe('<p><img style=\"--HB_src:url(http://i.imgur.com/hMna6G0.png);\" loading="lazy" src=\"http://i.imgur.com/hMna6G0.png\" alt=\"where is my image??\" height=\"20%\" width=\"20%\"></p>');
 	});
 });
 

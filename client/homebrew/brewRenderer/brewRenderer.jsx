@@ -1,32 +1,38 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
-require('./brewRenderer.less');
-const React = require('react');
-const { useState, useRef, useMemo, useEffect } = React;
-const _ = require('lodash');
+import brewRendererStylesUrl from './brewRenderer.less?url';
+import headerNavStylesUrl from './headerNav/headerNav.less?url';
+import './brewRenderer.less';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
+import _ from 'lodash';
 
-const MarkdownLegacy = require('naturalcrit/markdownLegacy.js');
-import Markdown from 'naturalcrit/markdown.js';
-const ErrorBar = require('./errorBar/errorBar.jsx');
-const ToolBar  = require('./toolBar/toolBar.jsx');
+import MarkdownLegacy from '@shared/markdownLegacy.js';
+import Markdown from '@shared/markdown.js';
+import ErrorBar from './errorBar/errorBar.jsx';
+import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-const RenderWarnings = require('homebrewery/renderWarnings/renderWarnings.jsx');
-const NotificationPopup = require('./notificationPopup/notificationPopup.jsx');
-const Frame = require('react-frame-component').default;
-const dedent = require('dedent-tabs').default;
-const { printCurrentBrew } = require('../../../shared/helpers.js');
+import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
+import NotificationPopup from './notificationPopup/notificationPopup.jsx';
+import Frame from 'react-frame-component';
+import dedent from 'dedent';
+import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
-import { safeHTML } from './safeHTML.js';
+import safeHTML from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
+const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
 const PAGE_HEIGHT = 1056;
+
+const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
-	<base target=_blank>
+	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
+	<link href="${headerNavStylesUrl}" rel="stylesheet" />
+	<base target="_top">
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 
@@ -35,10 +41,11 @@ const BrewPage = (props)=>{
 	props = {
 		contents : '',
 		index    : 0,
+		hoisted  : false,
 		...props
 	};
-	const pageRef = useRef(null);
-	const cleanText = safeHTML(`${props.contents}\n<div class="columnSplit"></div>\n`);
+	const pageRef   = useRef(null);
+	const cleanText = safeHTML(props.contents);
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
@@ -120,7 +127,7 @@ const BrewRenderer = (props)=>{
 
 	//useEffect to store or gather toolbar state from storage
 	useEffect(()=>{
-		const toolbarState = JSON.parse(window.localStorage.getItem('hb_toolbarState'));
+		const toolbarState = JSON.parse(window.localStorage.getItem(TOOLBAR_STATE_KEY));
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
@@ -128,9 +135,10 @@ const BrewRenderer = (props)=>{
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
+	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
-		rawPages = props.text.split('\\page');
+		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
 	} else {
 		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
@@ -187,6 +195,7 @@ const BrewRenderer = (props)=>{
 		let attributes = {};
 
 		if(props.renderer == 'legacy') {
+			pageText.replace(COLUMNBREAK_REGEX_LEGACY, '```\n````\n'); // Allow Legacy brews to use `\column(break)`
 			const html = MarkdownLegacy.render(pageText);
 
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
@@ -212,7 +221,8 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const renderPages = ()=>{
+	const renderPages = (checkHoists = false)=>{
+
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
@@ -224,10 +234,16 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			const varsOnPageRegex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g; // Find out if there are any vars on the page.
+			const forceRender = checkHoists &&
+				!props.hoisted &&
+				(page.match(varsOnPageRegex));  // forceRender forces pages outside of the PPR range to render if true.
+			                                    // This is necessary on the first load to fully populate the variable table.
+			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
+		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
 		return renderedPages;
 	};
 
@@ -264,8 +280,10 @@ const BrewRenderer = (props)=>{
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
 
+		window.addEventListener('hashchange', ()=>scrollToHash(window.location.hash));
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			renderPages(); //Make sure page is renderable before showing
+			renderPages(true); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
 				isMounted  : true,
@@ -281,7 +299,7 @@ const BrewRenderer = (props)=>{
 
 	const handleDisplayOptionsChange = (newDisplayOptions)=>{
 		setDisplayOptions(newDisplayOptions);
-		localStorage.setItem('hb_toolbarState', JSON.stringify(newDisplayOptions));
+		localStorage.setItem(TOOLBAR_STATE_KEY, JSON.stringify(newDisplayOptions));
 	};
 
 	const pagesStyle = {
@@ -289,12 +307,6 @@ const BrewRenderer = (props)=>{
 		columnGap : `${displayOptions.columnGap}px`,
 		rowGap    : `${displayOptions.rowGap}px`
 	};
-
-	const styleObject = {};
-
-	if(global.config.deployment) {
-		styleObject.backgroundImage = `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='40px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${global.config.deployment}</text></svg>")`;
-	}
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
 	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
@@ -324,10 +336,9 @@ const BrewRenderer = (props)=>{
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
 			>
-				<div className={`brewRenderer ${global.config.deployment && 'deployment'}`}
+				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
-					style={ styleObject }
 				>
 
 					{/* Apply CSS from Style tab and render pages from Markdown tab */}
@@ -347,4 +358,4 @@ const BrewRenderer = (props)=>{
 	);
 };
 
-module.exports = BrewRenderer;
+export default BrewRenderer;

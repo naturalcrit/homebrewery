@@ -63,7 +63,6 @@ describe('Tests for api', ()=>{
 			title       : 'some title',
 			description : 'this is a description',
 			tags        : ['something', 'fun'],
-			systems     : ['D&D 5e'],
 			lang        : 'en',
 			renderer    : 'v3',
 			theme       : 'phb',
@@ -99,18 +98,87 @@ describe('Tests for api', ()=>{
 			expect(googleId).toBeUndefined();
 		});
 
+		it('should throw if id is too short', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcd'
+					}
+				});
+			} catch (e) {
+				err = e;
+			};
+
+			expect(err).toEqual({ HBErrorCode: '11', brewId: 'abcd', message: 'Invalid ID', name: 'ID Error', status: 404 });
+		});
+
 		it('should return id and google id from request body', ()=>{
 			const { id, googleId } = api.getId({
 				params : {
-					id : 'abcdefgh'
+					id : 'abcdefghijkl'
 				},
 				body : {
-					googleId : '12345'
+					googleId : '123456789012345678901234567890123'
 				}
 			});
 
-			expect(id).toEqual('abcdefgh');
-			expect(googleId).toEqual('12345');
+			expect(id).toEqual('abcdefghijkl');
+			expect(googleId).toEqual('123456789012345678901234567890123');
+		});
+
+		it('should throw invalid - google id right length but does not match pattern', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '012345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too short (32 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '12345678901234567890123456789012'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
+		});
+
+		it('should throw invalid - google id too long (45 char)', ()=>{
+			let err;
+			try {
+				api.getId({
+					params : {
+						id : 'abcdefghijkl'
+					},
+					body : {
+						googleId : '123456789012345678901234567890123456789012345'
+					}
+				});
+			} catch (e) {
+				err = e;
+			}
+
+			expect(err).toEqual({ HBErrorCode: '12', brewId: 'abcdefghijkl', message: 'Invalid ID', name: 'Google ID Error', status: 404 });
 		});
 
 		it('should return 12-char id and google id from params', ()=>{
@@ -282,7 +350,6 @@ describe('Tests for api', ()=>{
 				renderer    : 'legacy',
 				lang        : 'en',
 				shareId     : undefined,
-				systems     : [],
 				tags        : [],
 				theme       : '5ePHB',
 				thumbnail   : '',
@@ -321,7 +388,6 @@ describe('Tests for api', ()=>{
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345'
@@ -333,8 +399,6 @@ description: this is a description
 tags:
   - something
   - fun
-systems:
-  - D&D 5e
 renderer: v3
 theme: phb
 
@@ -350,7 +414,6 @@ brew`);
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345'
@@ -362,8 +425,6 @@ description: this is a description
 tags:
   - something
   - fun
-systems:
-  - D&D 5e
 renderer: v3
 theme: phb
 
@@ -394,7 +455,6 @@ brew`);
 
 			expect(sent).toEqual(googleBrew);
 			expect(result.tags).toBeUndefined();
-			expect(result.systems).toBeUndefined();
 			expect(result.published).toBeUndefined();
 			expect(result.authors).toBeUndefined();
 			expect(result.owner).toBeUndefined();
@@ -489,7 +549,6 @@ brew`);
 				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
-				systems     : [],
 				tags        : [],
 				text        : undefined,
 				textBin     : expect.objectContaining({}),
@@ -549,7 +608,6 @@ brew`);
 				shareId     : expect.any(String),
 				googleId    : expect.any(String),
 				style       : undefined,
-				systems     : [],
 				tags        : [],
 				text        : undefined,
 				textBin     : undefined,
@@ -1007,7 +1065,6 @@ brew`);
 					'title: title\n' +
 					'description: description\n' +
 					'tags: [ \'tag a\' , \'tag b\' ]\n' +
-					'systems: [ test system ]\n' +
 					'renderer: legacy\n' +
 					'theme: 5ePHB\n' +
 					'lang: en\n' +
@@ -1028,8 +1085,6 @@ brew`);
 			// Metadata
 			expect(testBrew.title).toEqual('title');
 			expect(testBrew.description).toEqual('description');
-			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
-			expect(testBrew.systems).toEqual(['test system']);
 			expect(testBrew.renderer).toEqual('legacy');
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
@@ -1038,18 +1093,84 @@ brew`);
 			// Text
 			expect(testBrew.text).toEqual('text\n');
 		});
+	});
 
-		it('convert tags string to array', async ()=>{
-			const testBrew = {
-				text : '```metadata\n' +
-					'tags: tag a\n' +
-					'```\n\n'
+	describe('updateBrew', ()=>{
+		it('should return error on version mismatch', async ()=>{
+			const brewFromClient = { version: 1 };
+			const brewFromServer = { version: 1000, text: '' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
 			};
 
-			splitTextStyleAndMetadata(testBrew);
+			await api.updateBrew(req, res);
 
-			// Metadata
-			expect(testBrew.tags).toEqual(['tag a']);
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		it('should return error on hash mismatch', async ()=>{
+			const brewFromClient = { version: 1, hash: '1234' };
+			const brewFromServer = { version: 1, text: 'test' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		// Commenting this one out for now, since we are no longer throwing this error while we monitor
+		// it('should return error on applying patches', async ()=>{
+		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+		// 	const req = {
+		// 		brew  : brewFromServer,
+		// 		body  : brewFromClient,
+		// 	};
+
+		// 	let err;
+		// 	try {
+		// 		await api.updateBrew(req, res);
+		// 	} catch (e) {
+		// 		err = e;
+		// 	}
+
+		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+		// });
+
+		it('should save brew, no ID', async ()=>{
+			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
+			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			model.save = jest.fn((brew)=>{return brew;});
+
+			const req = {
+				brew  : brewFromServer,
+				body  : brewFromClient,
+				query : { saveToGoogle: false, removeFromGoogle: false }
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					_id         : '1',
+					description : 'Test Description',
+					hash        : '098f6bcd4621d373cade4e832627b4f6',
+					title       : 'Test Title',
+					version     : 2
+				})
+			);
 		});
 	});
 });

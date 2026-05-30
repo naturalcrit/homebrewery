@@ -1,141 +1,236 @@
-require('./homePage.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const cx = require('classnames');
-import request from '../../utils/request-middleware.js';
-const { Meta } = require('vitreum/headtags');
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const NewBrewItem = require('../../navbar/newbrew.navitem.jsx');
-const HelpNavItem = require('../../navbar/help.navitem.jsx');
-const VaultNavItem = require('../../navbar/vault.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const AccountNavItem = require('../../navbar/account.navitem.jsx');
-const ErrorNavItem = require('../../navbar/error-navitem.jsx');
-const { fetchThemeBundle } = require('../../../../shared/helpers.js');
+import './homePage.less';
 
-const SplitPane = require('naturalcrit/splitPane/splitPane.jsx');
-const Editor = require('../../editor/editor.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+// Common imports
+import React, { useState, useEffect, useRef } from 'react';
+import request                                from '../../utils/request-middleware.js';
+import Markdown                               from '@shared/markdown.js';
+import _                                      from 'lodash';
 
-const { DEFAULT_BREW } = require('../../../../server/brewDefaults.js');
+import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-const HomePage = createClass({
-	displayName     : 'HomePage',
-	getDefaultProps : function() {
-		return {
-			brew : DEFAULT_BREW,
-			ver  : '0.0.0'
+import SplitPane    from '../../../components/splitPane/splitPane.jsx';
+import Editor       from '../../editor/editor.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
+
+import Nav                       from '@navbar/nav.jsx';
+import Navbar                    from '@navbar/navbar.jsx';
+import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem            from '@navbar/account.navitem.jsx';
+import ErrorNavItem              from '@navbar/error-navitem.jsx';
+import HelpNavItem               from '@navbar/help.navitem.jsx';
+import VaultNavItem              from '@navbar/vault.navitem.jsx';
+import PrintNavItem              from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+
+
+// Page specific imports
+import Headtags   from '@vitreum/headtags.js';
+const Meta = Headtags.Meta;
+
+const BREWKEY  = 'homebrewery-new';
+const STYLEKEY = 'homebrewery-new-style';
+const SNIPKEY  = 'homebrewery-new-snippets';
+const METAKEY  = 'homebrewery-new-meta';
+
+const useLocalStorage = false;
+const neverSaved      = true;
+
+const HomePage =(props)=>{
+	props = {
+		brew : DEFAULT_BREW,
+		ver  : '0.0.0',
+		...props
+	};
+
+	const [currentBrew, setCurrentBrew]                = useState(props.brew);
+	const [error, setError]                      = useState(undefined);
+	const [HTMLErrors, setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
+	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
+	const [themeBundle, setThemeBundle]                = useState({});
+	const [unsavedChanges, setUnsavedChanges]             = useState(false);
+	const [isSaving, setIsSaving]                   = useState(false);
+	const [autoSaveEnabled, setAutoSaveEnable]             = useState(false);
+
+	const editorRef         = useRef(null);
+	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const unsavedChangesRef = useRef(unsavedChanges);
+
+	useEffect(()=>{
+		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey || e.metaKey)) return;
+			if(e.keyCode === 83) trySaveRef.current(true);
+			if(e.keyCode === 80) printCurrentBrew();
+			if([83, 80].includes(e.keyCode)) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
 		};
-	},
-	getInitialState : function() {
-		return {
-			brew                       : this.props.brew,
-			welcomeText                : this.props.brew.text,
-			error                      : undefined,
-			currentEditorViewPageNum   : 1,
-			currentEditorCursorPageNum : 1,
-			currentBrewRendererPageNum : 1,
-			themeBundle                : {}
+
+		document.addEventListener('keydown', handleControlKeys);
+		window.onbeforeunload = ()=>{
+			if(unsavedChangesRef.current)
+				return 'You have unsaved changes!';
 		};
-	},
+		return ()=>{
+			document.removeEventListener('keydown', handleControlKeys);
+			window.onbeforeunload = null;
+		};
+	}, []);
 
-	editor : React.createRef(null),
+	useEffect(()=>{
+		unsavedChangesRef.current = unsavedChanges;
+	}, [unsavedChanges]);
 
-	componentDidMount : function() {
-		fetchThemeBundle(this, this.props.brew.renderer, this.props.brew.theme);
-	},
-
-	handleSave : function(){
+	const save = ()=>{
 		request.post('/api')
-			.send(this.state.brew)
+			.send(currentBrew)
 			.end((err, res)=>{
 				if(err) {
-					this.setState({ error: err });
+					setError(err);
 					return;
 				}
-				const brew = res.body;
-				window.location = `/edit/${brew.editId}`;
+				const saved = res.body;
+				window.location = `/edit/${saved.editId}`;
 			});
-	},
-	handleSplitMove : function(){
-		this.editor.current.update();
-	},
+	};
 
-	handleEditorViewPageChange : function(pageNumber){
-		this.setState({ currentEditorViewPageNum: pageNumber });
-	},
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
 
-	handleEditorCursorPageChange : function(pageNumber){
-		this.setState({ currentEditorCursorPageNum: pageNumber });
-	},
+		if(autoSaveEnabled) trySave(false, hasChange);
+	}, [currentBrew]);
 
-	handleBrewRendererPageChange : function(pageNumber){
-		this.setState({ currentBrewRendererPageNum: pageNumber });
-	},
+	const handleSplitMove = ()=>{
+		editorRef.current.update();
+	};
 
-	handleTextChange : function(text){
-		this.setState((prevState)=>({
-			brew : { ...prevState.brew, text: text },
-		}));
-	},
-	renderNavbar : function(){
-		return <Navbar ver={this.props.ver}>
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(Markdown.validate(value));
+
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
+
+		if(useLocalStorage) {
+			if(field == 'text')     localStorage.setItem(BREWKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme    : value.theme,
+				lang     : value.lang
+			}));
+		}
+	};
+
+	const renderSaveButton = ()=>{
+		// #1 - Currently saving, show SAVING
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
+		// if(unsavedChanges && warnUnsavedChanges) {
+		// 	resetWarnUnsavedTimer();
+		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+		// 	const text = elapsedTime === 0
+		// 		? 'Autosave is OFF.'
+		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+
+		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+		// 					Reminder...
+		// 		<div className='errorContainer'>{text}</div>
+		// 	</Nav.item>;
+		// }
+
+		// #3 - Unsaved changes exist, click to save, show SAVE NOW
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		// #5 - No unsaved changes, and has never been saved, hide the button
+		if(neverSaved)
+			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+
+		// DEFAULT - No unsaved changes, show SAVED
+		return <Nav.item className='save saved'>saved</Nav.item>;
+	};
+
+	const clearError = ()=>{
+		setError(null);
+		setIsSaving(false);
+	};
+
+	const renderNavbar = ()=>{
+		return <Navbar ver={props.ver}>
 			<Nav.section>
-				{this.state.error ?
-					<ErrorNavItem error={this.state.error} parent={this}></ErrorNavItem> :
-					null
-				}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: renderSaveButton()}
 				<NewBrewItem />
+				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />
 				<AccountNavItem />
 			</Nav.section>
 		</Navbar>;
-	},
+	};
 
-	render : function(){
-		return <div className='homePage sitePage'>
+	return (
+		<div className='homePage sitePage'>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
-			{this.renderNavbar()}
+			{renderNavbar()}
 			<div className='content'>
-				<SplitPane onDragFinish={this.handleSplitMove}>
+				<SplitPane onDragFinish={handleSplitMove}>
 					<Editor
-						ref={this.editor}
-						brew={this.state.brew}
-						onTextChange={this.handleTextChange}
-						renderer={this.state.brew.renderer}
+						ref={editorRef}
+						brew={currentBrew}
+						onBrewChange={handleBrewChange}
+						renderer={currentBrew.renderer}
 						showEditButtons={false}
-						themeBundle={this.state.themeBundle}
-						onCursorPageChange={this.handleEditorCursorPageChange}
-						onViewPageChange={this.handleEditorViewPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
+						themeBundle={themeBundle}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 					<BrewRenderer
-						text={this.state.brew.text}
-						style={this.state.brew.style}
-						renderer={this.state.brew.renderer}
-						onPageChange={this.handleBrewRendererPageChange}
-						currentEditorViewPageNum={this.state.currentEditorViewPageNum}
-						currentEditorCursorPageNum={this.state.currentEditorCursorPageNum}
-						currentBrewRendererPageNum={this.state.currentBrewRendererPageNum}
-						themeBundle={this.state.themeBundle}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						onPageChange={setCurrentBrewRendererPageNum}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
+						themeBundle={themeBundle}
 					/>
 				</SplitPane>
 			</div>
-			<div className={cx('floatingSaveButton', { show: this.state.welcomeText != this.state.brew.text })} onClick={this.handleSave}>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={save}>
 				Save current <i className='fas fa-save' />
 			</div>
 
 			<a href='/new' className='floatingNewButton'>
 				Create your own <i className='fas fa-magic' />
 			</a>
-		</div>;
-	}
-});
+		</div>
+	);
+};
 
-module.exports = HomePage;
+export default HomePage;
