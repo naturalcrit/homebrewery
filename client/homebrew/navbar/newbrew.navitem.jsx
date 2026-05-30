@@ -1,7 +1,7 @@
-const React = require('react');
-const _ = require('lodash');
-const Nav = require('client/homebrew/navbar/nav.jsx');
-const { splitTextStyleAndMetadata } = require('../../../shared/helpers.js'); // Importing the function from helpers.js
+import React from 'react';
+import _ from 'lodash';
+import Nav from './nav.jsx';
+import { splitTextStyleAndMetadata } from '@shared/helpers.js';
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
@@ -24,7 +24,7 @@ const NewBrew = ()=>{
 				localStorage.setItem(BREWKEY, newBrew.text);
 				localStorage.setItem(STYLEKEY, newBrew.style);
 				localStorage.setItem(METAKEY, JSON.stringify(
-					_.pick(newBrew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang'])
+					_.pick(newBrew, ['title', 'description', 'tags', 'renderer', 'theme', 'lang'])
 				));
 				window.location.href = '/new';
 				return;
@@ -100,4 +100,4 @@ const NewBrew = ()=>{
 	);
 };
 
-module.exports = NewBrew;
+export default NewBrew;

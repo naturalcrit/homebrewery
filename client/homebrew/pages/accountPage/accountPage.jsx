@@ -1,7 +1,7 @@
-const React  = require('react');
-const moment = require('moment');
-const UIPage = require('../basePages/uiPage/uiPage.jsx');
-const NaturalCritIcon = require('client/components/svg/naturalcrit-d20.svg.jsx');
+import React from 'react';
+import moment from 'moment';
+import UIPage from '../basePages/uiPage/uiPage.jsx';
+import NaturalCritIcon from '../../../components/svg/naturalcrit-d20.svg.jsx';
 
 let SAVEKEY = '';
 
@@ -79,4 +79,4 @@ const AccountPage = (props)=>{
 		</UIPage>);
 };
 
-module.exports = AccountPage;
+export default AccountPage;

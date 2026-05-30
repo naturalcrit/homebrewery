@@ -43,4 +43,4 @@ function safeHTML(htmlString) {
 	return div.innerHTML;
 };
 
-module.exports.safeHTML = safeHTML;
+export default safeHTML;

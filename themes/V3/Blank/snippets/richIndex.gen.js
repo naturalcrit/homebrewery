@@ -1,7 +1,7 @@
 /* eslint-disable max-lines */
 /* eslint-disable max-depth */
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _  from 'lodash';
+import dedent from 'dedent';
 
 const cleanReferencePrefixes =(src)=>{
 	return src.trim().replace(/^\|/, '').replace(/^\|/, '').replace(/^\+/, '');
@@ -277,7 +277,8 @@ const markup = (indexes, indexName, index, runningErrors)=>{
 	return results;
 };
 
-module.exports = function (props) {
+export default (props)=>{
+
 	const indexes = new Map();
 	// eslint-disable-next-line max-lines
 

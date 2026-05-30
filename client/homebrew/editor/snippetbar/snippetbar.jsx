@@ -1,29 +1,54 @@
 /*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
-require('./snippetbar.less');
-const React = require('react');
-const createClass = require('create-react-class');
-const _     = require('lodash');
-const cx    = require('classnames');
+import './snippetbar.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
+
+import _ from 'lodash';
+import cx from 'classnames';
 
 import { loadHistory } from '../../utils/versionHistory.js';
-import { brewSnippetsToJSON } from '../../../../shared/helpers.js';
+import { brewSnippetsToJSON } from '@shared/helpers.js';
 
-//Import all themes
-const ThemeSnippets = {};
-ThemeSnippets['Legacy_5ePHB'] = require('themes/Legacy/5ePHB/snippets.js');
-ThemeSnippets['V3_5ePHB']     = require('themes/V3/5ePHB/snippets.js');
-ThemeSnippets['V3_5eDMG']     = require('themes/V3/5eDMG/snippets.js');
-ThemeSnippets['V3_Journal']   = require('themes/V3/Journal/snippets.js');
-ThemeSnippets['V3_Blank']     = require('themes/V3/Blank/snippets.js');
+import Legacy5ePHB from '@themes/Legacy/5ePHB/snippets.js';
+import V3_5ePHB   from '@themes/V3/5ePHB/snippets.js';
+import V3_5eDMG   from '@themes/V3/5eDMG/snippets.js';
+import V3_Journal from '@themes/V3/Journal/snippets.js';
+import V3_Blank  from '@themes/V3/Blank/snippets.js';
 
-const EditorThemes = require('build/homebrew/codeMirror/editorThemes.json');
+const ThemeSnippets = {
+	Legacy_5ePHB : Legacy5ePHB,
+	V3_5ePHB     : V3_5ePHB,
+	V3_5eDMG     : V3_5eDMG,
+	V3_Journal   : V3_Journal,
+	V3_Blank     : V3_Blank,
+};
+
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
+
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
+
+const themeNames = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+    !name.endsWith('Init') &&
+    !name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+const EditorThemes = [
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
+];
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
 	return val;
 };
 
-const Snippetbar = createClass({
+const Snippetbar = createReactClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
@@ -144,7 +169,7 @@ const Snippetbar = createClass({
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
-			showThemeSelector : false,
+			themeSelector : false,
 		});
 	},
 
@@ -225,11 +250,11 @@ const Snippetbar = createClass({
 						<i className='fas fa-clock-rotate-left' />
 						{ this.state.showHistory && this.renderHistoryItems() }
 					</div>
-					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					<div className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
 					</div>
-					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					<div className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
 					</div>
@@ -281,9 +306,9 @@ const Snippetbar = createClass({
 	}
 });
 
-module.exports = Snippetbar;
+export default Snippetbar;
 
-const SnippetGroup = createClass({
+const SnippetGroup = createReactClass({
 	displayName     : 'SnippetGroup',
 	getDefaultProps : function() {
 		return {
