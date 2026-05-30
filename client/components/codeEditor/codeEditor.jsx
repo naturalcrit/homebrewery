@@ -1,462 +1,402 @@
-/* eslint-disable max-lines */
+/* eslint max-lines: ["error", { "max": 405 }] */
 import './codeEditor.less';
-import React from 'react';
-import createReactClass from 'create-react-class';
-import _ from 'lodash';
-import closeTag from './close-tag';
-import autoCompleteEmoji from './autocompleteEmoji';
-let CodeMirror;
+import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
-const CodeEditor = createReactClass({
-	displayName     : 'CodeEditor',
-	getDefaultProps : function() {
-		return {
-			language      : '',
-			value         : '',
-			wrap          : true,
-			onChange      : ()=>{},
-			enableFolding : true,
-			editorTheme   : 'default'
-		};
+import {
+	EditorView,
+	keymap,
+	lineNumbers,
+	highlightActiveLineGutter,
+	highlightActiveLine,
+	scrollPastEnd,
+	Decoration,
+	drawSelection,
+	dropCursor,
+	rectangularSelection,
+	crosshairCursor,
+} from '@codemirror/view';
+import { EditorState, Compartment, StateEffect, StateField } from '@codemirror/state';
+import {
+	unfoldAll as unfoldAllCmd,
+	foldGutter,
+	foldKeymap,
+	foldEffect,
+	foldState,
+	syntaxHighlighting,
+} from '@codemirror/language';
+import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
+import { languages } from '@codemirror/language-data';
+import { css } from '@codemirror/lang-css';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { html } from '@codemirror/lang-html';
+import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
+import { searchKeymap, search } from '@codemirror/search';
+import { closeBrackets } from '@codemirror/autocomplete';
+
+const autoCloseBrackets = closeBrackets({ brackets: ['()', '[]', '{{}}'] });
+
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
+
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
+const themeCompartment = new Compartment();
+const highlightCompartment = new Compartment();
+
+import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
+import foldOnPages from './extensions/customFolding.js';
+import { customHighlightPlugin, customHighlightStyle } from './extensions/customHighlight.js';
+import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
+
+const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
+
+const setProgrammaticCursorLine = StateEffect.define();
+
+const programmaticCursorLineField = StateField.define({
+	create() {
+		return Decoration.none;
 	},
+	update(decorations, transitionState) {
+		//deco is the decoratiions object
+		//tr is the transition state object, tr.effects is an array of stateEffects
+		//seems to be the easiest way of setting a class programatically only when called
+		for (const effects of transitionState.effects) {
+			if(effects.is(setProgrammaticCursorLine)) {
+				const pos = effects.value;
+				if(pos == null) return Decoration.none;
+				const line = transitionState.state.doc.lineAt(pos);
 
-	getInitialState : function() {
-		return {
-			docs : {}
-		};
-	},
-
-	editor : React.createRef(null),
-
-	async componentDidMount() {
-		CodeMirror = (await import('codemirror')).default;
-		this.CodeMirror = CodeMirror;
-
-		await import('codemirror/mode/gfm/gfm.js');
-		await import('codemirror/mode/css/css.js');
-		await import('codemirror/mode/javascript/javascript.js');
-
-		// addons
-		await import('codemirror/addon/fold/foldcode.js');
-		await import('codemirror/addon/fold/foldgutter.js');
-		await import('codemirror/addon/fold/xml-fold.js');
-		await import('codemirror/addon/search/search.js');
-		await import('codemirror/addon/search/searchcursor.js');
-		await import('codemirror/addon/search/jump-to-line.js');
-		await import('codemirror/addon/search/match-highlighter.js');
-		await import('codemirror/addon/search/matchesonscrollbar.js');
-		await import('codemirror/addon/dialog/dialog.js');
-		await import('codemirror/addon/scroll/scrollpastend.js');
-		await import('codemirror/addon/edit/closetag.js');
-		await import('codemirror/addon/hint/show-hint.js');
-		// import 'codemirror/addon/selection/active-line.js';
-		// import 'codemirror/addon/edit/trailingspace.js';
-
-
-		// register helpers dynamically as well
-		const foldPagesCode = (await import('./fold-pages')).default;
-		const foldCSSCode   = (await import('./fold-css')).default;
-		foldPagesCode.registerHomebreweryHelper(CodeMirror);
-		foldCSSCode.registerHomebreweryHelper(CodeMirror);
-
-		this.buildEditor();
-		const newDoc = CodeMirror?.Doc(this.props.value, this.props.language);
-		this.codeMirror?.swapDoc(newDoc);
-	},
-
-
-	componentDidUpdate : function(prevProps) {
-		if(prevProps.view !== this.props.view){ //view changed; swap documents
-			let newDoc;
-
-			if(!this.state.docs[this.props.view]) {
-				newDoc = CodeMirror?.Doc(this.props.value, this.props.language);
-			} else {
-				newDoc = this.state.docs[this.props.view];
+				return Decoration.set([
+					Decoration.line({
+						class : 'sourceMoveFlash'
+					}).range(line.from)
+				]);
 			}
-
-			const oldDoc = { [prevProps.view]: this.codeMirror?.swapDoc(newDoc) };
-
-			this.setState((prevState)=>({
-				docs : _.merge({}, prevState.docs, oldDoc)
-			}));
-
-			this.props.rerenderParent();
-		} else if(this.codeMirror?.getValue() != this.props.value) { //update editor contents if brew.text is changed from outside
-			this.codeMirror?.setValue(this.props.value);
 		}
-
-		if(this.props.enableFolding) {
-			this.codeMirror?.setOption('foldOptions', this.foldOptions(this.codeMirror));
-		} else {
-			this.codeMirror?.setOption('foldOptions', false);
-		}
-
-		if(prevProps.editorTheme !== this.props.editorTheme){
-			this.codeMirror?.setOption('theme', this.props.editorTheme);
-		}
+		return decorations;
 	},
-
-	buildEditor : function() {
-		this.codeMirror = CodeMirror(this.editor.current, {
-			lineNumbers       : true,
-			lineWrapping      : this.props.wrap,
-			indentWithTabs    : false,
-			tabSize           : 2,
-			smartIndent       : false,
-			historyEventDelay : 250,
-			scrollPastEnd     : true,
-			extraKeys         : {
-				'Tab'              : this.indent,
-				'Shift-Tab'        : this.dedent,
-				'Ctrl-B'           : this.makeBold,
-				'Cmd-B'            : this.makeBold,
-				'Shift-Ctrl-='     : this.makeSuper,
-				'Shift-Cmd-='      : this.makeSuper,
-				'Ctrl-='           : this.makeSub,
-				'Cmd-='            : this.makeSub,
-				'Ctrl-I'           : this.makeItalic,
-				'Cmd-I'            : this.makeItalic,
-				'Ctrl-U'           : this.makeUnderline,
-				'Cmd-U'            : this.makeUnderline,
-				'Ctrl-.'           : this.makeNbsp,
-				'Cmd-.'            : this.makeNbsp,
-				'Shift-Ctrl-.'     : this.makeSpace,
-				'Shift-Cmd-.'      : this.makeSpace,
-				'Shift-Ctrl-,'     : this.removeSpace,
-				'Shift-Cmd-,'      : this.removeSpace,
-				'Ctrl-M'           : this.makeSpan,
-				'Cmd-M'            : this.makeSpan,
-				'Shift-Ctrl-M'     : this.makeDiv,
-				'Shift-Cmd-M'      : this.makeDiv,
-				'Ctrl-/'           : this.makeComment,
-				'Cmd-/'            : this.makeComment,
-				'Ctrl-K'           : this.makeLink,
-				'Cmd-K'            : this.makeLink,
-				'Ctrl-L'           : ()=>this.makeList('UL'),
-				'Cmd-L'            : ()=>this.makeList('UL'),
-				'Shift-Ctrl-L'     : ()=>this.makeList('OL'),
-				'Shift-Cmd-L'      : ()=>this.makeList('OL'),
-				'Shift-Ctrl-1'     : ()=>this.makeHeader(1),
-				'Shift-Ctrl-2'     : ()=>this.makeHeader(2),
-				'Shift-Ctrl-3'     : ()=>this.makeHeader(3),
-				'Shift-Ctrl-4'     : ()=>this.makeHeader(4),
-				'Shift-Ctrl-5'     : ()=>this.makeHeader(5),
-				'Shift-Ctrl-6'     : ()=>this.makeHeader(6),
-				'Shift-Cmd-1'      : ()=>this.makeHeader(1),
-				'Shift-Cmd-2'      : ()=>this.makeHeader(2),
-				'Shift-Cmd-3'      : ()=>this.makeHeader(3),
-				'Shift-Cmd-4'      : ()=>this.makeHeader(4),
-				'Shift-Cmd-5'      : ()=>this.makeHeader(5),
-				'Shift-Cmd-6'      : ()=>this.makeHeader(6),
-				'Shift-Ctrl-Enter' : this.newColumn,
-				'Shift-Cmd-Enter'  : this.newColumn,
-				'Ctrl-Enter'       : this.newPage,
-				'Cmd-Enter'        : this.newPage,
-				'Ctrl-F'           : 'findPersistent',
-				'Cmd-F'            : 'findPersistent',
-				'Shift-Enter'      : 'findPersistentPrevious',
-				'Ctrl-['           : this.foldAllCode,
-				'Cmd-['            : this.foldAllCode,
-				'Ctrl-]'           : this.unfoldAllCode,
-				'Cmd-]'            : this.unfoldAllCode
-			},
-			foldGutter        : true,
-			foldOptions       : this.foldOptions(this.codeMirror),
-			gutters           : ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-			autoCloseTags     : true,
-			styleActiveLine   : true,
-			showTrailingSpace : false,
-			theme             : this.props.editorTheme
-			// specialChars           : / /,
-			// specialCharPlaceholder : function(char) {
-			// 	const el = document.createElement('span');
-			// 	el.className = 'cm-space';
-			// 	el.innerHTML = ' ';
-			// 	return el;
-			// }
-		});
-
-		// Add custom behaviors (auto-close curlies and auto-complete emojis)
-		closeTag.autoCloseCurlyBraces(CodeMirror, this.codeMirror);
-		autoCompleteEmoji.showAutocompleteEmoji(CodeMirror, this.codeMirror);
-
-		// Note: codeMirror passes a copy of itself in this callback. cm === this.codeMirror?. Either one works.
-		this.codeMirror?.on('change', (cm)=>{this.props.onChange(cm.getValue());});
-		this.updateSize();
-	},
-
-	indent : function () {
-		const cm = this.codeMirror;
-		if(cm.somethingSelected()) {
-			cm.execCommand('indentMore');
-		} else {
-			cm.execCommand('insertSoftTab');
-		}
-	},
-
-	dedent : function () {
-		this.codeMirror?.execCommand('indentLess');
-	},
-
-	makeHeader : function (number) {
-		const selection = this.codeMirror?.getSelection();
-		const header = Array(number).fill('#').join('');
-		this.codeMirror?.replaceSelection(`${header} ${selection}`, 'around');
-		const cursor = this.codeMirror?.getCursor();
-		this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch + selection.length + number + 1 });
-	},
-
-	makeBold : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '**' && selection.slice(-2) === '**';
-		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `**${selection}**`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		}
-	},
-
-	makeItalic : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 1) === '*' && selection.slice(-1) === '*';
-		this.codeMirror?.replaceSelection(t ? selection.slice(1, -1) : `*${selection}*`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
-		}
-	},
-
-	makeSuper : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 1) === '^' && selection.slice(-1) === '^';
-		this.codeMirror?.replaceSelection(t ? selection.slice(1, -1) : `^${selection}^`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 1 });
-		}
-	},
-
-	makeSub : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '^^' && selection.slice(-2) === '^^';
-		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `^^${selection}^^`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		}
-	},
-
-
-	makeNbsp : function() {
-		this.codeMirror?.replaceSelection('&nbsp;', 'end');
-	},
-
-	makeSpace : function() {
-		const selection = this.codeMirror?.getSelection();
-		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
-		if(t){
-			const percent = parseInt(selection.slice(8, -4)) + 10;
-			this.codeMirror?.replaceSelection(percent < 90 ? `{{width:${percent}% }}` : '{{width:100% }}', 'around');
-		} else {
-			this.codeMirror?.replaceSelection(`{{width:10% }}`, 'around');
-		}
-	},
-
-	removeSpace : function() {
-		const selection = this.codeMirror?.getSelection();
-		const t = selection.slice(0, 8) === '{{width:' && selection.slice(0 -4) === '% }}';
-		if(t){
-			const percent = parseInt(selection.slice(8, -4)) - 10;
-			this.codeMirror?.replaceSelection(percent > 10 ? `{{width:${percent}% }}` : '', 'around');
-		}
-	},
-
-	newColumn : function() {
-		this.codeMirror?.replaceSelection('\n\\column\n\n', 'end');
-	},
-
-	newPage : function() {
-		this.codeMirror?.replaceSelection('\n\\page\n\n', 'end');
-	},
-
-	injectText : function(injectText, overwrite=true) {
-		const cm = this.codeMirror;
-		if(!overwrite) {
-			cm.setCursor(cm.getCursor('from'));
-		}
-		cm.replaceSelection(injectText, 'end');
-		cm.focus();
-	},
-
-	replaceLines : function(start, stop, replacementText) {
-		this.codeMirror.replaceRange(start, stop, replacementText);
-	},
-
-	makeUnderline : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 3) === '<u>' && selection.slice(-4) === '</u>';
-		this.codeMirror?.replaceSelection(t ? selection.slice(3, -4) : `<u>${selection}</u>`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 4 });
-		}
-	},
-
-	makeSpan : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
-		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `{{ ${selection}}}`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - 2 });
-		}
-	},
-
-	makeDiv : function() {
-		const selection = this.codeMirror?.getSelection(), t = selection.slice(0, 2) === '{{' && selection.slice(-2) === '}}';
-		this.codeMirror?.replaceSelection(t ? selection.slice(2, -2) : `{{\n${selection}\n}}`, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line - 1, ch: cursor.ch });  // set to -2? if wanting to enter classes etc.  if so, get rid of first \n when replacing selection
-		}
-	},
-
-	makeComment : function() {
-		let regex;
-		let cursorPos;
-		let newComment;
-		const selection = this.codeMirror?.getSelection();
-		if(this.props.language === 'gfm'){
-			regex = /^\s*(<!--\s?)(.*?)(\s?-->)\s*$/gs;
-			cursorPos = 4;
-			newComment = `<!-- ${selection} -->`;
-		} else {
-			regex = /^\s*(\/\*\s?)(.*?)(\s?\*\/)\s*$/gs;
-			cursorPos = 3;
-			newComment = `/* ${selection} */`;
-		}
-		this.codeMirror?.replaceSelection(regex.test(selection) == true ? selection.replace(regex, '$2') : newComment, 'around');
-		if(selection.length === 0){
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setCursor({ line: cursor.line, ch: cursor.ch - cursorPos });
-		};
-	},
-
-	makeLink : function() {
-		const isLink = /^\[(.*)\]\((.*)\)$/;
-		const selection = this.codeMirror?.getSelection().trim();
-		let match;
-		if(match = isLink.exec(selection)){
-			const altText = match[1];
-			const url     = match[2];
-			this.codeMirror?.replaceSelection(`${altText} ${url}`);
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setSelection({ line: cursor.line, ch: cursor.ch - url.length }, { line: cursor.line, ch: cursor.ch });
-		} else {
-			this.codeMirror?.replaceSelection(`[${selection || 'alt text'}](url)`);
-			const cursor = this.codeMirror?.getCursor();
-			this.codeMirror?.setSelection({ line: cursor.line, ch: cursor.ch - 4 }, { line: cursor.line, ch: cursor.ch - 1 });
-		}
-	},
-
-	makeList : function(listType) {
-		const selectionStart = this.codeMirror?.getCursor('from'), selectionEnd = this.codeMirror?.getCursor('to');
-		this.codeMirror?.setSelection(
-			{ line: selectionStart.line, ch: 0 },
-			{ line: selectionEnd.line, ch: this.codeMirror?.getLine(selectionEnd.line).length }
-		);
-		const newSelection = this.codeMirror?.getSelection();
-
-		const regex = /^\d+\.\s|^-\s/gm;
-		if(newSelection.match(regex) != null){   	// if selection IS A LIST
-			this.codeMirror?.replaceSelection(newSelection.replace(regex, ''), 'around');
-		} else {									// if selection IS NOT A LIST
-			listType == 'UL' ? this.codeMirror?.replaceSelection(newSelection.replace(/^/gm, `- `), 'around') :
-				this.codeMirror?.replaceSelection(newSelection.replace(/^/gm, (()=>{
-					let n = 1;
-					return ()=>{
-						return `${n++}. `;
-					};
-				})()), 'around');
-		}
-	},
-
-	foldAllCode : function() {
-		this.codeMirror?.execCommand('foldAll');
-	},
-
-	unfoldAllCode : function() {
-		this.codeMirror?.execCommand('unfoldAll');
-	},
-
-	//=-- Externally used -==//
-	setCursorPosition : function(line, char){
-		setTimeout(()=>{
-			this.codeMirror?.focus();
-			this.codeMirror?.doc.setCursor(line, char);
-		}, 10);
-	},
-	getCursorPosition : function(){
-		return this.codeMirror?.getCursor();
-	},
-	getTopVisibleLine : function(){
-		const rect = this.codeMirror?.getWrapperElement().getBoundingClientRect();
-		const topVisibleLine = this.codeMirror?.lineAtHeight(rect.top, 'window');
-		return topVisibleLine;
-	},
-	updateSize : function(){
-		this.codeMirror?.refresh();
-	},
-	redo : function(){
-		return this.codeMirror?.redo();
-	},
-	undo : function(){
-		return this.codeMirror?.undo();
-	},
-	historySize : function(){
-		return this.codeMirror?.doc.historySize();
-	},
-
-	foldOptions : function(cm){
-		return {
-			scanUp      : true,
-			rangeFinder : this.props.language === 'css' ? CodeMirror.fold.homebrewerycss : CodeMirror.fold.homebrewery,
-			widget      : (from, to)=>{
-				let text = '';
-				let currentLine = from.line;
-				let maxLength = 50;
-
-				let foldPreviewText = '';
-				while (currentLine <= to.line && text.length <= maxLength) {
-					const currentText = this.codeMirror?.getLine(currentLine);
-					currentLine++;
-					if(currentText[0] == '#'){
-						foldPreviewText = currentText;
-						break;
-					}
-					if(!foldPreviewText && currentText != '\n') {
-						foldPreviewText = currentText;
-					}
-				}
-				text = foldPreviewText || `Lines ${from.line+1}-${to.line+1}`;
-				text = text.replace('{', '').trim();
-
-				// Truncate data URLs at `data:`
-				const startOfData = text.indexOf('data:');
-				if(startOfData > 0)
-					maxLength = Math.min(startOfData + 5, maxLength);
-
-				if(text.length > maxLength)
-					text = `${text.slice(0, maxLength)}...`;
-
-				return `\u21A4 ${text} \u21A6`;
-			}
-		};
-	},
-	//----------------------//
-
-	render : function(){
-		return <>
-			<link href={`../homebrew/cm-themes/${this.props.editorTheme}.css`} type='text/css' rel='stylesheet' />
-			<div className='codeEditor' ref={this.editor} style={this.props.style}/>
-		</>;
-	}
+	provide : (decorationSet)=>EditorView.decorations.from(decorationSet)
 });
 
-export default CodeEditor;
+const CodeEditor = forwardRef(
+	(
+		{
+			language = '',
+			tab = 'brewText',
+			view,
+			value = '',
+			onChange = ()=>{},
+			onCursorChange = ()=>{},
+			onViewChange = ()=>{},
+			editorTheme = 'default',
+			style,
+			renderer,
+			...props
+		},
+		ref,
+	)=>{
+		const editorRef = useRef(null);
+		const viewRef = useRef(null);
+		const docsRef = useRef({});
+		const tabRef = useRef(tab);
+		const prevTabRef = useRef(tab);
+		const scrollRef = useRef({});
+		const foldsRef = useRef({});
+		const pageMap = useRef([]);
 
+		const recomputePages = (doc)=>{
+			if(tab !== 'brewText') return;
+			const pages = [0];
+			const text = doc.toString();
+			let offset = 0;
+
+			for (const line of text.split('\n')) {
+				if(PAGEBREAK_REGEX_V3.test(line)) {
+					pages.push(offset);
+				}
+				offset += line.length + 1;
+			}
+
+			pageMap.current = pages;
+		};
+
+		const findPageFromPos = (pos)=>{
+			const pages = pageMap.current;
+			let page = 1;
+
+			for (let i = 1; i < pages.length; i++) {
+				if(pos >= pages[i]) page = i + 1;
+			}
+
+			return page;
+		};
+
+		const getFoldRanges = (state)=>{
+			const folds = [];
+			state.field(foldState, false)?.between(0, state.doc.length, (from, to)=>{
+				folds.push({ from, to });
+			});
+			return folds;
+		};
+
+		const createExtensions = ({ onChange, language, editorTheme })=>{
+			const setEventListeners = EditorView.updateListener.of((update)=>{
+				if(update.docChanged) {
+					recomputePages(update.state.doc);
+					onChange(update.state.doc.toString());
+				}
+				if(update.selectionSet) {
+					const pos = update.state.selection.main.head;
+					const page = findPageFromPos(pos);
+					onCursorChange(page);
+				}
+			});
+
+			const highlightExtension = renderer === 'V3'
+  			? syntaxHighlighting(customHighlightStyle)
+  			: syntaxHighlighting(legacyCustomHighlightStyle);
+
+			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
+			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
+
+			return [
+				EditorView.lineWrapping,
+				setEventListeners,
+				languageExtension,
+				autoCloseBrackets,
+				lineNumbers(),
+				scrollPastEnd(),
+				search(),
+				history(), //allows for undo and redo
+				...(tab !== 'brewStyles' ? [autocompleteEmoji] : []),
+
+				//folding
+				foldOnPages,
+				foldGutter({
+					openText   : '▾',
+					closedText : '▸'
+				}),
+
+				//highlights
+				highlightCompartment.of([customHighlightPlugin(renderer, tab), highlightExtension]),
+				themeCompartment.of(themeExtension),
+				highlightActiveLine(),
+				highlightActiveLineGutter(),
+
+				//keyboard shortcut
+				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
+				generalKeymap,
+				...(tab !== 'brewStyles' ? [markdownKeymap] : []),
+
+				//multiple cursors and selections
+				drawSelection(),
+				rectangularSelection(),
+				crosshairCursor(),
+				EditorState.allowMultipleSelections.of(true),
+				dropCursor(),
+				programmaticCursorLineField,
+			];
+		};
+
+		useEffect(()=>{
+			if(!editorRef.current) return;
+
+			const state = EditorState.create({
+				doc        : value,
+				extensions : createExtensions({ onChange, language, editorTheme }),
+			});
+
+			recomputePages(state.doc);
+
+			viewRef.current = new EditorView({
+				state,
+				parent : editorRef.current,
+			});
+
+			const view = viewRef.current;
+
+			let ticking = false;
+
+			const handleScroll = ()=>{
+				if(ticking) return;
+
+				ticking = true;
+				requestAnimationFrame(()=>{
+					const top = view.scrollDOM.scrollTop;
+					scrollRef.current[tabRef.current] = top;
+					const block = view.lineBlockAtHeight(top);
+					const page = findPageFromPos(block.from);
+					onViewChange(page);
+					ticking = false;
+				});
+			};
+
+			view.scrollDOM.addEventListener('scroll', handleScroll);
+
+			docsRef.current[tab] = state;
+
+			return ()=>{
+				view.scrollDOM.removeEventListener('scroll', handleScroll);
+				viewRef.current?.destroy();
+			};
+		}, []);
+
+		const restoreFolds = (view, folds)=>{
+  			if(!folds?.length) return;
+
+  			view.dispatch({
+    			effects : folds.map((f)=>foldEffect.of(f))
+  			});
+		};
+
+		useEffect(()=>{
+			const view = viewRef.current;
+			if(!view) return;
+
+			tabRef.current = tab;
+			const prevTab = prevTabRef.current;
+
+			foldsRef.current[prevTab] = getFoldRanges(view.state);
+
+			if(prevTab !== tab) {
+				docsRef.current[prevTab] = view.state;
+
+				let nextState = docsRef.current[tab];
+
+				if(!nextState) {
+					nextState = EditorState.create({
+						doc        : value,
+						extensions : createExtensions({ onChange, language, editorTheme }),
+					});
+				}
+
+				view.setState(nextState);
+				restoreFolds(view, foldsRef.current[tab]);
+
+				const savedScroll = scrollRef.current[tab];
+
+				if(savedScroll != null) {
+					requestAnimationFrame(()=>{
+						view.scrollDOM.scrollTop = savedScroll;
+					});
+				}
+
+				prevTabRef.current = tab;
+			}
+			view.focus();
+		}, [tab]);
+
+		useEffect(()=>{
+			const view = viewRef.current;
+			if(!view) return;
+
+			const current = view.state.doc.toString();
+			if(value !== current) {
+				view.dispatch({
+					changes : { from: 0, to: current.length, insert: value },
+				});
+			}
+		}, [value]);
+
+		useEffect(()=>{
+			//rebuild theme extension on theme change
+			const view = viewRef.current;
+			if(!view) return;
+
+			const themeExtension = Array.isArray(themes[editorTheme])? themes[editorTheme]: themes[editorTheme] || themes['default'];
+
+			view.dispatch({
+				effects : themeCompartment.reconfigure(themeExtension),
+			});
+		}, [editorTheme]);
+
+		useEffect(()=>{
+			//rebuild syntax highlight when changing tab or renderer
+			const view = viewRef.current;
+			if(!view) return;
+
+			const highlightExtension =renderer === 'V3'
+    		? syntaxHighlighting(customHighlightStyle)
+    		: syntaxHighlighting(legacyCustomHighlightStyle);
+
+			view.dispatch({
+				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab), highlightExtension]),
+			});
+		}, [renderer, tab]);
+
+		useImperativeHandle(ref, ()=>({
+
+			injectText : (text)=>{
+				const view = viewRef.current;
+
+				view.dispatch(
+					view.state.replaceSelection(text)
+				);
+				view.focus();
+			},
+			getCursorPosition : ()=>viewRef.current.state.selection.main.head,
+
+			scrollToPage : (pageNumber, smooth = true)=>{
+				const view = viewRef.current;
+				if(!view) return;
+
+				const pos = pageMap.current[pageNumber - 1] ?? 0;
+
+				view.dispatch({
+					selection : { anchor: pos },
+					effects   : [setProgrammaticCursorLine.of(pos), EditorView.scrollIntoView(pos, { y: 'start' })],
+				});
+
+				view.focus();
+
+				setTimeout(()=>{
+					view.dispatch({
+						effects : setProgrammaticCursorLine.of(null)
+					});
+				}, 400);
+			},
+
+			undo : ()=>undo(viewRef.current),
+			redo : ()=>redo(viewRef.current),
+
+			historySize : ()=>{
+				const view = viewRef.current;
+				if(!view) return { done: 0, undone: 0 };
+
+				return {
+					done   : undoDepth(view.state),
+					undone : redoDepth(view.state),
+				};
+			},
+
+			foldAll : ()=>{
+				const view = viewRef.current;
+				if(!view) return;
+
+				const doc = view.state.doc;
+				const pages = pageMap.current;
+
+				const effects = pages.map((start, i)=>{
+					const next = pages[i + 1] || doc.length;
+					const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
+					const to = doc.line(doc.lineAt(next).number).from - 1;
+
+					return to > from ? foldEffect.of({ from, to }) : null;
+				}).filter(Boolean);
+
+				view.dispatch({ effects });
+			},
+			unfoldAll : ()=>{
+				const view = viewRef.current;
+				if(!view) return;
+				view.dispatch(unfoldAllCmd(view));
+			},
+
+			focus : ()=>viewRef.current.focus(),
+		}));
+
+		return <div className={`codeEditor ${tab}`} ref={editorRef} style={style} />;
+	},
+);
+
+export default CodeEditor;

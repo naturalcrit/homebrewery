@@ -1,10 +1,12 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
+import brewRendererStylesUrl from './brewRenderer.less?url';
+import headerNavStylesUrl from './headerNav/headerNav.less?url';
 import './brewRenderer.less';
 import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
-import MarkdownLegacy from '../../../shared/markdownLegacy.js';
-import Markdown from '../../../shared/markdown.js';
+import MarkdownLegacy from '@shared/markdownLegacy.js';
+import Markdown from '@shared/markdown.js';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
@@ -13,10 +15,10 @@ import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
 import dedent from 'dedent';
-import { printCurrentBrew } from '../../../shared/helpers.js';
+import { printCurrentBrew } from '@shared/helpers.js';
 
 import HeaderNav from './headerNav/headerNav.jsx';
-import { safeHTML } from './safeHTML.js';
+import safeHTML from './safeHTML.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\(?:soft)?page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
@@ -27,9 +29,10 @@ const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
-	<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
-	<base target=_blank>
+	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
+	<link href="${headerNavStylesUrl}" rel="stylesheet" />
+	<base target="_top">
 	</head><body style='overflow: hidden'><div></div></body></html>`;
 
 
@@ -38,6 +41,7 @@ const BrewPage = (props)=>{
 	props = {
 		contents : '',
 		index    : 0,
+		hoisted  : false,
 		...props
 	};
 	const pageRef   = useRef(null);
@@ -131,6 +135,7 @@ const BrewRenderer = (props)=>{
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
+	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
@@ -233,7 +238,8 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const renderPages = ()=>{
+	const renderPages = (checkHoists = false)=>{
+
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
@@ -245,10 +251,16 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
-			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
+			const varsOnPageRegex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g; // Find out if there are any vars on the page.
+			const forceRender = checkHoists &&
+				!props.hoisted &&
+				(page.match(varsOnPageRegex));  // forceRender forces pages outside of the PPR range to render if true.
+			                                    // This is necessary on the first load to fully populate the variable table.
+			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
+		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
 		return renderedPages;
 	};
 
@@ -285,8 +297,10 @@ const BrewRenderer = (props)=>{
 	const frameDidMount = ()=>{	//This triggers when iFrame finishes internal "componentDidMount"
 		scrollToHash(window.location.hash);
 
+		window.addEventListener('hashchange', ()=>scrollToHash(window.location.hash));
+
 		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			renderPages(); //Make sure page is renderable before showing
+			renderPages(true); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
 				isMounted  : true,
