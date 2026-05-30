@@ -7,14 +7,7 @@ import MarkedDefinitionLists    from 'marked-definition-lists';
 import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
-<<<<<<< HEAD:shared/naturalcrit/markdown.js
 import MarkedMustache           from 'marked-mustache';
-=======
-import { markedVariables,
-	setMarkedVariablePage,
-	setMarkedVariable,
-	getMarkedVariable }  from 'marked-variables';
->>>>>>> master:shared/markdown.js
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
@@ -87,7 +80,7 @@ renderer.image = function (token) {
 	if(href === null)
 		return text;
 
-	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	let out = `<img loading="lazy" src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
 	if(title)
 		out += ` title="${title}"`;
 
@@ -202,82 +195,6 @@ const voidTags = new Set([
 	'area', 'base', 'br', 'col', 'command', 'hr', 'img',
 	'input', 'keygen', 'link', 'meta', 'param', 'source'
 ]);
-
-<<<<<<< HEAD:shared/naturalcrit/markdown.js
-const globalVarsList    = {};
-let varsQueue       = [];
-let globalPageNumber = 0;
-=======
-const processStyleTags = (string)=>{
-	//split tags up. quotes can only occur right after : or =.
-	//TODO: can we simplify to just split on commas?
-	const tags = string.match(/(?:[^, ":=]+|[:=](?:"[^"]*"|))+/g);
-
-	const id         = _.remove(tags, (tag)=>tag.startsWith('#')).map((tag)=>tag.slice(1))[0]        || null;
-	const classes    = _.remove(tags, (tag)=>(!tag.includes(':')) && (!tag.includes('='))).join(' ') || null;
-	const attributes = _.remove(tags, (tag)=>(tag.includes('='))).map((tag)=>tag.replace(/="?([^"]*)"?/g, '="$1"'))
-		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr)=>{
-			const index = attr.indexOf('=');
-			let [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			value = value.replace(/"/g, '');
-			obj[key.trim()] = value.trim();
-			return obj;
-		}, {}) || null;
-	const styles = tags?.length ? tags.reduce((styleObj, style)=>{
-		const index = style.indexOf(':');
-		const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-		styleObj[key.trim()] = value.replace(/"?([^"]*)"?/g, '$1').trim();
-		return styleObj;
-	}, {}) : null;
-
-	return {
-		id         : id,
-		classes    : classes,
-		styles     : _.isEmpty(styles)     ? null : styles,
-		attributes : _.isEmpty(attributes) ? null : attributes
-	};
-};
-
-//Given a string representing an HTML element, extract all of its properties (id, class, style, and other attributes)
-const extractHTMLStyleTags = (htmlString)=>{
-	const firstElementOnly = htmlString.split('>')[0];
-	const id         = firstElementOnly.match(/id="([^"]*)"/)?.[1]    || null;
-	const classes    = firstElementOnly.match(/class="([^"]*)"/)?.[1] || null;
-	const styles     = firstElementOnly.match(/style="([^"]*)"/)?.[1]
-		?.split(';').reduce((styleObj, style)=>{
-			if(style.trim() === '') return styleObj;
-			const index = style.indexOf(':');
-			const [key, value] = [style.substring(0, index), style.substring(index + 1)];
-			styleObj[key.trim()] = value.trim();
-			return styleObj;
-		}, {}) || null;
-	const attributes = firstElementOnly.match(/[a-zA-Z]+="[^"]*"/g)
-		?.filter((attr)=>!attr.startsWith('class="') && !attr.startsWith('style="') && !attr.startsWith('id="'))
-		.reduce((obj, attr)=>{
-			const index = attr.indexOf('=');
-			const [key, value] = [attr.substring(0, index), attr.substring(index + 1)];
-			obj[key.trim()] = value.replace(/"/g, '');
-			return obj;
-		}, {}) || null;
-
-	return {
-		id         : id,
-		classes    : classes,
-		styles     : _.isEmpty(styles)     ? null : styles,
-		attributes : _.isEmpty(attributes) ? null : attributes
-	};
-};
-
-const mergeHTMLTags = (originalTags, newTags)=>{
-	return {
-		id         : newTags.id || originalTags.id || null,
-		classes    : [originalTags.classes, newTags.classes].join(' ').trim() || null,
-		styles     : Object.assign(originalTags.styles     ?? {}, newTags.styles     ?? {}),
-		attributes : Object.assign(originalTags.attributes ?? {}, newTags.attributes ?? {})
-	};
-};
->>>>>>> master:shared/markdown.js
 
 const Markdown = {
 	marked : Marked,

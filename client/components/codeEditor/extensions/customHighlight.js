@@ -1,5 +1,15 @@
+/* eslint max-lines: ["error", { "max": 500 }] */
 import { HighlightStyle } from '@codemirror/language';
 import { tags } from '@lezer/highlight';
+import { legacyTokenizeCustomMarkdown } from './legacyCustomHighlight';
+import {
+	Decoration,
+	ViewPlugin,
+} from '@codemirror/view';
+import {
+	syntaxTree,
+	ensureSyntaxTree
+} from '@codemirror/language';
 
 // Making the tokens
 const customTags = {
@@ -23,7 +33,7 @@ const customTags = {
 	variable : 'variable',
 };
 
-export function tokenizeCustomMarkdown(text) {
+function tokenizeCustomMarkdown(text) {
 	const tokens = [];
 	const lines = text.split('\n');
 
@@ -86,8 +96,8 @@ export function tokenizeCustomMarkdown(text) {
 		if(/\~/.test(lineText)) {
 			const strikethroughRegex = /~(?!\s)(.+?)(?<!\s)~/g;
 
-			let match = strikethroughRegex.exec(lineText);
-			let type = customTags.strikethrough;
+			const match = strikethroughRegex.exec(lineText);
+			const type = customTags.strikethrough;
 
 			if(match) {
 				tokens.push({
@@ -149,7 +159,6 @@ export function tokenizeCustomMarkdown(text) {
 		if(!/^::/.test(lines[lineNumber]) && lineNumber + 1 < lines.length && /^::/.test(lines[lineNumber + 1])) {
 			const startLine = lineNumber;
 			const defs = [];
-			let endLine = startLine;
 
 			// collect all following :: definitions
 			for (let i = lineNumber + 1; i < lines.length; i++) {
@@ -158,7 +167,6 @@ export function tokenizeCustomMarkdown(text) {
 				const defMatch = /^(::)(.+)$/.exec(nextLine);
 				if(!onlyColonsMatch && defMatch) {
 					defs.push({ colons: defMatch[1], desc: defMatch[2], line: i });
-					endLine = i;
 				} else break;
 			}
 
@@ -202,6 +210,7 @@ export function tokenizeCustomMarkdown(text) {
 		if(lineText.includes('{') && lineText.includes('}')) {
 			const injectionRegex = /(?:^|[^{\n])({(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\2})/gmd;
 			let match;
+
 			while ((match = injectionRegex.exec(lineText)) !== null) {
 				tokens.push({
 					line : lineNumber,
@@ -241,14 +250,21 @@ export function tokenizeCustomMarkdown(text) {
 				/^ *{{(?=((?:[:=](?:"[\w,\-()#%. ]*"|[\w\-()#%.]*)|[^"':={}\s]*)*))\1 *$|^ *}}$/,
 			);
 			if(match) endCh = match.index + match[0].length;
-			tokens.push({ line: lineNumber, type: customTags.block });
+			const closingMatch = lineText.match(/ *(}})/d);
+			
+			if(closingMatch) {
+				tokens.push({ line: lineNumber, from: closingMatch.indices[1][0], to: closingMatch.indices[1][1], type: customTags.block });
+			} else {
+				tokens.push({ line: lineNumber, type: customTags.block });
+			}
+			
 		}
 	});
 
 	return tokens;
 }
 
-export function tokenizeCustomCSS(text) {
+function tokenizeCustomCSS(text) {
 	const tokens = [];
 	const lines = text.split('\n');
 
@@ -307,5 +323,150 @@ export const customHighlightStyle = HighlightStyle.define([
 
 ]);
 
+function getUrl(node, doc) {
+	let url = null;
 
+	const cursor = node.node.cursor();
 
+	if(cursor.firstChild()) {
+		do {
+			if(cursor.name === 'URL') {
+				url = doc.sliceString(cursor.from, cursor.to);
+				break;
+			}
+		} while (cursor.nextSibling());
+	}
+
+	return url;
+}
+
+import { WidgetType } from '@codemirror/view';
+
+class ImageWidget extends WidgetType {
+	constructor(url) {
+		super();
+		this.url = url;
+	}
+
+	toDOM() {
+		const img = document.createElement('img');
+		img.loading = "lazy";
+		img.className = 'cm-preview';
+		img.src = this.url;
+		
+
+		img.onerror = ()=>{
+			img.src  = 'client/icons/broken-image.jpg';
+		};
+
+		return img;
+	}
+
+	eq(other) {
+		return other.url === this.url;
+	}
+}
+
+export function customHighlightPlugin(renderer, tab) {
+	//this function takes the custom tokens created in the tokenize function in customhighlight files
+	//takes the tokens defined by that function and assigns classes to them
+	//it also creates page number and snippet number widgets
+
+	let tokenize;
+
+	if(tab === 'brewStyles') {
+		tokenize = tokenizeCustomCSS;
+	} else {
+		tokenize = renderer === 'V3' ? tokenizeCustomMarkdown : legacyTokenizeCustomMarkdown;
+	}
+
+	return ViewPlugin.fromClass(
+		class {
+			constructor(view) {
+				this.decorations = this.buildDecorations(view);
+			}
+			update(update) {
+				if(update.docChanged) {
+					this.decorations = this.buildDecorations(update.view);
+				}
+			}
+			buildDecorations(view) {
+				const decos = [];
+				const tokens = tokenize(view.state.doc.toString());
+				let pageCount = 1;
+				let snippetCount = 0;
+
+				const tree = ensureSyntaxTree(view.state, view.state.doc.length, 50) || syntaxTree(view.state);
+				tree.iterate({
+					enter : (node)=>{
+						if(node.name === 'Image') {
+							const url = getUrl(node, view.state.doc);
+
+							const widgetPosition = node.node.lastChild.from;
+							//this is not exactly standard, but should hold, 
+							//and is the shortest way i could find of positioning 
+							//the image inside the cm-image node
+
+							if(!url) return;
+
+							decos.push(
+								Decoration.mark({
+									class : 'cm-image'
+								}).range(node.from, node.to)
+							);
+							decos.push(
+								Decoration.widget({
+									widget : new ImageWidget(url),
+									side   : 1
+								}).range(widgetPosition)
+							);
+						}
+					}
+				});
+
+				tokens.forEach((token)=>{
+					const line = view.state.doc.line(token.line + 1);
+
+					if(token.from != null && token.to != null && token.from < token.to) {
+						const from = line.from + token.from;
+						const to = line.from + token.to;
+
+						const attrs = {};
+						if(token.type === 'Image' && token.url) {
+
+							attrs['data-url'] = token.url;
+						}
+
+						decos.push(
+							Decoration.mark({
+								class : `cm-${token.type}`,
+								...(Object.keys(attrs).length
+									? { attributes: attrs }
+									: {})
+							}).range(from, to)
+						);
+					} else {
+						decos.push(
+							Decoration.line({
+								class : `cm-${token.type}`
+							}).range(line.from)
+						);
+						if(token.type === 'pageLine' && tab === 'brewText') {
+							pageCount++;
+							if(line.from === 0) pageCount--;
+							decos.push(Decoration.line({ attributes: { 'data-page-number': pageCount } }).range(line.from));
+						}
+						if(token.type === 'snippetLine' && tab === 'brewSnippets') {
+							snippetCount++;
+							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
+						}
+					}
+				});
+
+				decos.sort((a, b)=>a.from - b.from || a.to - b.to);
+				return Decoration.set(decos);
+			}
+		},
+		{ decorations: (v)=>v.decorations }
+	);
+};
