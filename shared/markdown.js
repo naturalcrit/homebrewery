@@ -10,7 +10,9 @@ import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
 	setMarkedVariablePage,
 	setMarkedVariable,
-	getMarkedVariable }  from 'marked-variables';
+	getMarkedVariable }         from 'marked-variables';
+import MarkedLineNumbers        from 'marked-line-numbers';
+import {addTokenPositions}      from 'marked-token-position';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
@@ -149,6 +151,7 @@ const mustacheSpans = {
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}`     : ''}` +
+			` data-lineNumber="${token.position.start.line}" ` +
 			`>${this.parser.parseInline(token.tokens)}</span>`; // parseInline to turn child tokens into HTML
 	}
 };
@@ -205,6 +208,7 @@ const mustacheDivs = {
 			`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 			`${tags.styles     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 			`${tags.attributes ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+			` data-lineNumber="${token.position.start.line}" ` +
 			`>${this.parser.parse(token.tokens)}</div>`; // parse to turn child tokens into HTML
 	}
 };
@@ -248,6 +252,7 @@ const mustacheInjectInline = {
 				`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 				`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 				`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+				` data-lineNumber="${token.position.start.line}" ` +
 				`${openingTag[2]}`; // parse to turn child tokens into HTML
 		}
 		return text;
@@ -292,6 +297,7 @@ const mustacheInjectBlock = {
 					`${tags.id         ? ` id="${tags.id}"`         : ''}` +
 					`${!_.isEmpty(tags.styles)     ? ` style="${Object.entries(tags.styles).map(([key, value])=>`${key}:${value};`).join(' ')}"` : ''}` +
 					`${!_.isEmpty(tags.attributes) ? ` ${Object.entries(tags.attributes).map(([key, value])=>`${key}="${value}"`).join(' ')}` : ''}` +
+					` data-lineNumber="${token.position.start.line}" ` +
 					`${openingTag[2]}`; // parse to turn child tokens into HTML
 			}
 			return text;
@@ -324,7 +330,7 @@ const forcedParagraphBreaks = {
 		}
 	},
 	renderer(token) {
-		return `<div class='blank'></div>\n`.repeat(token.length);
+		return `<div class='blank' data-lineNumber="${token.position.start.line}"></div>\n`.repeat(token.length);
 	}
 };
 
@@ -363,6 +369,7 @@ Marked.use(MarkedNonbreakingSpaces());
 Marked.use({ renderer: renderer, tokenizer: tokenizer, mangle: false });
 Marked.use(MarkedExtendedTables({ interruptPatterns: tableTerminators }), MarkedGFMHeadingId({ globalSlugs: true }),
 	MarkedSmartypantsLite(), MarkedEmojis(MarkedEmojiOptions));
+Marked.use(MarkedLineNumbers());
 
 function cleanUrl(href) {
 	try {
@@ -498,6 +505,7 @@ const Markdown = {
 
 		rawBrewText = opts.hooks.preprocess(rawBrewText);
 		const tokens = Marked.lexer(rawBrewText, opts);
+		addTokenPositions(tokens);
 
 		Marked.walkTokens(tokens, opts.walkTokens);
 
