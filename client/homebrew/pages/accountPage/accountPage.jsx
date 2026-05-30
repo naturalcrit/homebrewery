@@ -1,7 +1,7 @@
-const React  = require('react');
-const moment = require('moment');
-const UIPage = require('../basePages/uiPage/uiPage.jsx');
-const NaturalCritIcon = require('naturalcrit/svg/naturalcrit.svg.jsx');
+import React from 'react';
+import moment from 'moment';
+import UIPage from '../basePages/uiPage/uiPage.jsx';
+import NaturalCritIcon from '../../../components/svg/naturalcrit-d20.svg.jsx';
 
 let SAVEKEY = '';
 
@@ -13,7 +13,7 @@ const AccountPage = (props)=>{
 	// initialize save location from local storage based on user id
 	React.useEffect(()=>{
 		if(!saveLocation && accountDetails.username) {
-			SAVEKEY = `HOMEBREWERY-DEFAULT-SAVE-LOCATION-${accountDetails.username}`;
+			SAVEKEY = `HB_editor_defaultSave_${accountDetails.username}`;
 			// if no SAVEKEY in local storage, default save location to Google Drive if user has Google account.
 			let saveLocation = window.localStorage.getItem(SAVEKEY);
 			saveLocation = saveLocation ?? (accountDetails.googleId ? 'GOOGLE-DRIVE' : 'HOMEBREWERY');
@@ -79,4 +79,4 @@ const AccountPage = (props)=>{
 		</UIPage>);
 };
 
-module.exports = AccountPage;
+export default AccountPage;

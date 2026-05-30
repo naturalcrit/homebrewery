@@ -1,31 +1,28 @@
-require('./sharePage.less');
-const React = require('react');
-const { useState, useEffect, useCallback } = React;
-const { Meta } = require('vitreum/headtags');
+import './sharePage.less';
+import React, { useState, useEffect, useCallback } from 'react';
+import Headtags   from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const Navbar = require('../../navbar/navbar.jsx');
-const MetadataNav = require('../../navbar/metadata.navitem.jsx');
-const PrintNavItem = require('../../navbar/print.navitem.jsx');
-const RecentNavItem = require('../../navbar/recent.navitem.jsx').both;
-const Account = require('../../navbar/account.navitem.jsx');
-const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import MetadataNav from '@navbar/metadata.navitem.jsx';
+import PrintNavItem from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
+import Account from '@navbar/account.navitem.jsx';
+import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-const { DEFAULT_BREW_LOAD } = require('../../../../server/brewDefaults.js');
-const { printCurrentBrew, fetchThemeBundle } = require('../../../../shared/helpers.js');
+import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
 	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
 
-	const [state, setState] = useState({
-		themeBundle                : {},
-		currentBrewRendererPageNum : 1,
-	});
+	const [themeBundle,                setThemeBundle]                = useState({});
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
 	const handleBrewRendererPageChange = useCallback((pageNumber)=>{
-		setState((prevState)=>({
-			currentBrewRendererPageNum : pageNumber,
-			...prevState }));
+		setCurrentBrewRendererPageNum(pageNumber);
 	}, []);
 
 	const handleControlKeys = (e)=>{
@@ -40,11 +37,7 @@ const SharePage = (props)=>{
 
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(
-			{ setState },
-			brew.renderer,
-			brew.theme
-		);
+		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
@@ -99,6 +92,19 @@ const SharePage = (props)=>{
 								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
 									clone to new
 								</Nav.item>
+								<Nav.item
+									color='blue'
+									icon='fas fa-link'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+									copy url
+								</Nav.item>
+								{currentBrewRendererPageNum > 1 &&
+									<Nav.item
+										color='blue'
+										icon='fas fa-hashtag'
+										onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+										copy url (page {currentBrewRendererPageNum})
+									</Nav.item>}
 							</Nav.dropdown>
 						</>
 					)}
@@ -114,9 +120,9 @@ const SharePage = (props)=>{
 					lang={brew.lang}
 					renderer={brew.renderer}
 					theme={brew.theme}
-					themeBundle={state.themeBundle}
+					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}
-					currentBrewRendererPageNum={state.currentBrewRendererPageNum}
+					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>
@@ -124,4 +130,4 @@ const SharePage = (props)=>{
 	);
 };
 
-module.exports = SharePage;
+export default SharePage;

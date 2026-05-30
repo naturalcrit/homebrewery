@@ -166,7 +166,7 @@
 
 	&.hidden {
 		flex-wrap        : nowrap;
-		width            : 92px;
+		width            : 50%;
 		overflow         : hidden;
 		background-color : unset;
 		opacity          : 0.7;
@@ -174,6 +174,10 @@
 		& > *:not(.toggleButton) {
 			opacity    : 0;
 			transition : all 0.2s ease;
+		}
+
+		.toggleButton button i {
+			filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
 		}
 	}
 }
@@ -184,9 +188,4 @@
 	z-index   : 5;
 	display   : flex;
 	height    : 100%;
-
-	button i {
-		filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
-
-	}
 }

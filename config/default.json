@@ -1,10 +1,9 @@
 {
+	"development": true,
 	"host" : "homebrewery.local.naturalcrit.com:8000",
 	"naturalcrit_url" : "local.naturalcrit.com:8010",
 	"secret" : "secret",
 	"web_port" : 8000,
-	"enable_v3" : true,
-	"enable_themes" : true,
 	"local_environments" : ["docker", "local"],
 	"publicUrl" : "https://homebrewery.naturalcrit.com",
 	"hb_images" : null,

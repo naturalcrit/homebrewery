@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const spellNames = [
 	'Astral Rite of Acne',
@@ -48,7 +48,7 @@ const spellNames = [
 	'Ultimate Ritual of Mouthwash',
 ];
 
-module.exports = {
+export default {
 
 	spellList : function(){
 		const levels = ['Cantrips (0 Level)', '1st Level', '2nd Level', '3rd Level', '4th Level', '5th Level', '6th Level', '7th Level', '8th Level', '9th Level'];

@@ -8,7 +8,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	const mpAsSnippets = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
-		for (let themes of themeBundleSnippets) {
+		for (const themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
 				const userSnippets = [];
 				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
@@ -19,7 +19,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						userSnippets.push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1],
+							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -44,7 +44,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1],
+					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
@@ -76,9 +76,9 @@ const yamlSnippetsToText = (yamlObj)=>{
 	if(typeof yamlObj == 'string') return yamlObj;
 
 	let snippetsText = '';
-	
-	for (let snippet of yamlObj) {
-		for (let subSnippet of snippet.subsnippets) {
+
+	for (const snippet of yamlObj) {
+		for (const subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
 	}
@@ -91,7 +91,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('\n```\n\n');
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 		brew.text = brew.text.slice(index + 6);
 	}
@@ -105,43 +105,120 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
-const printCurrentBrew = ()=>{
+const printCurrentBrew = async ()=>{
 	if(window.typeof !== 'undefined') {
-		window.frames['BrewRenderer'].contentWindow.print();
-		//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-		const node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
-		node.style.display='none';
-		node.offsetHeight; // accessing this is enough to trigger a reflow
-		node.style.display='';
+		// fire a custom event for the print cycle
+		document.dispatchEvent(new CustomEvent('print:startprep'));
+		try {
+			const iframeDoc = window.frames['BrewRenderer'].contentDocument;
+
+			// get all img elements with lazy loading (currently only elements generated through MarkedJS)
+			const lazyImages = [...iframeDoc.querySelectorAll('img[loading="lazy"]')];
+			lazyImages.forEach((img)=>{ img.loading = 'eager'; });
+
+			// waits for images to load before resolving promise and opening print dialog
+			await Promise.all(
+				lazyImages
+								.filter((img)=>!img.complete)
+								.map((img)=>new Promise((resolve)=>{ img.onload = resolve; img.onerror = resolve; }))
+			);
+
+			window.frames['BrewRenderer'].contentWindow.print();
+
+			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+			const node = iframeDoc.getElementsByClassName('brewRenderer').item(0);
+			node.style.display='none';
+			node.offsetHeight; // accessing this is enough to trigger a reflow
+			node.style.display='';
+		} finally {
+			// when lazy load images have all been loaded, and the doc re-rendered for print preview, emit 'finished' event.
+			document.dispatchEvent(new CustomEvent('print:finishedprep'));
+		}
 	}
 };
 
-const fetchThemeBundle = async (obj, renderer, theme)=>{
+const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
 			.catch((err)=>{
-				obj.setState({ error: err });
+				setError(err);
 			});
 	if(!res) {
-		obj.setState((prevState)=>({
-			...prevState,
-			themeBundle : {}
-		}));
+		setThemeBundle({});
 		return;
 	}
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
-	obj.setState((prevState)=>({
-		...prevState,
-		themeBundle : themeBundle,
-		error       : null
-	}));
+	setThemeBundle(themeBundle);
+	setError(null);
+};
+
+const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
+	const clientText = clientTextRaw?.normalize('NFC') || '';
+	const serverText = serverTextRaw?.normalize('NFC') || '';
+
+	const clientBuffer = Buffer.from(clientText, 'utf8');
+	const serverBuffer = Buffer.from(serverText, 'utf8');
+
+	if(clientBuffer.equals(serverBuffer)) {
+		console.log(`✅ ${label} text matches byte-for-byte.`);
+		return;
+	}
+
+	console.warn(`❗${label} text mismatch detected.`);
+	console.log(`Client length: ${clientBuffer.length}`);
+	console.log(`Server length: ${serverBuffer.length}`);
+
+	// Byte-level diff
+	for (let i = 0; i < Math.min(clientBuffer.length, serverBuffer.length); i++) {
+		if(clientBuffer[i] !== serverBuffer[i]) {
+			console.log(`Byte mismatch at offset ${i}: client=0x${clientBuffer[i].toString(16)} server=0x${serverBuffer[i].toString(16)}`);
+			break;
+		}
+	}
+
+	// Char-level diff
+	for (let i = 0; i < Math.min(clientText.length, serverText.length); i++) {
+		if(clientText[i] !== serverText[i]) {
+			const getMismatchContext = (text, index, name, size = 10)=>{
+				const lower = Math.max(index - size, 0);
+				const upper = Math.min(index + size, text.length);
+				const slice = `${JSON.stringify(text.slice(lower, index)).slice(1, -1)}\u001B[31m${JSON.stringify(text[i]).slice(1, -1)}\u001B[0m${JSON.stringify(text.slice(index+1, upper)).slice(1, -1)}`;
+				const lineNo = text.slice(0, index).split('\n').length;
+				const code = `U+${text.charCodeAt(i).toString(16).toUpperCase()}`;
+
+				return {
+					name,
+					lineNo,
+					code,
+					lower,
+					upper,
+					slice
+				};
+			};
+
+			const boundSize = 10;
+
+			const clientContext = getMismatchContext(clientText, i, 'Client', boundSize);
+			const serverContext = getMismatchContext(serverText, i, 'Server', boundSize);
+
+			const logContext = (context)=>{
+				console.log(`  ${context.name} - line ${context.lineNo} : (${context.code})\t${context.slice}`);
+			};
+
+			console.log(`Char mismatch at index ${i}:`);
+			logContext(clientContext);
+			logContext(serverContext);
+			break;
+		}
+	}
 };
 
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
-	brewSnippetsToJSON
+	brewSnippetsToJSON,
+	debugTextMismatch
 };

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	title : [
 		(value)=>{
 			return value?.length > 100 ? 'Max title length of 100 characters' : null;
@@ -18,7 +18,7 @@ module.exports = {
 			try {
 				Boolean(new URL(value));
 				return null;
-			} catch (e) {
+			} catch {
 				return 'Must be a valid URL';
 			}
 		}
