@@ -46,11 +46,6 @@ const MetadataNav = createReactClass({
 		</>;
 	},
 
-	getSystems : function(){
-		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'No systems';
-		return this.props.brew.systems.join(', ');
-	},
-
 	renderMetaWindow : function(){
 		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
@@ -64,10 +59,6 @@ const MetadataNav = createReactClass({
 			<div className='row'>
 				<h4>Tags</h4>
 				<p>{this.getTags()}</p>
-			</div>
-			<div className='row'>
-				<h4>Systems</h4>
-				<p>{this.getSystems()}</p>
 			</div>
 			<div className='row'>
 				<h4>Updated</h4>

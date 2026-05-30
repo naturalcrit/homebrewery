@@ -1,18 +1,19 @@
 import './sharePage.less';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Meta }                          from 'vitreum/headtags';
+import Headtags   from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 
-import Nav from '../../navbar/nav.jsx';
-import Navbar from '../../navbar/navbar.jsx';
-import MetadataNav from '../../navbar/metadata.navitem.jsx';
-import PrintNavItem from '../../navbar/print.navitem.jsx';
-import RecentNavItems from '../../navbar/recent.navitem.jsx';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import MetadataNav from '@navbar/metadata.navitem.jsx';
+import PrintNavItem from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account from '../../navbar/account.navitem.jsx';
+import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
 	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
@@ -91,6 +92,19 @@ const SharePage = (props)=>{
 								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
 									clone to new
 								</Nav.item>
+								<Nav.item
+									color='blue'
+									icon='fas fa-link'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+									copy url
+								</Nav.item>
+								{currentBrewRendererPageNum > 1 &&
+									<Nav.item
+										color='blue'
+										icon='fas fa-hashtag'
+										onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+										copy url (page {currentBrewRendererPageNum})
+									</Nav.item>}
 							</Nav.dropdown>
 						</>
 					)}

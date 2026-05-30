@@ -4,7 +4,7 @@ import ClassFeatureGen from './classfeature.gen.js';
 
 import ClassTableGen from './classtable.gen.js';
 
-export default function(){
+function fullClassGen(){
 
 	const classname = _.sample(['Archivist', 'Fancyman', 'Linguist', 'Fletcher',
 		'Notary', 'Berserker-Typist', 'Fishmongerer', 'Manicurist', 'Haberdasher', 'Concierge']);
@@ -40,4 +40,6 @@ export default function(){
 
 
 	].join('\n')}\n\n\n`;
-};
+}
+
+export default fullClassGen;

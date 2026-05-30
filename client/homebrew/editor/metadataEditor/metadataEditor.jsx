@@ -7,7 +7,8 @@ import request from '../../utils/request-middleware.js';
 import Combobox from '../../../components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
-import Themes from 'themes/themes.json';
+
+import Themes from '@themes/themes.json';
 import validations from './validations.js';
 
 import homebreweryThumbnail from '../../thumbnail.png';
@@ -337,9 +338,9 @@ const MetadataEditor = createReactClass({
 				{this.renderThumbnail()}
 			</div>
 
-			<div className="field tags">
+			<div className='field tags'>
 				<label>Tags</label>
-				<div className="value" >
+				<div className='value' >
 					<TagInput
 						label='tags'
 						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
@@ -350,7 +351,7 @@ const MetadataEditor = createReactClass({
 					/>
 				</div>
 			</div>
-			
+
 
 			{this.renderLanguageDropdown()}
 
@@ -362,9 +363,9 @@ const MetadataEditor = createReactClass({
 
 			{this.renderAuthors()}
 
-			<div className="field invitedAuthors">
+			<div className='field invitedAuthors'>
 				<label>Invited authors</label>
-				<div className="value">
+				<div className='value'>
 					<TagInput
 						label='invited authors'
 						valuePatterns={/.+/}
@@ -377,7 +378,7 @@ const MetadataEditor = createReactClass({
 					/>
 				</div>
 			</div>
-			
+
 
 			<h2>Privacy</h2>
 

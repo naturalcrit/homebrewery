@@ -8,5 +8,5 @@
 	"publicUrl" : "https://homebrewery.naturalcrit.com",
 	"hb_images" : null,
 	"hb_fonts" : null,
-	"enable_v4" : true
+	"enablev4" : true
 }

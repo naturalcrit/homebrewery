@@ -3,15 +3,15 @@ import _ from 'lodash';
 
 import ListPage from '../basePages/listPage/listPage.jsx';
 
-import Nav from '../../navbar/nav.jsx';
-import Navbar from '../../navbar/navbar.jsx';
-import RecentNavItems from '../../navbar/recent.navitem.jsx';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account from '../../navbar/account.navitem.jsx';
-import NewBrew from '../../navbar/newbrew.navitem.jsx';
-import HelpNavItem from '../../navbar/help.navitem.jsx';
-import ErrorNavItem from '../../navbar/error-navitem.jsx';
-import VaultNavitem from '../../navbar/vault.navitem.jsx';
+import Account from '@navbar/account.navitem.jsx';
+import NewBrew from '@navbar/newbrew.navitem.jsx';
+import HelpNavItem from '@navbar/help.navitem.jsx';
+import ErrorNavItem from '@navbar/error-navitem.jsx';
+import VaultNavitem from '@navbar/vault.navitem.jsx';
 
 const UserPage = (props)=>{
 	props = {

@@ -1,4 +1,4 @@
-import Markdown from '../../../../shared/markdown.js';
+import Markdown from '@shared/markdown.js';
 
 export default {
 	createFooterFunc : function(headerSize=1){

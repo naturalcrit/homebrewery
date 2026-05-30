@@ -1,88 +1,11 @@
-@import 'themes/codeMirror/customEditorStyles.less';
-.editor {
-	position  : relative;
-	width     : 100%;
-	height    : 100%;
-	container : editor / inline-size;
-	background:white;
-	.codeEditor {
-		height            : calc(100% - 25px);
-		.CodeMirror { height : 100%; }
-		.pageLine, .snippetLine {
-			background : #33333328;
-			border-top : #333399 solid 1px;
-		}
-		.editor-page-count {
-			float : right;
-			color : grey;
-		}
-		.editor-snippet-count {
-			float : right;
-			color : grey;
-		}
-		.columnSplit {
-			font-style        : italic;
-			color             : grey;
-			background-color  : fade(#229999, 15%);
-			border-bottom     : #229999 solid 1px;
-		}
-		.define {
-			&:not(.term):not(.definition) {
-				font-weight   : bold;
-				color         : #949494;
-				background    : #E5E5E5;
-				border-radius : 3px;
-			}
-			&.term { color : rgb(96, 117, 143); }
-			&.definition { color : rgb(97, 57, 178); }
-		}
-		.block:not(.cm-comment) {
-			font-weight : bold;
-			color       : purple;
-			//font-style: italic;
-		}
-		.inline-block:not(.cm-comment) {
-			font-weight : bold;
-			color       : red;
-			//font-style: italic;
-		}
-		.injection:not(.cm-comment) {
-			font-weight : bold;
-			color       : green;
-		}
-		.emoji:not(.cm-comment) {
-			padding-bottom : 1px;
-			margin-left    : 2px;
-			font-weight    : bold;
-			color          : #360034;
-			outline        : solid 2px #FF96FC;
-			outline-offset : -2px;
-			background     : #FFC8FF;
-			border-radius  : 6px;
-		}
-		.superscript:not(.cm-comment) {
-			font-size      : 0.9em;
-			font-weight    : bold;
-			vertical-align : super;
-			color          : goldenrod;
-		}
-		.subscript:not(.cm-comment) {
-			font-size      : 0.9em;
-			font-weight    : bold;
-			vertical-align : sub;
-			color          : rgb(123, 123, 15);
-		}
-		.dl-highlight {
-			&.dl-colon-highlight {
-				font-weight   : bold;
-				color         : #949494;
-				background    : #E5E5E5;
-				border-radius : 3px;
-			}
-			&.dt-highlight { color : rgb(96, 117, 143); }
-			&.dd-highlight { color : rgb(97, 57, 178); }
-		}		
-	}
+@import '@sharedStyles/core.less';
+
+:where(.editor) {
+	position   : relative;
+	width      : 100%;
+	height     : 100%;
+	container  : editor / inline-size;
+	background : white;
 
 	.brewJump {
 		position         : absolute;

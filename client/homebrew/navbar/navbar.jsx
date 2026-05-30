@@ -8,16 +8,10 @@ import PatreonNavItem from './patreon.navitem.jsx';
 const Navbar = createReactClass({
 	displayName     : 'Navbar',
 	getInitialState : function() {
-		return {
-			//showNonChromeWarning : false,
-			ver : '0.0.0'
-		};
-	},
-
-	getInitialState : function() {
-		return {
-			ver : global.version
-		};
+  		return {
+			// showNonChromeWarning: false, // uncomment if needed
+    		ver : global.version || '0.0.0'
+  		};
 	},
 
 	/*
