@@ -149,6 +149,7 @@ const EmbedPage = (props)=>{
 	};
 
 	return (
+		<>
 		<div>
 			<Meta name='robots' content='noindex, nofollow' />
 			{renderStyle()}
@@ -156,6 +157,8 @@ const EmbedPage = (props)=>{
 				{renderPages()}
 			</div>
 		</div>
+		<div id="brewRendered"></div>
+		</>
 	);
 };
 
