@@ -1,14 +1,43 @@
 /* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
+import { EditorSelection } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 
-const insertTab = (view)=>{
-	const { from, to } = view.state.selection.main;
+const insertTab = (view) => {
+	const shouldIndent = view.state.selection.ranges.some(range =>
+		view.state.doc.lineAt(range.from).number !==
+		view.state.doc.lineAt(range.to).number
+	);
+
+	if(shouldIndent) return indentMore(view);
+
+	const changes = [];
+	const ranges = [];
+
+	for(const range of view.state.selection.ranges) {
+		console.log(range);
+		changes.push({
+			from   : range.from,
+			to     : range.to,
+			insert : '  '
+		});
+
+		ranges.push({
+			anchor : range.from
+		});
+	}
+	const tr = view.state.update({ changes });
 
 	view.dispatch({
-		changes   : { from, to, insert: '  ' },
-		selection : { anchor: from + 2 }
+		changes,
+		selection: EditorSelection.create(
+			view.state.selection.ranges.map(range =>
+				EditorSelection.cursor(
+					tr.changes.mapPos(range.from, 1) + 2
+				)
+			)
+		)
 	});
 
 	return true;
@@ -170,6 +199,8 @@ const newPage = (view)=>{
 
 export const generalKeymap = Prec.high(keymap.of([
 	{ key: 'Tab', run: insertTab },
+	//{ key: 'Shift-Tab', run: indentMore },
+	{ key: 'Shift-Tab',       run: indentLess },
 	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },
@@ -177,8 +208,7 @@ export const generalKeymap = Prec.high(keymap.of([
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
-	//{ key: 'Shift-Tab', run: indentMore },
-	{ key: 'Shift-Tab',       run: indentLess },
+
 	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
 	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
 	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline
