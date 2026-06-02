@@ -12,10 +12,23 @@ export async function formatCSS(view) {
 		const selection = view.state.doc.sliceString(from, to);
 		const code = empty ? fullDoc : selection;
 
-		const formatted = await prettier.format(code, {
-			parser  : 'css',
-			plugins : [postcssPlugin]
+		let formatted = await prettier.format(code, {
+			parser: 'css',
+			plugins: [postcssPlugin],
+
+			// formatting options
+			tabWidth: 2,
+			useTabs: false,
+			printWidth: 100,
+			singleQuote: false,
+			trailingComma: 'all',
+			bracketSpacing: true,
+			endOfLine: 'lf'
 		});
+		formatted = formatted.replace(
+			/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}/g,
+			(_, selector, decl)=>`${selector.trim()} { ${decl.trim()} }`
+		);
 		if(formatted === code) return true;
 
 		const dom = view.dom;
