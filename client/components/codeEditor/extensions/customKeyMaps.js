@@ -4,9 +4,8 @@ import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
 import { EditorSelection } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 
-const insertTab = (view) => {
-	const shouldIndent = view.state.selection.ranges.some(range =>
-		view.state.doc.lineAt(range.from).number !==
+const insertTab = (view)=>{
+	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
 		view.state.doc.lineAt(range.to).number
 	);
 
@@ -15,7 +14,7 @@ const insertTab = (view) => {
 	const changes = [];
 	const ranges = [];
 
-	for(const range of view.state.selection.ranges) {
+	for (const range of view.state.selection.ranges) {
 		console.log(range);
 		changes.push({
 			from   : range.from,
@@ -31,11 +30,10 @@ const insertTab = (view) => {
 
 	view.dispatch({
 		changes,
-		selection: EditorSelection.create(
-			view.state.selection.ranges.map(range =>
-				EditorSelection.cursor(
-					tr.changes.mapPos(range.from, 1) + 2
-				)
+		selection : EditorSelection.create(
+			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
+				tr.changes.mapPos(range.from, 1) + 2
+			)
 			)
 		)
 	});
