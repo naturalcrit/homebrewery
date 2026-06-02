@@ -2,7 +2,56 @@
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
 import { Prec } from '@codemirror/state';
+import * as prettier from 'prettier/standalone';
+import * as postcssPlugin from 'prettier/plugins/postcss';
 
+export async function formatCSS(view) {
+	try {
+		const { from, to, empty } = view.state.selection.main;
+		const fullDoc = view.state.doc.toString();
+		const selection = view.state.doc.sliceString(from, to);
+		const code = empty ? fullDoc : selection;
+
+		let formatted = await prettier.format(code, {
+			parser: 'css',
+			plugins: [postcssPlugin],
+
+			// formatting options
+			tabWidth: 2,
+			useTabs: false,
+			printWidth: 100,
+			singleQuote: false,
+			trailingComma: 'all',
+			bracketSpacing: true,
+			endOfLine: 'lf'
+		});
+		formatted = formatted.replace(
+			/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}/g,
+			(_, selector, decl)=>`${selector.trim()} { ${decl.trim()} }`
+		);
+		if(formatted === code) return true;
+
+		const dom = view.dom;
+		dom.classList.add('cm-flash');
+
+		setTimeout(()=>{
+			dom.classList.remove('cm-flash');
+
+			view.dispatch({
+				changes : {
+					from   : empty ? 0 : from,
+					to     : empty ? view.state.doc.length : to,
+					insert : formatted
+				}
+			});
+
+		}, 500);
+	} catch (err) {
+		console.error('Error formatting css: ', err);
+	}
+
+	return true;
+}
 const insertTab = (view)=>{
 	const { from, to } = view.state.selection.main;
 
@@ -174,6 +223,11 @@ export const generalKeymap = Prec.high(keymap.of([
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo },
 	{ key: 'Mod-d', run: deleteLine },
+]));
+
+export const cssKeymap = Prec.highest(keymap.of([
+	{ key: 'Mod-Shift-f', run: formatCSS },
+  	{ key: 'Alt-Shift-f', run: formatCSS },
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([

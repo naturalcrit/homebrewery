@@ -15,6 +15,18 @@
 	}
 }
 
+@keyframes slideacross {
+ 0% {
+	bottom: -200px;
+	left: -200px;
+ }
+
+ 100% {
+	bottom:100%;
+	left:100%;
+ }
+}
+
 :where(.codeEditor) {
 	width             : 100%;
 	height            : calc(100% - 25px);
@@ -23,6 +35,23 @@
 	.cm-editor { 
 		height  : 100%;
 		outline : none !important;
+
+		&.cm-flash {
+			position:relative;
+			&::after {
+				position:absolute;
+				content:'';
+				bottom:-200px;
+				left:-200px;
+				translate:-50%;
+				width:200%;
+				height:100px;
+				background:linear-gradient(0deg, #89eafc00 0px, #89ebfc8e 50px, #89eafc00 100px, transparent);
+				display:block;
+				animation: .5s linear 1 slideacross ;
+				rotate:30deg
+			}
+		}
 	}
 
 	&.brewSnippets .cm-snippetLine,
