@@ -15,7 +15,6 @@ const insertTab = (view)=>{
 	const ranges = [];
 
 	for (const range of view.state.selection.ranges) {
-		console.log(range);
 		changes.push({
 			from   : range.from,
 			to     : range.to,
