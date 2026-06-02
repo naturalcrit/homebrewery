@@ -53,12 +53,12 @@ export default function createAdminApi(vite) {
 		{
 			$match: {
 				authors: [],
-				updatedAt:  { $lt: Moment().subtract(9, 'years').toDate() },
-				lastViewed: { $lt: Moment().subtract(9, 'years').toDate() }
+				updatedAt:  { $lt: Moment().subtract(6, 'years').toDate() },
+				lastViewed: { $lt: Moment().subtract(6, 'years').toDate() }
 			}
 		},
 		{
-			$limit: 1000
+			$limit: 500
 		}
 	];
 
