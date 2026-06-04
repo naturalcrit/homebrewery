@@ -83,7 +83,7 @@ renderer.image = function (token) {
 	if(href === null)
 		return text;
 
-	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	let out = `<img loading="lazy" src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
 	if(title)
 		out += ` title="${title}"`;
 

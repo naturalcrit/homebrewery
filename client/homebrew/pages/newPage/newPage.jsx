@@ -156,7 +156,7 @@ const NewPage = (props)=>{
 		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
-		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
+		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm;
 		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
 
 		const res = await request
