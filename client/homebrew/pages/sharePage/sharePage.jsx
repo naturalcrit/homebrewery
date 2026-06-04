@@ -16,7 +16,7 @@ import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, share = true } = props;
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, showToolbar = true } = props;
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -102,7 +102,7 @@ const SharePage = (props)=>{
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{share ? showNav : '' }
+			{showToolbar ? showNav : '' }
 			<div className='content'>
 				<BrewRenderer
 					text={brew.text}
@@ -114,7 +114,7 @@ const SharePage = (props)=>{
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
-					showToolbar={share}
+					showToolbar={showToolbar}
 				/>
 			</div>
 		</div>
