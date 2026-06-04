@@ -10,10 +10,10 @@ export default function(props){
 		<Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
 			get PDF
 		</Nav.item>
-		<Nav.item onClick={scrapeBrewHTML} color='orange' icon='fas fa-file-code'>
+		<Nav.item onClick={scrapeBrewHTML} color='purple' icon='fas fa-file-code'>
 			get HTML
 		</Nav.item>
-		<Nav.item onClick={scrapeBrewZip} color='orange' icon='fas fa-file-archive'>
+		<Nav.item onClick={scrapeBrewZip} color='purple' icon='fas fa-file-archive'>
 			get HTML (Zip)
 		</Nav.item>
 	</Nav.dropdown>;
