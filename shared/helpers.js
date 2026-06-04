@@ -1,14 +1,6 @@
-/* eslint-disable max-lines */
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
-import Markdown from '../shared/markdown.js';
-import packageJSON from '../package.json' with { type: 'json' };
-
-const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
-const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
-const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
-
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -93,7 +85,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 	return snippetsText;
 };
 
-const splitTextStyleAndMetadata = (brew)=>{
+const splitTextStyleAndMetadata = async (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('\n```\n\n');
@@ -138,7 +130,7 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	setThemeBundle(themeBundle);
-	if(setError) { setError(null); }
+	if(setError) setError(null);
 };
 
 const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
@@ -177,7 +169,17 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 };
 
 const scrapeBrew = ()=>{
-	const htmlBody = `<html>\n${window.frames['BrewRenderer'].contentDocument.documentElement.innerHTML}\n</html>`;
+	let htmlBody = `<!DOCTYPE html>\n<html>\n${window.frames['BrewRenderer'].contentDocument.documentElement.innerHTML}\n</html>`;
+	const whereAmI = `${window.location.protocol}//${window.location.host}`;
+
+	// Rewrite local paths
+	htmlBody = htmlBody.replace(/src=(["'])\//gm, 'src=$1' + whereAmI + '/')
+	  .replace(/url\((["'])\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/src=(["']).\//gm, 'src="$1' + whereAmI + '/')
+	  .replace(/url\((["']).\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/href=(["'])\/\//gm, 'href=$1' + window.location.protocol + '//')
+	  .replace(/href=(["'])\//gm, 'href=$1' + whereAmI + '/');
+
 	return htmlBody;
 };
 
@@ -216,5 +218,5 @@ export {
 	brewSnippetsToJSON,
 	debugTextMismatch,
 	scrapeBrewHTML,
-	scrapeBrewZip,
+	scrapeBrewZip
 };
