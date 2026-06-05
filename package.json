@@ -91,7 +91,7 @@
     "@babel/preset-env": "^7.29.5",
     "@babel/preset-react": "^7.29.7",
     "@babel/runtime": "^7.29.2",
-    "@codemirror/autocomplete": "^6.20.2",
+    "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/highlight": "^0.19.8",
     "@codemirror/lang-css": "^6.3.1",
@@ -145,7 +145,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-frame-component": "^5.3.2",
-    "react-router": "^7.15.1",
+    "react-router": "^7.17.0",
     "sanitize-filename": "1.6.4",
     "superagent": "^10.2.1"
   },
