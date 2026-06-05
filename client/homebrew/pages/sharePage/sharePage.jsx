@@ -15,8 +15,13 @@ import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
+import fetchData from '../../utils/fetchData.js';
+
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { disableMeta = false, id, fixedText, fixedTitle = '' } = props;
+
+	const [brew, setBrew] = useState(DEFAULT_BREW_LOAD);
+	const [error, setError] = useState();
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -36,13 +41,25 @@ const SharePage = (props)=>{
 	};
 
 	useEffect(()=>{
+		fetchData(
+			fixedText || id,
+			fixedText ? 'text' : 'share',
+			fixedTitle,
+			setBrew,
+			setError
+		);
+
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
+		// fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
+
+	useEffect(()=>{
+		fetchThemeBundle(setError, setThemeBundle, brew.renderer, brew.theme);
+	}, [brew]);
 
 	const processShareId = ()=>{
 		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
