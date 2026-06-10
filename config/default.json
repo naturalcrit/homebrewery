@@ -7,6 +7,5 @@
 	"local_environments" : ["docker", "local"],
 	"publicUrl" : "https://homebrewery.naturalcrit.com",
 	"hb_images" : null,
-	"hb_fonts" : null,
-	"enablev4" : true
+	"hb_fonts" : null
 }

@@ -1,0 +1,22 @@
+.menu-wrapper {
+	position: relative;
+	&:is(.menu-bar > .menu-section > .menu-wrapper){
+		display: inline-block;
+	}
+}
+
+.menu-list {
+	position         : absolute;
+	z-index          : 1000;
+	position-area : block-end span-inline-end;
+	position-try: flip-inline flip-block;
+	color: inherit;   // [popover] gets a `canvastext` color value from useragent.
+	> .menu-wrapper {
+		position:relative;
+		> .menu-list {
+			margin: 0 0px;
+			position-area: inline-end span-block-end;
+			position-try: flip-inline;
+		}
+	}
+}
