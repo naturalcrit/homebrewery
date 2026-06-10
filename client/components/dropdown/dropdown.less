@@ -6,18 +6,16 @@
 }
 
 .menu-list {
-	position         : fixed;
+	position         : absolute;
 	z-index          : 1000;
-	inset-block-start: anchor(bottom);
-	inset-inline-start: anchor(left);
-	position-try: flip-inline;
+	position-area : block-end span-inline-end;
+	position-try: flip-inline flip-block;
 	color: inherit;   // [popover] gets a `canvastext` color value from useragent.
 	> .menu-wrapper {
 		position:relative;
 		> .menu-list {
 			margin: 0 0px;
-			inset-block-start: anchor(top);
-			inset-inline-start: anchor(right);
+			position-area: inline-end span-block-end;
 			position-try: flip-inline;
 		}
 	}
