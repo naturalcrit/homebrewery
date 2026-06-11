@@ -401,6 +401,23 @@ tags:
   - fun
 renderer: v3
 theme: phb
+bleed:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+safetySpace:
+  top: .25in
+  bottom: .25in
+  outer: .25in
+  inner: .5in
+trimSize:
+  width: 8.5in
+  height: 11in
+columns: '2'
+columnGutter: .125in
+license: None
+legalAuthors: ''
 
 \`\`\`
 
@@ -416,7 +433,7 @@ brew`);
 				tags        : ['something', 'fun'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345'
+				googleId    : '12345',
 			});
 
 			expect(result).toEqual(`\`\`\`metadata
@@ -427,6 +444,23 @@ tags:
   - fun
 renderer: v3
 theme: phb
+bleed:
+  top: .125in
+  bottom: .125in
+  left: .125in
+  right: .125in
+safetySpace:
+  top: .25in
+  bottom: .25in
+  outer: .25in
+  inner: .5in
+trimSize:
+  width: 8.5in
+  height: 11in
+columns: '2'
+columnGutter: .125in
+license: None
+legalAuthors: ''
 
 \`\`\`
 
@@ -537,16 +571,16 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				tags        : [],
@@ -595,28 +629,28 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
-				shareId     : expect.any(String),
-				googleId    : expect.any(String),
-				style       : undefined,
-				tags        : [],
-				text        : undefined,
-				textBin     : undefined,
-				theme       : '5ePHB',
-				thumbnail   : '',
-				title       : 'asdf',
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
+				shareId      : expect.any(String),
+				googleId     : expect.any(String),
+				style        : undefined,
+				tags         : [],
+				text         : undefined,
+				textBin      : undefined,
+				theme        : '5ePHB',
+				thumbnail    : '',
+				title        : 'asdf',
+				trashed      : false,
+				updatedAt    : undefined,
+				views        : 0
 			});
 		});
 	});
@@ -1088,6 +1122,79 @@ brew`);
 			expect(testBrew.renderer).toEqual('legacy');
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
+			// Style
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
+			// Text
+			expect(testBrew.text).toEqual('text\n');
+		});
+
+		it('extended metadata', async ()=>{
+			const testBrew = {
+				text : '```metadata\n' +
+					'title: title\n' +
+					'description: description\n' +
+					'tags: [ \'tag a\' , \'tag b\' ]\n' +
+					'renderer: legacy\n' +
+					'theme: 5ePHB\n' +
+					'lang: en\n' +
+					'bleed:\n' +
+					'  top: 1.5in\n' +
+					'  bottom: 1.5in\n' +
+					'  left: 1.5in\n' +
+					'  right: 1.5in\n' +
+					'safetySpace:\n' +
+					'  top: 1.25in\n' +
+					'  bottom: 1.25in\n' +
+					'  outer: 1.25in\n' +
+					'  inner: 1.5in\n' +
+					'trimSize:\n' +
+					'  width: 18.5in\n' +
+					'  height: 111in\n' +
+					'columns: 12\n' +
+					'columnGutter: 1.125in\n' +
+					'license: AELF\n' +
+					'legalAuthors: Tom Bombadil\n' +
+					'\n' +
+					'```\n' +
+					'\n' +
+					'```css\n' +
+					'style\n' +
+					'style\n' +
+					'style\n' +
+					'```\n' +
+					'\n' +
+					'text\n'
+			};
+
+			splitTextStyleAndMetadata(testBrew);
+
+			// Metadata
+			expect(testBrew.title).toEqual('title');
+			expect(testBrew.description).toEqual('description');
+			expect(testBrew.renderer).toEqual('legacy');
+			expect(testBrew.theme).toEqual('5ePHB');
+			expect(testBrew.lang).toEqual('en');
+			// Paper Specfications
+			expect(testBrew.bleed.top).toEqual('1.5in');
+			expect(testBrew.bleed.bottom).toEqual('1.5in');
+			expect(testBrew.bleed.left).toEqual('1.5in');
+			expect(testBrew.bleed.right).toEqual('1.5in');
+
+			expect(testBrew.safetySpace.top).toEqual('1.25in');
+			expect(testBrew.safetySpace.bottom).toEqual('1.25in');
+			expect(testBrew.safetySpace.inner).toEqual('1.5in');
+			expect(testBrew.safetySpace.outer).toEqual('1.25in');
+
+			expect(testBrew.trimSize.width).toEqual('18.5in');
+			expect(testBrew.trimSize.height).toEqual('111in');
+
+			expect(testBrew.columns).toEqual(12);
+			expect(testBrew.columnGutter).toEqual('1.125in');
+
+			// Extended Metadata
+			expect(testBrew.license).toEqual('AELF');
+			expect(testBrew.legalAuthors).toEqual('Tom Bombadil');
+
 			// Style
 			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
 			// Text

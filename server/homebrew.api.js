@@ -220,6 +220,38 @@ const api = {
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
+
+		metadata.bleed = {
+			top    : brew?.bleed?.top || '.125in',
+			bottom : brew?.bleed?.bottom || '.125in',
+			left   : brew?.bleed?.left || '.125in',
+			right  : brew?.bleed?.right || '.125in',
+		};
+
+		// Copy Required Safe Space or Use defaults
+		metadata.safetySpace = {
+			top    : brew?.safetySpace?.top || '.25in',
+			bottom : brew?.safetySpace?.bottom || '.25in',
+			outer  : brew?.safetySpace?.outer || '.25in',
+			inner  : brew?.safetySpace?.inner || '.5in',
+		};
+
+		// Set brew paper trim size or default to US Letter
+		metadata.trimSize  = {
+			width  : brew?.trimSize?.width || '8.5in',
+			height : brew?.trimSize?.height || '11in',
+		};
+
+		// Set Column specs or use defaults
+		metadata.columns = brew?.columns || '2';
+		metadata.columnGutter = brew?.columnGutter || '.125in';
+
+		// Set License or set to Unlicensed
+		metadata.license = brew?.license || 'None';
+
+		// Set Authors legal names or to empty.
+		metadata.legalAuthors = brew?.legalAuthors || '';
+
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
