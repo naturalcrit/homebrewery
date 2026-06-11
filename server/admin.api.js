@@ -39,14 +39,27 @@ export default function createAdminApi(vite) {
 		}
 	};
 
-	const junkBrewPipeline = [
+	const junkBrewsPipeline = [
 		{	$match : {
 			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
 			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
 		} },
-		{ $project: { textBinSize: { $binarySize: '$textBin' } } },
+		{ $project: { _id: 1, textBinSize: { $binarySize: '$textBin' } } },
 		{ $match: { textBinSize: { $lt: 140 } } },
-		{ $limit: 100 }
+		{ $limit: 300 }
+	];
+
+	const lostBrewsPipeline = [
+		{
+			$match: {
+				authors: [],
+				updatedAt:  { $lt: Moment().subtract(6, 'years').toDate() },
+				lastViewed: { $lt: Moment().subtract(6, 'years').toDate() }
+			}
+		},
+		{
+			$limit: 500
+		}
 	];
 
 	/* Search for brews that aren't compressed (missing the compressed text field) */
@@ -54,19 +67,43 @@ export default function createAdminApi(vite) {
 		'text' : { '$exists': true }
 	}).lean().limit(10000).select('_id');
 
-	// Search for up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
-	router.get('/admin/cleanup', mw.adminOnly, (req, res)=>{
-		HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
-		.then((objs)=>res.json({ count: objs.length }))
+	// Search for up to 300 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
+	router.get('/admin/cleanupJunk', mw.adminOnly, (req, res)=>{
+		HomebrewModel.aggregate(junkBrewsPipeline).option({ maxTimeMS: 60000 })
+		.then((objs)=>res.json({ count: objs.length, brewCollection : objs }))
 		.catch((error)=>{
 			console.error(error);
 			res.status(500).json({ error: 'Internal Server Error' });
 		});
 	});
 
-	// Delete up to 100 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
-	router.post('/admin/cleanup', mw.adminOnly, (req, res)=>{
-		HomebrewModel.aggregate(junkBrewPipeline).option({ maxTimeMS: 60000 })
+	// Delete up to 300 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
+	router.post('/admin/cleanupJunk', mw.adminOnly, (req, res)=>{
+		HomebrewModel.aggregate(junkBrewsPipeline).option({ maxTimeMS: 60000 })
+		.then((docs)=>{
+			const ids = docs.map((doc)=>doc._id);
+			return HomebrewModel.deleteMany({ _id: { $in: ids } });
+		}).then((result)=>{
+			res.json({ count: result.deletedCount });
+		}).catch((error)=>{
+			console.error(error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		});
+	});
+
+	// Search for up to 300 unauthored brews that have not been viewed or updated in a year
+	router.get('/admin/cleanupLost', mw.adminOnly, (req, res)=>{
+		HomebrewModel.aggregate(lostBrewsPipeline).option({ maxTimeMS: 60000 })
+		.then((objs)=>res.json({ count: objs.length, brewCollection : objs }))
+		.catch((error)=>{
+			console.error(error);
+			res.status(500).json({ error: 'Internal Server Error' });
+		});
+	});
+
+	// Delete up to 300 unauthored brews that have not been viewed or updated in a year
+	router.post('/admin/cleanupLost', mw.adminOnly, (req, res)=>{
+		HomebrewModel.aggregate(lostBrewsPipeline).option({ maxTimeMS: 60000 })
 		.then((docs)=>{
 			const ids = docs.map((doc)=>doc._id);
 			return HomebrewModel.deleteMany({ _id: { $in: ids } });

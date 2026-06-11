@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
 import request from 'superagent';
+import Moment from 'moment';
 
 const BrewCleanup = ({})=>{
-	const [count, setCount] = useState(0);
+	const [junkBrewCollection, setJunkBrewCollection] = useState([]);
+	const [lostBrewCollection, setLostBrewCollection] = useState([]);
 	const [pending, setPending] = useState(false);
-	const [primed, setPrimed] = useState(false);
 	const [error, setError] = useState(null);
 
-	const prime = async ()=>{
+	const find = async (type)=>{
 		setPending(true);
 
-		try {
-			const res = await request.get('/admin/cleanup');
+		if(type === 'junk') try {
+			const res = await request.get('/admin/cleanupJunk');
 
-			setCount(res.body.count);
-			setPrimed(true);
+			setJunkBrewCollection(res.body.brewCollection);
+		} catch (err) {
+			setError(err);
+		} finally {
+			setPending(false);
+		}
+
+		if(type === 'lost') try {
+
+			const res = await request.get('/admin/cleanupLost');
+
+			setLostBrewCollection(res.body.brewCollection);
 		} catch (err) {
 			setError(err);
 		} finally {
@@ -22,49 +33,124 @@ const BrewCleanup = ({})=>{
 		}
 	};
 
-	const cleanup = async ()=>{
+	const cleanup = async (type)=>{
 		setPending(true);
 
-		try {
-			const res = await request.post('/admin/cleanup');
+		if(type === 'junk') try {
+			console.log('deleting junk')
+			const res = await request.post('/admin/cleanupJunk');
 
-			setCount(res.body.count);
 		} catch (err) {
 			setError(err);
 		} finally {
 			setPending(false);
-			setPrimed(false);
+			setJunkBrewCollection([]);
+		}
+
+		if(type === 'lost') try {
+			const res = await request.post('/admin/cleanupLost');
+
+		} catch (err) {
+			setError(err);
+		} finally {
+			setPending(false);
+			setLostBrewCollection([]);
 		}
 	};
-	const renderPrimed = ()=>{
-		if(!primed) return;
 
-		if(!count) return <div className='result noBrews'>No Matching Brews found.</div>;
+	const renderBrewList = (type)=>{
+
+		const brewList = type === 'lost' ? lostBrewCollection : junkBrewCollection;
+
+		if(!brewList || brewList.length === 0) {
+			console.log(brewList);
+			return null;
+		}
+
+		
+		return <>
+			<h2>{`Results - ${brewList.length} brews` }</h2>
+			<table className='resultsTable'>
+				<thead>
+					<tr>
+						<th>Title</th>
+						<th>Last Update</th>
+						<th>last viewed</th>
+						<th>Storage</th>
+					</tr>
+				</thead>
+				<tbody>
+					{brewList
+						.sort((a, b)=>{         // Sort brews from most recently updated
+							if(a.lastViewed > b.lastViewed) return -1;
+							return 1;
+						})
+						.map((brew, idx)=>{
+							return <tr key={idx}>
+								<td><strong>{brew.title || 'No Title'}</strong></td>
+								<td style={{ width: '200px' }}>{Moment(brew.updatedAt).fromNow()}</td>
+								<td>{brew.lastViewed ? Moment(brew.lastViewed).fromNow() : 'No last viewed date'}</td>
+								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
+							</tr>;
+						})}
+				</tbody>
+			</table>
+		</>;
+	};
+	const renderFound = (type)=>{
+
+		if(type === 'junk' && junkBrewCollection.length === 0 || type === 'lost' && lostBrewCollection.length === 0) return <div className='result noBrews'>No Matching Brews found.</div>;
 
 		return <div className='result'>
-			<button onClick={()=>cleanup()} className='remove'>
+			
+			<button onClick={()=>cleanup(type)} className='remove'>
 				{pending
 					? <i className='fas fa-spin fa-spinner' />
 					: <span><i className='fas fa-times' /> Remove</span>
 				}
 			</button>
-			<span>Found {count} Brews that could be removed. </span>
+			<span>Found {type === 'junk' ? junkBrewCollection.length : lostBrewCollection.length} Brews that could be removed. </span>
+			{renderBrewList(type)}
+		</div>;
+	};
+	const renderJunkBrewCleanup = ()=>{
+		return <div className='junk'>
+			<h3> Junk brews</h3>
+			<p>Removes very short brews to tidy up the database</p>
+
+			<button onClick={()=>find('junk')} className='query'>
+				{pending
+					? <i className='fas fa-spin fa-spinner' />
+					: 'Query Brews'
+				}
+			</button>
+			{renderFound('junk')}
+
+			{error && <div className='error noBrews'>{error.toString()}</div>}
+		</div>;
+	};
+	const renderLostBrewCleanup = ()=>{
+		return <div className='lost'>
+			<h3> Lost brews</h3>
+			<p>Removes very short brews to tidy up the database</p>
+
+			<button onClick={()=>find('lost')} className='query'>
+				{pending
+					? <i className='fas fa-spin fa-spinner' />
+					: 'Query Brews'
+				}
+			</button>
+			{renderFound('lost')}
+
+			{error && <div className='error noBrews'>{error.toString()}</div>}
 		</div>;
 	};
 
 	return <div className='brewUtil brewCleanup'>
 		<h2> Brew Cleanup </h2>
-		<p>Removes very short brews to tidy up the database</p>
+		{renderJunkBrewCleanup()}
+		{renderLostBrewCleanup()}
 
-		<button onClick={()=>prime()} className='query'>
-			{pending
-				? <i className='fas fa-spin fa-spinner' />
-				: 'Query Brews'
-			}
-		</button>
-		{renderPrimed()}
-
-		{error && <div className='error noBrews'>{error.toString()}</div>}
 	</div>;
 
 };
