@@ -20,36 +20,36 @@ export function generateAssetsPlugin(isDev = false) {
 
 			// Compile Legacy themes
 			const themes = { Legacy: {}, V3: {} };
-			const legacyDirs = fs.readdirSync('./themes/Legacy');
+			const legacyDirs = fs.readdirSync('./themes/legacy');
 			for (const dir of legacyDirs) {
-				const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`, 'utf-8'));
+				const themeData = JSON.parse(fs.readFileSync(`./themes/legacy/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;
 				themes.Legacy[dir] = themeData;
 
-				const src = `./themes/Legacy/${dir}/style.less`;
-				const outputDir = `${buildDir}/themes/Legacy/${dir}/style.css`;
+				const src = `./themes/legacy/${dir}/style.less`;
+				const outputDir = `${buildDir}/themes/legacy/${dir}/style.css`;
 				const lessOutput = await less.render(fs.readFileSync(src, 'utf-8'), { compress: !isDev });
 				await fs.outputFile(outputDir, lessOutput.css);
 			}
 
 			// Compile V3 themes
-			const v3Dirs = fs.readdirSync('./themes/V3');
+			const v3Dirs = fs.readdirSync('./themes/v3');
 			for (const dir of v3Dirs) {
-				const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`, 'utf-8'));
+				const themeData = JSON.parse(fs.readFileSync(`./themes/v3/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;
 				themes.V3[dir] = themeData;
 
 				await fs.copy(
-					`./themes/V3/${dir}/dropdownTexture.png`,
-					`${buildDir}/themes/V3/${dir}/dropdownTexture.png`,
+					`./themes/v3/${dir}/dropdownTexture.png`,
+					`${buildDir}/themes/v3/${dir}/dropdownTexture.png`,
 				);
 				await fs.copy(
-					`./themes/V3/${dir}/dropdownPreview.png`,
-					`${buildDir}/themes/V3/${dir}/dropdownPreview.png`,
+					`./themes/v3/${dir}/dropdownPreview.png`,
+					`${buildDir}/themes/v3/${dir}/dropdownPreview.png`,
 				);
 
-				const src = `./themes/V3/${dir}/style.less`;
-				const outputDir = `${buildDir}/themes/V3/${dir}/style.css`;
+				const src = `./themes/v3/${dir}/style.less`;
+				const outputDir = `${buildDir}/themes/v3/${dir}/style.css`;
 				const lessOutput = await less.render(fs.readFileSync(src, 'utf-8'), { compress: !isDev });
 				await fs.outputFile(outputDir, lessOutput.css);
 			}

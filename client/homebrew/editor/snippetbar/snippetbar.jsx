@@ -9,18 +9,19 @@ import cx from 'classnames';
 import { loadHistory } from '../../utils/versionHistory.js';
 import { brewSnippetsToJSON } from '@shared/helpers.js';
 
-import Legacy5ePHB from '@themes/Legacy/5ePHB/snippets.js';
-import V3_5ePHB   from '@themes/V3/5ePHB/snippets.js';
-import V3_5eDMG   from '@themes/V3/5eDMG/snippets.js';
-import V3_Journal from '@themes/V3/Journal/snippets.js';
-import V3_Blank  from '@themes/V3/Blank/snippets.js';
+//Import all themes
+import Legacy5ePHB from '@themes/legacy/5ePHB/snippets.js';
+import V3_5ePHB   from '@themes/v3/5ePHB/snippets.js';
+import V3_5eDMG   from '@themes/v3/5eDMG/snippets.js';
+import V3_Journal from '@themes/v3/journal/snippets.js';
+import V3_Blank  from '@themes/v3/blank/snippets.js';
 
 const ThemeSnippets = {
 	Legacy_5ePHB : Legacy5ePHB,
 	V3_5ePHB     : V3_5ePHB,
 	V3_5eDMG     : V3_5eDMG,
-	V3_Journal   : V3_Journal,
-	V3_Blank     : V3_Blank,
+	V3_journal   : V3_Journal,
+	V3_blank     : V3_Blank,
 };
 
 import defaultCM5Theme from '@themes/codeMirror/default.js';
@@ -133,7 +134,6 @@ const Snippetbar = createReactClass({
 		let compiledSnippets = [];
 
 		let oldSnippets = _.keyBy(compiledSnippets, 'groupName');
-
 		if(this.props.themeBundle.snippets) {
 			for (let snippets of this.props.themeBundle.snippets) {
 				if(typeof(snippets) == 'string')	// load staticThemes as needed; they were sent as just a file name

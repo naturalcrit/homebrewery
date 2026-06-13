@@ -1,6 +1,12 @@
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
+import Themes from '../themes/themes.json' with { type: 'json' };
+
+const isStaticTheme = (renderer, themeName)=>{
+	return Themes[renderer]?.[_.lowerFirst(themeName)] !== undefined;
+};
+
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -140,7 +146,7 @@ const printCurrentBrew = async ()=>{
 const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
-			.get(`/api/theme/${renderer}/${theme}`)
+				.get(`/api/theme/${renderer.toLowerCase()}/${isStaticTheme(renderer, theme) ? _.lowerFirst(theme) : theme}`)
 			.catch((err)=>{
 				setError(err);
 			});
@@ -220,5 +226,6 @@ export {
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	isStaticTheme
 };
