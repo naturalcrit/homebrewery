@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const titles = [
 	'The Burning Gallows',
@@ -98,7 +98,7 @@ const subtitles = [
 ];
 
 
-module.exports = ()=>{
+function coverPageGen() {
 	return `<style>
   .phb#p1{ text-align:center; }
   .phb#p1:after{ display:none; }
@@ -114,4 +114,6 @@ module.exports = ()=>{
 </div>
 
 \\page`;
-};
+}
+
+export default coverPageGen;

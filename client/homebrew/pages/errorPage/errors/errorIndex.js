@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
@@ -268,4 +268,4 @@ const errorIndex = (props)=>{
 	};
 };
 
-module.exports = errorIndex;
+export default errorIndex;

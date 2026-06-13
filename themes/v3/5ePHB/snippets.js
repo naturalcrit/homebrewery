@@ -1,17 +1,14 @@
 /* eslint-disable max-lines */
+import MagicGen         from './snippets/magic.gen.js';
+import ClassTableGen    from './snippets/classtable.gen.js';
+import MonsterBlockGen  from './snippets/monsterblock.gen.js';
+import scriptGen        from './snippets/script.gen.js';
+import ClassFeatureGen  from './snippets/classfeature.gen.js';
+import CoverPageGen     from './snippets/coverpage.gen.js';
+import QuoteGen 		from './snippets/quote.gen.js';
+import dedent           from 'dedent';
 
-const MagicGen           = require('./snippets/magic.gen.js');
-const ClassTableGen      = require('./snippets/classtable.gen.js');
-const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
-const scriptGen          = require('./snippets/script.gen.js');
-const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
-const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const QuoteGen 			 = require('./snippets/quote.gen.js');
-const dedent             = require('dedent-tabs').default;
-
-
-
-module.exports = [
+export default [
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -146,8 +143,8 @@ module.exports = [
 				gen  : function(){
 					return dedent`
 						{{artist,top:90px,right:30px
-						##### Starry Night
-						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						##### Bird with autumn foliage
+						[by L. Prang & Co.](https://www.loc.gov/resource/pga.14148)
 						}}
 						\n`;
 				},

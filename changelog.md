@@ -83,12 +83,78 @@ pre {
 .page .exampleTable td,th {
 	border:1px dashed #00000030;
 }
+
+.page .df {
+	font-size: 2em;
+	vertical-align: middle;
+}
 ```
 
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Friday 11/14/2025 - v13.20.0
+### Saturday 4/20/2026 - v3.22.0
+
+{{taskList
+##### 5e-Cleric
+* [x] Major update to editor framework (Codemirror 6)
+Fixes issues [#3511](https://github.com/naturalcrit/homebrewery/issues/3511), [#4590](https://github.com/naturalcrit/homebrewery/issues/4590), [#4563](https://github.com/naturalcrit/homebrewery/issues/4653), [#4655](https://github.com/naturalcrit/homebrewery/issues/4655)
+* [x] Fix to Admin page tab names
+
+##### G-Ambatte
+* [x] Fix white page crash on certain browsers
+}}
+
+### Saturday 4/04/2026 - v3.21.0
+
+{{taskList
+##### Gazook89
+* [x] Allow custom {{openSans **:fas_table_list: SNIPPETS**}} to be inserted mid-line
+
+##### abquintic
+* [x] Move example snippet images out of imgur (for folks without imgur access)
+
+##### 5e-Cleric
+* [x] Add auto-suggest to tag entry input box
+* [x] Replace all example artwork with
+* [x] Added tooltips to the {{openSans :fas_circle_info: **Properties**}} menu
+* [x] Removed {{openSans **SYSTEMS**}} checkboxes from {{openSans :fas_circle_info: **Properties**}} menu; instead {{openSans **TAGS**}} should be used for this purpose
+* [x] Replace all AI-generated art with public domain art
+* [x] Major backend refactor to use Vite
+
+##### A1Asriel (new contributor!)
+* [x] Add fix for column breaks on Firefox 
+
+Fixes issues [#543](https://github.com/naturalcrit/homebrewery/issues/543), [#2473](https://github.com/naturalcrit/homebrewery/issues/2473), [#3712](https://github.com/naturalcrit/homebrewery/issues/3712)
+
+##### G-Ambatte, abquintic, 5e-Cleric
+* [x] Multiple other backend fixes and refactors
+}}
+
+### Friday 1/11/2026 - v3.20.1
+
+{{taskList
+##### calculuschild
+* [x] Add D100 "ball" dice icons `:d100:` :df_d100_05:
+
+##### G-Ambatte
+* [x] Fix transparent edge on back cover image
+
+Fixes issue [#4551](https://github.com/naturalcrit/homebrewery/issues/4551)
+
+* [x] Fix "Out of sync" error when document contains extended unicode characters
+
+Fixes issue [#4583](https://github.com/naturalcrit/homebrewery/issues/4583)
+
+##### 5e-Cleric
+* [x] Fix page count error on Vault
+
+* [x] Fix cover page footnote set to all-caps
+
+Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
+}}
+
+### Friday 11/14/2025 - v3.20.0
 
 {{taskList
 ##### calculuschild

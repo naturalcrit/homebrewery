@@ -1,11 +1,11 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const Moment = require('moment');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import Moment from 'moment';
 
-const Nav = require('client/homebrew/navbar/nav.jsx');
+import Nav from './nav.jsx';
 
 
-const MetadataNav = createClass({
+const MetadataNav = createReactClass({
 	displayName     : 'MetadataNav',
 	getDefaultProps : function() {
 		return {
@@ -46,11 +46,6 @@ const MetadataNav = createClass({
 		</>;
 	},
 
-	getSystems : function(){
-		if(!this.props.brew.systems || this.props.brew.systems.length == 0) return 'No systems';
-		return this.props.brew.systems.join(', ');
-	},
-
 	renderMetaWindow : function(){
 		return <div className={`window ${this.state.showMetaWindow ? 'active' : 'inactive'}`}>
 			<div className='row'>
@@ -64,10 +59,6 @@ const MetadataNav = createClass({
 			<div className='row'>
 				<h4>Tags</h4>
 				<p>{this.getTags()}</p>
-			</div>
-			<div className='row'>
-				<h4>Systems</h4>
-				<p>{this.getSystems()}</p>
 			</div>
 			<div className='row'>
 				<h4>Updated</h4>
@@ -86,4 +77,4 @@ const MetadataNav = createClass({
 
 });
 
-module.exports = MetadataNav;
+export default MetadataNav;

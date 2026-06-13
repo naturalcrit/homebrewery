@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent';
 
 // Map each actual page to its footer label, accounting for skips or numbering resets
 const mapPages = (pages)=>{
@@ -65,7 +65,7 @@ const getTOC = ()=>{
 	return getMarkdown(headings, pageMap);
 };
 
-module.exports = function(props){
+export default function(props){
 	const TOC = getTOC();
 
 	return dedent`

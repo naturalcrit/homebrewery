@@ -27,6 +27,27 @@ import Themes from '../themes/themes.json' with { type: 'json' };
 // 	});
 // };
 
+
+const migrateSystemsToTags = (brew)=>{
+	if(!('systems' in brew)) return brew;
+
+	if(!Array.isArray(brew.systems) || brew.systems.length === 0) {
+		brew.systems = undefined;
+		return brew;
+	}
+	const systemMap = {
+		'5e'         : 'system:D&D 5e',
+		'4e'         : 'system:D&D 4e',
+		'3.5e'       : 'system:D&D 3.5e',
+		'Pathfinder' : 'system:Pathfinder 2e'
+	};
+	const systemTags = brew.systems.map((s)=>systemMap[s]);
+	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
+
+	brew.systems = undefined;
+	return brew;
+};
+
 const MAX_TITLE_LENGTH = 100;
 
 const api = {
@@ -163,7 +184,10 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			req.brew = stub;
+
+
+			const fixedStub = migrateSystemsToTags(stub);
+			req.brew = fixedStub;
 			next();
 		};
 	},
@@ -189,7 +213,7 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		text = `\`\`\`metadata\n` +
@@ -364,22 +388,29 @@ const api = {
 
 		if(brewFromServer?.hash !== brewFromClient?.hash) {
 			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
-			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
+		let result = [];
 		try {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
-			const patchedResult = decodeURI(applyPatches(patches, encodeURI(brewFromServer.text))[0]);
-			if(patchedResult != brewFromClient.text)
+			result = applyPatches(patches, encodeURI(brewFromServer.text));
+			const failedPatches = patches.map((patch, index)=>{if(!result[1][index]){ return patch; }});
+			if(failedPatches > 0){
+				throw (`Patch failure: ${failedPatches}/${result[1].length} did not apply`);
+			}
+			if(decodeURI(result[0]) != brewFromClient.text){
 				throw ('Patches did not apply cleanly, text mismatch detected');
+			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
-			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				//patches : brewFromClient.patches,
+				// patches : brewFromClient.patches,
+				// result  : result,
 				brewId : brewFromClient.editId || 'unknown',
 				error  : err
 			});
@@ -388,6 +419,9 @@ const api = {
 		}
 
 		let brew         = _.assign(brewFromServer, brewFromClient);
+
+		migrateSystemsToTags(brew);
+
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
@@ -477,7 +511,7 @@ const api = {
 				await HomebrewModel.deleteOne({ editId: id });
 				return next();
 			}
-			throw(err);
+			throw (err);
 		}
 
 		let brew = req.brew;

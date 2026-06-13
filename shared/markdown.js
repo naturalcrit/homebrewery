@@ -1,4 +1,4 @@
-/* eslint-disable max-depth */
+
 /* eslint-disable max-lines */
 import _                        from 'lodash';
 import { marked as Marked }     from 'marked';
@@ -8,9 +8,9 @@ import MarkedAlignedParagraphs  from 'marked-alignment-paragraphs';
 import MarkedNonbreakingSpaces  from 'marked-nonbreaking-spaces';
 import MarkedSubSuperText       from 'marked-subsuper-text';
 import { markedVariables,
-				setMarkedVariablePage,
-				setMarkedVariable,
-				getMarkedVariable }  from 'marked-variables';
+	setMarkedVariablePage,
+	setMarkedVariable,
+	getMarkedVariable }  from 'marked-variables';
 import { markedSmartypantsLite as MarkedSmartypantsLite }                                from 'marked-smartypants-lite';
 import { gfmHeadingId as MarkedGFMHeadingId, resetHeadings as MarkedGFMResetHeadingIDs } from 'marked-gfm-heading-id';
 import { markedEmoji as MarkedEmojis }                                                   from 'marked-emoji';
@@ -70,9 +70,9 @@ renderer.link = function (token) {
 	if(title) {
 		out += ` title="${escape(title)}"`;
 	}
-	if(self) {
-		out += ' target="_self"';
-	}
+	// if(self) {
+	// 	out += ' target="_self"';
+	// }
 	out += `>${text}</a>`;
 	return out;
 };
@@ -83,7 +83,7 @@ renderer.image = function (token) {
 	if(href === null)
 		return text;
 
-	let out = `<img src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
+	let out = `<img loading="lazy" src="${href}" alt="${text}" style="--HB_src:url(${href});"`;
 	if(title)
 		out += ` title="${title}"`;
 
