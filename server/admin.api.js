@@ -111,7 +111,7 @@ export default function createAdminApi(vite) {
 			brew[property] = cleanText(brew[property]);
 		});
 
-		splitTextStyleAndMetadata(brew);
+		await splitTextStyleAndMetadata(brew);
 
 		req.body = brew;
 

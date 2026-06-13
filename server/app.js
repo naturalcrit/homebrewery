@@ -138,7 +138,7 @@ export default async function createApp(vite) {
 	});
 
 	//Home page
-	app.get('/', (req, res, next)=>{
+	app.get('/', async (req, res, next)=>{
 		req.brew = {
 			text     : welcomeText,
 			renderer : 'V3',
@@ -150,12 +150,12 @@ export default async function createApp(vite) {
 			description : 'Homepage'
 		};
 
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	});
 
 	//Home page Legacy
-	app.get('/legacy', (req, res, next)=>{
+	app.get('/legacy', async (req, res, next)=>{
 		req.brew = {
 			text     : welcomeTextLegacy,
 			renderer : 'legacy',
@@ -167,12 +167,12 @@ export default async function createApp(vite) {
 			description : 'Homepage'
 		};
 
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	});
 
 	//Legacy/Other Document -> v3 Migration Guide
-	app.get('/migrate', (req, res, next)=>{
+	app.get('/migrate',async  (req, res, next)=>{
 		req.brew = {
 			text     : migrateText,
 			renderer : 'V3',
@@ -184,7 +184,7 @@ export default async function createApp(vite) {
 			description : 'A brief guide to converting Legacy documents to the v3 renderer.'
 		};
 
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	});
 
@@ -202,7 +202,7 @@ export default async function createApp(vite) {
 			description : 'Development changelog.'
 		};
 
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	});
 
@@ -220,7 +220,7 @@ export default async function createApp(vite) {
 			description : 'Frequently Asked Questions'
 		};
 
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	});
 
@@ -381,7 +381,7 @@ export default async function createApp(vite) {
 	});
 
 	//Edit Page
-	app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
+	app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async (req, res, next)=>{
 		req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
 
 		req.userThemes = await(getUsersBrewThemes(req.account?.username));
@@ -395,15 +395,15 @@ export default async function createApp(vite) {
 		};
 
 		sanitizeBrew(req.brew, 'edit');
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		res.header('Cache-Control', 'no-cache, no-store');	//reload the latest saved brew when pressing back button, not the cached version before save.
 		return next();
 	}));
 
 	//New Page from ID
-	app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
+	app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 		sanitizeBrew(req.brew, 'share');
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		const brew = {
 			shareId  : req.brew.shareId,
 			title    : `CLONE - ${req.brew.title}`,
@@ -427,7 +427,7 @@ export default async function createApp(vite) {
 	}));
 
 	//New Page
-	app.get('/new', asyncHandler(async(req, res, next)=>{
+	app.get('/new', asyncHandler(async (req, res, next)=>{
 		req.userThemes = await(getUsersBrewThemes(req.account?.username));
 
 		req.ogMeta = { ...defaultMetaTags,
@@ -461,7 +461,7 @@ export default async function createApp(vite) {
 		};
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-		splitTextStyleAndMetadata(req.brew);
+		await splitTextStyleAndMetadata(req.brew);
 		return next();
 	}));
 
@@ -535,7 +535,7 @@ export default async function createApp(vite) {
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
 
 	//Vault Page
-	app.get('/vault', asyncHandler(async(req, res, next)=>{
+	app.get('/vault', asyncHandler(async (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
 			title       : 'The Vault',
 			description : 'Search for Brews'

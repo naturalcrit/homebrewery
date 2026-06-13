@@ -199,7 +199,7 @@ const api = {
 	getCSS : async (req, res)=>{
 		const { brew } = req;
 		if(!brew) return res.status(404).send('');
-		splitTextStyleAndMetadata(brew);
+		await splitTextStyleAndMetadata(brew);
 		if(!brew.style) return res.status(404).send('');
 
 		res.set({
@@ -339,7 +339,7 @@ const api = {
 					});
 
 				currentTheme = req.brew;
-				splitTextStyleAndMetadata(currentTheme);
+				await splitTextStyleAndMetadata(currentTheme);
 				if(!currentTheme.tags.some((tag)=>tag === 'meta:theme' || tag === 'meta:Theme'))
 					throw { brewId: req.params.id, name: 'Invalid Theme Selected', message: 'Selected theme does not have the meta:theme tag', status: 422, HBErrorCode: '10' };
 				themeName   ??= currentTheme.title;
@@ -378,7 +378,7 @@ const api = {
 		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
-		splitTextStyleAndMetadata(brewFromServer);
+		await splitTextStyleAndMetadata(brewFromServer);
 
 		if(brewFromServer?.version !== brewFromClient?.version){
 			console.log(`Version mismatch on brew ${brewFromClient.editId}`);

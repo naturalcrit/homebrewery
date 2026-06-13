@@ -15,12 +15,12 @@ const NewBrew = ()=>{
 		if(!confirmLocalStorageChange()) return;
 
 		const reader = new FileReader();
-		reader.onload = (e)=>{
+		reader.onload = async (e)=>{
 			const fileContent = e.target.result;
 			const newBrew = { text: fileContent, style: '' };
 
 			if(fileContent.startsWith('```metadata')) {
-				splitTextStyleAndMetadata(newBrew);
+				await splitTextStyleAndMetadata(newBrew);
 				localStorage.setItem(BREWKEY, newBrew.text);
 				localStorage.setItem(STYLEKEY, newBrew.style);
 				localStorage.setItem(METAKEY, JSON.stringify(
