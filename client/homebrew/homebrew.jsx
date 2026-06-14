@@ -38,8 +38,14 @@ const Homebrew = (props)=>{
 			lang      : ''
 		},
 		userThemes,
-		brews
+		brews,
+		enablev4
 	} = props;
+
+	global.account       = account;
+	global.version       = version;
+	global.config        = config;
+	global.enablev4     = enablev4;
 
 	const backgroundObject = ()=>{
 		if(config?.deployment || (config?.local && config?.development)) {
@@ -71,8 +77,8 @@ const Homebrew = (props)=>{
 			<div className={`homebrew${(config?.deployment || config?.local) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} share={true} />} />
-					<Route path='/embed/:id' element={<WithRoute el={EmbedPage} brew={brew} share={false} />} />
+					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} showToolbar={true} />} />
+					<Route path='/embed/:id' element={<WithRoute el={EmbedPage} brew={brew} showToolbar={false} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
 					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />

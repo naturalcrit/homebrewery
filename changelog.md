@@ -93,6 +93,18 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Saturday 4/20/2026 - v3.22.0
+
+{{taskList
+##### 5e-Cleric
+* [x] Major update to editor framework (Codemirror 6)
+Fixes issues [#3511](https://github.com/naturalcrit/homebrewery/issues/3511), [#4590](https://github.com/naturalcrit/homebrewery/issues/4590), [#4563](https://github.com/naturalcrit/homebrewery/issues/4653), [#4655](https://github.com/naturalcrit/homebrewery/issues/4655)
+* [x] Fix to Admin page tab names
+
+##### G-Ambatte
+* [x] Fix white page crash on certain browsers
+}}
+
 ### Saturday 4/04/2026 - v3.21.0
 
 {{taskList

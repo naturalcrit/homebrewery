@@ -16,7 +16,7 @@ import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, share = true } = props;
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, showToolbar = true } = props;
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -75,7 +75,7 @@ const SharePage = (props)=>{
 			<Nav.section>
 				{brew.shareId && (
 					<>
-						<PrintNavItem brew={brew}/>
+						<PrintNavItem />
 						<Nav.dropdown>
 							<Nav.item color='red' icon='fas fa-code'>
 								source
@@ -90,6 +90,19 @@ const SharePage = (props)=>{
 							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
 								clone to new
 							</Nav.item>
+							<Nav.item
+								color='blue'
+								icon='fas fa-link'
+								onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+								copy url
+							</Nav.item>
+							{currentBrewRendererPageNum > 1 &&
+								<Nav.item
+									color='blue'
+									icon='fas fa-hashtag'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+									copy url (page {currentBrewRendererPageNum})
+								</Nav.item>}
 						</Nav.dropdown>
 					</>
 				)}
@@ -102,7 +115,7 @@ const SharePage = (props)=>{
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			{share ? showNav : '' }
+			{showToolbar ? showNav : '' }
 			<div className='content'>
 				<BrewRenderer
 					text={brew.text}
@@ -114,7 +127,7 @@ const SharePage = (props)=>{
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
-					showToolbar={share}
+					showToolbar={showToolbar}
 				/>
 			</div>
 		</div>

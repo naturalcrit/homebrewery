@@ -64,7 +64,7 @@ const EmbedPage = (props)=>{
 		overflowY : 'auto'
 	};
 
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, share = true } = props;
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, showToolbar = true } = props;
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -149,6 +149,7 @@ const EmbedPage = (props)=>{
 	};
 
 	return (
+		<>
 		<div>
 			<Meta name='robots' content='noindex, nofollow' />
 			{renderStyle()}
@@ -156,6 +157,8 @@ const EmbedPage = (props)=>{
 				{renderPages()}
 			</div>
 		</div>
+		<div id="brewRendered"></div>
+		</>
 	);
 };
 
