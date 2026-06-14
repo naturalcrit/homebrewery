@@ -182,7 +182,7 @@ const HomePage =(props)=>{
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: renderSaveButton()}
 				<NewBrewItem />
-				<PrintNavItem />
+				<PrintNavItem brew={currentBrew}/>
 				<HelpNavItem />
 				<VaultNavItem />
 				<RecentNavItem />
