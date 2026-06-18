@@ -1,6 +1,7 @@
 import _       from 'lodash';
 import yaml    from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
+import jszip     from 'jszip';
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
@@ -85,7 +86,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 	return snippetsText;
 };
 
-const splitTextStyleAndMetadata = (brew)=>{
+const splitTextStyleAndMetadata = async (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('\n```\n\n');
@@ -151,7 +152,7 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	setThemeBundle(themeBundle);
-	setError(null);
+	if(setError) setError(null);
 };
 
 const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
@@ -215,10 +216,76 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	}
 };
 
+const scrapeBrew = ()=>{
+	let htmlBody = `<!DOCTYPE html>\n<html>\n${window.frames['BrewRenderer'].contentDocument.documentElement.innerHTML}\n</html>`;
+	const whereAmI = `${window.location.protocol}//${window.location.host}`;
+
+	// Rewrite local paths
+	htmlBody = htmlBody.replace(/src=(["'])\//gm, 'src=$1' + whereAmI + '/')
+	  .replace(/url\((["'])\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/src=(["']).\//gm, 'src="$1' + whereAmI + '/')
+	  .replace(/url\((["']).\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/href=(["'])\/\//gm, 'href=$1' + window.location.protocol + '//')
+	  .replace(/href=(["'])\//gm, 'href=$1' + whereAmI + '/');
+
+	return htmlBody;
+};
+
+const downloadBlob = (brewContents, fileName)=>{
+	let blob;
+	if(typeof brewContents == 'string') {
+		blob = new Blob([brewContents], { type: 'text/plain' });
+	} else {
+		blob = brewContents;
+	}
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = fileName || 'download';
+	const clickHandler = ()=>{
+		setTimeout(()=>{
+			URL.revokeObjectURL(url);
+			removeEventListener('click', clickHandler);
+		}, 150);
+	};
+	a.addEventListener('click', clickHandler, false);
+	a.click();
+};
+
+const scrapeBrewZip = ()=>{
+	const htmlBody = scrapeBrew();
+
+	const fauxDoc = document.createElement('div');
+	fauxDoc.innerHTML = htmlBody;
+	console.log('Should be here!');
+	console.log(fauxDoc.getElementsByTagName('img'));
+	console.log('Should be here!');
+
+	// DO STUFF!
+	const archive = new jszip();
+
+	const images = archive.folder('images');
+	const fonts  = archive.folder('fonts');
+	const css    = archive.folder('css');
+	archive.file('index.html', htmlBody);
+
+	archive.generateAsync({ type: 'blob' }).then((zipBlob)=>{
+		downloadBlob(zipBlob, 'testDownload.zip');
+	});
+};
+
+const scrapeBrewHTML = ()=>{
+	const htmlBody = scrapeBrew();
+	// Manipulate the body to change all relative path references to full URLs
+	downloadBlob(htmlBody, 'testDownload.html');
+};
+
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	scrapeBrewHTML,
+	scrapeBrewZip
 };

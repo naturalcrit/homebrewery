@@ -16,7 +16,7 @@ import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { brew = DEFAULT_BREW_LOAD, disableMeta = false, showToolbar = true } = props;
 
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -66,53 +66,56 @@ const SharePage = (props)=>{
 		</Nav.item>
 	);
 
+	const showNav = (
+		<Navbar>
+			<Nav.section className='titleSection'>
+				{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
+			</Nav.section>
+
+			<Nav.section>
+				{brew.shareId && (
+					<>
+						<PrintNavItem />
+						<Nav.dropdown>
+							<Nav.item color='red' icon='fas fa-code'>
+								source
+							</Nav.item>
+							<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
+								view
+							</Nav.item>
+							{renderEditLink()}
+							<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
+								download
+							</Nav.item>
+							<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
+								clone to new
+							</Nav.item>
+							<Nav.item
+								color='blue'
+								icon='fas fa-link'
+								onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+								copy url
+							</Nav.item>
+							{currentBrewRendererPageNum > 1 &&
+								<Nav.item
+									color='blue'
+									icon='fas fa-hashtag'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+									copy url (page {currentBrewRendererPageNum})
+								</Nav.item>}
+						</Nav.dropdown>
+					</>
+				)}
+				<RecentNavItem brew={brew} storageKey='view' />
+				<Account />
+			</Nav.section>
+		</Navbar>
+	);
+
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar>
-				<Nav.section className='titleSection'>
-					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
-				</Nav.section>
-
-				<Nav.section>
-					{brew.shareId && (
-						<>
-							<PrintNavItem />
-							<Nav.dropdown>
-								<Nav.item color='red' icon='fas fa-code'>
-									source
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-eye' href={`/source/${processShareId()}`}>
-									view
-								</Nav.item>
-								{renderEditLink()}
-								<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
-									download
-								</Nav.item>
-								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
-									clone to new
-								</Nav.item>
-								<Nav.item
-									color='blue'
-									icon='fas fa-link'
-									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
-									copy url
-								</Nav.item>
-								{currentBrewRendererPageNum > 1 &&
-									<Nav.item
-										color='blue'
-										icon='fas fa-hashtag'
-										onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
-										copy url (page {currentBrewRendererPageNum})
-									</Nav.item>}
-							</Nav.dropdown>
-						</>
-					)}
-					<RecentNavItem brew={brew} storageKey='view' />
-					<Account />
-				</Nav.section>
-			</Navbar>
-
+			{showToolbar ? showNav : '' }
 			<div className='content'>
 				<BrewRenderer
 					text={brew.text}
@@ -124,6 +127,7 @@ const SharePage = (props)=>{
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
+					showToolbar={showToolbar}
 				/>
 			</div>
 		</div>
