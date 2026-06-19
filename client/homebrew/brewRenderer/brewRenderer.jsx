@@ -28,7 +28,7 @@ const PAGE_HEIGHT = 1056;
 const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
-	<!DOCTYPE html><html lang="en"><head>
+	<!DOCTYPE html><html><head>
 	<title>Rendered Brew Content</title>
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
