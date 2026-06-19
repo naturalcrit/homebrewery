@@ -1,4 +1,4 @@
-@import (less) './themes/fonts/Journal/fonts.less';
+@import (less) './themes/fonts/journal/fonts.less';
 @import (less) './themes/assets/assets.less';
 
 :root {
@@ -29,7 +29,7 @@
 
 .page {
 	padding             : 2.1cm 1.9cm 1.7cm 3.8cm;
-	background-image    : url('/assets/Journal/Background1.webp');
+	background-image    : url('/assets/journal/Background1.webp');
 	background-repeat   : no-repeat;
 	background-size     : 200% 100%;
 	filter              : drop-shadow(1px 4px 14px black);
@@ -39,7 +39,7 @@
 		background-position : right;
 	}
 	&:nth-of-type(2) {
-		background-image    : url('/assets/Journal/Background2.webp'); //Only first page should show ribbon
+		background-image    : url('/assets/journal/Background2.webp'); //Only first page should show ribbon
 	}
 
 	& .columnWrapper {
@@ -146,14 +146,14 @@
 	.note {
 		.useSansSerif();
 		padding             : 0.2cm;
-		background-image    : url('/assets/Journal/HashMarks.png'),
+		background-image    : url('/assets/journal/HashMarks.png'),
 			linear-gradient(to bottom right, #FF000000, #A36A4E14, #41212100);
 		background-repeat   : no-repeat;
 		background-position : center;
 		background-size     : 120% 120%;
 		border-style        : solid;
 		border-width        : 1px;
-		border-image-source : url('/assets/Journal/Border1.png');
+		border-image-source : url('/assets/journal/Border1.png');
 		border-image-slice  : 18 18 18 18;
 		border-image-width  : 6px 6px 6px 6px;
 		border-image-outset : 5px 5px 5px 5px;
@@ -173,14 +173,14 @@
 	.descriptive {
 		.useSansSerif();
 		padding             : 0.2cm;
-		background-image    : url('/assets/Journal/HashMarks.png'),
+		background-image    : url('/assets/journal/HashMarks.png'),
 			linear-gradient(to bottom right, #FF000000, #41212114, #41212100);
 		background-repeat   : no-repeat;
 		background-position : center;
 		background-size     : 120% 120%;
 		border-style        : solid;
 		border-width        : 1px;
-		border-image-source : url('/assets/Journal/Border2.png');
+		border-image-source : url('/assets/journal/Border2.png');
 		border-image-slice  : 48 48 48 48;
 		border-image-width  : 20px;
 		border-image-outset : 16px 20px 16px 20px;
@@ -228,12 +228,12 @@
 		.useSansSerif();
 		&.frame {
 			padding               : 0.2cm;
-			background-image      : url('/assets/Journal/HashMarks.png'),
+			background-image      : url('/assets/journal/HashMarks.png'),
 				linear-gradient(to bottom right, #FF000000, #A36A4E14, #41212100);
 			background-size       : 100%;
 			border-style          : solid;
 			border-width          : 7px 6px;
-			border-image-source   : url('/assets/Journal/Border3.png');
+			border-image-source   : url('/assets/journal/Border3.png');
 			border-image-slice    : 63 74 63 74;
 			border-image-width    : 15px 20px 15px 20px;
 			border-image-outset   : 12px 12px 12px 12px;
@@ -264,7 +264,7 @@
 			visibility       : visible;
 			height           : 6px;
 			margin           : 0.12cm 0cm;
-			background-image : url('/assets/Journal/HorizontalRule.png');
+			background-image : url('/assets/journal/HorizontalRule.png');
 			background-size  : 100% 100%;
 		}
 		hr:last-of-type + * {
