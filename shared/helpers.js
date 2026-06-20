@@ -85,7 +85,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 	return snippetsText;
 };
 
-const splitTextStyleAndMetadata = (brew)=>{
+const splitTextStyleAndMetadata = async (brew)=>{
 	brew.text = brew.text.replaceAll('\r\n', '\n');
 	if(brew.text.startsWith('```metadata')) {
 		const index = brew.text.indexOf('\n```\n\n');
@@ -151,7 +151,7 @@ const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
 	const themeBundle = res.body;
 	themeBundle.joinedStyles = themeBundle.styles.map((style)=>`<style>${style}</style>`).join('\n\n');
 	setThemeBundle(themeBundle);
-	setError(null);
+	if(setError) setError(null);
 };
 
 const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
@@ -215,10 +215,55 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	}
 };
 
+const scrapeBrew = ()=>{
+	let htmlBody = `<!DOCTYPE html>\n<html>\n${window.frames['BrewRenderer'].contentDocument.documentElement.innerHTML}\n</html>`;
+	const whereAmI = `${window.location.protocol}//${window.location.host}`;
+
+	// Rewrite local paths
+	htmlBody = htmlBody.replace(/src=(["'])\//gm, 'src=$1' + whereAmI + '/')
+	  .replace(/url\((["'])\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/src=(["']).\//gm, 'src="$1' + whereAmI + '/')
+	  .replace(/url\((["']).\//gm, 'url($1' + whereAmI + '/')
+	  .replace(/href=(["'])\/\//gm, 'href=$1' + window.location.protocol + '//')
+	  .replace(/href=(["'])\//gm, 'href=$1' + whereAmI + '/');
+
+	return htmlBody;
+};
+
+
+const downloadBlob = (brewHtml, fileName)=>{
+	const blob = new Blob([brewHtml], { type: 'text/plain' });
+	const url = URL.createObjectURL(blob);
+	const a = document.createElement('a');
+	a.href = url;
+	a.download = fileName || 'download';
+	const clickHandler = ()=>{
+		setTimeout(()=>{
+			URL.revokeObjectURL(url);
+			removeEventListener('click', clickHandler);
+		}, 150);
+	};
+	a.addEventListener('click', clickHandler, false);
+	a.click();
+};
+
+const scrapeBrewZip = ()=>{
+	const htmlBody = scrapeBrew();
+	// DO STUFF!
+};
+
+const scrapeBrewHTML = ()=>{
+	const htmlBody = scrapeBrew();
+	// Manipulate the body to change all relative path references to full URLs
+	downloadBlob(htmlBody, 'testDownload.html');
+};
+
 export {
 	splitTextStyleAndMetadata,
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	scrapeBrewHTML,
+	scrapeBrewZip
 };
