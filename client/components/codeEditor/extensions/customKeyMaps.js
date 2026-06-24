@@ -29,8 +29,9 @@ export async function formatCSS(view) {
 		//format manually single declaration rules to span one line.
 		//Prettier can't do it by default, this is crude but it works
 		formatted = formatted.replace(
-			/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}/g,
-			(_, selector, decl)=>`${selector.trim()} { ${decl.trim()} }`
+		/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}(\s*)/g,
+		(_, selector, decl, whitespace) =>
+			`${selector} { ${decl.trim()} }${whitespace}`
 		);
 		if(formatted === code) return true;
 
