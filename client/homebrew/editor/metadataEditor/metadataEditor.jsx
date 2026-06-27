@@ -278,6 +278,20 @@ const MetadataEditor = createReactClass({
 		</div>;
 	},
 
+	renderDimensionalInput : function(label, name, units, property){
+		return 	<div class='dimension'>
+			<label for={name}>{label}</label>
+			<input type='text' name={name} id={name} value={Number.parseFloat(property, 10)}></input>
+			<select name={units}>
+				<option value='in'>in</option>
+				<option value='cm'>cm</option>
+				<option value='mm'>mm</option>
+				<option value='px'>px</option>
+			</select>
+		</div>;
+
+	},
+
 	renderRenderOptions : function(){
 		return <div className='field renderers'>
 			<label>Renderer</label>
@@ -395,114 +409,24 @@ const MetadataEditor = createReactClass({
 				<div class='field-column'>
 					<div className='field-row'>
 						<label>paper size</label>
-						<div class='dimension'>
-							<label>height</label>
-							<input type='text' name='trimSizeHeight' value={Number.parseFloat(this.props.metadata.trimSize.height, 10)}></input>
-							<select name='trimSizeUnitsHeight'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>width</label>
-							<input type='text' name='trimSizeWidth'  value={Number.parseFloat(this.props.metadata.trimSize.width, 10)}></input>
-							<select name='trimSizeUnitsWidth'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
+						{this.renderDimensionalInput('height', 'trimSizeHeight', 'trimSizeUnitsHeight', this.props.metadata.trimSize.height)}
+						{this.renderDimensionalInput('width', 'trimSizeWidth', 'trimSizeUnitsWidth', this.props.metadata.trimSize.width)}
 					</div>
 
 					<div className='field-row'>
 						<label>safety</label>
-						<div class='dimension'>
-							<label>top</label>
-							<input type='text' name='safetySpaceTop' value={Number.parseFloat(this.props.metadata.safetySpace.top, 10)}></input>
-							<select name='safetySpaceUnitsTop'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>bottom</label>
-							<input type='text' name='safetySpaceBottom' value={Number.parseFloat(this.props.metadata.safetySpace.bottom, 10)}></input>
-							<select name='safetySpaceUnitsBottom'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>inner</label>
-							<input type='text' name='safetySpaceInner' value={Number.parseFloat(this.props.metadata.safetySpace.inner, 10)}></input>
-							<select name='safetySpaceUnitsInner'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>outer</label>
-							<input type='text' name='safetySpaceOuter' value={Number.parseFloat(this.props.metadata.safetySpace.outer, 10)}></input>
-							<select name='safetySpaceUnitsOuter'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
+						{this.renderDimensionalInput('top', 'safetySpaceTop', 'safetySpaceUnitsTop', this.props.metadata.safetySpace.top)}
+						{this.renderDimensionalInput('bottom', 'safetySpaceBottom', 'safetySpaceUnitsBottom', this.props.metadata.safetySpace.bottom)}
+						{this.renderDimensionalInput('inner', 'safetySpaceInner', 'safetySpaceUnitsInner', this.props.metadata.safetySpace.inner)}
+						{this.renderDimensionalInput('outer', 'safetySpaceOuter', 'safetySpaceUnitsOuter', this.props.metadata.safetySpace.outer)}
 					</div>
 
 					<div className='field-row'>
 						<label>bleed</label>
-						<div class='dimension'>
-							<label>top</label>
-							<input type='text' name='bleedTop' value={Number.parseFloat(this.props.metadata.bleed.top, 10)}></input>
-							<select name='bleedUnitsTop'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>bottom</label>
-							<input type='text' name='bleedBottom' value={Number.parseFloat(this.props.metadata.bleed.bottom, 10)}></input>
-							<select name='bleedUnitsBottom'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>inner</label>
-							<input type='text' name='bleedInner' value={Number.parseFloat(this.props.metadata.bleed.inner, 10)}></input>
-							<select name='bleedUnitsInner'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
-						<div class='dimension'>
-							<label>outer</label>
-							<input type='text' name='bleedOuter' value={Number.parseFloat(this.props.metadata.bleed.outer, 10)}></input>
-							<select name='bleedUnitsOuter'>
-								<option value='in'>in</option>
-								<option value='cm'>cm</option>
-								<option value='mm'>mm</option>
-								<option value='px'>px</option>
-							</select>
-						</div>
+						{this.renderDimensionalInput('top', 'bleedTop', 'bleedUnitsTop', this.props.metadata.bleed.top)}
+						{this.renderDimensionalInput('bottom', 'bleedBottom', 'bleedUnitsBottom', this.props.metadata.bleed.bottom)}
+						{this.renderDimensionalInput('inner', 'bleedInner', 'bleedUnitsInner', this.props.metadata.bleed.inner)}
+						{this.renderDimensionalInput('outer', 'bleedOuter', 'bleedUnitsOuter', this.props.metadata.bleed.outer)}
 					</div>
 				</div>
 			</div>
