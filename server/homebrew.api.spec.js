@@ -404,8 +404,8 @@ theme: phb
 bleed:
   top: .125in
   bottom: .125in
-  left: .125in
-  right: .125in
+  outer: .125in
+  inner: .125in
 safetySpace:
   top: .25in
   bottom: .25in
@@ -447,8 +447,8 @@ theme: phb
 bleed:
   top: .125in
   bottom: .125in
-  left: .125in
-  right: .125in
+  outer: .125in
+  inner: .125in
 safetySpace:
   top: .25in
   bottom: .25in
@@ -1140,8 +1140,8 @@ brew`);
 					'bleed:\n' +
 					'  top: 1.5in\n' +
 					'  bottom: 1.5in\n' +
-					'  left: 1.5in\n' +
-					'  right: 1.5in\n' +
+					'  outer: 1.5in\n' +
+					'  inner: 1.5in\n' +
 					'safetySpace:\n' +
 					'  top: 1.25in\n' +
 					'  bottom: 1.25in\n' +
@@ -1177,8 +1177,8 @@ brew`);
 			// Paper Specfications
 			expect(testBrew.bleed.top).toEqual('1.5in');
 			expect(testBrew.bleed.bottom).toEqual('1.5in');
-			expect(testBrew.bleed.left).toEqual('1.5in');
-			expect(testBrew.bleed.right).toEqual('1.5in');
+			expect(testBrew.bleed.inner).toEqual('1.5in');
+			expect(testBrew.bleed.outer).toEqual('1.5in');
 
 			expect(testBrew.safetySpace.top).toEqual('1.25in');
 			expect(testBrew.safetySpace.bottom).toEqual('1.25in');
