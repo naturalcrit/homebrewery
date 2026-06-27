@@ -99,8 +99,8 @@ const splitTextStyleAndMetadata = (brew)=>{
 		brew.bleed = {
 			top    : _.pick(metadata, ['bleed']).bleed?.top || '.125in',
 			bottom : _.pick(metadata, ['bleed']).bleed?.bottom || '.125in',
-			left   : _.pick(metadata, ['bleed']).bleed?.left || '.125in',
-			right  : _.pick(metadata, ['bleed']).bleed?.right || '.125in',
+			outer  : _.pick(metadata, ['bleed']).bleed?.outer || '.125in',
+			inner  : _.pick(metadata, ['bleed']).bleed?.inner || '.125in',
 		};
 
 		// Copy Required Safe Space or Use defaults

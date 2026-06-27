@@ -44,6 +44,37 @@
 		gap            : 10px;
 	}
 
+	.field-row {
+		display        : flex;
+		flex           : 5 0 10px;
+		flex-direction : row;
+		gap            : 10px;
+
+		& > label {
+			width          : 80px;
+			font-size      : 0.9em;
+			font-weight    : 800;
+			line-height    : 1.8em;
+			text-transform : uppercase;
+		}
+	}
+
+	.dimension {
+		& > label {
+			display: block;
+			width          : 60px;
+			font-size      : 0.9em;
+			font-weight    : 600;
+			line-height    : 1.8em;
+			text-transform : uppercase;
+		}
+
+		& > input {
+			width: 4em;
+			font-size      : 0.9em;
+		}
+	}
+
 	.field {
 		position      : relative;
 		display       : flex;

@@ -390,6 +390,123 @@ const MetadataEditor = createReactClass({
 				</div>
 			</div>
 
+			<h2>Document Specifications</h2>
+			<div className='field-group'>
+				<div class='field-column'>
+					<div className='field-row'>
+						<label>paper size</label>
+						<div class='dimension'>
+							<label>height</label>
+							<input type='text' name='trimSizeHeight' value={Number.parseFloat(this.props.metadata.trimSize.height, 10)}></input>
+							<select name='trimSizeUnitsHeight'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>width</label>
+							<input type='text' name='trimSizeWidth'  value={Number.parseFloat(this.props.metadata.trimSize.width, 10)}></input>
+							<select name='trimSizeUnitsWidth'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+					</div>
+
+					<div className='field-row'>
+						<label>safety</label>
+						<div class='dimension'>
+							<label>top</label>
+							<input type='text' name='safetySpaceTop' value={Number.parseFloat(this.props.metadata.safetySpace.top, 10)}></input>
+							<select name='safetySpaceUnitsTop'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>bottom</label>
+							<input type='text' name='safetySpaceBottom' value={Number.parseFloat(this.props.metadata.safetySpace.bottom, 10)}></input>
+							<select name='safetySpaceUnitsBottom'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>inner</label>
+							<input type='text' name='safetySpaceInner' value={Number.parseFloat(this.props.metadata.safetySpace.inner, 10)}></input>
+							<select name='safetySpaceUnitsInner'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>outer</label>
+							<input type='text' name='safetySpaceOuter' value={Number.parseFloat(this.props.metadata.safetySpace.outer, 10)}></input>
+							<select name='safetySpaceUnitsOuter'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+					</div>
+
+					<div className='field-row'>
+						<label>bleed</label>
+						<div class='dimension'>
+							<label>top</label>
+							<input type='text' name='bleedTop' value={Number.parseFloat(this.props.metadata.bleed.top, 10)}></input>
+							<select name='bleedUnitsTop'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>bottom</label>
+							<input type='text' name='bleedBottom' value={Number.parseFloat(this.props.metadata.bleed.bottom, 10)}></input>
+							<select name='bleedUnitsBottom'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>inner</label>
+							<input type='text' name='bleedInner' value={Number.parseFloat(this.props.metadata.bleed.inner, 10)}></input>
+							<select name='bleedUnitsInner'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+						<div class='dimension'>
+							<label>outer</label>
+							<input type='text' name='bleedOuter' value={Number.parseFloat(this.props.metadata.bleed.outer, 10)}></input>
+							<select name='bleedUnitsOuter'>
+								<option value='in'>in</option>
+								<option value='cm'>cm</option>
+								<option value='mm'>mm</option>
+								<option value='px'>px</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+
 			{this.renderDelete()}
 
 		</div>;
