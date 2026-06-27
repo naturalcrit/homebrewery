@@ -224,8 +224,8 @@ const api = {
 		metadata.bleed = {
 			top    : brew?.bleed?.top || '.125in',
 			bottom : brew?.bleed?.bottom || '.125in',
-			left   : brew?.bleed?.left || '.125in',
-			right  : brew?.bleed?.right || '.125in',
+			inner  : brew?.bleed?.inner || '.125in',
+			outer  : brew?.bleed?.outer || '.125in',
 		};
 
 		// Copy Required Safe Space or Use defaults
