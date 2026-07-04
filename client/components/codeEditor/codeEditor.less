@@ -63,7 +63,8 @@
 			&.term { color : rgb(96, 117, 143); }
 			&.definition { color : rgb(97, 57, 178); }
 		}
-		.cm-block:not(.cm-comment) {
+		.cm-block:not(.cm-comment),
+		.cm-block:not(.cm-comment) * {
 			font-weight : bold;
 			color       : purple;
 		}
@@ -159,6 +160,33 @@
 	.cm-searchField {
 		width   : 25em !important;
 		outline : 1px inset #00000055 !important;
+	}
+
+	.cm-image {
+		position:relative;
+		
+		.cm-preview {
+			object-fit: contain;
+			position:absolute;
+			bottom:0;
+			left:0;
+			height:200px;
+			width:200px;
+			height:200px;
+			padding:5px;
+			background-color: #fff;
+			border-radius:10px;
+			border:3px solid grey;
+			pointer-events: none;
+			opacity:0;
+			transition:0.2s opacity 0.5s;
+			translate:0 100%;
+			z-index:1000;
+		}
+
+		&:hover .cm-preview {
+			opacity:1;
+		}
 	}
 
 	/* Tab character visualization (optional) */
