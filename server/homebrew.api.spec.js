@@ -404,8 +404,8 @@ theme: phb
 bleed:
   top: .125in
   bottom: .125in
-  outer: .125in
   inner: .125in
+  outer: .125in
 safetySpace:
   top: .25in
   bottom: .25in
@@ -447,8 +447,8 @@ theme: phb
 bleed:
   top: .125in
   bottom: .125in
-  outer: .125in
   inner: .125in
+  outer: .125in
 safetySpace:
   top: .25in
   bottom: .25in
