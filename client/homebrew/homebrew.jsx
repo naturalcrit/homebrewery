@@ -41,8 +41,6 @@ const Homebrew = (props)=>{
 		enablev4
 	} = props;
 
-	console.log(config.color);
-
 	global.account       = account;
 	global.version       = version;
 	global.config        = config;
