@@ -92,7 +92,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	};
 
 	return (
-		<div className={['menu-wrapper', className].join(' ')} role='none' >
+		<li className='menu-wrapper' role='none'>
 			<button
 				id={`${menuId}-trigger`}
 				className={['menu-item', color].join(' ')}
@@ -105,7 +105,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				{trigger(groupName, icon)}
 			</button>
 			<MenuDepthContext.Provider value={depth + 1}>
-				<div
+				<ul
 					ref={menuRef}
 					id={menuId}
 					className='menu-list'
@@ -114,9 +114,9 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 					onClick={handleMenuActionClick}
 				>
 					{children}
-				</div>
+				</ul>
 			</MenuDepthContext.Provider>
-		</div>
+		</li>
 	);
 };
 
