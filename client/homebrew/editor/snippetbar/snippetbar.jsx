@@ -328,11 +328,11 @@ const SnippetGroup = createReactClass({
 			if(!snippet.subsnippets){
 				return (
 					<li key={snippet.name} role='none'>
-						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem' aria-label={snippet.name}>
+						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem' aria-label={snippet.name} disabled={snippet.disabled}>
 							<i className={snippet.icon} />
 							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-							{snippet.experimental && <span className='beta'>beta</span>}
-							{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+							{snippet.experimental && <span className='status'>beta</span>}
+							{snippet.disabled     && <span className='status' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
 						</button>
 					</li>
 				);
