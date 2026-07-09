@@ -98,6 +98,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				className={['menu-item', color].join(' ')}
 				popoverTarget={menuId}
 				aria-haspopup='menu'
+				aria-label={groupName}
 				role='menuitem'
 				disabled={!React.Children.count(children)}
 				ref={triggerRef}
@@ -111,6 +112,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 					className='menu-list'
 					popover='auto'
 					role='menu'
+					aria-label={`${groupName} Submenu`}
 					onClick={handleMenuActionClick}
 				>
 					{children}

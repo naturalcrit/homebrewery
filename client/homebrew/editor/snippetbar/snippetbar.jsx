@@ -188,7 +188,7 @@ const Snippetbar = createReactClass({
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 		if(snippets.length === 0) return null;
 
-		return <ul className='snippets' role='menubar'>
+		return <ul className='snippets' role='menubar' aria-label='Snippets Menubar'>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -328,7 +328,7 @@ const SnippetGroup = createReactClass({
 			if(!snippet.subsnippets){
 				return (
 					<li key={snippet.name} role='none'>
-						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem'>
+						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem' aria-label={snippet.name}>
 							<i className={snippet.icon} />
 							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
 							{snippet.experimental && <span className='beta'>beta</span>}
