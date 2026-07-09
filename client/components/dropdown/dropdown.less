@@ -1,4 +1,6 @@
-
+:root{
+	--menuColor : var(--menu-color, #DDD);
+}
 .menu-list {
 	contain          : content;
 	position         : fixed;
@@ -7,10 +9,14 @@
 	left             : anchor(left);
 	position-try: flip-inline flip-block;
 	color: inherit;   // [popover] gets a `canvastext` color value from useragent.
+	background: var(--menuColor);
 	li > .menu-list {
 			margin: 0 0px;
 			top  : anchor(top);
 			left : anchor(right);
 			position-try: flip-inline;
 		}
+}
+.menu-wrapper:has(:popover-open) > button {                        // if menu is open...
+	background-color: hsl(from var(--menuColor) h s calc(l * .85));  // tint menu triggers based on menu color
 }
