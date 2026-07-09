@@ -1,10 +1,20 @@
+@property --menuColor {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #DDD;
+}
+
+@property --activeTriggerColor {
+	syntax: '<color>';
+	inherits: true;
+}
+
 :root{
-	--menuColor : var(--menu-color, #DDD);
+	--activeTriggerColor : var(--activeTriggerColor);
 }
 .menu-list {
 	contain          : content;
 	position         : fixed;
-	z-index          : 1000;
 	top              : anchor(bottom);
 	left             : anchor(left);
 	position-try: flip-inline flip-block;
@@ -18,5 +28,5 @@
 		}
 }
 .menu-wrapper:has(:popover-open) > button {                        // if menu is open...
-	background-color: hsl(from var(--menuColor) h s calc(l * .85));  // tint menu triggers based on menu color
+	background-color: var(--activeTriggerColor, hsl(from var(--menuColor) h s calc(l * .85)));  // tint menu triggers based on menu color
 }
