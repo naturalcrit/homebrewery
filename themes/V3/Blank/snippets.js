@@ -11,6 +11,8 @@ import LicenseDTTRPGGCC          from './snippets/licenseDTRPGCC.gen.js';
 import LicenseMongoosePublishing from './snippets/licenseMongoose.gen.js';
 import TableOfContentsGen        from './snippets/tableOfContents.gen.js';
 import indexGen                  from './snippets/index.gen.js';
+import  richIndexGen  		  from './snippets/richIndex.gen.js';
+
 const domain = window.location.origin;
 
 export default [
@@ -139,6 +141,12 @@ export default [
 				name : 'Add Comment',
 				icon : 'fas fa-code',
 				gen  : '<!-- This is a comment that will not be rendered into your brew. Hotkey (Ctrl/Cmd + /). -->'
+			},
+			{
+				name         : 'Rich Index',
+				icon         : 'fas fa-indent',
+				gen          : richIndexGen,
+				experimental : true
 			},
 			{
 				name : 'Homebrewery Credit',
