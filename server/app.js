@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 1000, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -16,7 +16,7 @@ import path from 'path';
 import fs      from 'fs-extra';
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+const { homebrewApi, getBrew, getMeta, getUsersBrewThemes, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import GoogleActions               from './googleActions.js';
@@ -438,32 +438,48 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
-	//Share Page
-	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		const { brew } = req;
+	app.get('/share/:id', asyncHandler(getMeta), (req, res, next)=>{
 		req.ogMeta = { ...defaultMetaTags,
-			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
-			description : req.brew.description || 'No description.',
-			image       : req.brew.thumbnail || defaultMetaTags.image,
+			title       : `${req.brew?.title || 'Untitled Brew'} - ${req.brew?.authors[0] || 'No author.'}`,
+			description : req.brew?.description || 'No description.',
+			image       : req.brew?.thumbnail || defaultMetaTags.image,
 			type        : 'article'
 		};
 
-		// increase visitor view count, do not include visits by author(s)
-		if(!brew.authors.includes(req.account?.username)){
-			if(req.params.id.length > 12 && !brew._id) {
-				const googleId = brew.googleId;
-				const shareId = brew.shareId;
-				await GoogleActions.increaseView(googleId, shareId, 'share', brew)
-				.catch((err)=>{next(err);});
-			} else {
-				await HomebrewModel.increaseView({ shareId: brew.shareId });
-			}
+		req.data = {
+			id   : req.params.id,
+			type : 'share'
 		};
-
-		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-		splitTextStyleAndMetadata(req.brew);
 		return next();
-	}));
+	});
+
+	//Share Page
+	// app.get('/share/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	// 	const { brew } = req;
+	// 	req.ogMeta = { ...defaultMetaTags,
+	// 		title       : req.brew.title || 'Untitled Brew',
+	// 		description : req.brew.description || 'No description.',
+	// 		image       : req.brew.thumbnail || defaultMetaTags.image,
+	// 		type        : 'article'
+	// 	};
+
+	// 	// increase visitor view count, do not include visits by author(s)
+	// 	if(!brew.authors.includes(req.account?.username)){
+	// 		if(req.params.id.length > 12 && !brew._id) {
+	// 			const googleId = brew.googleId;
+	// 			const shareId = brew.shareId;
+	// 			await GoogleActions.increaseView(googleId, shareId, 'share', brew)
+	// 				.catch((err)=>{next(err);});
+	// 		} else {
+	// 			await HomebrewModel.increaseView({ shareId: brew.shareId });
+	// 		}
+	// 	};
+
+	// 	brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+	// 	splitTextStyleAndMetadata(req.brew);
+	// 	return next();
+	// }));
+
 
 	//Account Page
 	app.get('/account', dbCheck, asyncHandler(async (req, res, next)=>{

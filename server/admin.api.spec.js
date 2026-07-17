@@ -19,7 +19,6 @@ describe('Tests for admin api', ()=>{
 		dbState = mongoose.connection.readyState;
 		mongoose.connection.readyState = 1;
 	});
-
 	afterEach(()=>{
 		mongoose.connection.readyState = dbState;
 		jest.resetAllMocks();
