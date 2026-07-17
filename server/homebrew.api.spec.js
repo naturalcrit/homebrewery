@@ -1080,7 +1080,7 @@ brew`);
 					'text\n'
 			};
 
-			splitTextStyleAndMetadata(testBrew);
+			await splitTextStyleAndMetadata(testBrew);
 
 			// Metadata
 			expect(testBrew.title).toEqual('title');
