@@ -94,37 +94,12 @@ const splitTextStyleAndMetadata = (brew)=>{
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 
-		// Copy Required Bleed Space or Use defaults
-
-		brew.bleed = {
-			top    : metadata.bleed?.top,
-			bottom : metadata.bleed?.bottom,
-			inner  : metadata.bleed?.inner,
-			outer  : metadata.bleed?.outer,
-		};
-
-		// Copy Required Safe Space or Use defaults
-		brew.safetySpace = {
-			top    : metadata.safetySpace?.top,
-			bottom : metadata.safetySpace?.bottom,
-			outer  : metadata.safetySpace?.outer,
-			inner  : metadata.safetySpace?.inner,
-		};
-
-		// Set brew paper trim size or default to US Letter
-		brew.trimSize  = {
-			width  : metadata.trimSize?.width,
-			height : metadata.trimSize?.height,
-		};
-
-		// Set Column specs or use defaults
+		brew.bleed = { top: metadata.bleed?.top, bottom: metadata.bleed?.bottom, inner: metadata.bleed?.inner, outer: metadata.bleed?.outer };
+		brew.safetySpace = { top: metadata.safetySpace?.top, bottom: metadata.safetySpace?.bottom, outer: metadata.safetySpace?.outer, inner: metadata.safetySpace?.inner };
+		brew.trimSize  = { width: metadata.trimSize?.width, height: metadata.trimSize?.height };
 		brew.columns = metadata?.columns;
 		brew.columnGutter = metadata?.columnGutter;
-
-		// Set License or set to Unlicensed
 		brew.license = metadata?.license;
-
-		// Set Authors legal names or to empty.
 		brew.legalAuthors = metadata.legalAuthors;
 
 		brew.text = brew.text.slice(index + 6);
