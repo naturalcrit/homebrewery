@@ -97,24 +97,24 @@ const splitTextStyleAndMetadata = (brew)=>{
 		// Copy Required Bleed Space or Use defaults
 
 		brew.bleed = {
-			top    : _.pick(metadata, ['bleed']).bleed?.top || '.125in',
-			bottom : _.pick(metadata, ['bleed']).bleed?.bottom || '.125in',
-			inner  : _.pick(metadata, ['bleed']).bleed?.inner || '.125in',
-			outer  : _.pick(metadata, ['bleed']).bleed?.outer || '.125in',
+			top    : metadata.bleed?.top || '.125in',
+			bottom : metadata.bleed?.bottom || '.125in',
+			inner  : metadata.bleed?.inner || '.125in',
+			outer  : metadata.bleed?.outer || '.125in',
 		};
 
 		// Copy Required Safe Space or Use defaults
 		brew.safetySpace = {
-			top    : _.pick(metadata, ['safetySpace']).safetySpace?.top || '.25in',
-			bottom : _.pick(metadata, ['safetySpace']).safetySpace?.bottom || '.25in',
-			outer  : _.pick(metadata, ['safetySpace']).safetySpace?.outer || '.25in',
-			inner  : _.pick(metadata, ['safetySpace']).safetySpace?.inner || '.5in',
+			top    : metadata.safetySpace?.top || '.25in',
+			bottom : metadata.safetySpace?.bottom || '.25in',
+			outer  : metadata.safetySpace?.outer || '.25in',
+			inner  : metadata.safetySpace?.inner || '.5in',
 		};
 
 		// Set brew paper trim size or default to US Letter
 		brew.trimSize  = {
-			width  : _.pick(metadata, ['trimSize']).trimSize?.width || '8.5in',
-			height : _.pick(metadata, ['trimSize']).trimSize?.height || '11in',
+			width  : metadata.trimSize?.width || '8.5in',
+			height : metadata.trimSize?.height || '11in',
 		};
 
 		// Set Column specs or use defaults
