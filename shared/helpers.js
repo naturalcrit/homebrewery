@@ -97,35 +97,35 @@ const splitTextStyleAndMetadata = (brew)=>{
 		// Copy Required Bleed Space or Use defaults
 
 		brew.bleed = {
-			top    : metadata.bleed?.top || '.125in',
-			bottom : metadata.bleed?.bottom || '.125in',
-			inner  : metadata.bleed?.inner || '.125in',
-			outer  : metadata.bleed?.outer || '.125in',
+			top    : metadata.bleed?.top,
+			bottom : metadata.bleed?.bottom,
+			inner  : metadata.bleed?.inner,
+			outer  : metadata.bleed?.outer,
 		};
 
 		// Copy Required Safe Space or Use defaults
 		brew.safetySpace = {
-			top    : metadata.safetySpace?.top || '.25in',
-			bottom : metadata.safetySpace?.bottom || '.25in',
-			outer  : metadata.safetySpace?.outer || '.25in',
-			inner  : metadata.safetySpace?.inner || '.5in',
+			top    : metadata.safetySpace?.top,
+			bottom : metadata.safetySpace?.bottom,
+			outer  : metadata.safetySpace?.outer,
+			inner  : metadata.safetySpace?.inner,
 		};
 
 		// Set brew paper trim size or default to US Letter
 		brew.trimSize  = {
-			width  : metadata.trimSize?.width || '8.5in',
-			height : metadata.trimSize?.height || '11in',
+			width  : metadata.trimSize?.width,
+			height : metadata.trimSize?.height,
 		};
 
 		// Set Column specs or use defaults
-		brew.columns = metadata?.columns || 2;
-		brew.columnGutter = metadata?.columnGutter || '.125in';
+		brew.columns = metadata?.columns;
+		brew.columnGutter = metadata?.columnGutter;
 
 		// Set License or set to Unlicensed
-		brew.license = metadata?.license || 'None';
+		brew.license = metadata?.license;
 
 		// Set Authors legal names or to empty.
-		brew.legalAuthors = metadata.legalAuthors || '';
+		brew.legalAuthors = metadata.legalAuthors;
 
 		brew.text = brew.text.slice(index + 6);
 	}

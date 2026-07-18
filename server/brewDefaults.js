@@ -20,8 +20,27 @@ const DEFAULT_BREW = {
 	published   : false,
 	pageCount   : 1,
 	gDrive      : false,
-	trashed     : false
-
+	trashed     : false,
+	bleed       : {
+		top    : '.125in',
+		bottom : '.125in',
+		inner  : '.125in',
+		outer  : '.125in'
+	},
+	safetySpace : {
+		top    : '.25in',
+		bottom : '.25in',
+		outer  : '.25in',
+		inner  : '.5in',
+	},
+	trimSize : {
+		width  : '8.5in',
+		height : '11in',
+	},
+	columns      : '2',
+	columnGutter : '.125in',
+	license      : 'None',
+	legalAuthors : ''
 };
 // Default values for older brews with missing properties
 // e.g., missing "renderer" is assumed to be "legacy"
