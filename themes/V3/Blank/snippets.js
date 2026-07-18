@@ -195,10 +195,9 @@ export default [
 				]
 			},
 			{
-				name         : 'Index',
-				icon         : 'fas fa-bars',
-				gen          : indexGen,
-				experimental : true
+				name : 'Index',
+				icon : 'fas fa-bars',
+				gen  : indexGen,
 			},
 
 		]
@@ -330,7 +329,7 @@ export default [
 			},
 			{
 				name        : 'DTRPG Community Content',
-				incon       : 'fab fa-dtrpg',
+				icon       : null,
 				subsnippets : [
 					{
 						name : 'Chronicle System Guild Colophon',
@@ -520,13 +519,13 @@ export default [
 
 			{
 				name : 'MIT License',
-				icon : 'fas fa-mit',
+				icon : null,
 				gen  : LicenseGen.mit,
 			},
 
 			{
 				name        : 'Mongoose Publishing Fair Use',
-				icon        : 'fas fa-mongoosepub',
+				icon        : null,
 				subsnippets : [
 					{
 						name : 'Long Form Fair Use',
@@ -554,14 +553,14 @@ export default [
 
 			{
 				name : 'ORC Notice',
-				icon : 'fas fa-Paizo',
+				icon : null,
 				gen	 : LicenseGen.orc1,
 			},
 
 
 			{
 				name        : 'Shadowdark',
-				icon        : 'fab fa-shadowdark',
+				icon        : null,
 				subsnippets : [
 					{
 						name        : 'Logos',
