@@ -13,6 +13,7 @@ export default defineConfig({
 			'@sharedStyles' : path.resolve(__dirname, './shared/naturalcrit/styles'),
 			'@navbar'       : path.resolve(__dirname, './client/homebrew/navbar'),
 			'@themes'       : path.resolve(__dirname, './themes'),
+			'@components'   : path.resolve(__dirname, './client/components')
 		},
 	},
 	build : {
