@@ -47,7 +47,7 @@ const EditorThemes = [
 const execute = function(snippet, props){
 	if(_.isFunction(snippet.gen)) return snippet.gen(props);
 	if(snippet.isScript === true) return executeBrewScript(props.onCreateScriptAPI(), snippet);
-	return val;
+	return snippet.gen;
 };
 
 const Snippetbar = createReactClass({
