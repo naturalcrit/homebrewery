@@ -92,7 +92,7 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
-const pageTemplates = [];
+let pageTemplates = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
