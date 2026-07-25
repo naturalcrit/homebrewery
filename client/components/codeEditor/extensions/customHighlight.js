@@ -15,6 +15,7 @@ import {
 const customTags = {
 	pageLine        : 'pageLine', 		// .cm-pageLine
 	snippetLine     : 'snippetLine', 	// .cm-snippetLine
+	scriptLine      : 'scriptLine', 	// .cm-scriptLine
 	columnSplit     : 'columnSplit', 	// .cm-columnSplit
 	block           : 'block', 			// .cm-block
 	inlineBlock     : 'inline-block', 	// .cm-inline-block
@@ -287,6 +288,19 @@ function tokenizeCustomCSS(text) {
 	return tokens;
 }
 
+function tokenizeCustomScript(text) {
+	const tokens = [];
+	const lines = text.split('\n');
+
+	lines.forEach((lineText, lineNumber)=>{
+		if(/^\\script\ .*$/.test(lineText)) {
+			tokens.push({ line: lineNumber, type: customTags.scriptLine });
+		}
+	});
+
+	return tokens;
+}
+
 //assign classes to tags provided by lezer, not unlike the function above
 export const customHighlightStyle = HighlightStyle.define([
 	{ tag: tags.heading,  class: 'cm-header' },
@@ -376,6 +390,8 @@ export function customHighlightPlugin(renderer, tab) {
 
 	if(tab === 'brewStyles') {
 		tokenize = tokenizeCustomCSS;
+	} else if(tab === 'brewScripts') {
+		tokenize = tokenizeCustomScript;
 	} else {
 		tokenize = renderer === 'V3' ? tokenizeCustomMarkdown : legacyTokenizeCustomMarkdown;
 	}
@@ -395,6 +411,7 @@ export function customHighlightPlugin(renderer, tab) {
 				const tokens = tokenize(view.state.doc.toString());
 				let pageCount = 1;
 				let snippetCount = 0;
+				let scriptCount = 0;
 
 				const tree = ensureSyntaxTree(view.state, view.state.doc.length, 50) || syntaxTree(view.state);
 				tree.iterate({
@@ -459,6 +476,10 @@ export function customHighlightPlugin(renderer, tab) {
 						if(token.type === 'snippetLine' && tab === 'brewSnippets') {
 							snippetCount++;
 							decos.push(Decoration.line({ attributes: { 'data-page-number': snippetCount } }).range(line.from));
+						}
+						if(token.type === 'scriptLine' && tab === 'brewScripts') {
+							scriptCount++;
+							decos.push(Decoration.line({ attributes: { 'data-page-number': scriptCount } }).range(line.from));
 						}
 					}
 				});

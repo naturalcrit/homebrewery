@@ -27,10 +27,11 @@ const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
 
-const BREWKEY  = 'HB_newPage_content';
-const STYLEKEY = 'HB_newPage_style';
-const METAKEY  = 'HB_newPage_metadata';
-const SNIPKEY  = 'HB_newPage_snippets';
+const BREWKEY   = 'HB_newPage_content';
+const STYLEKEY  = 'HB_newPage_style';
+const METAKEY   = 'HB_newPage_metadata';
+const SNIPKEY   = 'HB_newPage_snippets';
+const SCRIPTKEY = 'HB_newPage_scripts';
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
 const useLocalStorage = true;
@@ -127,7 +128,7 @@ const NewPage = (props)=>{
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'scripts', 'metadata'
 		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
@@ -142,6 +143,7 @@ const NewPage = (props)=>{
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
 			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
 			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'scripts')  localStorage.setItem(SCRIPTKEY, value);
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
 				theme    : value.theme,

@@ -1,0 +1,71 @@
+@import './client/homebrew/navbar/navbar.less';
+
+.scriptRequestNotification, .scriptRequestError {
+	position         : relative;
+	width            : 100%;
+	padding          : 15px 25px 10px;
+	color            : white;
+	background-color : @blue;
+	border           : none;
+	&[open] { display : inline-block; }
+	a {
+		font-weight : 800;
+		color       : #E0E5C1;
+	}
+	i.info {
+		position  : absolute;
+		top       : 12px;
+		left      : 12px;
+		font-size : 2.5em;
+		opacity   : 0.8;
+	}
+	button.dismiss {
+		position         : absolute;
+		top              : 12px;
+		right            : 15px;
+		cursor           : pointer;
+		background-color : transparent;
+		opacity          : 0.6;
+		&:hover { opacity : 1; }
+	}
+	button.uploadFile, button.commitURL {
+		display   : block;
+		margin-top: 0.4em;
+		padding   : 0.2em 0.4em;
+		border    : 0.1em solid @grey;
+		background: @steel;
+		cursor    : pointer;
+		&:hover { background: @greyLight; }
+	}
+	h1 {
+		font-size   : 1.1em;
+		font-weight : 800;
+		margin-bottom: 0.3em;
+	}
+	small {
+		font-size: 0.8em;
+	}
+	.reminder {
+		font-size: 0.8em;
+	}
+
+	/* Error Stack */
+	code {
+		display          : block;
+		margin-top       : 0.5em;
+		padding          : 0.1em 0.5em;
+		font-family      : 'Courier New', 'Courier', monospace;
+		overflow-wrap    : break-word;
+		white-space      : pre-wrap;
+		background       : #06314d;
+		border-radius    : 2px;
+	}
+}
+
+.scriptRequestError {
+	background-color : @red;
+
+	code {
+		background       : #4d0606;
+	}
+}

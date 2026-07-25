@@ -30,10 +30,11 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const SNIPKEY  = 'homebrewery-new-snippets';
-const METAKEY  = 'homebrewery-new-meta';
+const BREWKEY   = 'homebrewery-new';
+const STYLEKEY  = 'homebrewery-new-style';
+const SNIPKEY   = 'homebrewery-new-snippets';
+const SCRIPTKEY = 'homebrewery-new-scripts';
+const METAKEY   = 'homebrewery-new-meta';
 
 const useLocalStorage = false;
 const neverSaved      = true;
@@ -112,7 +113,7 @@ const HomePage =(props)=>{
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'scripts', 'metadata'
 		if(subfield == 'renderer' || subfield == 'theme')
 			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
@@ -127,6 +128,7 @@ const HomePage =(props)=>{
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
 			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
 			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'scripts')  localStorage.setItem(SCRIPTKEY, value);
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
 				theme    : value.theme,

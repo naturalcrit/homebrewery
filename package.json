@@ -39,6 +39,7 @@
     "test:emojis": "jest tests/markdown/emojis.test.js --verbose --noStackTrace",
     "test:route": "jest tests/routes/static-pages.test.js --verbose",
     "test:safehtml": "jest tests/html/safeHTML.test.js --verbose",
+    "test:scriptworker": "jest tests/scripteditor/scriptWorker.test.js --verbose",
     "phb": "node --experimental-require-module scripts/phb.js",
     "prod": "set NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
@@ -146,6 +147,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-frame-component": "^5.3.2",
+    "react-papaparse": "^4.4.0",
     "react-router": "^7.17.0",
     "sanitize-filename": "1.6.4",
     "superagent": "^10.2.1"

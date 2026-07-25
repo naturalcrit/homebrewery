@@ -16,7 +16,7 @@ import path from 'path';
 import fs      from 'fs-extra';
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS, getScript } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import GoogleActions               from './googleActions.js';
@@ -400,6 +400,11 @@ export default async function createApp(vite) {
 		return next();
 	}));
 
+	//Single brew script for worker execution
+	app.get('/brewscript/:id/:scriptId', asyncHandler(getBrew('edit')), (req, res)=>{
+		getScript(req, res);
+	});
+
 	//New Page from ID
 	app.get('/new/:id', asyncHandler(getBrew('share')), asyncHandler(async(req, res, next)=>{
 		sanitizeBrew(req.brew, 'share');
@@ -412,7 +417,8 @@ export default async function createApp(vite) {
 			renderer : req.brew.renderer,
 			theme    : req.brew.theme,
 			tags     : req.brew.tags,
-			snippets : req.brew.snippets
+			snippets : req.brew.snippets,
+			scripts  : req.brew.scripts
 		};
 		req.brew = _.defaults(brew, DEFAULT_BREW);
 

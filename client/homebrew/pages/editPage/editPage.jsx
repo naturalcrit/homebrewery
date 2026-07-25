@@ -43,10 +43,11 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
-const BREWKEY  = 'HB_newPage_content';
-const STYLEKEY = 'HB_newPage_style';
-const SNIPKEY  = 'HB_newPage_snippets';
-const METAKEY  = 'HB_newPage_meta';
+const BREWKEY   = 'HB_newPage_content';
+const STYLEKEY  = 'HB_newPage_style';
+const SNIPKEY   = 'HB_newPage_snippets';
+const METAKEY   = 'HB_newPage_meta';
+const SCRIPTKEY = 'HB_newPage_script';
 
 const useLocalStorage = false;
 const neverSaved			= false;
@@ -140,6 +141,7 @@ const EditPage = (props)=>{
 			if(field == 'text')     localStorage.setItem(BREWKEY, value);
 			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
 			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'scripts')  localStorage.setItem(SCRIPTKEY, value);
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
 				theme    : value.theme,
@@ -152,7 +154,8 @@ const EditPage = (props)=>{
 		...prevBrew,
 		style    : newData.style,
 		text     : newData.text,
-		snippets : newData.snippets
+		snippets : newData.snippets,
+		scripts  : newData.scripts
 	}));
 
 	const resetWarnUnsavedTimer = ()=>{

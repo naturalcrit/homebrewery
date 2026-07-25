@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 405 }] */
+/* eslint max-lines: ["error", { "max": 498 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -27,6 +27,7 @@ import {
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
 import { languages } from '@codemirror/language-data';
 import { css } from '@codemirror/lang-css';
+import { javascript } from '@codemirror/lang-javascript';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
 import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
@@ -156,7 +157,19 @@ const CodeEditor = forwardRef(
   			? syntaxHighlighting(customHighlightStyle)
   			: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
+			let languageExtension;
+			const langSpecificAutocomplete = [];
+			const langSpecificKeymap = [];
+
+			if(language === 'css') {
+				languageExtension = css();
+			} else if(language === 'javascript') {
+				languageExtension = javascript();
+			} else {
+				languageExtension = [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
+				langSpecificAutocomplete.push(autocompleteEmoji);
+				langSpecificKeymap.push(markdownKeymap);
+			}
 			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
 			return [
@@ -168,7 +181,7 @@ const CodeEditor = forwardRef(
 				scrollPastEnd(),
 				search(),
 				history(), //allows for undo and redo
-				...(tab !== 'brewStyles' ? [autocompleteEmoji] : []),
+				...langSpecificAutocomplete,
 
 				//folding
 				foldOnPages,
@@ -186,7 +199,7 @@ const CodeEditor = forwardRef(
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
 				generalKeymap,
-				...(tab !== 'brewStyles' ? [markdownKeymap] : []),
+				...langSpecificKeymap,
 
 				//multiple cursors and selections
 				drawSelection(),
@@ -247,6 +260,24 @@ const CodeEditor = forwardRef(
   			view.dispatch({
     			effects : folds.map((f)=>foldEffect.of(f))
   			});
+		};
+
+		const findWrappingPositionsInText = (start, end, text)=>{
+			let startPos = text.indexOf(start);
+			if(startPos === -1) return null;
+
+			startPos += start.length;
+			if(text.charAt(startPos + 1) === '\n') ++startPos;
+
+			let endPos = text.indexOf(end, startPos);
+			if(endPos === -1) return null;
+
+			if(text.charAt(endPos - 1) === '\n') --endPos;
+
+			return {
+				start : startPos,
+				end   : endPos
+			};
 		};
 
 		useEffect(()=>{
@@ -327,14 +358,72 @@ const CodeEditor = forwardRef(
 		useImperativeHandle(ref, ()=>({
 
 			injectText : (text)=>{
-				const view = viewRef.current;
+				if(text) {
+					const view = viewRef.current;
 
-				view.dispatch(
-					view.state.replaceSelection(text)
-				);
-				view.focus();
+					view.dispatch(
+						view.state.replaceSelection(text)
+					);
+					view.focus();
+				}
 			},
 			getCursorPosition : ()=>viewRef.current.state.selection.main.head,
+
+			getBetween : (start, end)=>{
+				const view = viewRef.current;
+				if(!view) return '';
+				const current = view.state.doc.toString();
+
+				const positions = findWrappingPositionsInText(start, end, current);
+				if(!positions) return '';
+
+				return current.substring(positions.start, positions.end);
+			},
+
+			getCursorSelection : ()=>{
+				const view = viewRef.current;
+				if(!view) return '';
+				if(view.state.selection.main.empty) return '';
+
+				const current = view.state.doc.toString();
+				return current.substring(view.state.selection.main.from, view.state.selection.main.to);
+			},
+
+			replaceBetween : (start, end, text)=>{
+				const view = viewRef.current;
+				if(!view) return;
+				const current = view.state.doc.toString();
+
+				const positions = findWrappingPositionsInText(start, end, current);
+				if(!positions) return;
+
+				view.dispatch({
+      				changes : { from: positions.start, to: positions.end, insert: text }
+				});
+			},
+
+			getCurrentLength : ()=>{
+				const view = viewRef.current;
+				if(!view) return '';
+				const current = view.state.doc.toString();
+				return current.length;
+			},
+
+			getPositionOf : (text)=>{
+				const view = viewRef.current;
+				if(!view) return '';
+				const current = view.state.doc.toString();
+				return current.indexOf(text);
+			},
+
+			insertAt : (position, text)=>{
+				const view = viewRef.current;
+				if(!view) return;
+
+				view.dispatch({
+      				changes : { from: position, insert: text }
+				});
+			},
 
 			scrollToPage : (pageNumber, smooth = true)=>{
 				const view = viewRef.current;

@@ -8,6 +8,8 @@ import dedent from 'dedent';
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
+import ScriptAPI from './scriptEditor/scriptEditor.jsx';
+import ScriptRequestNotification from './scriptEditor/scriptRequestNotification.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
 
@@ -42,6 +44,12 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 				
 				This snippet is accessible in the brew tab, and will be inherited if the brew is used as a theme.
 `;
+
+const DEFAULT_SCRIPT_TEXT = dedent`
+				\script Cheers
+
+				api.doAppendToEnd("Cheers");
+`;
 let isJumping = false;
 let jumpSource = null;
 
@@ -73,16 +81,18 @@ const Editor = createReactClass({
 			editorTheme      : this.props.editorTheme,
 			view             : 'text', //'text', 'style', 'meta', 'snippet'
 			snippetBarHeight : 26,
+			scriptRequest    : null,
 		};
 	},
 
 	editor     : React.createRef(null),
 	codeEditor : React.createRef(null),
 
-	isText  : function() {return this.state.view == 'text';},
-	isStyle : function() {return this.state.view == 'style';},
-	isMeta  : function() {return this.state.view == 'meta';},
-	isSnip  : function() {return this.state.view == 'snippet';},
+	isText   : function() {return this.state.view == 'text';},
+	isStyle  : function() {return this.state.view == 'style';},
+	isMeta   : function() {return this.state.view == 'meta';},
+	isSnip   : function() {return this.state.view == 'snippet';},
+	isScript : function() {return this.state.view == 'script';},
 
 	componentDidMount : function() {
 
@@ -154,8 +164,13 @@ const Editor = createReactClass({
 		this.codeEditor.current?.injectText(injectText);
 	},
 
+	handleCreateScriptAPI : function() {
+		return new ScriptAPI(this.codeEditor.current, this, this.props.brew.editId);
+	},
+
 	handleViewChange : function(newView){
 		this.props.setMoveArrows(newView === 'text');
+		this.timeoutScriptRequest();
 
 		this.setState({
 			view : newView
@@ -231,6 +246,20 @@ const Editor = createReactClass({
 		});
 	},
 
+	updateScriptRequest : function(newRequest){
+		this.setState({
+			scriptRequest : newRequest
+		});
+	},
+
+	timeoutScriptRequest : function(){
+		if(this.state.scriptRequest && this.state.scriptRequest.persist) return;
+
+		this.setState({
+			scriptRequest : null
+		});
+	},
+
 	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
 	rerenderParent : function (){
 		this.forceUpdate();
@@ -297,6 +326,23 @@ const Editor = createReactClass({
 					style={{  height: `calc(100% - 25px)` }}/>
 			</>;
 		}
+		if(this.isScript()){
+			if(!this.props.brew.scripts) { this.props.brew.scripts = DEFAULT_SCRIPT_TEXT; }
+			return <>
+				<CodeEditor key='codeEditor'
+					ref={this.codeEditor}
+					language='javascript'
+					tab='brewScripts'
+					view={this.state.view}
+					value={this.props.brew.scripts}
+					onChange={this.props.onBrewChange('scripts')}
+					enableFolding={true}
+					editorTheme={this.state.editorTheme}
+					renderer={this.props.brew.renderer}
+					rerenderParent={this.rerenderParent}
+					style={{  height: `calc(100% - 25px)` }}/>
+			</>;
+		}
 	},
 
 	redo : function(){
@@ -326,6 +372,7 @@ const Editor = createReactClass({
 					view={this.state.view}
 					onViewChange={this.handleViewChange}
 					onInject={this.handleInject}
+					onCreateScriptAPI={this.handleCreateScriptAPI}
 					showEditButtons={this.props.showEditButtons}
 					renderer={this.props.renderer}
 					theme={this.props.brew.theme}
@@ -339,6 +386,11 @@ const Editor = createReactClass({
 					themeBundle={this.props.themeBundle}
 					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
 					updateBrew={this.props.updateBrew}
+				/>
+
+				<ScriptRequestNotification
+					request={this.state.scriptRequest}
+					updateScriptRequest={this.updateScriptRequest}
 				/>
 
 				{this.renderEditor()}

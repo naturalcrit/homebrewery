@@ -26,6 +26,7 @@
 	}
 
 	&.brewSnippets .cm-snippetLine,
+	&.brewScripts .cm-scriptLine,
 	:where(&.brewText) .cm-pageLine {
 		background : #33333328;
 		border-top : #333399 solid 1px;
@@ -39,7 +40,7 @@
 		}
 	}
 
-	&:where(.brewText), &.brewSnippets {
+	&:where(.brewText), &.brewSnippets, &.brewScripts {
 
 	
 		.cm-pageLine[data-page-number]::after {

@@ -8,7 +8,8 @@ import _ from 'lodash';
 import cx from 'classnames';
 
 import { loadHistory } from '../../utils/versionHistory.js';
-import { brewSnippetsToJSON } from '@shared/helpers.js';
+import { brewSnippetsToJSON, brewScriptsToJSON } from '@shared/helpers.js';
+import { executeBrewScript } from '../scriptEditor/scriptEditor.jsx';
 
 import Legacy5ePHB from '@themes/Legacy/5ePHB/snippets.js';
 import V3_5ePHB   from '@themes/V3/5ePHB/snippets.js';
@@ -44,9 +45,10 @@ const EditorThemes = [
     .sort((a, b)=>a.localeCompare(b))
 ];
 
-const execute = function(val, props){
-	if(_.isFunction(val)) return val(props);
-	return val;
+const execute = function(snippet, props){
+	if(_.isFunction(snippet.gen)) return snippet.gen(props);
+	if(snippet.isScript === true) return executeBrewScript(props.onCreateScriptAPI(), snippet);
+	return snippet.gen;
 };
 
 const Snippetbar = createReactClass({
@@ -58,6 +60,7 @@ const Snippetbar = createReactClass({
 			onViewChange      : ()=>{},
 			onInject          : ()=>{},
 			onToggle          : ()=>{},
+			onCreateScriptAPI : ()=>{},
 			showEditButtons   : true,
 			renderer          : 'legacy',
 			undo              : ()=>{},
@@ -94,7 +97,8 @@ const Snippetbar = createReactClass({
 		if(prevProps.renderer != this.props.renderer ||
 			prevProps.theme != this.props.theme ||
 			prevProps.themeBundle != this.props.themeBundle ||
-			prevProps.brew.snippets != this.props.brew.snippets) {
+			prevProps.brew.snippets != this.props.brew.snippets ||
+			prevProps.brew.scripts != this.props.brew.scripts) {
 			this.setState({
 				snippets : this.compileSnippets()
 			});
@@ -147,7 +151,17 @@ const Snippetbar = createReactClass({
 			}
 		}
 
-		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
+		const userSnippetsasJSON = brewSnippetsToJSON('Snippets', this.props.brew.snippets, this.props.themeBundle.snippets);
+
+		// Use the snippet interface as is to handle scripts
+		const userScriptsasJSON = brewScriptsToJSON('Scripts', this.props.brew.scripts, true);
+		for (const script of userScriptsasJSON.scripts) {
+			userSnippetsasJSON.snippets.push({
+				name        : script.name,
+				subsnippets : script.subscripts
+			});
+		}
+
 		compiledSnippets.push(userSnippetsasJSON);
 
 		return compiledSnippets;
@@ -155,6 +169,10 @@ const Snippetbar = createReactClass({
 
 	handleSnippetClick : function(injectedText){
 		this.props.onInject(injectedText);
+	},
+
+	handleCreateScriptAPI : function() {
+		return this.props.onCreateScriptAPI();
 	},
 
 	toggleThemeSelector : function(e){
@@ -197,6 +215,7 @@ const Snippetbar = createReactClass({
 					snippets={snippetGroup.snippets}
 					key={snippetGroup.groupName}
 					onSnippetClick={this.handleSnippetClick}
+					onCreateScriptAPI={this.handleCreateScriptAPI}
 					cursorPos={this.props.cursorPos}
 				/>;
 			})
@@ -274,7 +293,8 @@ const Snippetbar = createReactClass({
 						<i className='fas fa-palette' />
 						{this.state.themeSelector && this.renderThemeSelector()}
 					</div>
-				</div></>}
+				</div>
+				<div className='toolsBreak'></div></>}
 
 				<div className='tabs'>
 					<div className={cx('text', { selected: this.props.view === 'text' })}
@@ -288,6 +308,10 @@ const Snippetbar = createReactClass({
 					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
 						onClick={()=>this.props.onViewChange('snippet')}>
 						<i className='fas fa-th-list' />
+					</div>
+					<div className={cx('script', { selected: this.props.view === 'script' })}
+						onClick={()=>this.props.onViewChange('script')}>
+						<i className='fas fa-file-lines' />
 					</div>
 					<div className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
@@ -313,15 +337,16 @@ const SnippetGroup = createReactClass({
 	displayName     : 'SnippetGroup',
 	getDefaultProps : function() {
 		return {
-			brew           : {},
-			groupName      : '',
-			icon           : 'fas fa-rocket',
-			snippets       : [],
-			onSnippetClick : function(){},
+			brew              : {},
+			groupName         : '',
+			icon              : 'fas fa-rocket',
+			snippets          : [],
+			onSnippetClick    : function(){},
+			onCreateScriptAPI : function(){}
 		};
 	},
 	handleSnippetClick : function(e, snippet){
-		this.props.onSnippetClick(execute(snippet.gen, this.props));
+		this.props.onSnippetClick(execute(snippet, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
