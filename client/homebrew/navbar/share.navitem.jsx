@@ -17,7 +17,7 @@ const getRedditLink = (brew)=>{
 	return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 };
 
-export default ({ brew })=>(
+export default ({ brew, currentPage })=>(
 	<Nav.dropdown>
 		<Nav.item color='teal' icon='fas fa-share-alt'>
 			share
@@ -28,6 +28,12 @@ export default ({ brew })=>(
 		<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}`);}}>
 			copy url
 		</Nav.item>
+		{currentPage > 1 &&
+			<Nav.item
+				color='blue'
+				onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}#p${currentPage}`);}}>
+				copy url (page {currentPage})
+			</Nav.item>}
 		<Nav.item color='blue' href={getRedditLink(brew)} newTab rel='noopener noreferrer'>
 			post to reddit
 		</Nav.item>

@@ -14,7 +14,6 @@ const DEFAULT_BREW = {
 	theme       : '5ePHB',
 	authors     : [],
 	tags        : [],
-	systems     : [],
 	lang        : 'en',
 	thumbnail   : '',
 	views       : 0,

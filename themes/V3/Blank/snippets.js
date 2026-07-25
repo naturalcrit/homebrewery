@@ -11,6 +11,7 @@ import LicenseDTTRPGGCC          from './snippets/licenseDTRPGCC.gen.js';
 import LicenseMongoosePublishing from './snippets/licenseMongoose.gen.js';
 import TableOfContentsGen        from './snippets/tableOfContents.gen.js';
 import indexGen                  from './snippets/index.gen.js';
+const domain = window.location.origin;
 
 export default [
 
@@ -194,10 +195,9 @@ export default [
 				]
 			},
 			{
-				name         : 'Index',
-				icon         : 'fas fa-bars',
-				gen          : indexGen,
-				experimental : true
+				name : 'Index',
+				icon : 'fas fa-bars',
+				gen  : indexGen,
 			},
 
 		]
@@ -329,7 +329,7 @@ export default [
 			},
 			{
 				name        : 'DTRPG Community Content',
-				incon       : 'fab fa-dtrpg',
+				icon       : null,
 				subsnippets : [
 					{
 						name : 'Chronicle System Guild Colophon',
@@ -519,13 +519,13 @@ export default [
 
 			{
 				name : 'MIT License',
-				icon : 'fas fa-mit',
+				icon : null,
 				gen  : LicenseGen.mit,
 			},
 
 			{
 				name        : 'Mongoose Publishing Fair Use',
-				icon        : 'fas fa-mongoosepub',
+				icon        : null,
 				subsnippets : [
 					{
 						name : 'Long Form Fair Use',
@@ -553,14 +553,14 @@ export default [
 
 			{
 				name : 'ORC Notice',
-				icon : 'fas fa-Paizo',
+				icon : null,
 				gen	 : LicenseGen.orc1,
 			},
 
 
 			{
 				name        : 'Shadowdark',
-				icon        : 'fab fa-shadowdark',
+				icon        : null,
 				subsnippets : [
 					{
 						name        : 'Logos',
@@ -645,25 +645,25 @@ export default [
 				name : 'Image',
 				icon : 'fas fa-image',
 				gen  : dedent`
-					![cat warrior](https://homebrewery.naturalcrit.com/assets/catwarrior.jpg) {width:325px,mix-blend-mode:multiply}`
+					![Bird with autumn foliage by L. Prang & Co.](${domain}/assets/bird.webp) {width:325px}`
 			},
 			{
 				name : 'Image Wrap Left',
 				icon : 'fac image-wrap-left',
 				gen  : dedent`
-					![homebrewery_mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {width:280px,margin-right:-3cm,wrapLeft}`
+					![homebrewery_mug](${domain}/assets/homebrewerymug.png) {width:280px,margin-right:-3cm,wrapLeft}`
 			},
 			{
 				name : 'Image Wrap Right',
 				icon : 'fac image-wrap-right',
 				gen  : dedent`
-					![homebrewery_mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {width:280px,margin-left:-3cm,wrapRight}`
+					![homebrewery_mug](${domain}/assets/homebrewerymug.png) {width:280px,margin-left:-3cm,wrapRight}`
 			},
 			{
 				name : 'Background Image',
 				icon : 'fas fa-tree',
 				gen  : dedent`
-					![homebrew mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {position:absolute,top:50px,right:30px,width:280px}`
+					![homebrew mug](${domain}/assets/homebrewerymug.png) {position:absolute,top:50px,right:30px,width:280px}`
 			},
 			{
 				name : 'Watercolor Splatter',

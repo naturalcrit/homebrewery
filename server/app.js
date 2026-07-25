@@ -55,7 +55,7 @@ export default async function createApp(vite) {
 
 	app.set('trust proxy', 1 /* number of proxies between user and server */);
 
-	if (vite) {
+	if(vite) {
 		app.use(vite.middlewares);
 	}
 
@@ -593,7 +593,7 @@ export default async function createApp(vite) {
 
 		html = html.replace(
 			'<head>',
-			`<head>\n<script id="props" >window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n${ogMetaTags}`
+			()=>{ return `<head>\n<script id="props" >window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n${ogMetaTags}`; }
 		);
 
 		return html;

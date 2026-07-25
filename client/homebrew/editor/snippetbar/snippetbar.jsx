@@ -2,6 +2,7 @@
 import './snippetbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
+import { Dropdown } from '@components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
 import cx from 'classnames';
@@ -23,7 +24,25 @@ const ThemeSnippets = {
 	V3_Blank     : V3_Blank,
 };
 
-import EditorThemes from '../../../../build/homebrew/codeMirror/editorThemes.json';
+import defaultCM5Theme from '@themes/codeMirror/default.js';
+import darkbrewery from '@themes/codeMirror/darkbrewery.js';
+import cm5Themes from 'codemirror-5-themes';
+
+const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
+
+const themeNames = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+    !name.endsWith('Init') &&
+    !name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+const EditorThemes = [
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
+];
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
@@ -151,7 +170,7 @@ const Snippetbar = createReactClass({
 		this.props.updateEditorTheme(e.target.value);
 
 		this.setState({
-			showThemeSelector : false,
+			themeSelector : false,
 		});
 	},
 
@@ -232,11 +251,11 @@ const Snippetbar = createReactClass({
 						<i className='fas fa-clock-rotate-left' />
 						{ this.state.showHistory && this.renderHistoryItems() }
 					</div>
-					<div className={`editorTool undo ${this.props.historySize.undo ? 'active' : ''}`}
+					<div className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
 					</div>
-					<div className={`editorTool redo ${this.props.historySize.redo ? 'active' : ''}`}
+					<div className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
 					</div>
@@ -302,36 +321,33 @@ const SnippetGroup = createReactClass({
 		};
 	},
 	handleSnippetClick : function(e, snippet){
-		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
+			if(!snippet.subsnippets){
+				return (
+					<button className='menu-item' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem'>
+						<i className={snippet.icon} />
+						<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
+						{snippet.experimental && <span className='beta'>beta</span>}
+						{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+					</button>
+				);
+			} else if(snippet.subsnippets){
+				return (
+					<Dropdown groupName={snippet.name} icon={snippet.icon} key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+					</Dropdown>
+				)
+			}
 
 		});
 	},
 
 	render : function(){
-		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
-		return <div className={snippetGroup}>
-			<div className='text'>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon}>
+			{this.renderSnippets(this.props.snippets)}
+		</Dropdown>;
 	},
 });

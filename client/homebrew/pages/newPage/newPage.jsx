@@ -10,7 +10,7 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
-import SplitPane    from '../../../components/splitPane/splitPane.jsx';
+import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
@@ -42,17 +42,17 @@ const NewPage = (props)=>{
 		...props
 	};
 
-	const [currentBrew               , setCurrentBrew               ] = useState(props.brew);
-	const [isSaving                  , setIsSaving                  ] = useState(false);
-	const [saveGoogle                , setSaveGoogle                ] = useState(global.account?.googleId ? true : false);
-	const [error                     , setError                     ] = useState(null);
-	const [HTMLErrors                , setHTMLErrors                ] = useState(Markdown.validate(props.brew.text));
-	const [currentEditorViewPageNum  , setCurrentEditorViewPageNum  ] = useState(1);
+	const [currentBrew, setCurrentBrew] = useState(props.brew);
+	const [isSaving, setIsSaving] = useState(false);
+	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
+	const [error, setError] = useState(null);
+	const [HTMLErrors, setHTMLErrors] = useState(Markdown.validate(props.brew.text));
+	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
-	const [themeBundle               , setThemeBundle               ] = useState({});
-	const [unsavedChanges            , setUnsavedChanges            ] = useState(false);
-	const [autoSaveEnabled           , setAutoSaveEnabled           ] = useState(false);
+	const [themeBundle, setThemeBundle] = useState({});
+	const [unsavedChanges, setUnsavedChanges] = useState(false);
+	const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
@@ -156,7 +156,7 @@ const NewPage = (props)=>{
 		const updatedBrew = { ...currentBrew };
 		splitTextStyleAndMetadata(updatedBrew);
 
-		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^\\page$/gm;
+		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm;
 		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
 
 		const res = await request
