@@ -186,7 +186,7 @@ const MetadataEditor = createReactClass({
 				<label>authors</label>
 				<div className='value'>
 					{authors.length > 0 && (
-						<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+						<a href={`/user/${authors[0]}`} className='author-link' target="_blank" title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
 								{authors[0]}{authors.length > 1 && ', '}
 						</a>
 					)}
