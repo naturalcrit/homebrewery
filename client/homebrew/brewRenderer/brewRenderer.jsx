@@ -353,6 +353,7 @@ const BrewRenderer = (props)=>{
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
+				sandbox="allow-same-origin allow-modals allow-top-navigation"
 			>
 				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}
