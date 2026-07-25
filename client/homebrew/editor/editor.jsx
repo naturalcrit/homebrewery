@@ -5,7 +5,7 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import dedent from 'dedent';
 
-import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
+import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
