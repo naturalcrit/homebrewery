@@ -11,6 +11,10 @@
 	height           : auto;
 	color            : black;
 	background-color : #DDDDDD;
+	font-size        : .65rem;
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
+	font-weight: 800;
 
 	.snippets {
 		display         : flex;
@@ -22,7 +26,7 @@
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 250px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-
+		font-size: .85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 
 		>div {
@@ -57,32 +61,27 @@
 				}
 				&.undo {
 					.tooltipLeft('Undo');
-					font-size : 0.75em;
 					color     : grey;
 					&.active { color : inherit; }
 				}
 				&.redo {
 					.tooltipLeft('Redo');
-					font-size : 0.75em;
 					color     : grey;
 					&.active { color : inherit; }
 				}
 				&.foldAll {
 					.tooltipLeft('Fold All');
-					font-size : 0.75em;
 					color     : grey;
 					&.active { color : inherit; }
 				}
 				&.unfoldAll {
 					.tooltipLeft('Unfold All');
-					font-size : 0.75em;
 					color     : grey;
 					&.active { color : inherit; }
 				}
 				&.history {
 					.tooltipLeft('History');
 					position  : relative;
-					font-size : 0.75em;
 					color     : grey;
 					border    : none;
 					&.active { color : inherit; }
@@ -93,7 +92,6 @@
 				}
 				&.editorTheme {
 					.tooltipLeft('Editor Themes');
-					font-size : 0.75em;
 					color     : inherit;
 					&.active {
 						position         : relative;
@@ -144,90 +142,96 @@
 		border-left : 1px solid black;
 		.tooltipLeft('Edit Brew Properties');
 	}
-	.snippetGroup {
 
-		&:hover {
-			& > .dropdown { visibility : visible; }
-		}
-		.dropdown {
-			position         : absolute;
-			top              : 100%;
-			z-index          : 1000;
-			visibility       : hidden;
-			padding          : 0px;
-			margin-left      : -5px;
-			background-color : #DDDDDD;
-			.snippet {
-				position    : relative;
-				display     : flex;
-				align-items : center;
-				min-width   : max-content;
-				padding     : 5px;
-				font-size   : 10px;
-				cursor      : pointer;
-				.animate(background-color);
-				i {
-					min-width    : 25px;
-					height       : 1.2em;
-					margin-right : 8px;
-					font-size    : 1.2em;
-					text-align   : center;
-					& ~ i {
-						margin-right : 0;
-						margin-left  : 5px;
-					}
-					/* Fonts */
-					&.font {
-						height : auto;
-						&::before {
-							font-size : 1em;
-							content   : 'ABC';
-						}
-
-						&.OpenSans {font-family : 'OpenSans';}
-						&.CodeBold {font-family : 'CodeBold';}
-						&.CodeLight {font-family : 'CodeLight';}
-						&.ScalySansRemake {font-family : 'ScalySansRemake';}
-						&.BookInsanityRemake {font-family : 'BookInsanityRemake';}
-						&.MrEavesRemake {font-family : 'MrEavesRemake';}
-						&.SolberaImitationRemake {font-family : 'SolberaImitationRemake';}
-						&.ScalySansSmallCapsRemake {font-family : 'ScalySansSmallCapsRemake';}
-						&.WalterTurncoat {font-family : 'WalterTurncoat';}
-						&.Lato {font-family : 'Lato';}
-						&.Courier {font-family : 'Courier';}
-						&.NodestoCapsCondensed {font-family : 'NodestoCapsCondensed';}
-						&.Overpass {font-family : 'Overpass';}
-						&.Davek {font-family : 'Davek';}
-						&.Iokharic {font-family : 'Iokharic';}
-						&.Rellanic {font-family : 'Rellanic';}
-						&.TimesNewRoman {font-family : 'Times New Roman';}
-					}
-				}
-				.name { margin-right : auto; }
-				.disabled { text-decoration : line-through; }
-				.beta {
-					align-self    : center;
-					padding       : 4px 6px;
-					margin-left   : 5px;
-					font-family   : monospace;
-					line-height   : 1em;
-					color         : white;
-					background    : grey;
-					border-radius : 12px;
-				}
-				&:hover {
-					background-color : #999999;
-					& > .dropdown {
-						visibility : visible;
-						&.side {
-							top         : 0%;
-							left        : 100%;
-							margin-left : 0;
-							box-shadow  : -1px 1px 2px 0px #999999;
-						}
-					}
-				}
+	
+	.menu-wrapper {
+		.menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child {
+			.caret {
+				display: none;
 			}
+		}
+		.menu-list {
+			padding          : 0px;
+			background-color : #DDDDDD;
+			
+		}
+	}
+
+	.menu-item {
+		position    : relative;
+		display     : flex;
+		justify-content: space-between;
+		align-items : center; 
+		min-width   : max-content;
+		padding     : 5px;
+		cursor      : pointer;
+		width: 100%;
+		.animate(background-color);
+		&:is(.menu-list .menu-item) [class*="name"] {
+			padding-inline: 8px;
+		}
+		.menu-name {
+			flex: 1;
+			text-align: left;
+			text-box-trim: trim-end;
+		}
+		i {
+			min-width    : 25px;
+			height       : .85rem;
+			font-size    : 1.2em;
+			text-align   : center;
+			&.caret {
+				margin-right: 0;
+			}
+			&.caret:is(.menu-wrapper .menu-wrapper * ) {
+				text-align: right;
+			}
+			/* Fonts */
+			&.font {
+				height : auto;
+				&::before {
+					font-size : 1em;
+					content   : 'ABC';
+				}
+
+				&.OpenSans {font-family : 'OpenSans';}
+				&.CodeBold {font-family : 'CodeBold';}
+				&.CodeLight {font-family : 'CodeLight';}
+				&.ScalySansRemake {font-family : 'ScalySansRemake';}
+				&.BookInsanityRemake {font-family : 'BookInsanityRemake';}
+				&.MrEavesRemake {font-family : 'MrEavesRemake';}
+				&.SolberaImitationRemake {font-family : 'SolberaImitationRemake';}
+				&.ScalySansSmallCapsRemake {font-family : 'ScalySansSmallCapsRemake';}
+				&.WalterTurncoat {font-family : 'WalterTurncoat';}
+				&.Lato {font-family : 'Lato';}
+				&.Courier {font-family : 'Courier';}
+				&.NodestoCapsCondensed {font-family : 'NodestoCapsCondensed';}
+				&.Overpass {font-family : 'Overpass';}
+				&.Davek {font-family : 'Davek';}
+				&.Iokharic {font-family : 'Iokharic';}
+				&.Rellanic {font-family : 'Rellanic';}
+				&.TimesNewRoman {font-family : 'Times New Roman';}
+			}
+		}
+		.name { margin-right : auto; }
+		.disabled { text-decoration : line-through; }
+		.beta {
+			align-self    : center;
+			padding       : 4px 6px;
+			margin-left   : 5px;
+			font-family   : monospace;
+			line-height   : 1em;
+			color         : white;
+			background    : grey;
+			border-radius : 12px;
+		}
+		&:hover {
+			background-color : #999999;
+		}
+		&:disabled {
+			color: gray;
+			cursor: not-allowed;
+			&:hover { background-color: unset; }
 		}
 	}
 	.disabledSnippets {
