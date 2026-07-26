@@ -10,7 +10,7 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-import SplitPane    from '../../../components/splitPane/splitPane.jsx';
+import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
