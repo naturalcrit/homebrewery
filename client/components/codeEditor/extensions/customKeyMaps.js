@@ -1,6 +1,7 @@
 /* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
-import { undo, redo, indentMore, deleteLine } from '@codemirror/commands';
+import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
+import { EditorSelection } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import * as prettier from 'prettier/standalone';
 import * as postcssPlugin from 'prettier/plugins/postcss';
@@ -57,27 +58,37 @@ export async function formatCSS(view) {
 	return true;
 }
 const insertTab = (view)=>{
-	const { from, to } = view.state.selection.main;
+	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
+ 	// Otherwise inserts two spaces at each cursor/selection
+	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
+		view.state.doc.lineAt(range.to).number
+	);
+
+	if(shouldIndent) return indentMore(view);
+
+	const changes = [];
+
+	for (const range of view.state.selection.ranges) {
+		changes.push({
+			from   : range.from,
+			to     : range.to,
+			insert : '  ' // Insert two spaces, not a tab char!
+		});
+	}
+	// Create a transaction so we can map old positions to
+	// their new positions after the edits are applied
+	const  mappedChanges = view.state.update({ changes });
 
 	view.dispatch({
-		changes   : { from, to, insert: '  ' },
-		selection : { anchor: from + 2 }
+		changes,
+		selection : EditorSelection.create(
+			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
+				mappedChanges.changes.mapPos(range.from, 1) + 2
+			)
+			)
+		)
 	});
 
-	return true;
-};
-
-const indentLess = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const lines = [];
-	for (let l = view.state.doc.lineAt(from).number; l <= view.state.doc.lineAt(to).number; l++) {
-		const line = view.state.doc.line(l);
-		const match = line.text.match(/^ {1,2}/); // match up to 2 spaces
-		if(match) {
-			lines.push({ from: line.from, to: line.from + match[0].length, insert: '' });
-		}
-	}
-	if(lines.length > 0) view.dispatch({ changes: lines });
 	return true;
 };
 
@@ -222,11 +233,12 @@ const newPage = (view)=>{
 };
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: insertTab },
-	{ key: 'Mod-z', run: undo }, //i think it may be unnecessary
+	{ key: 'Tab', run: insertTab }, //runs indentMore if multiple lines selected in a single selection
+	{ key: 'Shift-Tab', run: indentLess },
+	{ key: 'Mod-z', run: undo }, //it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
-	{ key: 'Mod-y', run: redo },
-	{ key: 'Mod-d', run: deleteLine },
+	{ key: 'Mod-y', run: redo }, //user asked, so double keybind
+	{ key: 'Mod-d', run: deleteLine }, //annoyingly overrides "selectNextOccurrence" because users asked
 ]));
 
 export const cssKeymap = Prec.highest(keymap.of([
@@ -235,8 +247,7 @@ export const cssKeymap = Prec.highest(keymap.of([
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
-	//{ key: 'Shift-Tab', run: indentMore },
-	{ key: 'Shift-Tab',       run: indentLess },
+
 	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
 	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
 	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline

@@ -5,7 +5,7 @@
   "type": "module",
   "engines": {
     "npm": ">=10.8 <12",
-    "node": ">=20.18 <25"
+    "node": ">=26.4.0"
   },
   "repository": {
     "type": "git",
@@ -105,6 +105,7 @@
     "@dmsnell/diff-match-patch": "^1.1.0",
     "@googleapis/drive": "^20.2.0",
     "@lezer/highlight": "^1.2.3",
+    "@oddbird/css-anchor-positioning": "^0.9.0",
     "@sanity/diff-match-patch": "^3.2.0",
     "@vitejs/plugin-react": "^5.1.2",
     "body-parser": "^2.2.0",

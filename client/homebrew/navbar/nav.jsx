@@ -4,7 +4,7 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import cx from 'classnames';
 
-import NaturalCritIcon from '../../components/svg/naturalcrit-d20.svg.jsx';
+import NaturalCritIcon from '@components/svg/naturalcrit-d20.svg.jsx';
 
 const Nav = {
 	base : createReactClass({

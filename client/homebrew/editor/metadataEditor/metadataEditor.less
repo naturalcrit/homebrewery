@@ -173,7 +173,51 @@
 			.colorButton(@red);
 		}
 	}
-	.authors.field .value { line-height    : 1.5em; }
+	.authors.field {
+		.tag {
+			font-weight:300;
+			transition:background-color 0.2s;
+
+			&.owner {
+				position: relative;
+				background-color:@silverLight;
+				min-width:25px;
+				display:grid;
+				place-items:center;
+				font-weight: 900;
+
+				&::after {
+					content: "\f521";
+					font-family: "Font Awesome 6 Free";
+					color:gold;
+					position: absolute;
+					top: 0;
+					left: 0;
+					width:15px;
+					height:15px;
+					rotate:-25deg;
+					translate:-30% -50%;
+					transform: scaleY(0.7);
+				}
+			}
+			&:has(button) a {
+				padding-right:5px;
+			}
+			&:has(button:hover) {
+				background:#d97d7d;
+			}
+
+			button {
+				color:@red;
+			}
+
+		
+		}
+		a {
+			color:black;
+			text-decoration:unset;
+		}
+	}
 
 	.themes.field {
 		& .dropdown-container {
@@ -275,13 +319,17 @@
 		}
 
 		.tag {
-			padding          : 0.3em;
+			padding          : 0.35em;
 			margin           : 2px;
-			font-size        : 0.9em;
+			font-size        : 0.95em;
 			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 
 			.icon { #groupedIcon; }
+
+			button {
+				cursor : pointer;
+			}
 		}
 
 		.input-group {
