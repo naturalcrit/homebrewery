@@ -70,8 +70,8 @@ const EditPage = (props)=>{
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
 	const [alertLoginToTransfer, setAlertLoginToTransfer] = useState(false);
+	const [alertOwnershipToTransfer, setalertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
-	const [notOwnerToTransfer, setNotOwnerToTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
@@ -164,7 +164,7 @@ const EditPage = (props)=>{
 
 	const handleGoogleClick = ()=>{
 		if(global.account !== brew.authors[0]) {
-			setNotOwnerToTransfer(true);
+			setalertOwnershipToTransfer(true);
 		}
 		if(!global.account?.googleId) {
 			setAlertLoginToTransfer(true);
@@ -180,7 +180,7 @@ const EditPage = (props)=>{
 		setAlertTrashedGoogleBrew(false);
 		setAlertLoginToTransfer(false);
 		setConfirmGoogleTransfer(false);
-		setNotOwnerToTransfer(false);
+		setalertOwnershipToTransfer(false);
 	};
 
 	const toggleGoogleStorage = ()=>{
@@ -276,13 +276,13 @@ const EditPage = (props)=>{
 				</div>
 			)}
 
-			{notOwnerToTransfer && (
+			{alertOwnershipToTransfer && (
 				<div className='errorContainer' onClick={closeAlerts}>
 					You must be the Owner to transfer between the Homebrewery and Google Drive!
+					The owner of this file is ${brew.authors[0]}
 					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
-						<div className='confirm'> Sign In </div>
+						<div className='confirm'> Okay </div>
 					</a>
-					<div className='deny'>      Not Now </div>
 				</div>
 			)}
 
