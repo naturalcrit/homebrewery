@@ -3,6 +3,8 @@
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
+	--activeTriggerColor: inherit;
+	--menuColor      : #DDDDDD;
 	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
@@ -122,8 +124,6 @@
 	}
 
 	.snippets {
-		--activeTriggerColor: blue;
-		--menuColor : red;
 		display         : flex;
 		justify-content : flex-start;
 		min-width       : 499.35px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
@@ -208,7 +208,7 @@
 		}
 	}
 }
-@container editor (width < 750px) {
+@container editor (width < 818px) {
 	.snippetBar {
 		.editors { 
 			flex            : 1;
