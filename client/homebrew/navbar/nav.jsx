@@ -61,10 +61,10 @@ const Nav = {
 					{icon}
 				</a>;
 			} else {
-				return <div {...props} className={classes} onClick={this.handleClick} >
+				return <button {...props} className={classes} onClick={this.handleClick} >
 					{this.props.children}
 					{icon}
-				</div>;
+				</button>;
 			}
 		}
 	}),
