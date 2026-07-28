@@ -246,53 +246,53 @@ const Snippetbar = createReactClass({
 		return (
 			<div className='editors'>
 				{this.props.view !== 'meta' && <><div className='historyTools'>
-					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+					<button className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
 						onClick={this.toggleHistoryMenu} >
 						<i className='fas fa-clock-rotate-left' />
 						{ this.state.showHistory && this.renderHistoryItems() }
-					</div>
-					<div className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
-					</div>
-					<div className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
-					</div>
+					</button>
 				</div>
 				<div className='codeTools'>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+					<button className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
 						onClick={this.props.foldCode} >
 						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
-					</div>
-					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+					</button>
+					<button className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 						onClick={this.toggleThemeSelector} >
 						<i className='fas fa-palette' />
 						{this.state.themeSelector && this.renderThemeSelector()}
-					</div>
+					</button>
 				</div></>}
 
 				<div className='tabs'>
-					<div className={cx('text', { selected: this.props.view === 'text' })}
+					<button className={cx('text', { selected: this.props.view === 'text' })}
 						onClick={()=>this.props.onViewChange('text')}>
 						<i className='fa fa-beer' />
-					</div>
-					<div className={cx('style', { selected: this.props.view === 'style' })}
+					</button>
+					<button className={cx('style', { selected: this.props.view === 'style' })}
 						onClick={()=>this.props.onViewChange('style')}>
 						<i className='fa fa-paint-brush' />
-					</div>
-					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
+					</button>
+					<button className={cx('snippet', { selected: this.props.view === 'snippet' })}
 						onClick={()=>this.props.onViewChange('snippet')}>
 						<i className='fas fa-th-list' />
-					</div>
-					<div className={cx('meta', { selected: this.props.view === 'meta' })}
+					</button>
+					<button className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
 						<i className='fas fa-info-circle' />
-					</div>
+					</button>
 				</div>
 
 			</div>
