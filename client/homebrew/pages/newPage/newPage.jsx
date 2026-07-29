@@ -10,7 +10,7 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
-import SplitPane    from '../../../components/splitPane/splitPane.jsx';
+import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
@@ -207,7 +207,7 @@ const NewPage = (props)=>{
 
 		// #5 - No unsaved changes, and has never been saved, hide the button
 		if(neverSaved)
-			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
 		return <Nav.item className='save saved'>saved</Nav.item>;

@@ -2,7 +2,7 @@
 import './snippetbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
-import { Dropdown } from '../../../components/dropdown/dropdown.jsx';
+import { Dropdown } from '@components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
 import cx from 'classnames';

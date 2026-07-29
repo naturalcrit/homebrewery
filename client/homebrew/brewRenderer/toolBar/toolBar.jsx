@@ -3,7 +3,7 @@ import './toolBar.less';
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 
-import { Anchored, AnchoredBox, AnchoredTrigger } from '../../../components/Anchored.jsx';
+import { Anchored, AnchoredBox, AnchoredTrigger } from '@components/Anchored.jsx';
 
 const MAX_ZOOM = 300;
 const MIN_ZOOM = 10;
