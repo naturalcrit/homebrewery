@@ -308,7 +308,7 @@ const CodeEditor = forwardRef(
 			view.dispatch({
 				effects : themeCompartment.reconfigure(themeExtension),
 			});
-		}, [editorTheme]);
+		}, [editorTheme, tab]);
 
 		useEffect(()=>{
 			//rebuild syntax highlight when changing tab or renderer
