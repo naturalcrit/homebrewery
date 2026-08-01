@@ -164,7 +164,7 @@ const HomePage =(props)=>{
 
 		// #5 - No unsaved changes, and has never been saved, hide the button
 		if(neverSaved)
-			return <Nav.item className='save neverSaved'>save now</Nav.item>;
+			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
 		return <Nav.item className='save saved'>saved</Nav.item>;
