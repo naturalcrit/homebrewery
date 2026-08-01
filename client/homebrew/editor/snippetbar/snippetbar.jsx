@@ -65,6 +65,7 @@ const Snippetbar = createReactClass({
 			historySize       : ()=>{},
 			foldCode          : ()=>{},
 			unfoldCode        : ()=>{},
+			formatCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			themeBundle       : [],
@@ -268,6 +269,10 @@ const Snippetbar = createReactClass({
 					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
+					</div>
+					<div className={`editorTool formatCode ${this.props.formatCode ? 'active' : ''}`}
+						onClick={this.props.formatCode} >
+						<i className='fas fa-wand-magic-sparkles' />
 					</div>
 					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 						onClick={this.toggleThemeSelector} >
