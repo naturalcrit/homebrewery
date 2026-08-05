@@ -90,7 +90,7 @@
     "@babel/plugin-transform-runtime": "^7.29.7",
     "@babel/preset-env": "^7.29.5",
     "@babel/preset-react": "^7.29.7",
-    "@babel/runtime": "^7.29.2",
+    "@babel/runtime": "^8.0.0",
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/highlight": "^0.19.8",
