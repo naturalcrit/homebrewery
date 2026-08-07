@@ -94,7 +94,7 @@ const splitTextStyleAndMetadata = (brew)=>{
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
 
-		brew.bleed = { top: metadata.bleed?.top, bottom: metadata.bleed?.bottom, inner: metadata.bleed?.inner, outer: metadata.bleed?.outer };
+		brew.bleedSize = { top: metadata.bleedSize?.top, bottom: metadata.bleedSize?.bottom, inner: metadata.bleedSize?.inner, outer: metadata.bleedSize?.outer };
 		brew.safetySpace = { top: metadata.safetySpace?.top, bottom: metadata.safetySpace?.bottom, outer: metadata.safetySpace?.outer, inner: metadata.safetySpace?.inner };
 		brew.trimSize  = { width: metadata.trimSize?.width, height: metadata.trimSize?.height };
 		brew.columns = metadata?.columns;

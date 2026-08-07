@@ -401,7 +401,7 @@ tags:
   - fun
 renderer: v3
 theme: phb
-bleed:
+bleedSize:
   top: .125in
   bottom: .125in
   inner: .125in
@@ -444,7 +444,7 @@ tags:
   - fun
 renderer: v3
 theme: phb
-bleed:
+bleedSize:
   top: .125in
   bottom: .125in
   inner: .125in
@@ -1137,7 +1137,7 @@ brew`);
 					'renderer: legacy\n' +
 					'theme: 5ePHB\n' +
 					'lang: en\n' +
-					'bleed:\n' +
+					'bleedSize:\n' +
 					'  top: 1.5in\n' +
 					'  bottom: 1.5in\n' +
 					'  outer: 1.5in\n' +
@@ -1175,10 +1175,10 @@ brew`);
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
 			// Paper Specfications
-			expect(testBrew.bleed.top).toEqual('1.5in');
-			expect(testBrew.bleed.bottom).toEqual('1.5in');
-			expect(testBrew.bleed.inner).toEqual('1.5in');
-			expect(testBrew.bleed.outer).toEqual('1.5in');
+			expect(testBrew.bleedSize.top).toEqual('1.5in');
+			expect(testBrew.bleedSize.bottom).toEqual('1.5in');
+			expect(testBrew.bleedSize.inner).toEqual('1.5in');
+			expect(testBrew.bleedSize.outer).toEqual('1.5in');
 
 			expect(testBrew.safetySpace.top).toEqual('1.25in');
 			expect(testBrew.safetySpace.bottom).toEqual('1.25in');
