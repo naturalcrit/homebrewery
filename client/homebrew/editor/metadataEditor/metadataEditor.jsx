@@ -326,6 +326,20 @@ const MetadataEditor = createReactClass({
 		</div>;
 	},
 
+	renderDimensionalInput : function(label, name, units, property){
+		return 	<div class='dimension'>
+			<label for={name}>{label}</label>
+			<input type='text' name={name} id={name} value={Number.parseFloat(property, 10)}></input>
+			<select name={units}>
+				<option value='in'>in</option>
+				<option value='cm'>cm</option>
+				<option value='mm'>mm</option>
+				<option value='px'>px</option>
+			</select>
+		</div>;
+
+	},
+
 	renderRenderOptions : function(){
 		return <div className='field renderers'>
 			<label>Renderer</label>
@@ -435,6 +449,33 @@ const MetadataEditor = createReactClass({
 				<div className='value'>
 					{this.renderPublish()}
 					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>
+				</div>
+			</div>
+
+			<h2>Document Specifications</h2>
+			<div className='field-group'>
+				<div class='field-column'>
+					<div className='field-row'>
+						<label>paper size</label>
+						{this.renderDimensionalInput('height', 'trimSizeHeight', 'trimSizeUnitsHeight', this.props.metadata.trimSize.height)}
+						{this.renderDimensionalInput('width', 'trimSizeWidth', 'trimSizeUnitsWidth', this.props.metadata.trimSize.width)}
+					</div>
+
+					<div className='field-row'>
+						<label>safety</label>
+						{this.renderDimensionalInput('top', 'safetySpaceTop', 'safetySpaceUnitsTop', this.props.metadata.safetySpace.top)}
+						{this.renderDimensionalInput('bottom', 'safetySpaceBottom', 'safetySpaceUnitsBottom', this.props.metadata.safetySpace.bottom)}
+						{this.renderDimensionalInput('inner', 'safetySpaceInner', 'safetySpaceUnitsInner', this.props.metadata.safetySpace.inner)}
+						{this.renderDimensionalInput('outer', 'safetySpaceOuter', 'safetySpaceUnitsOuter', this.props.metadata.safetySpace.outer)}
+					</div>
+
+					<div className='field-row'>
+						<label>bleed</label>
+						{this.renderDimensionalInput('top', 'bleedTop', 'bleedUnitsTop', this.props.metadata.bleed.top)}
+						{this.renderDimensionalInput('bottom', 'bleedBottom', 'bleedUnitsBottom', this.props.metadata.bleed.bottom)}
+						{this.renderDimensionalInput('inner', 'bleedInner', 'bleedUnitsInner', this.props.metadata.bleed.inner)}
+						{this.renderDimensionalInput('outer', 'bleedOuter', 'bleedUnitsOuter', this.props.metadata.bleed.outer)}
+					</div>
 				</div>
 			</div>
 
