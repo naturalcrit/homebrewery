@@ -70,6 +70,7 @@ const EditPage = (props)=>{
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
 	const [alertLoginToTransfer, setAlertLoginToTransfer] = useState(false);
+	const [alertOwnershipToTransfer, setalertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
@@ -162,6 +163,9 @@ const EditPage = (props)=>{
 	};
 
 	const handleGoogleClick = ()=>{
+		if(global.account !== brew.authors[0]) {
+			setalertOwnershipToTransfer(true);
+		}
 		if(!global.account?.googleId) {
 			setAlertLoginToTransfer(true);
 			return;
@@ -176,6 +180,7 @@ const EditPage = (props)=>{
 		setAlertTrashedGoogleBrew(false);
 		setAlertLoginToTransfer(false);
 		setConfirmGoogleTransfer(false);
+		setalertOwnershipToTransfer(false);
 	};
 
 	const toggleGoogleStorage = ()=>{
@@ -271,9 +276,19 @@ const EditPage = (props)=>{
 				</div>
 			)}
 
+			{alertOwnershipToTransfer && (
+				<div className='errorContainer' onClick={closeAlerts}>
+					You must be the Owner to transfer between the Homebrewery and Google Drive!
+					The owner of this file is ${brew.authors[0]}
+					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+						<div className='confirm'> Okay </div>
+					</a>
+				</div>
+			)}
+
 			{alertLoginToTransfer && (
 				<div className='errorContainer' onClick={closeAlerts}>
-					You must be signed in to a Google account to transfer between the homebrewery and Google Drive!
+					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
 					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm'> Sign In </div>
 					</a>
