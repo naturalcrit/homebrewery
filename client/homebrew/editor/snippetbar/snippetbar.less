@@ -3,6 +3,8 @@
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
+	--activeTriggerColor: inherit;
+	--menuColor      : #DDDDDD;
 	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
@@ -15,12 +17,6 @@
 	font-family: 'Open Sans', sans-serif;
 	text-transform: uppercase;
 	font-weight: 800;
-
-	.snippets {
-		display         : flex;
-		justify-content : flex-start;
-		min-width       : 499.35px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-	}
 
 	.editors {
 		display         : flex;
@@ -118,23 +114,7 @@
 			}
 		}		
 	}
-	.snippetBarButton {
-		display        : inline-block;
-		height         : @menuHeight;
-		padding        : 0px 5px;
-		font-size      : 0.625em;
-		font-weight    : 800;
-		line-height    : @menuHeight;
-		text-transform : uppercase;
-		text-wrap      : nowrap;
-		cursor         : pointer;
-		&:hover, &.selected { background-color : #999999; }
-		i {
-			margin-right   : 3px;
-			font-size      : 1.4em;
-			vertical-align : middle;
-		}
-	}
+
 	.toggleMeta {
 		position    : absolute;
 		top         : 0px;
@@ -143,19 +123,14 @@
 		.tooltipLeft('Edit Brew Properties');
 	}
 
-	
-	.menu-wrapper {
-		.menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child {
-			.caret {
-				display: none;
-			}
-		}
-		.menu-list {
-			padding          : 0px;
-			background-color : #DDDDDD;
-			
-		}
+	.snippets {
+		display         : flex;
+		justify-content : flex-start;
+		min-width       : 499.35px;  //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 	}
+
+	// removed caret for top level items, by request (makes buttons too wide).
+	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display: none; }
 
 	.menu-item {
 		position    : relative;
@@ -166,9 +141,8 @@
 		padding     : 5px;
 		cursor      : pointer;
 		width: 100%;
-		.animate(background-color);
 		&:is(.menu-list .menu-item) [class*="name"] {
-			padding-inline: 8px;
+			padding-inline: 8px;   // additional space between icon and name (helpful in Fonts menu especially).
 		}
 		.menu-name {
 			flex: 1;
@@ -214,8 +188,7 @@
 			}
 		}
 		.name { margin-right : auto; }
-		.disabled { text-decoration : line-through; }
-		.beta {
+		.status {
 			align-self    : center;
 			padding       : 4px 6px;
 			margin-left   : 5px;
@@ -234,15 +207,8 @@
 			&:hover { background-color: unset; }
 		}
 	}
-	.disabledSnippets {
-		color: grey;
-		cursor: not-allowed;
-
-		&:hover { background-color: #DDDDDD;}
-	}
-
 }
-@container editor (width < 750px) {
+@container editor (width < 818px) {
 	.snippetBar {
 		.editors { 
 			flex            : 1;

@@ -1,24 +1,32 @@
-.menu-wrapper {
-	position: relative;
-	&:is(.menu-bar > .menu-section > .menu-wrapper){
-		display: inline-block;
-	}
+@property --menuColor {
+	syntax: '<color>';
+	inherits: true;
+	initial-value: #DDD;
 }
 
+@property --activeTriggerColor {
+	syntax: '<color>';
+	inherits: true;
+}
+
+:root{
+	--activeTriggerColor : var(--activeTriggerColor);
+}
 .menu-list {
+	contain          : content;
 	position         : fixed;
-	z-index          : 1000;
 	top              : anchor(bottom);
 	left             : anchor(left);
 	position-try: flip-inline flip-block;
 	color: inherit;   // [popover] gets a `canvastext` color value from useragent.
-	> .menu-wrapper {
-		position:relative;
-		> .menu-list {
+	background: var(--menuColor);
+	li > .menu-list {
 			margin: 0 0px;
 			top  : anchor(top);
 			left : anchor(right);
 			position-try: flip-inline;
 		}
-	}
+}
+.menu-wrapper:has(:popover-open) > button {                        // if menu is open...
+	background-color: var(--activeTriggerColor, hsl(from var(--menuColor) h s calc(l * .85)));  // tint menu triggers based on menu color
 }
