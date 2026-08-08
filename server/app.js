@@ -561,7 +561,11 @@ export default async function createApp(vite) {
 			publicUrl   : config.get('publicUrl') ?? '',
 			baseUrl     : `${req.protocol}://${req.get('host')}`,
 			environment : nodeEnv,
-			deployment  : config.get('heroku_app_name') ?? ''
+			deployment  : config.get('heroku_app_name') ?? '',
+			style       : config.get('style') ?? {
+				backgroundColor : null,
+				textLabel       : false
+			}
 		};
 		const props = {
 			version     : version,
