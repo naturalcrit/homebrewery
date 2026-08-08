@@ -93,6 +93,15 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+
+		brew.bleedSize = { top: metadata.bleedSize?.top, bottom: metadata.bleedSize?.bottom, inner: metadata.bleedSize?.inner, outer: metadata.bleedSize?.outer };
+		brew.safetySpace = { top: metadata.safetySpace?.top, bottom: metadata.safetySpace?.bottom, outer: metadata.safetySpace?.outer, inner: metadata.safetySpace?.inner };
+		brew.trimSize  = { width: metadata.trimSize?.width, height: metadata.trimSize?.height };
+		brew.columns = metadata?.columns;
+		brew.columnGutter = metadata?.columnGutter;
+		brew.license = metadata?.license;
+		brew.legalAuthors = metadata.legalAuthors;
+
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
