@@ -61,19 +61,6 @@ export function generateAssetsPlugin(isDev = false) {
 			await fs.copy('./themes/fonts', `${buildDir}/fonts`);
 			await fs.copy('./themes/assets', `${buildDir}/assets`);
 			await fs.copy('./client/icons', `${buildDir}/icons`);
-
-			// Compile CodeMirror editor themes
-			const editorThemesBuildDir = `${buildDir}/homebrew/cm-themes`;
-			await fs.copy('./node_modules/codemirror/theme', editorThemesBuildDir);
-			await fs.copy('./themes/codeMirror/customThemes', editorThemesBuildDir);
-
-			const editorThemeFiles = fs.readdirSync(editorThemesBuildDir);
-			await fs.outputFile(`${buildDir}/homebrew/codeMirror/editorThemes.json`,
-				JSON.stringify(['default', ...editorThemeFiles.map((f)=>f.slice(0, -4))], null, 2),
-			);
-
-			// Copy remaining CodeMirror assets
-			await fs.copy('./themes/codeMirror', `${buildDir}/homebrew/codeMirror`);
 		},
 	};
 }

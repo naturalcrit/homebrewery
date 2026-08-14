@@ -1,6 +1,6 @@
 import './tagInput.less';
 import React, { useState, useEffect } from 'react';
-import Combobox from '../../../components/combobox.jsx';
+import Combobox from '@components/combobox.jsx';
 
 import { tagSuggestionList, canonizationList } from './curatedTagSuggestionList.js';
 

@@ -1,0 +1,215 @@
+/* eslint max-lines: ["error", { "max": 300 }] */
+import { keymap } from '@codemirror/view';
+import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
+import { EditorSelection } from '@codemirror/state';
+import { Prec } from '@codemirror/state';
+
+const insertTab = (view)=>{
+	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
+ 	// Otherwise inserts two spaces at each cursor/selection
+	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
+		view.state.doc.lineAt(range.to).number
+	);
+
+	if(shouldIndent) return indentMore(view);
+
+	const changes = [];
+
+	for (const range of view.state.selection.ranges) {
+		changes.push({
+			from   : range.from,
+			to     : range.to,
+			insert : '  ' // Insert two spaces, not a tab char!
+		});
+	}
+	// Create a transaction so we can map old positions to
+	// their new positions after the edits are applied
+	const  mappedChanges = view.state.update({ changes });
+
+	view.dispatch({
+		changes,
+		selection : EditorSelection.create(
+			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
+				mappedChanges.changes.mapPos(range.from, 1) + 2
+			)
+			)
+		)
+	});
+
+	return true;
+};
+
+const wrapSelection = (prefix, suffix)=>(view)=>{
+	const changes = [];
+
+	for (const range of view.state.selection.ranges) {
+		const { from, to } = range;
+		const selected = view.state.doc.sliceString(from, to);
+
+		let text;
+
+		if(from === to) { text = prefix + suffix; } else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
+			text = selected.slice(prefix.length, -suffix.length);
+		} else {text = `${prefix}${selected}${suffix}`;}
+
+		changes.push({ from, to, insert: text });
+	}
+
+	view.dispatch({
+		changes
+	});
+
+	return true;
+};
+
+const makeNbsp = (view)=>{
+	const { from } = view.state.selection.main;
+
+	const prev2 = from >= 2
+		? view.state.doc.sliceString(from - 2, from)
+		: '';
+
+	const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
+
+	view.dispatch({
+		changes   : { from, to: from, insert },
+		selection : { anchor: from + insert.length },
+	});
+
+	return true;
+};
+
+const makeSpace = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const match = selected.match(/^{{width:(\d+)% }}$/);
+	let newText = '{{width:10% }}';
+	if(match) {
+		const percent = Math.min(parseInt(match[1], 10) + 10, 100);
+		newText = `{{width:${percent}% }}`;
+	}
+	view.dispatch({ changes: { from, to, insert: newText } });
+	return true;
+};
+
+const removeSpace = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const match = selected.match(/^{{width:(\d+)% }}$/);
+	if(match) {
+		const percent = parseInt(match[1], 10) - 10;
+		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
+		view.dispatch({ changes: { from, to, insert: newText } });
+	}
+	return true;
+};
+
+const makeSpan = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const text = selected.startsWith('{{') && selected.endsWith('}}')
+		? selected.slice(2, -2)
+		: `{{${selected}}}`;
+	view.dispatch({ changes: { from, to, insert: text } });
+	return true;
+};
+
+const makeDiv = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const text = selected.startsWith('{{') && selected.endsWith('}}')
+		? selected.slice(2, -2)
+		: `{{\n${selected}\n}}`;
+	view.dispatch({ changes: { from, to, insert: text } });
+	return true;
+};
+
+const makeComment = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const isHtmlComment = selected.startsWith('<!--') && selected.endsWith('-->');
+	const text = isHtmlComment
+		? selected.slice(4, -3)
+		: `<!-- ${selected} -->`;
+	view.dispatch({ changes: { from, to, insert: text } });
+	return true;
+};
+
+const makeLink = (view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to).trim();
+	const isLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
+	const text = isLink ? `${isLink[1]} ${isLink[2]}` : `[${selected || 'alt text'}](url)`;
+	view.dispatch({ changes: { from, to, insert: text } });
+	return true;
+};
+
+const makeList = (type)=>(view)=>{
+	const { from, to } = view.state.selection.main;
+	const lines = [];
+	for (let l = from; l <= to; l++) {
+		const lineText = view.state.doc.line(l + 1).text;
+		lines.push(lineText);
+	}
+	const joined = lines.join('\n');
+	let newText;
+	if(type === 'UL') newText = joined.replace(/^/gm, '- ');
+	else newText = joined.replace(/^/gm, (m, i)=>`${i + 1}. `);
+	view.dispatch({ changes: { from, to, insert: newText } });
+	return true;
+};
+
+const makeHeader = (level)=>(view)=>{
+	const { from, to } = view.state.selection.main;
+	const selected = view.state.doc.sliceString(from, to);
+	const text = `${'#'.repeat(level)} ${selected}`;
+	view.dispatch({ changes: { from, to, insert: text } });
+	return true;
+};
+
+const newColumn = (view)=>{
+	const { from, to } = view.state.selection.main;
+	view.dispatch({ changes: { from, to, insert: '\n\\column\n\n' } });
+	return true;
+};
+
+const newPage = (view)=>{
+	const { from, to } = view.state.selection.main;
+	view.dispatch({ changes: { from, to, insert: '\n\\page\n\n' } });
+	return true;
+};
+
+export const generalKeymap = Prec.high(keymap.of([
+	{ key: 'Tab', run: insertTab }, //runs indentMore if multiple lines selected in a single selection
+	{ key: 'Shift-Tab', run: indentLess },
+	{ key: 'Mod-z', run: undo }, //it may be unnecessary
+	{ key: 'Mod-Shift-z', run: redo },
+	{ key: 'Mod-y', run: redo }, //user asked, so double keybind
+	{ key: 'Mod-d', run: deleteLine }, //annoyingly overrides "selectNextOccurrence" because users asked
+]));
+
+export const markdownKeymap = Prec.highest(keymap.of([
+
+	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
+	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
+	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline
+	{ key: 'Shift-Mod-=',     run: wrapSelection('^', '^') },      // makeSuper
+	{ key: 'Mod-=',           run: wrapSelection('^^', '^^') },    // makeSub
+	{ key: 'Mod-.',           run: makeNbsp },
+	{ key: 'Shift-Mod-.',     run: makeSpace },
+	{ key: 'Shift-Mod-,',     run: removeSpace },
+	{ key: 'Mod-m',           run: makeSpan },
+	{ key: 'Shift-Mod-m',     run: makeDiv },
+	{ key: 'Mod-/',           run: makeComment },
+	{ key: 'Mod-k',           run: makeLink },
+	{ key: 'Mod-l',           run: makeList('UL') },
+	{ key: 'Shift-Mod-l',     run: makeList('OL') },
+	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
+	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
+	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
+	{ key: 'Shift-Mod-4',     run: makeHeader(4) },
+	{ key: 'Shift-Mod-5',     run: makeHeader(5) },
+	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
+	{ key: 'Mod-Enter',       run: newPage },
+	{ key: 'Shift-Mod-Enter', run: newColumn },
+]));
