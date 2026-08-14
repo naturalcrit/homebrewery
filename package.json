@@ -140,7 +140,7 @@
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.30.1",
     "mongoose": "^9.9.2",
-    "nanoid": "5.1.16",
+    "nanoid": "6.0.1",
     "nconf": "^0.13.0",
     "node": "^26.7.0",
     "react": "^19.2.7",
