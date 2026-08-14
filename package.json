@@ -86,11 +86,11 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^7.29.7",
-    "@babel/plugin-transform-runtime": "^7.29.7",
-    "@babel/preset-env": "^7.29.5",
-    "@babel/preset-react": "^7.29.7",
-    "@babel/runtime": "^7.29.2",
+    "@babel/core": "^8.0.1",
+    "@babel/plugin-transform-runtime": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "@babel/preset-react": "^8.0.1",
+    "@babel/runtime": "^8.0.0",
     "@codemirror/autocomplete": "^6.20.3",
     "@codemirror/commands": "^6.10.3",
     "@codemirror/highlight": "^0.19.8",
@@ -153,7 +153,7 @@
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.3.0",
     "babel-jest": "^30.4.1",
-    "babel-plugin-transform-import-meta": "^2.3.3",
+    "babel-plugin-transform-import-meta": "^3.0.0",
     "eslint": "9.7",
     "eslint-plugin-jest": "^29.15.1",
     "eslint-plugin-react": "^7.37.5",
