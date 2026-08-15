@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import request from '../../utils/request-middleware.js';
 import Markdown from '@shared/markdown.js';
 
-import Dialog from '../../../components/dialog.jsx';
+import Dialog from '@components/dialog.jsx';
 
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 

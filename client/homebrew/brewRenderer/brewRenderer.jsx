@@ -11,7 +11,7 @@ import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
+import RenderWarnings from '@components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
 import dedent from 'dedent';
@@ -29,6 +29,7 @@ const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
+	<title>Rendered Brew Content</title>
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
@@ -210,7 +211,7 @@ const BrewRenderer = (props)=>{
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
 					if(global.enablev4) {
-						if (attributes && Object.hasOwn(attributes, 'hbtemplate')) {
+						if(attributes && Object.hasOwn(attributes, 'hbtemplate')) {
 							pageTemplates[index] = attributes['hbtemplate'];
 						}
 					}
@@ -220,7 +221,7 @@ const BrewRenderer = (props)=>{
 					if(!pageTemplates[index]) {
 						for (let i=index;i>=0; i--) {
 							// If one is found, add the template attribute
-							if (pageTemplates[i]) attributes['hbtemplate'] = pageTemplates[i];
+							if(pageTemplates[i]) attributes['hbtemplate'] = pageTemplates[i];
 						}
 					}
 				}
@@ -348,10 +349,11 @@ const BrewRenderer = (props)=>{
 			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+			<Frame id='BrewRenderer'  title="Rendered Brew Content" initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
+				sandbox="allow-same-origin allow-modals allow-top-navigation"
 			>
 				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}

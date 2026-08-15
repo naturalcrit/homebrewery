@@ -4,7 +4,7 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import cx from 'classnames';
 
-import NaturalCritIcon from '../../components/svg/naturalcrit-d20.svg.jsx';
+import NaturalCritIcon from '@components/svg/naturalcrit-d20.svg.jsx';
 
 const Nav = {
 	base : createReactClass({
@@ -61,10 +61,10 @@ const Nav = {
 					{icon}
 				</a>;
 			} else {
-				return <div {...props} className={classes} onClick={this.handleClick} >
+				return <button {...props} className={classes} onClick={this.handleClick} >
 					{this.props.children}
 					{icon}
-				</div>;
+				</button>;
 			}
 		}
 	}),
