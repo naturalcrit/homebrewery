@@ -54,7 +54,7 @@ const Homebrew = (props)=>{
 				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`,
 				backgroundColor : config?.style.backgroundColor ? `${config?.style.backgroundColor}` : null
 			};
-			console.table(styleObject);
+			console.table(config);
 			return styleObject;
 		}
 		return null;
