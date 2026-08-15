@@ -1,5 +1,5 @@
 import _       from 'lodash';
-import yaml    from 'js-yaml';
+import * as yaml from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
