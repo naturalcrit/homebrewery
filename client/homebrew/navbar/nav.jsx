@@ -33,10 +33,10 @@ const Nav = {
 				{icon && <i className={icon}></i>}
 			</a>;
 		} else {
-			return <div {...props} className={classes} onClick={onClick} >
+			return <button {...props} className={classes} onClick={onClick} >
 				{children}
 				{icon && <i className={icon}></i>}
-			</div>;
+			</button>;
 		}
 	},
 
