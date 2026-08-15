@@ -3,7 +3,7 @@ import createApp from './server/app.js';
 import config from './server/config.js';
 import { createServer as createViteServer } from 'vite';
 
-const isDev = process.env.NODE_ENV === 'local';
+const isDev = config.get('local_environments').includes(process.env.NODE_ENV);
 
 async function start() {
 	let vite;

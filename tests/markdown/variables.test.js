@@ -9,7 +9,7 @@ String.prototype.trimReturns = function(){
 	return this.replace(/\r?\n|\r/g, '').trim();
 };
 
-renderAllPages = function(pages){
+const renderAllPages = function(pages){
 	const outputs = [];
 	pages.forEach((page, index)=>{
 		const output = Markdown.render(page, index);
