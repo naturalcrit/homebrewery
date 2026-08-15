@@ -50,10 +50,12 @@ const Homebrew = (props)=>{
 	const backgroundObject = ()=>{
 		if(config?.deployment || config?.local) {
 			const bgText = config?.deployment || 'Local';
-			return {
+			const styleObject = {
 				backgroundImage : config?.style.textLabel ? `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")` : null,
-				backgroundColor : `${config?.style.backgroundColor}`
+				backgroundColor : config?.style.backgroundColor ? `${config?.style.backgroundColor}` : null
 			};
+			console.table(styleObject);
+			return styleObject;
 		}
 		return null;
 	};
