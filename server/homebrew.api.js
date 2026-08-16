@@ -5,7 +5,7 @@ import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
 import Markdown                      from '../shared/markdown.js';
-import yaml                          from 'js-yaml';
+import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
 import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
