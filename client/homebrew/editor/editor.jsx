@@ -5,7 +5,7 @@ import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import dedent from 'dedent';
 
-import CodeEditor from '../../components/codeEditor/codeEditor.jsx';
+import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 
@@ -254,7 +254,7 @@ const Editor = createReactClass({
 				allPages.slice(targetPage, lastPage - 1).join('\n') :
 				allPages[targetPage - 1];
 
-			const lines = strippedString.split('\n');				  // Split the softpages into an array of lines.
+			let lines = strippedString.split('\n');				  // Split the softpages into an array of lines.
 																	  // Clone the \page formatter as \softpage or initialize if one was not set on page 1.
 			const softPageFormatter = (allPages[targetPage - 1].split('\n')[0].startsWith('\\page') ? lines[0].replace('\\page', '\\softpage') : '\\softpage').trim();
 

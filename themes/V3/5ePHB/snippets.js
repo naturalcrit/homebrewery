@@ -109,28 +109,24 @@ export default [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Front Cover Page',
-				icon         : 'fac book-front-cover',
-				gen          : CoverPageGen.front,
-				experimental : true
+				name : 'Front Cover Page',
+				icon : 'fac book-front-cover',
+				gen  : CoverPageGen.front,
 			},
 			{
-				name         : 'Inside Cover Page',
-				icon         : 'fac book-inside-cover',
-				gen          : CoverPageGen.inside,
-				experimental : true
+				name : 'Inside Cover Page',
+				icon : 'fac book-inside-cover',
+				gen  : CoverPageGen.inside,
 			},
 			{
-				name         : 'Part Cover Page',
-				icon         : 'fac book-part-cover',
-				gen          : CoverPageGen.part,
-				experimental : true
+				name : 'Part Cover Page',
+				icon : 'fac book-part-cover',
+				gen  : CoverPageGen.part,
 			},
 			{
-				name      		 : 'Back Cover Page',
-				icon      		 : 'fac book-back-cover',
-				gen       		 : CoverPageGen.back,
-				experimental : true
+				name : 'Back Cover Page',
+				icon : 'fac book-back-cover',
+				gen	 : CoverPageGen.back,
 			},
 			{
 				name : 'Magic Item',
@@ -209,11 +205,10 @@ export default [
 				]
 			},
 			{
-				name         : 'Rune Table',
-				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
-				experimental : true,
-				subsnippets  : [
+				name        : 'Rune Table',
+				icon        : 'fas fa-language',
+				gen         : scriptGen.dwarvish,
+				subsnippets : [
 					{
 						name : 'Dwarvish',
 						icon : 'fac davek',

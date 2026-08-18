@@ -2,6 +2,7 @@
 import './snippetbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
+import { Dropdown } from '@components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
 import cx from 'classnames';
@@ -187,7 +188,7 @@ const Snippetbar = createReactClass({
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 		if(snippets.length === 0) return null;
 
-		return <div className='snippets'>
+		return <ul className='snippets' role='menubar' aria-label='Snippets Menubar'>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -200,7 +201,7 @@ const Snippetbar = createReactClass({
 				/>;
 			})
 			}
-		</div>;
+		</ul>;
 	},
 
 	replaceContent : function(item){
@@ -320,36 +321,35 @@ const SnippetGroup = createReactClass({
 		};
 	},
 	handleSnippetClick : function(e, snippet){
-		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
+			if(!snippet.subsnippets){
+				return (
+					<li key={snippet.name} role='none'>
+						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem' aria-label={snippet.name} disabled={snippet.disabled}>
+							<i className={snippet.icon} />
+							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
+							{snippet.experimental && <span className='status'>beta</span>}
+							{snippet.disabled     && <span className='status' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+						</button>
+					</li>
+				);
+			} else if(snippet.subsnippets){
+				return (
+					<Dropdown groupName={snippet.name} icon={snippet.icon} key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+					</Dropdown>
+				)
+			}
 
 		});
 	},
 
 	render : function(){
-		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
-		return <div className={snippetGroup}>
-			<div className='text'>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon}>
+			{this.renderSnippets(this.props.snippets)}
+		</Dropdown>;
 	},
 });
