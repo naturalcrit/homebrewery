@@ -92,12 +92,13 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	};
 
 	return (
-		<div className={['menu-wrapper', className].join(' ')} role='none' >
+		<li className='menu-wrapper' role='none'>
 			<button
 				id={`${menuId}-trigger`}
 				className={['menu-item', color].join(' ')}
 				popoverTarget={menuId}
 				aria-haspopup='menu'
+				aria-label={groupName}
 				role='menuitem'
 				disabled={!React.Children.count(children)}
 				ref={triggerRef}
@@ -105,18 +106,19 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 				{trigger(groupName, icon)}
 			</button>
 			<MenuDepthContext.Provider value={depth + 1}>
-				<div
+				<ul
 					ref={menuRef}
 					id={menuId}
 					className='menu-list'
 					popover='auto'
 					role='menu'
+					aria-label={`${groupName} Submenu`}
 					onClick={handleMenuActionClick}
 				>
 					{children}
-				</div>
+				</ul>
 			</MenuDepthContext.Provider>
-		</div>
+		</li>
 	);
 };
 

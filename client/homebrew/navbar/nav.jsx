@@ -1,21 +1,16 @@
 import './navbar.less';
 import React, { useState, useRef, useEffect } from 'react';
-import createReactClass from 'create-react-class';
-import _ from 'lodash';
 import cx from 'classnames';
 
 import NaturalCritIcon from '@components/svg/naturalcrit-d20.svg.jsx';
 
 const Nav = {
-	base : createReactClass({
-		displayName : 'Nav.base',
-		render      : function(){
-			return <nav>
-				{this.props.children}
-			</nav>;
-		}
-	}),
-	logo : function(){
+	base : ({ children, className, ...props })=>{
+		return <nav className={className}>
+			{children}
+		</nav>;
+	},
+	logo : ()=>{
 		return <a className='navLogo' href='https://www.naturalcrit.com'>
 			<NaturalCritIcon />
 			<span className='name'>
@@ -24,50 +19,26 @@ const Nav = {
 		</a>;
 	},
 
-	section : createReactClass({
-		displayName : 'Nav.section',
-		render      : function(){
-			return <div className={`navSection ${this.props.className ?? ''}`}>
-				{this.props.children}
-			</div>;
+	section : ({ children, className, ...props })=>{
+		return <div className={cx([`navSection`, className])}>
+			{children}
+		</div>;
+	},
+
+	item : ({ icon,	href,	newTab,	onClick, color, children, className, ...props })=>{
+		const classes = cx('navItem', color, className);
+		if(href){
+			return <a className={classes} href={href} target={newTab ? '_blank' : '_self'} {...props}>
+				{children}
+				{icon && <i className={icon}></i>}
+			</a>;
+		} else {
+			return <button {...props} className={classes} onClick={onClick} >
+				{children}
+				{icon && <i className={icon}></i>}
+			</button>;
 		}
-	}),
-
-	item : createReactClass({
-		displayName     : 'Nav.item',
-		getDefaultProps : function() {
-			return {
-				icon    : null,
-				href    : null,
-				newTab  : false,
-				onClick : function(){},
-				color   : null
-			};
-		},
-		handleClick : function(e){
-			this.props.onClick(e);
-		},
-		render : function(){
-			const classes = cx('navItem', this.props.color, this.props.className);
-
-			let icon;
-			if(this.props.icon) icon = <i className={this.props.icon} />;
-
-			const props = _.omit(this.props, ['newTab']);
-
-			if(this.props.href){
-				return <a {...props} className={classes} target={this.props.newTab ? '_blank' : '_self'} >
-					{this.props.children}
-					{icon}
-				</a>;
-			} else {
-				return <div {...props} className={classes} onClick={this.handleClick} >
-					{this.props.children}
-					{icon}
-				</div>;
-			}
-		}
-	}),
+	},
 
 	dropdown : function dropdown(props) {
 		props = Object.assign({}, props, {
