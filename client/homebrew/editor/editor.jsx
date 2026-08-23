@@ -9,6 +9,7 @@ import MetadataEditor from './metadataEditor/metadataEditor.jsx';
 import SettingsEditor from './settingsEditor/settingsEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
+const EDITOR_SETTINGS_KEY = 'HB_edit_settings';
 
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
@@ -73,6 +74,12 @@ const Editor = forwardRef(
 		const [currentEditorTheme, setEditorTheme] = useState(editorTheme);
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
+		const [editorSettings, setEditorSettings] = useState({
+			blockShading: false,
+			activeLineShading: true,
+			lineNumbers: true,
+			fontSize: 14
+		})
 
 		const editor = useRef(null);
 		const codeEditor = useRef(null);
@@ -82,6 +89,7 @@ const Editor = forwardRef(
 		const isStyle = ()=>isView('style');
 		const isMeta = ()=>isView('meta');
 		const isSnip = ()=>isView('snippet');
+		const isSettings = ()=>isView('settings');
 
 		const isView = (name)=>view === name;
 
@@ -92,6 +100,8 @@ const Editor = forwardRef(
 
 			const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 			if(editorTheme && EditorThemes.includes(editorTheme)) setEditorTheme(editorTheme); else setEditorTheme('default');
+			const localEditorSettings = window.localStorage.getItem(EDITOR_SETTINGS_KEY);
+			if (localEditorSettings) setEditorSettings(JSON.parse(localEditorSettings));
 			const snippetBar = document.querySelector('.editor > .snippetBar');
 			if(!snippetBar) return;
 
@@ -210,6 +220,11 @@ const Editor = forwardRef(
 			window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
 			setEditorTheme(newTheme);
 		};
+		
+		const updateEditorSettings = (newEditorSettings) => {
+			window.localStorage.setItem(EDITOR_SETTINGS_KEY, JSON.stringify(newEditorSettings));
+			setEditorSettings(newEditorSettings);
+		}
 
 		const renderEditor = ()=>{
 			if(isText()) {
@@ -228,6 +243,7 @@ const Editor = forwardRef(
 							editorTheme={currentEditorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -246,6 +262,7 @@ const Editor = forwardRef(
 							editorTheme={currentEditorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -268,6 +285,7 @@ const Editor = forwardRef(
 							editorTheme={currentEditorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - 25px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -275,13 +293,30 @@ const Editor = forwardRef(
 			if(isMeta()) {
 				return (
 					<>
-						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
+						<CodeEditor key='codeEditor' tab='brewMetadata' view={view} style={{ display: 'none' }} settings={editorSettings} />
 						<MetadataEditor
 							metadata={brew}
 							themeBundle={themeBundle}
 							onChange={onBrewChange('metadata')}
 							reportError={reportError}
 							userThemes={userThemes}
+						/>
+					</>
+				);
+			}
+			if(isSettings()){
+				return (
+					<>
+						<CodeEditor 
+							key='codeEditor' 
+							tab='brewSettings' //necessary or the brew object loses its contents, culprit possibly on the tab dependent useEffect in codeEditor.jsx
+							view={view} 
+							style={{ display: 'none' }}
+							settings={editorSettings}
+						/>
+						<SettingsEditor 
+							settings={editorSettings}
+							updateSettings={updateEditorSettings}
 						/>
 					</>
 				);
@@ -305,7 +340,6 @@ const Editor = forwardRef(
 			unfoldCode,
 			historySize,
 		}));
-
 		return (
 			<div className='editor' ref={editor}>
 				<SnippetBar

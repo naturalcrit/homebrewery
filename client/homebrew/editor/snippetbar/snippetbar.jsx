@@ -245,7 +245,7 @@ const Snippetbar = createReactClass({
 
 		return (
 			<div className='editors'>
-				{this.props.view !== 'meta' && <><div className='historyTools'>
+				{this.props.view !== 'meta' && this.props.view !== 'settings' && <><div className='historyTools'>
 					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
 						onClick={this.toggleHistoryMenu} >
 						<i className='fas fa-clock-rotate-left' />
@@ -292,6 +292,10 @@ const Snippetbar = createReactClass({
 					<div className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
 						<i className='fas fa-info-circle' />
+					</div>
+					<div className={cx('settings', { selected: this.props.view === 'settings' })}
+						onClick={()=>this.props.onViewChange('settings')}>
+						<i className='fas fa-gear' />
 					</div>
 				</div>
 

@@ -1,53 +1,109 @@
-import "./metadataEditor.less";
-import React, { useState } from "react";
+import './settingsEditor.less';
+import React, { useState } from 'react';
 
-const SettingsEditor = () => {
-	const [settings, setSettings] = useState({
-		blockShading: false,
-		activeLineShading: true,
-		showLineNumbers: true,
-	});
+const SettingsEditor = ({settings, updateSettings = () => {} }) => {
+	const [currentSettings, setCurrentSettings] = useState(settings);
+
+	const validations = {
+		fontSize: [
+			(value) => {
+				const number = Number(value);
+
+				if (number < 9 || number > 30) {
+					return 'Font size must be between 9 and 30.';
+				}
+
+				return null;
+			},
+		],
+	};
 
 	const handleFieldChange = (setting, e) => {
-		setSettings((prevSettings) => ({
-			...prevSettings,
-			[setting]: e.target.checked,
-		}));
+		const value =
+			e.target.type === 'checkbox'
+				? e.target.checked
+				: e.target.value;
+
+		const inputRules = validations[setting] ?? [];
+
+		const validationErrors = inputRules
+			.map((rule) => rule(value))
+			.filter(Boolean);
+
+		if (validationErrors.length > 0) {
+			e.target.setCustomValidity(validationErrors.join('\n'));
+			e.target.reportValidity();
+			return;
+		}
+
+		e.target.setCustomValidity('');
+
+		const updatedSettings = {
+			...currentSettings,
+			[setting]: e.target.type === 'number'
+				? Number(value)
+				: value,
+		};
+
+		setCurrentSettings(updatedSettings);
+		updateSettings(updatedSettings);
 	};
 
 	return (
-		<div className="settingsEditor">
+		<div className='settingsEditor'>
 			<h1>Editor Settings</h1>
 
-			<label>
-				Background Shading of blocks in editor
+			<div className='field title'>
+				<label htmlFor='blockShading'>
+					Background Shading of blocks in editor
+				</label>
 				<input
-					type="checkbox"
-					name="blockShading"
-					checked={settings.blockShading}
-					onChange={(e) => handleFieldChange("blockShading", e)}
+					id='blockShading'
+					type='checkbox'
+					name='blockShading'
+					checked={currentSettings.blockShading}
+					onChange={(e) => handleFieldChange('blockShading', e)}
 				/>
-			</label>
+			</div>
 
-			<label>
-				Shading of active line
+			<div className='field title'>
+				<label htmlFor='activeLineShading'>
+					Background shading of active line
+				</label>
 				<input
-					type="checkbox"
-					name="activeLineShading"
-					checked={settings.activeLineShading}
-					onChange={(e) => handleFieldChange("activeLineShading", e)}
+					id='activeLineShading'
+					type='checkbox'
+					name='activeLineShading'
+					checked={currentSettings.activeLineShading}
+					onChange={(e) => handleFieldChange('activeLineShading', e)}
 				/>
-			</label>
+			</div>
 
-			<label>
-				Show Line Numbers
+			<div className='field title'>
+				<label htmlFor='lineNumbers'>Show Line Numbers</label>
 				<input
-					type="checkbox"
-					name="showLineNumbers"
-					checked={settings.showLineNumbers}
-					onChange={(e) => handleFieldChange("showLineNumbers", e)}
+					id='lineNumbers'
+					type='checkbox'
+					name='lineNumbers'
+					checked={currentSettings.lineNumbers}
+					onChange={(e) => handleFieldChange('lineNumbers', e)}
 				/>
-			</label>
+			</div>
+
+			<div className='field title'>
+				<label htmlFor='fontSize'>
+					Editor Font Size (in px)
+				</label>
+				<input
+					id='fontSize'
+					type='number'
+					min={9}
+					max={30}
+					name='fontSize'
+					value={currentSettings.fontSize}
+					onChange={(e) => handleFieldChange('fontSize', e)}
+				/>
+			</div>
 		</div>
 	);
 };
