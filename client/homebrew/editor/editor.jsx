@@ -355,14 +355,23 @@ const Editor = forwardRef(
 				);
 			}
 		};
+		const redo = ()=>codeEditor.current?.redo();
+		const historySize = ()=>codeEditor.current?.historySize();
+		const undo = ()=>codeEditor.current?.undo();
+		const foldCode = ()=>codeEditor.current?.foldAll();
+		const unfoldCode = ()=>codeEditor.current?.unfoldAll();
+
+		const update = ()=>{};
+
 		useImperativeHandle(ref, ()=>({
-			update      : ()=>{},
-			undo        : ()=>codeEditor.current?.undo(),
-			redo        : ()=>codeEditor.current?.redo(),
-			foldCode    : ()=>codeEditor.current?.foldAll(),
-			unfoldCode  : ()=>codeEditor.current?.unfoldAll(),
-			historySize : ()=>codeEditor.current?.historySize(),
+			update,
+			undo,
+			redo,
+			foldCode,
+			unfoldCode,
+			historySize,
 		}));
+
 		return (
 			<div className='editor' ref={editor}>
 				<SnippetBar
