@@ -1,8 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 import './editor.less';
-import React from 'react';
-import createReactClass from 'create-react-class';
-import _ from 'lodash';
+import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import dedent from 'dedent';
 
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
@@ -18,12 +16,8 @@ import cm5Themes from 'codemirror-5-themes';
 const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
 const EditorThemes = Object.entries(themes)
-  .filter(([name, value])=>Array.isArray(value) &&
-	!name.endsWith('Init') &&
-	!name.endsWith('Style')
-  )
-  .map(([name])=>name);
-
+	.filter(([name, value])=>Array.isArray(value) && !name.endsWith('Init') && !name.endsWith('Style'))
+	.map(([name])=>name);
 
 //const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 //const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
@@ -45,306 +39,298 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 let isJumping = false;
 let jumpSource = null;
 
-const Editor = createReactClass({
-	displayName     : 'Editor',
-	getDefaultProps : function() {
-		return {
-			brew : {
-				text  : '',
-				style : ''
-			},
+const Editor = forwardRef(
+	(
+		{
+			brew = {},
 
-			onBrewChange : ()=>{},
-			reportError  : ()=>{},
+			onBrewChange = ()=>{},
+			reportError = ()=>{},
 
-			onCursorPageChange : ()=>{},
-			onViewPageChange   : ()=>{},
+			onCursorPageChange = ()=>{},
+			onViewPageChange = ()=>{},
 
-			editorTheme : 'default',
-			renderer    : 'legacy',
+			editorTheme = 'default',
+			renderer = 'legacy',
 
-			currentEditorCursorPageNum : 1,
-			currentEditorViewPageNum   : 1,
-			currentBrewRendererPageNum : 1,
-		};
-	},
-	getInitialState : function() {
-		return {
-			editorTheme      : this.props.editorTheme,
-			view             : 'text', //'text', 'style', 'meta', 'snippet'
-			snippetBarHeight : 26,
-		};
-	},
+			moveBrew,
+			moveSource,
+			liveScroll,
 
-	editor     : React.createRef(null),
-	codeEditor : React.createRef(null),
+			setMoveArrows,
+			updateBrew,
+			showEditButtons,
+			themeBundle,
+			userThemes,
 
-	isText  : function() {return this.state.view == 'text';},
-	isStyle : function() {return this.state.view == 'style';},
-	isMeta  : function() {return this.state.view == 'meta';},
-	isSnip  : function() {return this.state.view == 'snippet';},
+			currentEditorCursorPageNum = 1,
+			currentEditorViewPageNum = 1,
+			currentBrewRendererPageNum = 1,
+		},
+		ref,
+	)=>{
+		const [currentEditorTheme, setEditorTheme] = useState(editorTheme);
+		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
+		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
 
-	componentDidMount : function() {
+		const editor = useRef(null);
+		const codeEditor = useRef(null);
+		const throttleBrewMove = useRef(null);
 
-		const brewRenderer = document.getElementById('BrewRenderer');
-		brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', this.handleControlKeys);
-		document.addEventListener('keydown', this.handleControlKeys);
+		const isText = ()=>isView('text');
+		const isStyle = ()=>isView('style');
+		const isMeta = ()=>isView('meta');
+		const isSnip = ()=>isView('snippet');
 
-		const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-		if(editorTheme && EditorThemes.includes(editorTheme)) {
-  			this.setState({ editorTheme });
-		} else {
-  			this.setState({ editorTheme: 'default' });
-		}
-		const snippetBar = document.querySelector('.editor > .snippetBar');
-		if(!snippetBar) return;
+		const isView = (name)=>view === name;
 
-		this.resizeObserver = new ResizeObserver((entries)=>{
-			const height = document.querySelector('.editor > .snippetBar').offsetHeight;
-			this.setState({ snippetBarHeight: height });
-		});
+		useEffect(()=>{
+			const brewRenderer = document.getElementById('BrewRenderer');
+			brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', handleControlKeys);
+			document.addEventListener('keydown', handleControlKeys);
 
-		this.resizeObserver.observe(snippetBar);
-	},
+			const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+			if(editorTheme && EditorThemes.includes(editorTheme)) setEditorTheme(editorTheme); else setEditorTheme('default');
+			const snippetBar = document.querySelector('.editor > .snippetBar');
+			if(!snippetBar) return;
 
-	componentDidUpdate : function(prevProps, prevState, snapshot) {
+			const resizeObserver = new ResizeObserver((entries)=>{
+				const height = document.querySelector('.editor > .snippetBar').offsetHeight;
+				setSnippetBarHeight(height);
+			});
+			resizeObserver.observe(snippetBar);
 
-		if(prevProps.moveBrew !== this.props.moveBrew)
-			this.brewJump();
-
-		if(prevProps.moveSource !== this.props.moveSource)
-			this.sourceJump();
-
-		if(this.props.liveScroll) {
-			if(prevProps.currentBrewRendererPageNum !== this.props.currentBrewRendererPageNum) {
-				this.sourceJump(this.props.currentBrewRendererPageNum, false);
-			} else if(prevProps.currentEditorViewPageNum !== this.props.currentEditorViewPageNum) {
-				this.brewJump(this.props.currentEditorViewPageNum, false);
-			} else if(prevProps.currentEditorCursorPageNum !== this.props.currentEditorCursorPageNum) {
-				this.brewJump(this.props.currentEditorCursorPageNum, false);
-			}
-		}
-	},
-
-	componentWillUnmount() {
-		if(this.resizeObserver) this.resizeObserver.disconnect();
-	},
-
-	handleControlKeys : function(e){
-		if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
-		const LEFTARROW_KEY = 37;
-		const RIGHTARROW_KEY = 39;
-		if(e.keyCode == RIGHTARROW_KEY) this.brewJump();
-		if(e.keyCode == LEFTARROW_KEY) this.sourceJump();
-		if(e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
-			e.stopPropagation();
-			e.preventDefault();
-		}
-	},
-
-	updateCurrentCursorPage : function(pageNumber) {
-		this.props.onCursorPageChange(pageNumber);
-	},
-
-	updateCurrentViewPage : function(pageNumber) {
-		this.props.onViewPageChange(pageNumber);
-	},
-
-	handleInject : function(injectText){
-		this.codeEditor.current?.injectText(injectText);
-	},
-
-	handleViewChange : function(newView){
-		this.props.setMoveArrows(newView === 'text');
-
-		this.setState({
-			view : newView
-		}, ()=>{
-			this.codeEditor.current?.focus();
-		});
-	},
-
-	brewJump : function(targetPage=this.props.currentEditorCursorPageNum, smooth=true){
-		if(!window || !this.isText() || isJumping || jumpSource === 'source')
-			return;
-
-		// Get current brewRenderer scroll position and calculate target position
-		const brewRenderer = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
-		const currentPos = brewRenderer.scrollTop;
-		const targetPos = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`).getBoundingClientRect().top;
-
-		let scrollingTimeout;
-		const checkIfScrollComplete = ()=>{	// Prevent interrupting a scroll in progress if user clicks multiple times
-			clearTimeout(scrollingTimeout);   // Reset the timer every time a scroll event occurs
-			scrollingTimeout = setTimeout(()=>{
-				isJumping = false;
-				jumpSource = null;
-				brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
-			}, 150);	// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
-		};
-
-		isJumping = true;
-		jumpSource = 'brew';
-		checkIfScrollComplete();
-		brewRenderer.addEventListener('scroll', checkIfScrollComplete);
-
-		if(smooth) {
-			const bouncePos   = targetPos >= 0 ? -30 : 30; //Do a little bounce before scrolling
-			const bounceDelay = 100;
-			const scrollDelay = 500;
-
-			if(!this.throttleBrewMove) {
-				this.throttleBrewMove = _.throttle((currentPos, bouncePos, targetPos)=>{
-					brewRenderer.scrollTo({ top: currentPos + bouncePos, behavior: 'smooth' });
-					setTimeout(()=>{
-						brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
-					}, bounceDelay);
-				}, scrollDelay, { leading: true, trailing: false });
+			return ()=>{
+				if(resizeObserver) resizeObserver.disconnect();
 			};
-			this.throttleBrewMove(currentPos, bouncePos, targetPos);
-		} else {
-			brewRenderer.scrollTo({ top: currentPos + targetPos, behavior: 'instant', block: 'start' });
-		}
-	},
+		}, []);
 
-	sourceJump : function(targetPage=this.props.currentBrewRendererPageNum, smooth=true){
-		if(!this.isText() || isJumping || jumpSource === 'brew')
-			return;
+		useEffect(()=>{ if(moveBrew) brewJump(); }, [moveBrew]);
+		useEffect(()=>{ if(moveSource) sourceJump(); }, [moveSource]);
+		useEffect(()=>{ if(liveScroll) sourceJump(currentBrewRendererPageNum, false); }, [currentBrewRendererPageNum, liveScroll]);
+		useEffect(()=>{ if(liveScroll) brewJump(currentEditorViewPageNum, false); }, [currentEditorViewPageNum, liveScroll]);
+		useEffect(()=>{ if(liveScroll) brewJump(currentEditorCursorPageNum, false); }, [currentEditorCursorPageNum, liveScroll]);
 
-		const editor = this.codeEditor.current;
-		if(!editor) return;
-		jumpSource = 'source';
+		const handleControlKeys = (e)=>{
+			if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
+			const LEFTARROW_KEY = 37;
+			const RIGHTARROW_KEY = 39;
+			if(e.keyCode == RIGHTARROW_KEY) brewJump();
+			if(e.keyCode == LEFTARROW_KEY) sourceJump();
+			if(e.keyCode == LEFTARROW_KEY || e.keyCode == RIGHTARROW_KEY) {
+				e.stopPropagation();
+				e.preventDefault();
+			}
+		};
 
-		editor.scrollToPage(targetPage);
-		setTimeout(()=>{
-			jumpSource = null;
-		}, 200);
-	},
+		const updateCurrentCursorPage = (pageNumber)=>{
+			onCursorPageChange(pageNumber);
+		};
 
-	//Called when there are changes to the editor's dimensions
-	update : function(){},
+		const updateCurrentViewPage = (pageNumber)=>{
+			onViewPageChange(pageNumber);
+		};
 
-	updateEditorTheme : function(newTheme){
-		window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
-		this.setState({
-			editorTheme : newTheme
-		});
-	},
+		const handleInject = (injectText)=>{
+			codeEditor.current?.injectText(injectText);
+		};
 
-	//Called by CodeEditor after document switch, so Snippetbar can refresh UndoHistory
-	rerenderParent : function (){
-		this.forceUpdate();
-	},
+		const handleViewChange = (newView)=>{
+			setMoveArrows(newView === 'text');
+			setView(newView);
+		};
+		useEffect(()=>{
+			codeEditor.current?.focus();
+		}, [view]);
 
-	renderEditor : function(){
-		if(this.isText()){
-			return <>
-				<CodeEditor key='codeEditor'
-					ref={this.codeEditor}
-					language='gfm'
-					tab='brewText'
-					view={this.state.view}
-					value={this.props.brew.text}
-					onChange={this.props.onBrewChange('text')}
-					onCursorChange={(page)=>this.updateCurrentCursorPage(page)}
-					onViewChange={(page)=>this.updateCurrentViewPage(page)}
-					editorTheme={this.state.editorTheme}
-					renderer={this.props.brew.renderer}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
-			</>;
-		}
-		if(this.isStyle()){
-			return <>
-				<CodeEditor key='codeEditor'
-					ref={this.codeEditor}
-					language='css'
-					tab='brewStyles'
-					view={this.state.view}
-					value={this.props.brew.style ?? DEFAULT_STYLE_TEXT}
-					onChange={this.props.onBrewChange('style')}
-					editorTheme={this.state.editorTheme}
-					renderer={this.props.brew.renderer}
-					style={{  height: `calc(100% - ${this.state.snippetBarHeight}px)` }}/>
-			</>;
-		}
-		if(this.isMeta()){
-			return <>
-				<CodeEditor key='codeEditor'
-					view={this.state.view}
-					style={{ display: 'none' }}/>
-				<MetadataEditor
-					metadata={this.props.brew}
-					themeBundle={this.props.themeBundle}
-					onChange={this.props.onBrewChange('metadata')}
-					reportError={this.props.reportError}
-					userThemes={this.props.userThemes}/>
-			</>;
-		}
-		if(this.isSnip()){
-			if(!this.props.brew.snippets) { this.props.brew.snippets = DEFAULT_SNIPPET_TEXT; }
-			return <>
-				<CodeEditor key='codeEditor'
-					ref={this.codeEditor}
-					language='gfm'
-					tab='brewSnippets'
-					view={this.state.view}
-					value={this.props.brew.snippets}
-					onChange={this.props.onBrewChange('snippets')}
-					enableFolding={true}
-					editorTheme={this.state.editorTheme}
-					renderer={this.props.brew.renderer}
-					rerenderParent={this.rerenderParent}
-					style={{  height: `calc(100% - 25px)` }}/>
-			</>;
-		}
-	},
+		const brewJump = (targetPage = currentEditorCursorPageNum, smooth = true)=>{
+			if(!window || !isText() || isJumping || jumpSource === 'source') return;
 
-	redo : function(){
-		return this.codeEditor.current?.redo();
-	},
+			const brewRenderer =
+				window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 
-	historySize : function(){
-		return this.codeEditor.current?.historySize();
-	},
+			const currentPos = brewRenderer.scrollTop;
 
-	undo : function(){
-		return this.codeEditor.current?.undo();
-	},
+			const targetPos = window.frames['BrewRenderer'].contentDocument
+				.getElementById(`p${targetPage}`)
+				.getBoundingClientRect().top;
 
-	foldCode : function() {
-    	return this.codeEditor.current?.foldAll();
-	},
+			let scrollingTimeout;
 
-	unfoldCode : function() {
-		return this.codeEditor.current?.unfoldAll();
-	},
-	render : function(){
+			const checkIfScrollComplete = ()=>{// Prevent interrupting a scroll in progress if user clicks multiple times
+				clearTimeout(scrollingTimeout);// Reset the timer every time a scroll event occurs
+
+				scrollingTimeout = setTimeout(()=>{
+					isJumping = false;
+					jumpSource = null;
+
+					brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
+				}, 150);// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
+			};
+
+			isJumping = true;
+			jumpSource = 'brew';
+
+			checkIfScrollComplete();
+			brewRenderer.addEventListener('scroll', checkIfScrollComplete);
+
+			if(smooth) {
+				const bouncePos = targetPos >= 0 ? -30 : 30; //Do a little bounce before scrolling
+				const now = Date.now();
+
+				if(now - throttleBrewMove.current >= 500) {
+					throttleBrewMove.current = now;
+
+					brewRenderer.scrollTo({ top: currentPos + bouncePos, behavior: 'smooth' });
+
+					setTimeout(()=>{
+						brewRenderer.scrollTo({	top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
+					}, 100);
+				}
+			} else {
+				brewRenderer.scrollTo({ top : currentPos + targetPos, behavior : 'instant', block : 'start',
+				});
+			}
+		};
+
+		const sourceJump = (targetPage = currentBrewRendererPageNum, smooth = true)=>{
+			if(!isText() || isJumping || jumpSource === 'brew') return;
+
+			if(!codeEditor.current) return;
+			jumpSource = 'source';
+
+			codeEditor.current.scrollToPage(targetPage);
+			setTimeout(()=>{
+				jumpSource = null;
+			}, 200);
+		};
+
+		const updateEditorTheme = (newTheme)=>{
+			window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
+			setEditorTheme(newTheme);
+		};
+
+		const renderEditor = ()=>{
+			if(isText()) {
+				return (
+					<>
+						<CodeEditor
+							key='codeEditor'
+							ref={codeEditor}
+							language='gfm'
+							tab='brewText'
+							view={view}
+							value={brew.text}
+							onChange={onBrewChange('text')}
+							onCursorChange={(page)=>updateCurrentCursorPage(page)}
+							onViewChange={(page)=>updateCurrentViewPage(page)}
+							editorTheme={currentEditorTheme}
+							renderer={brew.renderer}
+							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+						/>
+					</>
+				);
+			}
+			if(isStyle()) {
+				return (
+					<>
+						<CodeEditor
+							key='codeEditor'
+							ref={codeEditor}
+							language='css'
+							tab='brewStyles'
+							view={view}
+							value={brew.style ?? DEFAULT_STYLE_TEXT}
+							onChange={onBrewChange('style')}
+							editorTheme={currentEditorTheme}
+							renderer={brew.renderer}
+							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+						/>
+					</>
+				);
+			}
+			if(isSnip()) {
+				if(!brew.snippets) {
+					brew.snippets = DEFAULT_SNIPPET_TEXT;
+				}
+				return (
+					<>
+						<CodeEditor
+							key='codeEditor'
+							ref={codeEditor}
+							language='gfm'
+							tab='brewSnippets'
+							view={view}
+							value={brew.snippets}
+							onChange={onBrewChange('snippets')}
+							enableFolding={true}
+							editorTheme={currentEditorTheme}
+							renderer={brew.renderer}
+							style={{ height: `calc(100% - 25px)` }}
+						/>
+					</>
+				);
+			}
+			if(isMeta()) {
+				return (
+					<>
+						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
+						<MetadataEditor
+							metadata={brew}
+							themeBundle={themeBundle}
+							onChange={onBrewChange('metadata')}
+							reportError={reportError}
+							userThemes={userThemes}
+						/>
+					</>
+				);
+			}
+		};
+
+		const redo = ()=>codeEditor.current?.redo();
+		const historySize = ()=>codeEditor.current?.historySize();
+		const undo = ()=>codeEditor.current?.undo();
+		const foldCode = ()=>codeEditor.current?.foldAll();
+		const unfoldCode = ()=>codeEditor.current?.unfoldAll();
+
+		//Called when there are changes to the editor's dimensions
+		const update = ()=>{};
+
+		useImperativeHandle(ref, ()=>({
+			update,
+			undo,
+			redo,
+			foldCode,
+			unfoldCode,
+			historySize,
+		}));
+
 		return (
-			<div className='editor' ref={this.editor}>
+			<div className='editor' ref={editor}>
 				<SnippetBar
-					brew={this.props.brew}
-					view={this.state.view}
-					onViewChange={this.handleViewChange}
-					onInject={this.handleInject}
-					showEditButtons={this.props.showEditButtons}
-					renderer={this.props.renderer}
-					theme={this.props.brew.theme}
-					undo={this.undo}
-					redo={this.redo}
-					foldCode={this.foldCode}
-					unfoldCode={this.unfoldCode}
-					historySize={this.historySize()}
-					currentEditorTheme={this.state.editorTheme}
-					updateEditorTheme={this.updateEditorTheme}
-					themeBundle={this.props.themeBundle}
-					cursorPos={this.codeEditor.current?.getCursorPosition() || {}}
-					updateBrew={this.props.updateBrew}
+					brew={brew}
+					view={view}
+					onViewChange={handleViewChange}
+					onInject={handleInject}
+					showEditButtons={showEditButtons}
+					renderer={renderer}
+					theme={brew.theme}
+					undo={undo}
+					redo={redo}
+					foldCode={foldCode}
+					unfoldCode={unfoldCode}
+					historySize={historySize()}
+					currentEditorTheme={currentEditorTheme}
+					updateEditorTheme={updateEditorTheme}
+					themeBundle={themeBundle}
+					cursorPos={codeEditor.current?.getCursorPosition() || {}}
+					updateBrew={updateBrew}
 				/>
 
-				{this.renderEditor()}
+				{renderEditor()}
 			</div>
 		);
 	}
-});
+);
 
 export default Editor;
