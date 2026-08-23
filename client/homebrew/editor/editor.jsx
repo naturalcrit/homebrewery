@@ -124,13 +124,8 @@ const Editor = forwardRef(
 		useEffect(()=>{
 			const prev = previousProps.current;
 
-			if(prev.moveBrew !== moveBrew) {
-				brewJump();
-			}
-
-			if(prev.moveSource !== moveSource) {
-				sourceJump();
-			}
+			if(prev.moveBrew !== moveBrew) brewJump();
+			if(prev.moveSource !== moveSource) sourceJump();
 
 			if(liveScroll) {
 				if(prev.currentBrewRendererPageNum !== currentBrewRendererPageNum) {
@@ -194,13 +189,13 @@ const Editor = forwardRef(
 			if(!window || !isText() || isJumping || jumpSource === 'source') return;
 
 			const brewRenderer =
-				window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
+		window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 
 			const currentPos = brewRenderer.scrollTop;
 
 			const targetPos = window.frames['BrewRenderer'].contentDocument
-				.getElementById(`p${targetPage}`)
-				.getBoundingClientRect().top;
+		.getElementById(`p${targetPage}`)
+		.getBoundingClientRect().top;
 
 			let scrollingTimeout;
 
@@ -219,39 +214,29 @@ const Editor = forwardRef(
 			jumpSource = 'brew';
 
 			checkIfScrollComplete();
-
 			brewRenderer.addEventListener('scroll', checkIfScrollComplete);
 
 			if(smooth) {
 				const bouncePos = targetPos >= 0 ? -30 : 30;
-				const bounceDelay = 100;
-				const scrollDelay = 500;
+				const now = Date.now();
 
-				if(!throttleBrewMove.current) {
-					throttleBrewMove.current = _.throttle(
-						(currentPos, bouncePos, targetPos)=>{
-							brewRenderer.scrollTo({
-								top      : currentPos + bouncePos,
-								behavior : 'smooth',
-							});
+				// leading: true, trailing: false, 500ms throttle
+				if(now - throttleBrewMove.current >= 500) {
+					throttleBrewMove.current = now;
 
-							setTimeout(()=>{
-								brewRenderer.scrollTo({
-									top      : currentPos + targetPos,
-									behavior : 'smooth',
-									block    : 'start',
-								});
-							}, bounceDelay);
-						},
-						scrollDelay,
-						{
-							leading  : true,
-							trailing : false,
-						},
-					);
+					brewRenderer.scrollTo({
+						top      : currentPos + bouncePos,
+						behavior : 'smooth',
+					});
+
+					setTimeout(()=>{
+						brewRenderer.scrollTo({
+							top      : currentPos + targetPos,
+							behavior : 'smooth',
+							block    : 'start',
+						});
+					}, 100);
 				}
-
-				throttleBrewMove.current(currentPos, bouncePos, targetPos);
 			} else {
 				brewRenderer.scrollTo({
 					top      : currentPos + targetPos,
