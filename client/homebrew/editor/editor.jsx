@@ -354,7 +354,6 @@ const Editor = forwardRef(
 							enableFolding={true}
 							editorTheme={currentEditorTheme}
 							renderer={brew.renderer}
-							rerenderParent={rerenderParent}
 							style={{ height: `calc(100% - 25px)` }}
 						/>
 					</>
@@ -407,7 +406,7 @@ const Editor = forwardRef(
 					foldCode={foldCode}
 					unfoldCode={unfoldCode}
 					historySize={historySize()}
-					currentEditorTheme={editorTheme}
+					currentEditorTheme={currentEditorTheme}
 					updateEditorTheme={updateEditorTheme}
 					themeBundle={themeBundle}
 					cursorPos={codeEditor.current?.getCursorPosition() || {}}
