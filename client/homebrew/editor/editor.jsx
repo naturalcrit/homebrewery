@@ -1,3 +1,4 @@
+/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
 import './editor.less';
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import dedent from 'dedent';
@@ -354,37 +355,14 @@ const Editor = forwardRef(
 				);
 			}
 		};
-		const redo = ()=>{
-			return codeEditor.current?.redo();
-		};
-
-		const historySize = ()=>{
-			return codeEditor.current?.historySize();
-		};
-
-		const undo = ()=>{
-			return codeEditor.current?.undo();
-		};
-
-		const foldCode = ()=>{
-			return codeEditor.current?.foldAll();
-		};
-
-		const unfoldCode = ()=>{
-			return codeEditor.current?.unfoldAll();
-		};
-
-		const update = ()=>{};
-
 		useImperativeHandle(ref, ()=>({
-			update,
-			undo,
-			redo,
-			foldCode,
-			unfoldCode,
-			historySize,
+			update      : ()=>{},
+			undo        : ()=>codeEditor.current?.undo(),
+			redo        : ()=>codeEditor.current?.redo(),
+			foldCode    : ()=>codeEditor.current?.foldAll(),
+			unfoldCode  : ()=>codeEditor.current?.unfoldAll(),
+			historySize : ()=>codeEditor.current?.historySize(),
 		}));
-
 		return (
 			<div className='editor' ref={editor}>
 				<SnippetBar
