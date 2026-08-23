@@ -84,18 +84,13 @@ const Editor = forwardRef(
 
 		const isView = (name)=>view === name;
 
-		//componentDidMount equivalent
 		useEffect(()=>{
 			const brewRenderer = document.getElementById('BrewRenderer');
 			brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', handleControlKeys);
 			document.addEventListener('keydown', handleControlKeys);
 
 			const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-			if(editorTheme && EditorThemes.includes(editorTheme)) {
-				setEditorTheme(editorTheme);
-			} else {
-				setEditorTheme('default');
-			}
+			if(editorTheme && EditorThemes.includes(editorTheme)) setEditorTheme(editorTheme); else setEditorTheme('default');
 			const snippetBar = document.querySelector('.editor > .snippetBar');
 			if(!snippetBar) return;
 
@@ -103,55 +98,18 @@ const Editor = forwardRef(
 				const height = document.querySelector('.editor > .snippetBar').offsetHeight;
 				setSnippetBarHeight(height);
 			});
-
 			resizeObserver.observe(snippetBar);
 
-			//ComponentWillUnmount equivalent
 			return ()=>{
 				if(resizeObserver) resizeObserver.disconnect();
 			};
 		}, []);
 
-		const previousProps = useRef({
-			moveBrew,
-			moveSource,
-			currentBrewRendererPageNum,
-			currentEditorViewPageNum,
-			currentEditorCursorPageNum,
-		});
-
-		//componentDidUpdate Equivalent
-		useEffect(()=>{
-			const prev = previousProps.current;
-
-			if(prev.moveBrew !== moveBrew) brewJump();
-			if(prev.moveSource !== moveSource) sourceJump();
-
-			if(liveScroll) {
-				if(prev.currentBrewRendererPageNum !== currentBrewRendererPageNum) {
-					sourceJump(currentBrewRendererPageNum, false);
-				} else if(prev.currentEditorViewPageNum !== currentEditorViewPageNum) {
-					brewJump(currentEditorViewPageNum, false);
-				} else if(prev.currentEditorCursorPageNum !== currentEditorCursorPageNum) {
-					brewJump(currentEditorCursorPageNum, false);
-				}
-			}
-
-			previousProps.current = {
-				moveBrew,
-				moveSource,
-				currentBrewRendererPageNum,
-				currentEditorViewPageNum,
-				currentEditorCursorPageNum,
-			};
-		}, [
-			moveBrew,
-			moveSource,
-			liveScroll,
-			currentBrewRendererPageNum,
-			currentEditorViewPageNum,
-			currentEditorCursorPageNum,
-		]);
+		useEffect(()=>{ if(moveBrew) brewJump(); }, [moveBrew]);
+		useEffect(()=>{ if(moveSource) sourceJump(); }, [moveSource]);
+		useEffect(()=>{ if(liveScroll) sourceJump(currentBrewRendererPageNum, false); }, [currentBrewRendererPageNum, liveScroll]);
+		useEffect(()=>{ if(liveScroll) brewJump(currentEditorViewPageNum, false); }, [currentEditorViewPageNum, liveScroll]);
+		useEffect(()=>{ if(liveScroll) brewJump(currentEditorCursorPageNum, false); }, [currentEditorCursorPageNum, liveScroll]);
 
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
@@ -164,6 +122,7 @@ const Editor = forwardRef(
 				e.preventDefault();
 			}
 		};
+
 		const updateCurrentCursorPage = (pageNumber)=>{
 			onCursorPageChange(pageNumber);
 		};
@@ -180,7 +139,6 @@ const Editor = forwardRef(
 			setMoveArrows(newView === 'text');
 			setView(newView);
 		};
-
 		useEffect(()=>{
 			codeEditor.current?.focus();
 		}, [view]);
@@ -189,25 +147,25 @@ const Editor = forwardRef(
 			if(!window || !isText() || isJumping || jumpSource === 'source') return;
 
 			const brewRenderer =
-		window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
+				window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer')[0];
 
 			const currentPos = brewRenderer.scrollTop;
 
 			const targetPos = window.frames['BrewRenderer'].contentDocument
-		.getElementById(`p${targetPage}`)
-		.getBoundingClientRect().top;
+				.getElementById(`p${targetPage}`)
+				.getBoundingClientRect().top;
 
 			let scrollingTimeout;
 
-			const checkIfScrollComplete = ()=>{
-				clearTimeout(scrollingTimeout);
+			const checkIfScrollComplete = ()=>{// Prevent interrupting a scroll in progress if user clicks multiple times
+				clearTimeout(scrollingTimeout);// Reset the timer every time a scroll event occurs
 
 				scrollingTimeout = setTimeout(()=>{
 					isJumping = false;
 					jumpSource = null;
 
 					brewRenderer.removeEventListener('scroll', checkIfScrollComplete);
-				}, 150);
+				}, 150);// If 150 ms pass without a brewRenderer scroll event, assume scrolling is done
 			};
 
 			isJumping = true;
@@ -217,31 +175,20 @@ const Editor = forwardRef(
 			brewRenderer.addEventListener('scroll', checkIfScrollComplete);
 
 			if(smooth) {
-				const bouncePos = targetPos >= 0 ? -30 : 30;
+				const bouncePos = targetPos >= 0 ? -30 : 30; //Do a little bounce before scrolling
 				const now = Date.now();
 
-				// leading: true, trailing: false, 500ms throttle
 				if(now - throttleBrewMove.current >= 500) {
 					throttleBrewMove.current = now;
 
-					brewRenderer.scrollTo({
-						top      : currentPos + bouncePos,
-						behavior : 'smooth',
-					});
+					brewRenderer.scrollTo({ top: currentPos + bouncePos, behavior: 'smooth' });
 
 					setTimeout(()=>{
-						brewRenderer.scrollTo({
-							top      : currentPos + targetPos,
-							behavior : 'smooth',
-							block    : 'start',
-						});
+						brewRenderer.scrollTo({	top: currentPos + targetPos, behavior: 'smooth', block: 'start' });
 					}, 100);
 				}
 			} else {
-				brewRenderer.scrollTo({
-					top      : currentPos + targetPos,
-					behavior : 'instant',
-					block    : 'start',
+				brewRenderer.scrollTo({ top : currentPos + targetPos, behavior : 'instant', block : 'start',
 				});
 			}
 		};
@@ -249,11 +196,10 @@ const Editor = forwardRef(
 		const sourceJump = (targetPage = currentBrewRendererPageNum, smooth = true)=>{
 			if(!isText() || isJumping || jumpSource === 'brew') return;
 
-			const editor = codeEditor.current;
-			if(!editor) return;
+			if(!codeEditor.current) return;
 			jumpSource = 'source';
 
-			editor.scrollToPage(targetPage);
+			codeEditor.current.scrollToPage(targetPage);
 			setTimeout(()=>{
 				jumpSource = null;
 			}, 200);
@@ -303,20 +249,6 @@ const Editor = forwardRef(
 					</>
 				);
 			}
-			if(isMeta()) {
-				return (
-					<>
-						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
-						<MetadataEditor
-							metadata={brew}
-							themeBundle={themeBundle}
-							onChange={onBrewChange('metadata')}
-							reportError={reportError}
-							userThemes={userThemes}
-						/>
-					</>
-				);
-			}
 			if(isSnip()) {
 				if(!brew.snippets) {
 					brew.snippets = DEFAULT_SNIPPET_TEXT;
@@ -339,13 +271,29 @@ const Editor = forwardRef(
 					</>
 				);
 			}
+			if(isMeta()) {
+				return (
+					<>
+						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
+						<MetadataEditor
+							metadata={brew}
+							themeBundle={themeBundle}
+							onChange={onBrewChange('metadata')}
+							reportError={reportError}
+							userThemes={userThemes}
+						/>
+					</>
+				);
+			}
 		};
+
 		const redo = ()=>codeEditor.current?.redo();
 		const historySize = ()=>codeEditor.current?.historySize();
 		const undo = ()=>codeEditor.current?.undo();
 		const foldCode = ()=>codeEditor.current?.foldAll();
 		const unfoldCode = ()=>codeEditor.current?.unfoldAll();
 
+		//Called when there are changes to the editor's dimensions
 		const update = ()=>{};
 
 		useImperativeHandle(ref, ()=>({
@@ -382,7 +330,7 @@ const Editor = forwardRef(
 				{renderEditor()}
 			</div>
 		);
-	},
+	}
 );
 
 export default Editor;
