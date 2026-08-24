@@ -107,7 +107,7 @@
     "@lezer/highlight": "^1.2.3",
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.0",
-    "@vitejs/plugin-react": "^6.0.5",
+    "@vitejs/plugin-react": "^6.1.0",
     "body-parser": "^2.3.0",
     "classnames": "^2.5.1",
     "codemirror-5-themes": "^1.5.1",
