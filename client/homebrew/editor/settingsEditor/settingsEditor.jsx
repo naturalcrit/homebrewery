@@ -52,7 +52,7 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 	return (
 		<div className='settingsEditor'>
 			<h1>Editor Settings</h1>
-
+{/* 
 			<div className='field title'>
 				<label htmlFor='blockShading'>
 					Background Shading of blocks in editor
@@ -63,6 +63,19 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 					name='blockShading'
 					checked={currentSettings.blockShading}
 					onChange={(e) => handleFieldChange('blockShading', e)}
+				/>
+			</div> */}
+
+			<div className='field title'>
+				<label htmlFor='autoCloseBrackets'>
+					Automatically close brackets
+				</label>
+				<input
+					id='autoCloseBrackets'
+					type='checkbox'
+					name='autoCloseBrackets'
+					checked={currentSettings.autoCloseBrackets}
+					onChange={(e) => handleFieldChange('autoCloseBrackets', e)}
 				/>
 			</div>
 

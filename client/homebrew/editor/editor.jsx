@@ -78,7 +78,7 @@ const Editor = forwardRef(
 			blockShading: false,
 			activeLineShading: true,
 			lineNumbers: true,
-			fontSize: 14
+			fontSize: 13
 		})
 
 		const editor = useRef(null);
