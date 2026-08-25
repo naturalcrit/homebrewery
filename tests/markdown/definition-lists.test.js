@@ -1,6 +1,6 @@
 
 
-import { hbfm } from 'hbfm';
+import { hbfm } from 'hbmarkedwrapper';
 
 describe('Inline Definition Lists', ()=>{
 	test('No Term 1 Definition', function() {

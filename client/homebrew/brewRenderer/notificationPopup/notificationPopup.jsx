@@ -1,7 +1,7 @@
 import './notificationPopup.less';
 import React, { useEffect, useState } from 'react';
 import request from '../../utils/request-middleware.js';
-import { default as Markdown }   from 'hbfm';
+import { hbfm } from 'hbmarkedwrapper';
 
 import Dialog from '@components/dialog.jsx';
 

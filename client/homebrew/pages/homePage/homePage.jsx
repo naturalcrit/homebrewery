@@ -4,7 +4,7 @@ import './homePage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { default as Markdown }   from 'hbfm';
+import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -47,7 +47,7 @@ const HomePage =(props)=>{
 
 	const [currentBrew, setCurrentBrew]                = useState(props.brew);
 	const [error, setError]                      = useState(undefined);
-	const [HTMLErrors, setHTMLErrors]                 = useState(Markdown.validate(props.brew.text));
+	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(props.brew.text));
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -118,7 +118,7 @@ const HomePage =(props)=>{
 
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
-			setHTMLErrors(Markdown.validate(value));
+			setHTMLErrors(hbfm.validate(value));
 
 		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
 		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));

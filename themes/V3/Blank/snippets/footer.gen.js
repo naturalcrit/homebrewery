@@ -1,4 +1,4 @@
-import { default as Markdown }   from 'hbfm';
+import hbfm   from 'hbmarkedwrapper';
 
 export default {
 	createFooterFunc : function(headerSize=1){
