@@ -193,7 +193,7 @@ const CodeEditor = forwardRef(
 				}),
 
 				//highlights
-				highlightCompartment.of([customHighlightPlugin(renderer, tab), highlightExtension]),
+				highlightCompartment.of([customHighlightPlugin(renderer, tab, settings), highlightExtension]),
 				themeCompartment.of(themeExtension),
 
 				//keyboard shortcut
@@ -341,7 +341,7 @@ const CodeEditor = forwardRef(
     		: syntaxHighlighting(legacyCustomHighlightStyle);
 
 			view.dispatch({
-				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab), highlightExtension])
+				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab, settings), highlightExtension])
 			});
 		}, [renderer, tab]);
 

@@ -14,6 +14,7 @@ const EDITOR_SETTINGS_KEY = 'HB_edit_settings';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
 import cm5Themes from 'codemirror-5-themes';
+import { autoCloseTags } from '@codemirror/lang-javascript';
 
 const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
@@ -75,7 +76,8 @@ const Editor = forwardRef(
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
 		const [editorSettings, setEditorSettings] = useState({
-			blockShading: false,
+			autoCloseBrackets: true,
+			showImagePreviews: true,
 			activeLineShading: true,
 			lineNumbers: true,
 			fontSize: 13

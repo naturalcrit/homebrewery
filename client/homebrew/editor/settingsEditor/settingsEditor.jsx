@@ -80,6 +80,19 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 			</div>
 
 			<div className='field title'>
+				<label htmlFor='showImagePreviews'>
+					Show Image Previews when hovering a link
+				</label>
+				<input
+					id='showImagePreviews'
+					type='checkbox'
+					name='showImagePreviews'
+					checked={currentSettings.showImagePreviews}
+					onChange={(e) => handleFieldChange('showImagePreviews', e)}
+				/>
+			</div>
+
+			<div className='field title'>
 				<label htmlFor='activeLineShading'>
 					Background shading of active line
 				</label>
