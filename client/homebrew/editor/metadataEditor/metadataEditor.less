@@ -1,3 +1,4 @@
+@import '@themes/assets/assets.less';
 @import '@sharedStyles/core.less';
 
 .userThemeName {
@@ -13,19 +14,23 @@
 	padding          : 25px;
 	overflow-y       : auto;
 	font-size        : 13px;
-	background-color : #999999;
+	background-color : white;
+	background-image : @backgroundImageAlt;
+	background-size  : cover;
 
 	h1 {
 		margin         : 0 0 40px;
 		font-weight    : bold;
+		font-size      : 18px;
 		text-transform : uppercase;
 	}
 	
 	h2 {
-		margin        : 20px 0;
+		font-size:15px;
+		margin        : 16px 0;
 		font-weight   : bold;
-		color         : #555555;
-		border-bottom : 2px solid gray;
+		color         : #007;
+		border-bottom : 2px solid #007;
 	}
 
 	& > div { margin-bottom : 10px; }
@@ -39,7 +44,7 @@
 
 	.field-column {
 		display        : flex;
-		flex           : 5 0 200px;
+		flex           : 5 0 250px;
 		flex-direction : column;
 		gap            : 10px;
 	}
@@ -49,13 +54,14 @@
 		display       : flex;
 		flex-wrap     : wrap;
 		width         : 100%;
-		min-width     : 200px;
+		min-width     : 250px;
+		padding-left  : 10px;
 		& > label {
-			width          : 80px;
-			font-size      : 0.9em;
+			width          : 100px;
+			font-size      : 1em;
 			font-weight    : 800;
 			line-height    : 1.8em;
-			text-transform : uppercase;
+			text-transform : capitalize;
 		}
 		& > .value {
 			flex           : 1 1 auto;
