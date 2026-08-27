@@ -55,7 +55,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 
 			<div className='field'>
 				<label htmlFor='changeEditorTheme'>
-					Automatically close brackets
+					Select your Editor Theme
 				</label>
 				<div className='value'>
 					<select value={currentSettings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
