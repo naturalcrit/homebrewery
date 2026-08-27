@@ -290,8 +290,6 @@ const CodeEditor = forwardRef(
 					),
 				});
 
-				//load settings too
-
 				restoreFolds(view, foldsRef.current[tab]);
 
 				const savedScroll = scrollRef.current[tab];

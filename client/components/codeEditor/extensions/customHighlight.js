@@ -354,7 +354,6 @@ class ImageWidget extends WidgetType {
 		img.className = 'cm-preview';
 		img.src = this.url;
 
-
 		img.onerror = ()=>{
 			img.src  = 'client/icons/broken-image.jpg';
 		};
