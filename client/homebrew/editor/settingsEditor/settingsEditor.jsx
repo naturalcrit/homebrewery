@@ -1,7 +1,7 @@
 import '../uiEditor.less';
 import React, { useState } from 'react';
 
-const SettingsEditor = ({ settings, updateSettings = ()=>{} })=>{
+const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
 	const [currentSettings, setCurrentSettings] = useState(settings);
 
 	const validations = {
@@ -52,6 +52,20 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{} })=>{
 	return (
 		<div className='settingsEditor ui-editor'>
 			<h1>Editor Settings</h1>
+
+			<div className='field'>
+				<label htmlFor='changeEditorTheme'>
+					Automatically close brackets
+				</label>
+				<div className='value'>
+					<select value={currentSettings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
+						{EditorThemeNameList.map((theme, key)=>{
+							return <option key={key} value={theme}>{theme}</option>;
+						})}
+					</select>
+				</div>
+			</div>
+
 			{/*
 			<div className='field title'>
 				<label htmlFor='blockShading'>

@@ -22,6 +22,20 @@ const EditorThemes = Object.entries(themes)
 	.filter(([name, value])=>Array.isArray(value) && !name.endsWith('Init') && !name.endsWith('Style'))
 	.map(([name])=>name);
 
+const themeNames = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+    !name.endsWith('Init') &&
+    !name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+const EditorThemeNameList = [
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
+];
+
 //const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 //const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
 const DEFAULT_STYLE_TEXT = dedent`
@@ -53,7 +67,6 @@ const Editor = forwardRef(
 			onCursorPageChange = ()=>{},
 			onViewPageChange = ()=>{},
 
-			editorTheme = 'default',
 			renderer = 'legacy',
 
 			moveBrew,
@@ -72,7 +85,6 @@ const Editor = forwardRef(
 		},
 		ref,
 	)=>{
-		const [currentEditorTheme, setEditorTheme] = useState(editorTheme);
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
 		const [editorSettings, setEditorSettings] = useState({
@@ -80,7 +92,8 @@ const Editor = forwardRef(
 			showImagePreviews: true,
 			activeLineShading: true,
 			lineNumbers: true,
-			fontSize: 13
+			fontSize: 13,
+			editorTheme: 'default',
 		})
 
 		const editor = useRef(null);
@@ -100,8 +113,10 @@ const Editor = forwardRef(
 			brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', handleControlKeys);
 			document.addEventListener('keydown', handleControlKeys);
 
-			const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-			if(editorTheme && EditorThemes.includes(editorTheme)) setEditorTheme(editorTheme); else setEditorTheme('default');
+			const localEditorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+			if(localEditorTheme && EditorThemes.includes(localEditorTheme)) {
+				setEditorSettings({...editorSettings , editorTheme: localEditorTheme})
+			} else setEditorSettings({...editorSettings , editorTheme: 'default'});
 			const localEditorSettings = window.localStorage.getItem(EDITOR_SETTINGS_KEY);
 			if (localEditorSettings) setEditorSettings(JSON.parse(localEditorSettings));
 			const snippetBar = document.querySelector('.editor > .snippetBar');
@@ -220,7 +235,7 @@ const Editor = forwardRef(
 
 		const updateEditorTheme = (newTheme)=>{
 			window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
-			setEditorTheme(newTheme);
+			setEditorSettings({...editorSettings , editorTheme: newTheme})
 		};
 		
 		const updateEditorSettings = (newEditorSettings) => {
@@ -242,7 +257,7 @@ const Editor = forwardRef(
 							onChange={onBrewChange('text')}
 							onCursorChange={(page)=>updateCurrentCursorPage(page)}
 							onViewChange={(page)=>updateCurrentViewPage(page)}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 							settings={editorSettings}
@@ -261,7 +276,7 @@ const Editor = forwardRef(
 							view={view}
 							value={brew.style ?? DEFAULT_STYLE_TEXT}
 							onChange={onBrewChange('style')}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 							settings={editorSettings}
@@ -284,7 +299,7 @@ const Editor = forwardRef(
 							value={brew.snippets}
 							onChange={onBrewChange('snippets')}
 							enableFolding={true}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - 25px)` }}
 							settings={editorSettings}
@@ -318,6 +333,7 @@ const Editor = forwardRef(
 						/>
 						<SettingsEditor 
 							settings={editorSettings}
+							EditorThemeNameList={EditorThemeNameList}
 							updateSettings={updateEditorSettings}
 						/>
 					</>
@@ -357,7 +373,7 @@ const Editor = forwardRef(
 					foldCode={foldCode}
 					unfoldCode={unfoldCode}
 					historySize={historySize()}
-					currentEditorTheme={currentEditorTheme}
+					currentEditorTheme={editorSettings.editorTheme}
 					updateEditorTheme={updateEditorTheme}
 					themeBundle={themeBundle}
 					cursorPos={codeEditor.current?.getCursorPosition() || {}}
