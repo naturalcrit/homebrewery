@@ -1,15 +1,15 @@
-import './settingsEditor.less';
+import '../uiEditor.less';
 import React, { useState } from 'react';
 
-const SettingsEditor = ({settings, updateSettings = () => {} }) => {
+const SettingsEditor = ({ settings, updateSettings = ()=>{} })=>{
 	const [currentSettings, setCurrentSettings] = useState(settings);
 
 	const validations = {
-		fontSize: [
-			(value) => {
+		fontSize : [
+			(value)=>{
 				const number = Number(value);
 
-				if (number < 9 || number > 30) {
+				if(number < 9 || number > 30) {
 					return 'Font size must be between 9 and 30.';
 				}
 
@@ -18,7 +18,7 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 		],
 	};
 
-	const handleFieldChange = (setting, e) => {
+	const handleFieldChange = (setting, e)=>{
 		const value =
 			e.target.type === 'checkbox'
 				? e.target.checked
@@ -27,10 +27,10 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 		const inputRules = validations[setting] ?? [];
 
 		const validationErrors = inputRules
-			.map((rule) => rule(value))
+			.map((rule)=>rule(value))
 			.filter(Boolean);
 
-		if (validationErrors.length > 0) {
+		if(validationErrors.length > 0) {
 			e.target.setCustomValidity(validationErrors.join('\n'));
 			e.target.reportValidity();
 			return;
@@ -40,7 +40,7 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 
 		const updatedSettings = {
 			...currentSettings,
-			[setting]: e.target.type === 'number'
+			[setting] : e.target.type === 'number'
 				? Number(value)
 				: value,
 		};
@@ -50,9 +50,9 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 	};
 
 	return (
-		<div className='settingsEditor'>
+		<div className='settingsEditor ui-editor'>
 			<h1>Editor Settings</h1>
-{/* 
+			{/*
 			<div className='field title'>
 				<label htmlFor='blockShading'>
 					Background Shading of blocks in editor
@@ -66,69 +66,80 @@ const SettingsEditor = ({settings, updateSettings = () => {} }) => {
 				/>
 			</div> */}
 
-			<div className='field title'>
+			<div className='field'>
 				<label htmlFor='autoCloseBrackets'>
 					Automatically close brackets
 				</label>
-				<input
-					id='autoCloseBrackets'
-					type='checkbox'
-					name='autoCloseBrackets'
-					checked={currentSettings.autoCloseBrackets}
-					onChange={(e) => handleFieldChange('autoCloseBrackets', e)}
-				/>
+				<div className='value'>
+					<input
+						id='autoCloseBrackets'
+						type='checkbox'
+						name='autoCloseBrackets'
+						checked={currentSettings.autoCloseBrackets}
+						onChange={(e)=>handleFieldChange('autoCloseBrackets', e)}
+					/>
+				</div>
 			</div>
 
-			<div className='field title'>
+			<div className='field'>
 				<label htmlFor='showImagePreviews'>
 					Show Image Previews when hovering a link
 				</label>
-				<input
-					id='showImagePreviews'
-					type='checkbox'
-					name='showImagePreviews'
-					checked={currentSettings.showImagePreviews}
-					onChange={(e) => handleFieldChange('showImagePreviews', e)}
-				/>
+				<div className='value'>
+					<input
+						id='showImagePreviews'
+						type='checkbox'
+						name='showImagePreviews'
+						checked={currentSettings.showImagePreviews}
+						onChange={(e)=>handleFieldChange('showImagePreviews', e)}
+					/>
+				</div>
 			</div>
 
-			<div className='field title'>
+			<div className='field'>
 				<label htmlFor='activeLineShading'>
 					Background shading of active line
 				</label>
-				<input
-					id='activeLineShading'
-					type='checkbox'
-					name='activeLineShading'
-					checked={currentSettings.activeLineShading}
-					onChange={(e) => handleFieldChange('activeLineShading', e)}
-				/>
+				<div className='value'>
+					<input
+						id='activeLineShading'
+						type='checkbox'
+						name='activeLineShading'
+						checked={currentSettings.activeLineShading}
+						onChange={(e)=>handleFieldChange('activeLineShading', e)}
+					/>
+				</div>
+
 			</div>
 
-			<div className='field title'>
+			<div className='field'>
 				<label htmlFor='lineNumbers'>Show Line Numbers</label>
-				<input
-					id='lineNumbers'
-					type='checkbox'
-					name='lineNumbers'
-					checked={currentSettings.lineNumbers}
-					onChange={(e) => handleFieldChange('lineNumbers', e)}
-				/>
+				<div className='value'>
+					<input
+						id='lineNumbers'
+						type='checkbox'
+						name='lineNumbers'
+						checked={currentSettings.lineNumbers}
+						onChange={(e)=>handleFieldChange('lineNumbers', e)}
+					/>
+				</div>
 			</div>
 
-			<div className='field title'>
+			<div className='field'>
 				<label htmlFor='fontSize'>
 					Editor Font Size (in px)
 				</label>
-				<input
-					id='fontSize'
-					type='number'
-					min={9}
-					max={30}
-					name='fontSize'
-					value={currentSettings.fontSize}
-					onChange={(e) => handleFieldChange('fontSize', e)}
-				/>
+				<div className='value'>
+					<input
+						id='fontSize'
+						type='number'
+						min={9}
+						max={30}
+						name='fontSize'
+						value={currentSettings.fontSize}
+						onChange={(e)=>handleFieldChange('fontSize', e)}
+					/>
+				</div>
 			</div>
 		</div>
 	);

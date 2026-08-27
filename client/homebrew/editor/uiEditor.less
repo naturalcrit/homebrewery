@@ -5,7 +5,7 @@
 	padding-left  : 10px;
 }
 
-.metadataEditor {
+.ui-editor {
 	position         : absolute;
 	box-sizing       : border-box;
 	width            : 100%;
@@ -60,6 +60,7 @@
 		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
+			justify-self: end;
 			&[data-tooltip-right] { max-width : 380px; }
 			&:invalid { background : #FFB9B9; }
 			small {
@@ -67,6 +68,11 @@
 				font-size   : 0.9em;
 				font-style  : italic;
 				line-height : 1.4em;
+			}
+
+			input[type='checkbox'] {
+				display:block;
+				margin-left:auto;
 			}
 		}
 		input[type='text'], textarea {
@@ -370,5 +376,12 @@
 				}
 			}
 		}
+	}
+}
+
+
+.settingsEditor .field {
+	> label {
+		width:200px;
 	}
 }
