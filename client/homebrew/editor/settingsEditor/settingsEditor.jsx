@@ -127,9 +127,11 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{} })=>{
 
 			<div className='field'>
 				<label htmlFor='fontSize'>
-					Editor Font Size (in px)
+					Editor Font Size
 				</label>
+				
 				<div className='value'>
+					<small>from 9px to 30px</small>
 					<input
 						id='fontSize'
 						type='number'

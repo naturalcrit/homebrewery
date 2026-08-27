@@ -60,7 +60,6 @@
 		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
-			justify-self: end;
 			&[data-tooltip-right] { max-width : 380px; }
 			&:invalid { background : #FFB9B9; }
 			small {
@@ -70,9 +69,13 @@
 				line-height : 1.4em;
 			}
 
-			input[type='checkbox'] {
-				display:block;
-				margin-left:auto;
+			small {
+				width:fit-content;
+				margin-inline:5px;
+			}
+			input[type='checkbox'], input[type='number'] {
+				float:right;
+				text-align:end;
 			}
 		}
 		input[type='text'], textarea {
@@ -381,7 +384,17 @@
 
 
 .settingsEditor .field {
+	border-bottom:1px solid black;
+	padding-bottom:10px;
+
+	.value {
+		
+			display:flex;
+			justify-content: end;
+	}
+
 	> label {
-		width:200px;
+		width:fit-content;
+		max-width:calc(100% - 200px);
 	}
 }
