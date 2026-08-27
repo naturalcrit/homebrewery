@@ -1,5 +1,5 @@
 import '../uiEditor.less';
-import React, { useState, useEffect} from 'react';
+import React from 'react';
 
 const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
 
@@ -56,7 +56,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 					Select your Editor Theme
 				</label>
 				<div className='value'>
-					<select id="changeEditorTheme" value={settings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
+					<select id='changeEditorTheme' value={settings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
 						{EditorThemeNameList.map((theme, key)=>{
 							return <option key={key} value={theme}>{theme}</option>;
 						})}
@@ -127,7 +127,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 				<label htmlFor='fontSize'>
 					Editor Font Size
 				</label>
-				
+
 				<div className='value'>
 					<small>from 9px to 30px</small>
 					<input

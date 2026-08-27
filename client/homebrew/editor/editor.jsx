@@ -14,7 +14,6 @@ const EDITOR_SETTINGS_KEY = 'HB_edit_settings';
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
 import cm5Themes from 'codemirror-5-themes';
-import { autoCloseTags } from '@codemirror/lang-javascript';
 
 const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 
@@ -88,13 +87,13 @@ const Editor = forwardRef(
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
 		const [editorSettings, setEditorSettings] = useState({
-			autoCloseBrackets: true,
-			showImagePreviews: true,
-			activeLineShading: true,
-			lineNumbers: true,
-			fontSize: 13,
-			editorTheme: 'default',
-		})
+			autoCloseBrackets : true,
+			showImagePreviews : true,
+			activeLineShading : true,
+			lineNumbers       : true,
+			fontSize          : 13,
+			editorTheme       : 'default',
+		});
 
 		const editor = useRef(null);
 		const codeEditor = useRef(null);
@@ -115,10 +114,10 @@ const Editor = forwardRef(
 
 			const localEditorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
 			if(localEditorTheme && EditorThemes.includes(localEditorTheme)) {
-				setEditorSettings({...editorSettings , editorTheme: localEditorTheme})
-			} else setEditorSettings({...editorSettings , editorTheme: 'default'});
+				setEditorSettings({ ...editorSettings, editorTheme: localEditorTheme });
+			} else setEditorSettings({ ...editorSettings, editorTheme: 'default' });
 			const localEditorSettings = window.localStorage.getItem(EDITOR_SETTINGS_KEY);
-			if (localEditorSettings) setEditorSettings(JSON.parse(localEditorSettings));
+			if(localEditorSettings) setEditorSettings(JSON.parse(localEditorSettings));
 			const snippetBar = document.querySelector('.editor > .snippetBar');
 			if(!snippetBar) return;
 
@@ -235,13 +234,13 @@ const Editor = forwardRef(
 
 		const updateEditorTheme = (newTheme)=>{
 			window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
-			setEditorSettings({...editorSettings , editorTheme: newTheme})
+			setEditorSettings({ ...editorSettings, editorTheme: newTheme });
 		};
-		
-		const updateEditorSettings = (newEditorSettings) => {
+
+		const updateEditorSettings = (newEditorSettings)=>{
 			window.localStorage.setItem(EDITOR_SETTINGS_KEY, JSON.stringify(newEditorSettings));
 			setEditorSettings(newEditorSettings);
-		}
+		};
 
 		const renderEditor = ()=>{
 			if(isText()) {
@@ -324,14 +323,14 @@ const Editor = forwardRef(
 			if(isSettings()){
 				return (
 					<>
-						<CodeEditor 
-							key='codeEditor' 
+						<CodeEditor
+							key='codeEditor'
 							tab='brewSettings' //necessary or the brew object loses its contents, culprit possibly on the tab dependent useEffect in codeEditor.jsx
-							view={view} 
+							view={view}
 							style={{ display: 'none' }}
 							settings={editorSettings}
 						/>
-						<SettingsEditor 
+						<SettingsEditor
 							settings={editorSettings}
 							EditorThemeNameList={EditorThemeNameList}
 							updateSettings={updateEditorSettings}

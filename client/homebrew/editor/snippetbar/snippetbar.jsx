@@ -35,21 +35,21 @@ const Snippetbar = createReactClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
-			brew              : {},
-			view              : 'text',
-			onViewChange      : ()=>{},
-			onInject          : ()=>{},
-			onToggle          : ()=>{},
-			showEditButtons   : true,
-			renderer          : 'legacy',
-			undo              : ()=>{},
-			redo              : ()=>{},
-			historySize       : ()=>{},
-			foldCode          : ()=>{},
-			unfoldCode        : ()=>{},
-			cursorPos         : {},
-			themeBundle       : [],
-			updateBrew        : ()=>{}
+			brew            : {},
+			view            : 'text',
+			onViewChange    : ()=>{},
+			onInject        : ()=>{},
+			onToggle        : ()=>{},
+			showEditButtons : true,
+			renderer        : 'legacy',
+			undo            : ()=>{},
+			redo            : ()=>{},
+			historySize     : ()=>{},
+			foldCode        : ()=>{},
+			unfoldCode      : ()=>{},
+			cursorPos       : {},
+			themeBundle     : [],
+			updateBrew      : ()=>{}
 		};
 	},
 
@@ -294,7 +294,7 @@ const SnippetGroup = createReactClass({
 					<Dropdown groupName={snippet.name} icon={snippet.icon} key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
 					</Dropdown>
-				)
+				);
 			}
 
 		});
