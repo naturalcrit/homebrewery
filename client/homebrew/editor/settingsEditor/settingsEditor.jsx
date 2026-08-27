@@ -66,20 +66,6 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 				</div>
 			</div>
 
-			{/*
-			<div className='field title'>
-				<label htmlFor='blockShading'>
-					Background Shading of blocks in editor
-				</label>
-				<input
-					id='blockShading'
-					type='checkbox'
-					name='blockShading'
-					checked={currentSettings.blockShading}
-					onChange={(e) => handleFieldChange('blockShading', e)}
-				/>
-			</div> */}
-
 			<div className='field'>
 				<label htmlFor='autoCloseBrackets'>
 					Automatically close brackets
