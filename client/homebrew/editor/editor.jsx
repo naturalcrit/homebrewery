@@ -2,6 +2,7 @@
 import './editor.less';
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import dedent from 'dedent';
+import { EditorView } from '@codemirror/view';
 
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
@@ -72,6 +73,7 @@ const Editor = forwardRef(
 		const [currentEditorTheme, setEditorTheme] = useState(editorTheme);
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
+		const [isDark, setIsDark] = useState(false);
 
 		const editor = useRef(null);
 		const codeEditor = useRef(null);
@@ -225,6 +227,7 @@ const Editor = forwardRef(
 							onCursorChange={(page)=>updateCurrentCursorPage(page)}
 							onViewChange={(page)=>updateCurrentViewPage(page)}
 							editorTheme={currentEditorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 						/>
@@ -243,6 +246,7 @@ const Editor = forwardRef(
 							value={brew.style ?? DEFAULT_STYLE_TEXT}
 							onChange={onBrewChange('style')}
 							editorTheme={currentEditorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 						/>
@@ -265,6 +269,7 @@ const Editor = forwardRef(
 							onChange={onBrewChange('snippets')}
 							enableFolding={true}
 							editorTheme={currentEditorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - 25px)` }}
 						/>
@@ -274,7 +279,7 @@ const Editor = forwardRef(
 			if(isMeta()) {
 				return (
 					<>
-						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
+						<CodeEditor key='codeEditor' editorTheme={currentEditorTheme} onThemeChange={setIsDark} view={view} style={{ display: 'none' }} />
 						<MetadataEditor
 							metadata={brew}
 							themeBundle={themeBundle}
@@ -306,7 +311,7 @@ const Editor = forwardRef(
 		}));
 
 		return (
-			<div className='editor' ref={editor}>
+			<div className={`editor${isDark ? ' darkMode' : ''}`} ref={editor}>
 				<SnippetBar
 					brew={brew}
 					view={view}
