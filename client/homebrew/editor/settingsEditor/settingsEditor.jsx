@@ -1,8 +1,7 @@
 import '../uiEditor.less';
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 
 const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
-	const [currentSettings, setCurrentSettings] = useState(settings);
 
 	const validations = {
 		fontSize : [
@@ -39,13 +38,12 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 		e.target.setCustomValidity('');
 
 		const updatedSettings = {
-			...currentSettings,
+			...settings,
 			[setting] : e.target.type === 'number'
 				? Number(value)
 				: value,
 		};
 
-		setCurrentSettings(updatedSettings);
 		updateSettings(updatedSettings);
 	};
 
@@ -58,7 +56,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 					Select your Editor Theme
 				</label>
 				<div className='value'>
-					<select value={currentSettings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
+					<select id="changeEditorTheme" value={settings.editorTheme} onChange={(e)=>handleFieldChange('editorTheme', e)} >
 						{EditorThemeNameList.map((theme, key)=>{
 							return <option key={key} value={theme}>{theme}</option>;
 						})}
@@ -75,7 +73,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						id='autoCloseBrackets'
 						type='checkbox'
 						name='autoCloseBrackets'
-						checked={currentSettings.autoCloseBrackets}
+						checked={settings.autoCloseBrackets}
 						onChange={(e)=>handleFieldChange('autoCloseBrackets', e)}
 					/>
 				</div>
@@ -90,7 +88,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						id='showImagePreviews'
 						type='checkbox'
 						name='showImagePreviews'
-						checked={currentSettings.showImagePreviews}
+						checked={settings.showImagePreviews}
 						onChange={(e)=>handleFieldChange('showImagePreviews', e)}
 					/>
 				</div>
@@ -105,7 +103,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						id='activeLineShading'
 						type='checkbox'
 						name='activeLineShading'
-						checked={currentSettings.activeLineShading}
+						checked={settings.activeLineShading}
 						onChange={(e)=>handleFieldChange('activeLineShading', e)}
 					/>
 				</div>
@@ -119,7 +117,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						id='lineNumbers'
 						type='checkbox'
 						name='lineNumbers'
-						checked={currentSettings.lineNumbers}
+						checked={settings.lineNumbers}
 						onChange={(e)=>handleFieldChange('lineNumbers', e)}
 					/>
 				</div>
@@ -138,7 +136,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						min={9}
 						max={30}
 						name='fontSize'
-						value={currentSettings.fontSize}
+						value={settings.fontSize}
 						onChange={(e)=>handleFieldChange('fontSize', e)}
 					/>
 				</div>
