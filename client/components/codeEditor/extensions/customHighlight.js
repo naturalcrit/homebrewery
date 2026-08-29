@@ -355,7 +355,7 @@ class ImageWidget extends WidgetType {
 		img.src = this.url;
 
 		img.onerror = ()=>{
-			img.src  = 'client/icons/broken-image.jpg';
+			img.src  = '/client/icons/broken-image.jpg';
 		};
 
 		return img;
