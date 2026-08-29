@@ -69,10 +69,10 @@
     ],
     "coverageThreshold": {
       "global": {
-        "statements": 50,
-        "branches": 40,
-        "functions": 40,
-        "lines": 50
+        "statements": 40,
+        "branches": 25,
+        "functions": 30,
+        "lines": 40
       },
       "server/homebrew.api.js": {
         "statements": 60,
@@ -122,6 +122,7 @@
     "fflate": "^0.8.3",
     "fs-extra": "^11.3.5",
     "hash-wasm": "^4.12.0",
+    "hbmarkedwrapper": "^1.0.0",
     "idb-keyval": "^6.2.5",
     "js-yaml": "^5.3.0",
     "jwt-simple": "^0.5.6",

@@ -4,7 +4,7 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import Markdown                               from '@shared/markdown.js';
+import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
@@ -62,7 +62,7 @@ const EditPage = (props)=>{
 	const [lastSavedTime, setLastSavedTime] = useState(new Date());
 	const [saveGoogle, setSaveGoogle] = useState(!!props.brew.googleId);
 	const [error, setError] = useState(null);
-	const [HTMLErrors, setHTMLErrors] = useState(Markdown.validate(props.brew.text));
+	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
@@ -85,7 +85,7 @@ const EditPage = (props)=>{
 		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(Markdown.validate(currentBrew.text));
+		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		const handleControlKeys = (e)=>{
@@ -131,7 +131,7 @@ const EditPage = (props)=>{
 
 		//If there are HTML errors, run the validator on every change to give quick feedback
 		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
-			setHTMLErrors(Markdown.validate(value));
+			setHTMLErrors(hbfm.validate(value));
 
 		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
 		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
@@ -205,7 +205,7 @@ const EditPage = (props)=>{
 	};
 
 	const save = async (brew, saveToGoogle)=>{
-		setHTMLErrors(Markdown.validate(brew.text));
+		setHTMLErrors(hbfm.validate(brew.text));
 
 		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
