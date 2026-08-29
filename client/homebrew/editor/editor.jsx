@@ -138,6 +138,10 @@ const Editor = forwardRef(
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorViewPageNum, false); }, [currentEditorViewPageNum, liveScroll]);
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorCursorPageNum, false); }, [currentEditorCursorPageNum, liveScroll]);
 
+		const handleFormatCode = () => {
+			codeEditor.current?.formatCode();
+		};
+
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey && e.metaKey && e.shiftKey)) return;
 			const LEFTARROW_KEY = 37;
@@ -371,6 +375,7 @@ const Editor = forwardRef(
 					redo={redo}
 					foldCode={foldCode}
 					unfoldCode={unfoldCode}
+					formatCode={isStyle() ? handleFormatCode : null}
 					historySize={historySize()}
 					currentEditorTheme={editorSettings.editorTheme}
 					updateEditorTheme={updateEditorTheme}

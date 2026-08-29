@@ -35,21 +35,22 @@ const Snippetbar = createReactClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
-			brew            : {},
-			view            : 'text',
-			onViewChange    : ()=>{},
-			onInject        : ()=>{},
-			onToggle        : ()=>{},
-			showEditButtons : true,
-			renderer        : 'legacy',
-			undo            : ()=>{},
-			redo            : ()=>{},
-			historySize     : ()=>{},
-			foldCode        : ()=>{},
-			unfoldCode      : ()=>{},
-			cursorPos       : {},
-			themeBundle     : [],
-			updateBrew      : ()=>{}
+			brew              : {},
+			view              : 'text',
+			onViewChange      : ()=>{},
+			onInject          : ()=>{},
+			onToggle          : ()=>{},
+			showEditButtons   : true,
+			renderer          : 'legacy',
+			undo              : ()=>{},
+			redo              : ()=>{},
+			historySize       : ()=>{},
+			foldCode          : ()=>{},
+			unfoldCode        : ()=>{},
+			formatCode        : ()=>{},
+			cursorPos         : {},
+			themeBundle       : [],
+			updateBrew        : ()=>{}
 		};
 	},
 
@@ -222,6 +223,11 @@ const Snippetbar = createReactClass({
 					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
+					</div>
+					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+						onClick={this.toggleThemeSelector} >
+						<i className='fas fa-palette' />
+						{this.state.themeSelector && this.renderThemeSelector()}
 					</div>
 				</div></>}
 
