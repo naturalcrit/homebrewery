@@ -5,7 +5,7 @@
 	padding-left  : 10px;
 }
 
-.metadataEditor {
+.ui-editor {
 	position         : absolute;
 	box-sizing       : border-box;
 	width            : 100%;
@@ -17,6 +17,7 @@
 
 	h1 {
 		margin         : 0 0 40px;
+		font-size      : 15px;
 		font-weight    : bold;
 		text-transform : uppercase;
 	}
@@ -63,10 +64,17 @@
 			&[data-tooltip-right] { max-width : 380px; }
 			&:invalid { background : #FFB9B9; }
 			small {
-				display     : block;
-				font-size   : 0.9em;
-				font-style  : italic;
-				line-height : 1.4em;
+				display       : block;
+				width         : fit-content;
+				margin-inline : 5px;
+				font-size     : 0.9em;
+				font-style    : italic;
+				line-height   : 1.4em;
+			}
+
+			input[type='checkbox'], input[type='number'] {
+				float      : right;
+				text-align : end;
 			}
 		}
 		input[type='text'], textarea {
@@ -175,47 +183,41 @@
 	}
 	.authors.field {
 		.tag {
-			font-weight:300;
-			transition:background-color 0.2s;
+			font-weight : 300;
+			transition  : background-color 0.2s;
 
 			&.owner {
-				position: relative;
-				background-color:@silverLight;
-				min-width:25px;
-				display:grid;
-				place-items:center;
-				font-weight: 900;
+				position         : relative;
+				display          : grid;
+				place-items      : center;
+				min-width        : 25px;
+				font-weight      : 900;
+				background-color : @silverLight;
 
 				&::after {
-					content: "\f521";
-					font-family: "Font Awesome 6 Free";
-					color:gold;
-					position: absolute;
-					top: 0;
-					left: 0;
-					width:15px;
-					height:15px;
-					rotate:-25deg;
-					translate:-30% -50%;
-					transform: scaleY(0.7);
+					position    : absolute;
+					top         : 0;
+					left        : 0;
+					width       : 15px;
+					height      : 15px;
+					font-family : 'Font Awesome 6 Free';
+					color       : gold;
+					content     : '\f521';
+					transform   : scaleY(0.7);
+					rotate      : -25deg;
+					translate   : -30% -50%;
 				}
 			}
-			&:has(button) a {
-				padding-right:5px;
-			}
-			&:has(button:hover) {
-				background:#d97d7d;
-			}
+			&:has(button) a { padding-right : 5px; }
+			&:has(button:hover) { background : #D97D7D; }
 
-			button {
-				color:@red;
-			}
+			button { color : @red; }
 
 		
 		}
 		a {
-			color:black;
-			text-decoration:unset;
+			color           : black;
+			text-decoration : unset;
 		}
 	}
 
@@ -327,9 +329,7 @@
 
 			.icon { #groupedIcon; }
 
-			button {
-				cursor : pointer;
-			}
+			button { cursor : pointer; }
 		}
 
 		.input-group {
@@ -370,5 +370,22 @@
 				}
 			}
 		}
+	}
+}
+
+
+.settingsEditor .field {
+	padding-bottom : 10px;
+	border-bottom  : 1px solid black;
+
+	.value {
+		
+		display         : flex;
+		justify-content : end;
+	}
+
+	> label {
+		width     : fit-content;
+		max-width : calc(100% - 200px);
 	}
 }

@@ -6,8 +6,10 @@ import dedent from 'dedent';
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
 import MetadataEditor from './metadataEditor/metadataEditor.jsx';
+import SettingsEditor from './settingsEditor/settingsEditor.jsx';
 
 const EDITOR_THEME_KEY = 'HB_editor_theme';
+const EDITOR_SETTINGS_KEY = 'HB_edit_settings';
 
 import defaultCM5Theme from '@themes/codeMirror/default.js';
 import darkbrewery from '@themes/codeMirror/darkbrewery.js';
@@ -18,6 +20,20 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const EditorThemes = Object.entries(themes)
 	.filter(([name, value])=>Array.isArray(value) && !name.endsWith('Init') && !name.endsWith('Style'))
 	.map(([name])=>name);
+
+const themeNames = Object.entries(themes)
+  .filter(([name, value])=>Array.isArray(value) &&
+    !name.endsWith('Init') &&
+    !name.endsWith('Style')
+  )
+  .map(([name])=>name);
+
+const EditorThemeNameList = [
+	'default',
+	...themeNames
+    .filter((name)=>name !== 'default')
+    .sort((a, b)=>a.localeCompare(b))
+];
 
 //const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 //const SNIPPETBREAK_REGEX_V3 = /^\\snippet\ .*$/;
@@ -50,7 +66,6 @@ const Editor = forwardRef(
 			onCursorPageChange = ()=>{},
 			onViewPageChange = ()=>{},
 
-			editorTheme = 'default',
 			renderer = 'legacy',
 
 			moveBrew,
@@ -69,9 +84,16 @@ const Editor = forwardRef(
 		},
 		ref,
 	)=>{
-		const [currentEditorTheme, setEditorTheme] = useState(editorTheme);
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
+		const [editorSettings, setEditorSettings] = useState({
+			autoCloseBrackets : true,
+			showImagePreviews : true,
+			activeLineShading : true,
+			lineNumbers       : true,
+			fontSize          : 13,
+			editorTheme       : 'default',
+		});
 
 		const editor = useRef(null);
 		const codeEditor = useRef(null);
@@ -81,6 +103,7 @@ const Editor = forwardRef(
 		const isStyle = ()=>isView('style');
 		const isMeta = ()=>isView('meta');
 		const isSnip = ()=>isView('snippet');
+		const isSettings = ()=>isView('settings');
 
 		const isView = (name)=>view === name;
 
@@ -89,8 +112,12 @@ const Editor = forwardRef(
 			brewRenderer.onload = ()=>brewRenderer.contentDocument?.addEventListener('keydown', handleControlKeys);
 			document.addEventListener('keydown', handleControlKeys);
 
-			const editorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
-			if(editorTheme && EditorThemes.includes(editorTheme)) setEditorTheme(editorTheme); else setEditorTheme('default');
+			const localEditorTheme = window.localStorage.getItem(EDITOR_THEME_KEY);
+			if(localEditorTheme && EditorThemes.includes(localEditorTheme)) {
+				setEditorSettings({ ...editorSettings, editorTheme: localEditorTheme });
+			} else setEditorSettings({ ...editorSettings, editorTheme: 'default' });
+			const localEditorSettings = window.localStorage.getItem(EDITOR_SETTINGS_KEY);
+			if(localEditorSettings) setEditorSettings(JSON.parse(localEditorSettings));
 			const snippetBar = document.querySelector('.editor > .snippetBar');
 			if(!snippetBar) return;
 
@@ -211,7 +238,12 @@ const Editor = forwardRef(
 
 		const updateEditorTheme = (newTheme)=>{
 			window.localStorage.setItem(EDITOR_THEME_KEY, newTheme);
-			setEditorTheme(newTheme);
+			setEditorSettings({ ...editorSettings, editorTheme: newTheme });
+		};
+
+		const updateEditorSettings = (newEditorSettings)=>{
+			window.localStorage.setItem(EDITOR_SETTINGS_KEY, JSON.stringify(newEditorSettings));
+			setEditorSettings(newEditorSettings);
 		};
 
 		const renderEditor = ()=>{
@@ -228,9 +260,10 @@ const Editor = forwardRef(
 							onChange={onBrewChange('text')}
 							onCursorChange={(page)=>updateCurrentCursorPage(page)}
 							onViewChange={(page)=>updateCurrentViewPage(page)}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -246,9 +279,10 @@ const Editor = forwardRef(
 							view={view}
 							value={brew.style ?? DEFAULT_STYLE_TEXT}
 							onChange={onBrewChange('style')}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -268,9 +302,10 @@ const Editor = forwardRef(
 							value={brew.snippets}
 							onChange={onBrewChange('snippets')}
 							enableFolding={true}
-							editorTheme={currentEditorTheme}
+							editorTheme={editorSettings.editorTheme}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - 25px)` }}
+							settings={editorSettings}
 						/>
 					</>
 				);
@@ -278,13 +313,31 @@ const Editor = forwardRef(
 			if(isMeta()) {
 				return (
 					<>
-						<CodeEditor key='codeEditor' view={view} style={{ display: 'none' }} />
+						<CodeEditor key='codeEditor' tab='brewMetadata' view={view} style={{ display: 'none' }} settings={editorSettings} />
 						<MetadataEditor
 							metadata={brew}
 							themeBundle={themeBundle}
 							onChange={onBrewChange('metadata')}
 							reportError={reportError}
 							userThemes={userThemes}
+						/>
+					</>
+				);
+			}
+			if(isSettings()){
+				return (
+					<>
+						<CodeEditor
+							key='codeEditor'
+							tab='brewSettings' //necessary or the brew object loses its contents, culprit possibly on the tab dependent useEffect in codeEditor.jsx
+							view={view}
+							style={{ display: 'none' }}
+							settings={editorSettings}
+						/>
+						<SettingsEditor
+							settings={editorSettings}
+							EditorThemeNameList={EditorThemeNameList}
+							updateSettings={updateEditorSettings}
 						/>
 					</>
 				);
@@ -308,7 +361,6 @@ const Editor = forwardRef(
 			unfoldCode,
 			historySize,
 		}));
-
 		return (
 			<div className='editor' ref={editor}>
 				<SnippetBar
@@ -325,7 +377,7 @@ const Editor = forwardRef(
 					unfoldCode={unfoldCode}
 					formatCode={isStyle() ? handleFormatCode : null}
 					historySize={historySize()}
-					currentEditorTheme={currentEditorTheme}
+					currentEditorTheme={editorSettings.editorTheme}
 					updateEditorTheme={updateEditorTheme}
 					themeBundle={themeBundle}
 					cursorPos={codeEditor.current?.getCursorPosition() || {}}

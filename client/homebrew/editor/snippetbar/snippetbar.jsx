@@ -10,6 +10,7 @@ import cx from 'classnames';
 import { loadHistory } from '../../utils/versionHistory.js';
 import { brewSnippetsToJSON } from '@shared/helpers.js';
 
+/*eslint-disable camelcase*/
 import Legacy5ePHB from '@themes/Legacy/5ePHB/snippets.js';
 import V3_5ePHB   from '@themes/V3/5ePHB/snippets.js';
 import V3_5eDMG   from '@themes/V3/5eDMG/snippets.js';
@@ -23,26 +24,7 @@ const ThemeSnippets = {
 	V3_Journal   : V3_Journal,
 	V3_Blank     : V3_Blank,
 };
-
-import defaultCM5Theme from '@themes/codeMirror/default.js';
-import darkbrewery from '@themes/codeMirror/darkbrewery.js';
-import cm5Themes from 'codemirror-5-themes';
-
-const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
-
-const themeNames = Object.entries(themes)
-  .filter(([name, value])=>Array.isArray(value) &&
-    !name.endsWith('Init') &&
-    !name.endsWith('Style')
-  )
-  .map(([name])=>name);
-
-const EditorThemes = [
-	'default',
-	...themeNames
-    .filter((name)=>name !== 'default')
-    .sort((a, b)=>a.localeCompare(b))
-];
+/*eslint-enable camelcase */
 
 const execute = function(val, props){
 	if(_.isFunction(val)) return val(props);
@@ -66,7 +48,6 @@ const Snippetbar = createReactClass({
 			foldCode          : ()=>{},
 			unfoldCode        : ()=>{},
 			formatCode        : ()=>{},
-			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			themeBundle       : [],
 			updateBrew        : ()=>{}
@@ -158,33 +139,6 @@ const Snippetbar = createReactClass({
 		this.props.onInject(injectedText);
 	},
 
-	toggleThemeSelector : function(e){
-		if(e.target.tagName != 'SELECT'){
-			this.setState({
-				themeSelector : !this.state.themeSelector
-			});
-		}
-	},
-
-	changeTheme : function(e){
-		if(e.target.value == this.props.currentEditorTheme) return;
-		this.props.updateEditorTheme(e.target.value);
-
-		this.setState({
-			themeSelector : false,
-		});
-	},
-
-	renderThemeSelector : function(){
-		return <div className='themeSelector'>
-			<select value={this.props.currentEditorTheme} onChange={this.changeTheme} >
-				{EditorThemes.map((theme, key)=>{
-					return <option key={key} value={theme}>{theme}</option>;
-				})}
-			</select>
-		</div>;
-	},
-
 	renderSnippetGroups : function(){
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 		if(snippets.length === 0) return null;
@@ -246,7 +200,7 @@ const Snippetbar = createReactClass({
 
 		return (
 			<div className='editors'>
-				{this.props.view !== 'meta' && <><div className='historyTools'>
+				{this.props.view !== 'meta' && this.props.view !== 'settings' && <><div className='historyTools'>
 					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
 						onClick={this.toggleHistoryMenu} >
 						<i className='fas fa-clock-rotate-left' />
@@ -269,10 +223,6 @@ const Snippetbar = createReactClass({
 					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
-					</div>
-					<div className={`editorTool formatCode ${this.props.formatCode ? 'active' : ''}`}
-						onClick={this.props.formatCode} >
-						<i className='fas fa-wand-magic-sparkles' />
 					</div>
 					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 						onClick={this.toggleThemeSelector} >
@@ -297,6 +247,10 @@ const Snippetbar = createReactClass({
 					<div className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
 						<i className='fas fa-info-circle' />
+					</div>
+					<div className={cx('settings', { selected: this.props.view === 'settings' })}
+						onClick={()=>this.props.onViewChange('settings')}>
+						<i className='fas fa-gear' />
 					</div>
 				</div>
 
@@ -346,7 +300,7 @@ const SnippetGroup = createReactClass({
 					<Dropdown groupName={snippet.name} icon={snippet.icon} key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
 					</Dropdown>
-				)
+				);
 			}
 
 		});

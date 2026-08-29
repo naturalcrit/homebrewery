@@ -3,20 +3,20 @@
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	--activeTriggerColor: inherit;
-	--menuColor      : #DDDDDD;
+	--activeTriggerColor : inherit;
+	--menuColor          : #DDDDDD;
 	@menuHeight      : 25px;
-	position         : relative;
-	display          : flex;
-	flex-wrap        : wrap-reverse;
-	justify-content  : space-between;
-	height           : auto;
-	color            : black;
-	background-color : #DDDDDD;
-	font-size        : .65rem;
-	font-family: 'Open Sans', sans-serif;
-	text-transform: uppercase;
-	font-weight: 800;
+	position             : relative;
+	display              : flex;
+	flex-wrap            : wrap-reverse;
+	justify-content      : space-between;
+	height               : auto;
+	font-family          : 'Open Sans', sans-serif;
+	font-size            : 0.65rem;
+	font-weight          : 800;
+	color                : black;
+	text-transform       : uppercase;
+	background-color     : #DDDDDD;
 
 	.editors {
 		display         : flex;
@@ -135,36 +135,32 @@
 	}
 
 	// removed caret for top level items, by request (makes buttons too wide).
-	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display: none; }
+	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display : none; }
 
 	.menu-item {
-		position    : relative;
-		display     : flex;
-		justify-content: space-between;
-		align-items : center; 
-		min-width   : max-content;
-		padding     : 5px;
-		cursor      : pointer;
-		width: 100%;
-		&:is(.menu-list .menu-item) [class*="name"] {
-			padding-inline: 8px;   // additional space between icon and name (helpful in Fonts menu especially).
+		position        : relative;
+		display         : flex;
+		align-items     : center;
+		justify-content : space-between;
+		width           : 100%; 
+		min-width       : max-content;
+		padding         : 5px;
+		cursor          : pointer;
+		&:is(.menu-list .menu-item) [class*='name'] {
+			padding-inline : 8px;   // additional space between icon and name (helpful in Fonts menu especially).
 		}
 		.menu-name {
-			flex: 1;
-			text-align: left;
-			text-box-trim: trim-end;
+			flex          : 1;
+			text-align    : left;
+			text-box-trim : trim-end;
 		}
 		i {
 			min-width    : 25px;
-			height       : .85rem;
+			height       : 0.85rem;
 			font-size    : 1.2em;
 			text-align   : center;
-			&.caret {
-				margin-right: 0;
-			}
-			&.caret:is(.menu-wrapper .menu-wrapper * ) {
-				text-align: right;
-			}
+			&.caret { margin-right : 0; }
+			&.caret:is(.menu-wrapper .menu-wrapper *) { text-align : right; }
 			/* Fonts */
 			&.font {
 				height : auto;
@@ -203,13 +199,11 @@
 			background    : grey;
 			border-radius : 12px;
 		}
-		&:hover {
-			background-color : #999999;
-		}
+		&:hover { background-color : #999999; }
 		&:disabled {
-			color: gray;
-			cursor: not-allowed;
-			&:hover { background-color: unset; }
+			color  : gray;
+			cursor : not-allowed;
+			&:hover { background-color : unset; }
 		}
 	}
 }
@@ -227,4 +221,3 @@
 		.editors > div.history > .dropdown { right : unset; }
 	}
 }
-
