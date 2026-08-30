@@ -384,12 +384,37 @@
 	background-image: @backgroundImageAltDark;
 	color:#ddd;
 
-	 h2 {
-		color:@blueLight;
-		border-color: @blue;
+	h2 {
+		color:#aaf;
+		border-color: #aaf;
 	}
 
 	input, textarea, select {
-		background-color:#ddd;
+		background-color:#333;
+		color:#eee;
+		border-color:#eee;
+
+		&::placeholder {
+			color:#aaa;
+		}
+	}
+
+	.dropdown-container, .item {
+		background-color: #333;
+	}
+
+	a {
+		color: @blueLight;
+
+		&:visited {
+			color: #cb8ad8;
+		}
+	}
+
+	.thumbnail-preview[src="/client/homebrew/thumbnail.png"] {
+		filter:invert(.8);
+	}
+	button.publish {
+		.colorButton(#3137de) !important;
 	}
 }
