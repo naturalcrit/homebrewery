@@ -4,7 +4,7 @@ import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
-import Markdown                      from '../shared/markdown.js';
+import { hbfm }   from 'hbmarkedwrapper';
 import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
@@ -218,6 +218,14 @@ const api = {
 		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
+		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
+		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
+		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
+		metadata.columns = brew?.columns;
+		metadata.columnGutter = brew?.columnGutter;
+		metadata.license = brew?.license;
+		metadata.legalAuthors = brew?.legalAuthors;
+
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
@@ -225,7 +233,7 @@ const api = {
 		return text;
 	},
 	getGoodBrewTitle : (text)=>{
-		const tokens = Markdown.marked.lexer(text);
+		const tokens = hbfm.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 			.slice(0, MAX_TITLE_LENGTH);
 	},

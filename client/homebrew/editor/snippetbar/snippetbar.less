@@ -22,7 +22,7 @@
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
-		min-width       : 250px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
+		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
 		font-size: .85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 		reading-order   : 2;
@@ -74,6 +74,11 @@
 				}
 				&.unfoldAll {
 					.tooltipLeft('Unfold All');
+					color     : grey;
+					&.active { color : inherit; }
+				}
+				&.formatCode {
+					.tooltipLeft('Clean your Code');
 					color     : grey;
 					&.active { color : inherit; }
 				}
@@ -211,8 +216,8 @@
 		}
 	}
 }
-@container editor (width < 816px) {
-	.snippetBar {
+@container editor (width < 841px) {
+ 	.snippetBar {
 		.editors { 
 			flex            : 1;
 			justify-content : space-between;
