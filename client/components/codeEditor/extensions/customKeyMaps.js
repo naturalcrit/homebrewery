@@ -83,7 +83,7 @@ const insertTab = (view)=>{
 		changes,
 		selection : EditorSelection.create(
 			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
-				mappedChanges.changes.mapPos(range.from, 1) + 2
+				mappedChanges.changes.mapPos(range.from, 1)
 			)
 			)
 		)
