@@ -88,8 +88,8 @@ const api = {
 	},
 	//Get array of any of this user's brews tagged with `meta:theme`
 	getUsersBrewThemes : async (username)=>{
-		if(!username)
-			return {};
+		// if(!username)
+		// 	return {};
 
 		const fields = [
 			'title',
@@ -104,7 +104,7 @@ const api = {
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
+		const brews = await HomebrewModel.getByUser(null, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
 
 		if(brews) {
 			for (const brew of brews) {

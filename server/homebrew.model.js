@@ -60,6 +60,9 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	if(allowAccess){
 		delete query.published;
 	}
+	if(!username) {
+		delete query.authors;
+	}
 	const brews = await Homebrew.find(query, fields).lean().exec() //lean() converts results to JSObjects
 		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
