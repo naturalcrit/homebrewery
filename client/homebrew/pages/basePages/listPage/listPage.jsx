@@ -24,35 +24,26 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const sortTypeRef = useRef(sortType);
 	const sortDirRef = useRef(sortDir);
 
-	useEffect(()=>{
-		groupVisibilityRef.current = groupVisibility;
-	}, [groupVisibility]);
-
-	useEffect(()=>{
-		sortTypeRef.current = sortType;
-	}, [sortType]);
-
-	useEffect(()=>{
-		sortDirRef.current = sortDir;
-	}, [sortDir]);
+	useEffect(()=>(groupVisibilityRef.current = groupVisibility), [groupVisibility]);
+	useEffect(()=>(sortTypeRef.current = sortType), [sortType]);
+	useEffect(()=>(sortDirRef.current = sortDir), [sortDir]);
 
 	useEffect(()=>{
 		window.onbeforeunload = saveToLocalStorage;
 
-		if(typeof window !== 'undefined') {
-			const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
-			const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
-			updateUrl(filterString, newSortType, newSortDir);
+		if(typeof window === 'undefined') return;
+		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
+		const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
+		updateUrl(filterString, newSortType, newSortDir);
 
-			const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
-				visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
-				return visibility;
-			}, {});
+		const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
+			visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
+			return visibility;
+		}, {});
 
-			setGroupVisibility(namedBrewCollection);
-			setSortType(newSortType);
-			setSortDir(newSortDir);
-		}
+		setGroupVisibility(namedBrewCollection);
+		setSortType(newSortType);
+		setSortDir(newSortDir);
 
 		return ()=>{
 			window.onbeforeunload = null;
@@ -148,9 +139,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		}
 		urlParams.delete('tag');
 		// Add tags to URL in the order they were clicked
-		filterTags.forEach((tag)=>{
-			urlParams.append('tag', tag);
-		});
+		filterTags.forEach((tag)=>urlParams.append('tag', tag));
 		// Sort tags before updating state
 		filterTags.sort((a, b)=>{
 			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
@@ -206,7 +195,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderSortOption('Updated Date', 'updated')}
 				{renderSortOption('Views', 'views')}
 				{/* {renderSortOption('Latest', 'latest')} */}
-
 				{renderFilterOption()}
 			</div>
 		);
@@ -218,7 +206,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		brews = _.filter(brews, (brew)=>{
 			// Filter by user entered text
 			const brewStrings = _.deburr([brew.title, brew.description, brew.tags].join('\n').toLowerCase());
-
 			const filterTextTest = brewStrings.includes(testString);
 
 			// Filter by user selected tags
@@ -283,7 +270,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	return (
 		<div className='listPage sitePage'>
-			{/*<style>@layer V3_5ePHB, bundle;</style>*/}
 			<link href='/themes/V3/Blank/style.css' type='text/css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' type='text/css' rel='stylesheet' />
 			{navItems}
