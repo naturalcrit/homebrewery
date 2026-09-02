@@ -24,14 +24,22 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const sortTypeRef = useRef(sortType);
 	const sortDirRef = useRef(sortDir);
 
-	useEffect(()=>(groupVisibilityRef.current = groupVisibility), [groupVisibility]);
-	useEffect(()=>(sortTypeRef.current = sortType), [sortType]);
-	useEffect(()=>(sortDirRef.current = sortDir), [sortDir]);
+	useEffect(()=>{
+		groupVisibilityRef.current = groupVisibility;
+	}, [groupVisibility]);
+
+	useEffect(()=>{
+		sortTypeRef.current = sortType;
+	}, [sortType]);
+
+	useEffect(()=>{
+		sortDirRef.current = sortDir;
+	}, [sortDir]);
 
 	useEffect(()=>{
 		window.onbeforeunload = saveToLocalStorage;
-
 		if(typeof window === 'undefined') return;
+
 		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
 		const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
 		updateUrl(filterString, newSortType, newSortDir);
@@ -61,18 +69,16 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const renderBrews = (brews)=>{
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		return _.map(brews, (brew, idx)=>{
-			return (
-				<BrewItem
-					brew={brew}
-					key={idx}
-					reportError={reportError}
-					updateListFilter={(tag)=>{
-						updateUrl(filterString, sortType, sortDir, tag);
-					}}
-				/>
-			);
-		});
+		return _.map(brews, (brew, idx)=>(
+			<BrewItem
+				brew={brew}
+				key={idx}
+				reportError={reportError}
+				updateListFilter={(tag)=>{
+					updateUrl(filterString, sortType, sortDir, tag);
+				}}
+			/>
+		));
 	};
 
 	const sortBrewOrder = (brew)=>{
