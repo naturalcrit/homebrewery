@@ -13,7 +13,7 @@ const USERPAGE_GROUP_VISIBILITY_PREFIX = 'HB_listPage_visibility_group';
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
 
-const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query }) => {
+const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
 	const [filterTags, setFilterTags] = useState([]);
 	const [sortType, setSortType] = useState(query?.sort || null);
@@ -24,27 +24,27 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const sortTypeRef = useRef(sortType);
 	const sortDirRef = useRef(sortDir);
 
-	useEffect(() => {
+	useEffect(()=>{
 		groupVisibilityRef.current = groupVisibility;
 	}, [groupVisibility]);
 
-	useEffect(() => {
+	useEffect(()=>{
 		sortTypeRef.current = sortType;
 	}, [sortType]);
 
-	useEffect(() => {
+	useEffect(()=>{
 		sortDirRef.current = sortDir;
 	}, [sortDir]);
 
-	useEffect(() => {
+	useEffect(()=>{
 		window.onbeforeunload = saveToLocalStorage;
 
-		if (typeof window !== 'undefined') {
+		if(typeof window !== 'undefined') {
 			const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
 			const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
 			updateUrl(filterString, newSortType, newSortDir);
 
-			const namedBrewCollection = brewCollection.reduce((visibility, brewGroup) => {
+			const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
 				visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
 				return visibility;
 			}, {});
@@ -54,29 +54,29 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			setSortDir(newSortDir);
 		}
 
-		return () => {
+		return ()=>{
 			window.onbeforeunload = null;
 		};
 	}, []);
 
-	const saveToLocalStorage = () => {
-		brewCollection.forEach((brewGroup) => {
+	const saveToLocalStorage = ()=>{
+		brewCollection.forEach((brewGroup)=>{
 			localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`, `${groupVisibilityRef.current[brewGroup.class]}`);
 		});
 		localStorage.setItem(USERPAGE_SORT_TYPE, sortTypeRef.current);
 		localStorage.setItem(USERPAGE_SORT_DIR, sortDirRef.current);
 	};
 
-	const renderBrews = (brews) => {
-		if (!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
+	const renderBrews = (brews)=>{
+		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		return _.map(brews, (brew, idx) => {
+		return _.map(brews, (brew, idx)=>{
 			return (
 				<BrewItem
 					brew={brew}
 					key={idx}
 					reportError={reportError}
-					updateListFilter={(tag) => {
+					updateListFilter={(tag)=>{
 						updateUrl(filterString, sortType, sortDir, tag);
 					}}
 				/>
@@ -84,31 +84,31 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		});
 	};
 
-	const sortBrewOrder = (brew) => {
+	const sortBrewOrder = (brew)=>{
 		const title = brew.title || 'No Title';
 		const mapping = {
-			'alpha': _.deburr(title.trim().toLowerCase()),
-			'created': moment(brew.createdAt).format(),
-			'updated': moment(brew.updatedAt).format(),
-			'views': brew.views,
-			'latest': moment(brew.lastViewed).format(),
+			'alpha'   : _.deburr(title.trim().toLowerCase()),
+			'created' : moment(brew.createdAt).format(),
+			'updated' : moment(brew.updatedAt).format(),
+			'views'   : brew.views,
+			'latest'  : moment(brew.lastViewed).format(),
 		};
 		return mapping[sortType];
 	};
 
-	const handleSortOptionChange = (event) => {
+	const handleSortOptionChange = (event)=>{
 		updateUrl(filterString, event.target.value, sortDir);
 		setSortType(event.target.value);
 	};
 
-	const handleSortDirChange = (event) => {
+	const handleSortDirChange = (event)=>{
 		const newDir = sortDir == 'asc' ? 'desc' : 'asc';
 
 		updateUrl(filterString, sortType, newDir);
 		setSortDir(newDir);
 	};
 
-	const renderSortOption = (sortTitle, sortValue) => {
+	const renderSortOption = (sortTitle, sortValue)=>{
 		return (
 			<div className={`sort-option ${sortType == sortValue ? 'active' : ''}`}>
 				<button value={`${sortValue}`} onClick={sortType == sortValue ? handleSortDirChange : handleSortOptionChange}>
@@ -119,13 +119,13 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		);
 	};
 
-	const handleFilterTextChange = (e) => {
+	const handleFilterTextChange = (e)=>{
 		setFilterString(e.target.value);
 		updateUrl(e.target.value, sortType, sortDir);
 		return;
 	};
 
-	const updateUrl = (filterTerm, sortType, sortDir, filterTag = '') => {
+	const updateUrl = (filterTerm, sortType, sortDir, filterTag = '')=>{
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
@@ -133,39 +133,39 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		urlParams.set('dir', sortDir);
 
 		let filterTags = urlParams.getAll('tag');
-		if (filterTag != '') {
-			if (
-				filterTags.findIndex((tag) => {
+		if(filterTag != '') {
+			if(
+				filterTags.findIndex((tag)=>{
 					return tag.toLowerCase() == filterTag.toLowerCase();
 				}) == -1
 			) {
 				filterTags.push(filterTag);
 			} else {
-				filterTags = filterTags.filter((tag) => {
+				filterTags = filterTags.filter((tag)=>{
 					return tag.toLowerCase() != filterTag.toLowerCase();
 				});
 			}
 		}
 		urlParams.delete('tag');
 		// Add tags to URL in the order they were clicked
-		filterTags.forEach((tag) => {
+		filterTags.forEach((tag)=>{
 			urlParams.append('tag', tag);
 		});
 		// Sort tags before updating state
-		filterTags.sort((a, b) => {
+		filterTags.sort((a, b)=>{
 			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
 		});
 
 		setFilterTags(filterTags);
 
-		if (!filterTerm) urlParams.delete('filter');
+		if(!filterTerm) urlParams.delete('filter');
 		else urlParams.set('filter', filterTerm);
 
 		url.search = urlParams;
 		window.history.replaceState(null, null, url);
 	};
 
-	const renderFilterOption = () => {
+	const renderFilterOption = ()=>{
 		return (
 			<div className='filter-option'>
 				<label>
@@ -176,17 +176,17 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		);
 	};
 
-	const renderTagsOptions = () => {
-		if (filterTags?.length == 0) return;
+	const renderTagsOptions = ()=>{
+		if(filterTags?.length == 0) return;
 		return (
 			<div className='tags-container'>
-				{_.map(filterTags, (tag, idx) => {
+				{_.map(filterTags, (tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
 						<span
 							key={idx}
 							className={matches[1]}
-							onClick={() => {
+							onClick={()=>{
 								updateUrl(filterString, sortType, sortDir, tag);
 							}}>
 							{matches[2]}
@@ -197,7 +197,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		);
 	};
 
-	const renderSortOptions = () => {
+	const renderSortOptions = ()=>{
 		return (
 			<div className='sort-container'>
 				<h6>Sort by :</h6>
@@ -212,10 +212,10 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		);
 	};
 
-	const getSortedBrews = (brews) => {
+	const getSortedBrews = (brews)=>{
 		const testString = _.deburr(filterString).toLowerCase();
 
-		brews = _.filter(brews, (brew) => {
+		brews = _.filter(brews, (brew)=>{
 			// Filter by user entered text
 			const brewStrings = _.deburr([brew.title, brew.description, brew.tags].join('\n').toLowerCase());
 
@@ -223,12 +223,12 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 			// Filter by user selected tags
 			let filterTagTest = true;
-			if (filterTags.length > 0) {
+			if(filterTags.length > 0) {
 				filterTagTest =
 					Array.isArray(brew.tags) &&
-					filterTags?.every((tag) => {
+					filterTags?.every((tag)=>{
 						return (
-							brew.tags.findIndex((brewTag) => {
+							brew.tags.findIndex((brewTag)=>{
 								return brewTag.toLowerCase() == tag.toLowerCase();
 							}) >= 0
 						);
@@ -240,29 +240,29 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		return _.orderBy(
 			brews,
-			(brew) => {
+			(brew)=>{
 				return sortBrewOrder(brew);
 			},
 			sortDir,
 		);
 	};
 
-	const sortedBrewCollection = useMemo(() => {
-		return brewCollection.map((brewGroup) => ({ ...brewGroup, brews: getSortedBrews(brewGroup.brews) }));
+	const sortedBrewCollection = useMemo(()=>{
+		return brewCollection.map((brewGroup)=>({ ...brewGroup, brews: getSortedBrews(brewGroup.brews) }));
 	}, [brewCollection, filterString, filterTags, sortType, sortDir]);
 
-	const toggleBrewCollectionState = (brewGroupClass) => {
-		setGroupVisibility((prevVisibility) => ({ ...prevVisibility, [brewGroupClass]: !prevVisibility[brewGroupClass] }));
+	const toggleBrewCollectionState = (brewGroupClass)=>{
+		setGroupVisibility((prevVisibility)=>({ ...prevVisibility, [brewGroupClass]: !prevVisibility[brewGroupClass] }));
 	};
 
-	const renderBrewCollection = (brewCollection) => {
-		if (brewCollection.length === 0)
+	const renderBrewCollection = (brewCollection)=>{
+		if(brewCollection.length === 0)
 			return (
 				<div className='brewCollection'>
 					<h1>No Brews</h1>
 				</div>
 			);
-		return _.map(brewCollection, (brewGroup, idx) => {
+		return _.map(brewCollection, (brewGroup, idx)=>{
 			const sortedBrewGroup = sortedBrewCollection[idx];
 			const visible = groupVisibility[brewGroup.class];
 
@@ -270,7 +270,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				<div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
 					<h1
 						className={visible ? 'active' : 'inactive'}
-						onClick={() => {
+						onClick={()=>{
 							toggleBrewCollectionState(brewGroup.class);
 						}}>
 						{brewGroup.title || 'No Title'}
