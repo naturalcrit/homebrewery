@@ -190,7 +190,6 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			stub.isPinned = (stub?.pinnedByUsers.length > 0);
 			const fixedStub = migrateSystemsToTags(stub);
 			req.brew = fixedStub;
 			next();
