@@ -354,9 +354,9 @@ export default async function createApp(vite) {
 
 	// Set Pinned state for brew and user
 	app.put('/pin', dbCheck, async(req, res)=>{
-		const { username, shareId, pin } = req.body;
+		const { username, shareId, pinState } = req.body;
 		try {
-			await HomebrewModel.setPin(username, shareId, pin);
+			await HomebrewModel.setPin(username, shareId, pinState);
 		} catch (err) {
 			console.log(err);
 		}

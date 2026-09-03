@@ -38,7 +38,7 @@ const MetadataNav = createReactClass({
 				isPinnedBrew : newPinnedBrewState
 			}));
 			await request.put('/pin')
-				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: newPinnedBrewState });
+				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pinState: newPinnedBrewState });
 		}
 	},
 
