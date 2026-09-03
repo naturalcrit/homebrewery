@@ -346,7 +346,6 @@ describe('Tests for api', ()=>{
 				editId      : undefined,
 				pageCount   : 1,
 				pinnedByUsers: [],
-				isPinned: false,
 				published   : false,
 				renderer    : 'legacy',
 				lang        : 'en',
