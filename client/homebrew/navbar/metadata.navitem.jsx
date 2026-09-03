@@ -1,6 +1,7 @@
 import React from 'react';
 import createReactClass from 'create-react-class';
 import Moment from 'moment';
+import request from 'superagent';
 
 import Nav from './nav.jsx';
 
@@ -14,7 +15,8 @@ const MetadataNav = createReactClass({
 
 	getInitialState : function() {
 		return {
-			showMetaWindow : false
+			showMetaWindow : false,
+			pinnedBrew     : global?.account ? this.props.brew.pinned : false
 		};
 	},
 
@@ -25,6 +27,18 @@ const MetadataNav = createReactClass({
 		this.setState((prevProps)=>({
 			showMetaWindow : !prevProps.showMetaWindow
 		}));
+	},
+
+	togglePinState : async function(){
+		if(global.account) {
+			// Don't toggle if Brew Author
+			if(brew.authors.indexOf(global.account.username) > -1) return;
+			await this.setState((prevProps)=>({
+				pinnedBrew : !prevProps.pinnedBrew
+			}));
+			await request.put('/pin')
+				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: this.state.pinnedBrew });
+		}
 	},
 
 	getAuthors : function(){
@@ -68,11 +82,17 @@ const MetadataNav = createReactClass({
 	},
 
 	render : function(){
-		return <Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
-			onClick={()=>this.toggleMetaWindow()}>
-			{this.props.children}
-			{this.renderMetaWindow()}
-		</Nav.item>;
+		return <>
+			<Nav.item icon='fas fa-thumbtack' color='grey' className={`brewPin ${this.state.pinnedBrew ? 'active' : 'inactive'}`}
+				onClick={()=>this.togglePinState()}>
+			</Nav.item>
+
+			<Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
+				onClick={()=>this.toggleMetaWindow()}>
+				{this.props.children}
+				{this.renderMetaWindow()}
+			</Nav.item>;
+		</>;
 	}
 
 });

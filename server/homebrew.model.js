@@ -29,6 +29,8 @@ const HomebrewSchema = mongoose.Schema({
 	views      : { type: Number, default: 0 },
 	version    : { type: Number, default: 1, index: true },
 
+	pinned : { type: [String], default: [], index: true },
+
 	lock : { type: Object, index: true }
 }, { versionKey: false });
 
@@ -63,6 +65,25 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	const brews = await Homebrew.find(query, fields).lean().exec() //lean() converts results to JSObjects
 		.catch((error)=>{throw 'Can not find brews';});
 	return brews;
+};
+
+HomebrewSchema.statics.setPin  = async function(username, shareId, pin) {
+	// Test for User Ownership of brew
+	const brew = await Homebrew.findOne({ shareId: shareId }, null).exec()
+		.catch((error)=>{});
+	if(brew) {
+		if(!brew.authors.includes(username)) {
+			const Pins = brew.pinned ?? [];
+			const index = Pins?.indexOf(username) ?? -1;
+			if(!pin) {
+				if(index !== -1) brew.pinned.splice(index, 1);
+			} else {
+				if(index == -1) brew.pinned.push(username);
+			}
+			if(Pins.length !== brew.pinned.length)
+				await brew.save();
+		}
+	}
 };
 
 // INDEXES
