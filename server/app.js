@@ -471,11 +471,14 @@ export default async function createApp(vite) {
 		};
 
 		if( global.account) {
-			if(brew.pinned.indexOf(global.account.username) !== -1) brew.pinned = true;
-			else { brew.pinned = false; }
+			if(brew.pinned.indexOf(global.account.username) !== -1) brew.isPinned = true;
+			else { brew.isPinned = false; }
 		} else {
-			brew.pinned = false;
+			brew.isPinned = false;
 		}
+
+		delete brew.pinned;
+
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 		splitTextStyleAndMetadata(req.brew);
 		return next();

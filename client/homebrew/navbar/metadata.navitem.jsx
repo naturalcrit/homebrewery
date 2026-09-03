@@ -16,7 +16,7 @@ const MetadataNav = createReactClass({
 	getInitialState : function() {
 		return {
 			showMetaWindow : false,
-			pinnedBrew     : global?.account ? this.props.brew.pinned : false
+			isPinnedBrew   : global?.account ? this.props.brew.isPinned : false
 		};
 	},
 
@@ -34,10 +34,10 @@ const MetadataNav = createReactClass({
 			// Don't toggle if Brew Author
 			if(brew.authors.indexOf(global.account.username) > -1) return;
 			await this.setState((prevProps)=>({
-				pinnedBrew : !prevProps.pinnedBrew
+				isPinnedBrew : !prevProps.isPinnedBrew
 			}));
 			await request.put('/pin')
-				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: this.state.pinnedBrew });
+				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: this.state.isPinnedBrew });
 		}
 	},
 
@@ -83,7 +83,7 @@ const MetadataNav = createReactClass({
 
 	render : function(){
 		return <>
-			<Nav.item icon='fas fa-thumbtack' color='grey' className={`brewPin ${this.state.pinnedBrew ? 'active' : 'inactive'}`}
+			<Nav.item icon='fas fa-thumbtack' color='grey' className={`brewPin ${this.state.isPinnedBrew ? 'active' : 'inactive'}`}
 				onClick={()=>this.togglePinState()}>
 			</Nav.item>
 
