@@ -33,11 +33,12 @@ const MetadataNav = createReactClass({
 		if(global.account) {
 			// Don't toggle if Brew Author
 			if(brew.authors.indexOf(global.account.username) > -1) return;
-			await this.setState((prevProps)=>({
-				isPinnedBrew : !prevProps.isPinnedBrew
+			const newPinnedBrewState = !this.state.isPinnedBrew;
+			this.setState((prevProps)=>({
+				isPinnedBrew : newPinnedBrewState
 			}));
 			await request.put('/pin')
-				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: this.state.isPinnedBrew });
+				.send({ username: global.account.username,  shareId: this.props.brew.shareId, pin: newPinnedBrewState });
 		}
 	},
 
