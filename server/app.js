@@ -471,13 +471,13 @@ export default async function createApp(vite) {
 		};
 
 		if( global.account) {
-			if(brew.pinned.indexOf(global.account.username) !== -1) brew.isPinned = true;
+			if(brew.pinnedByUsers.indexOf(global.account.username) !== -1) brew.isPinned = true;
 			else { brew.isPinned = false; }
 		} else {
 			brew.isPinned = false;
 		}
 
-		delete brew.pinned;
+		delete brew.pinnedByUsers;
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
 		splitTextStyleAndMetadata(req.brew);
