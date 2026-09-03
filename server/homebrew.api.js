@@ -105,7 +105,7 @@ const api = {
 		const userThemes = {};
 
 		const userBrewThemes = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }});
-		const pinnedBrewThemes = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }, pinnedByUsers: { $in: [username] } });
+		const pinnedBrewThemes = await HomebrewModel.getUserPinnedThemes(username);
 		const brews = concat(userBrewThemes, pinnedBrewThemes);
 
 		if(brews) {

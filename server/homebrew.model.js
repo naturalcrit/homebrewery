@@ -67,6 +67,33 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	return brews;
 };
 
+HomebrewSchema.statics.getUserPinnedThemes = async function(username) {
+	const fields = [
+		'title',
+		'shareId',
+		'thumbnail',
+		'authors',
+		'renderer'
+	];
+
+	const filter =  {
+		tags : {
+			$in : [
+				'meta:theme',
+				'meta:Theme'
+			]
+		},
+		pinnedByUsers : {
+			$in : [
+				username
+			] }
+	};
+	const query = { authors: username, published: true, ...filter };
+	const brews = await Homebrew.find(query, fields).lean().exec()
+		.catch((error)=>{});
+	return brews;
+};
+
 HomebrewSchema.statics.setPin  = async function(username, shareId, pin) {
 	// Test for User Ownership of brew
 	const brew = await Homebrew.findOne({ shareId: shareId }, null).exec()
