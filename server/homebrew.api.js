@@ -241,7 +241,7 @@ const api = {
 	excludePropsFromUpdate : (brew)=>{
 		// Remove undesired properties
 		const modified = _.clone(brew);
-		const propsToExclude = ['_id', 'views', 'lastViewed'];
+		const propsToExclude = ['_id', 'views', 'lastViewed', 'pinned'];
 		for (const prop of propsToExclude) {
 			delete modified[prop];
 		}
