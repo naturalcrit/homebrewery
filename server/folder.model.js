@@ -11,7 +11,7 @@ const FolderSchema = mongoose.Schema({
   slug:         { type: String, required: true },
   displayName:  { type: String, required: true, default: '' },
   brewIds:      { type: [String], default: [] },
-  subfolderIds: { type: [String], default: [] },
+  subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, default: false },
   isPrivate:    { type: Boolean, default: false },
   isBookmarks:  { type: Boolean, default: false },

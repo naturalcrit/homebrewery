@@ -19,7 +19,6 @@ const requireAccount = (req, res, next)=>{
 };
 
 router.use(dbCheck);
-router.use(requireAccount);
 
 
 const createFolderApi = async (req, res)=>{
@@ -102,14 +101,19 @@ const removeBrewFromFolderApi = async (req, res)=>{
 
 
 
-router.post('/folder/',             asyncHandler(createFolderApi));
-router.put('/folder/:folderId',     asyncHandler(updateFolderApi));
-router.delete('/folder/:folderId',  asyncHandler(deleteFolderApi));
+router.post('/folder/',
+  requireAccount, asyncHandler(createFolderApi));
+
+router.put('/folder/:folderId',
+  requireAccount, asyncHandler(updateFolderApi));
+
+router.delete('/folder/:folderId',
+  requireAccount, asyncHandler(deleteFolderApi));
 
 router.post('/folder/:folderId/brewIds',
-  asyncHandler(addBrewToFolderApi));
+  requireAccount, asyncHandler(addBrewToFolderApi));
 
 router.delete('/folder/:folderId/brewIds/:brewId',
-  asyncHandler(removeBrewFromFolderApi));
+  requireAccount, asyncHandler(removeBrewFromFolderApi));
 
 export default router;
