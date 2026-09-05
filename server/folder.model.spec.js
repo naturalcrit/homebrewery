@@ -408,10 +408,12 @@ describe('Folder model', ()=>{
       });
     });
 
-    // FAILS w. TIMEOUT
     it('should add the brew to the folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
+
+      jest.spyOn(Folder, 'exists')
+        .mockResolvedValue({ _id: 'folder' });
 
       const folder = {
         owner    : 'testuser',
@@ -448,10 +450,12 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
     });
 
-    // FAILS w. TIMEOUT
     it('should return the updated folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
+
+      jest.spyOn(Folder, 'exists')
+        .mockResolvedValue({ _id: 'folder' });
 
       const folder = {
         owner    : 'testuser',
