@@ -69,7 +69,7 @@ const EditPage = (props)=>{
 	const [themeBundle, setThemeBundle] = useState({});
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
-	const [alertLoginToTransfer, setAlertLoginToTransfer] = useState(false);
+	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
 	const [alertOwnershipToTransfer, setalertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
@@ -163,11 +163,12 @@ const EditPage = (props)=>{
 	};
 
 	const handleGoogleClick = ()=>{
-		if(global.account !== brew.authors[0]) {
+		if(global.account !== currentBrew.authors[0]) {
 			setalertOwnershipToTransfer(true);
+			return;
 		}
 		if(!global.account?.googleId) {
-			setAlertLoginToTransfer(true);
+			setAlertNoGoogleToTransfer(true);
 			return;
 		}
 
@@ -178,7 +179,7 @@ const EditPage = (props)=>{
 	const closeAlerts = (e)=>{
 		e.stopPropagation(); //Only handle click once so alert doesn't reopen
 		setAlertTrashedGoogleBrew(false);
-		setAlertLoginToTransfer(false);
+		setAlertNoGoogleToTransfer(false);
 		setConfirmGoogleTransfer(false);
 		setalertOwnershipToTransfer(false);
 	};
@@ -279,14 +280,12 @@ const EditPage = (props)=>{
 			{alertOwnershipToTransfer && (
 				<div className='errorContainer' onClick={closeAlerts}>
 					You must be the Owner to transfer between the Homebrewery and Google Drive!
-					The owner of this file is ${brew.authors[0]}
-					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+					The owner of this file is ${currentBrew.authors[0]}
 						<div className='confirm'> Okay </div>
-					</a>
 				</div>
 			)}
 
-			{alertLoginToTransfer && (
+			{alertNoGoogleToTransfer && (
 				<div className='errorContainer' onClick={closeAlerts}>
 					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
 					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
