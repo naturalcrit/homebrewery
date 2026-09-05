@@ -5,6 +5,10 @@
 .snippetBar {
 	--activeTriggerColor: inherit;
 	--menuColor      : #DDDDDD;
+	--textColor      : black;
+	--hoverMenuColor : #;
+
+
 	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
@@ -12,8 +16,8 @@
 	reading-flow     : flex-visual;
 	justify-content  : space-between;
 	height           : auto;
-	color            : black;
-	background-color : #DDDDDD;
+	color            : var(--textColor);
+	background-color : var(--menuColor);
 	font-size        : .65rem;
 	font-family: 'Open Sans', sans-serif;
 	text-transform: uppercase;
@@ -231,5 +235,11 @@
 		}
 		.editors > div.history > .dropdown { right : unset; }
 	}
+}
+
+.editor.darkMode .snippetBar {
+	--activeTriggerColor: #777;
+	--menuColor      : #333;
+	--textColor      : #ddd;
 }
 
