@@ -8,27 +8,23 @@ import { model as BrewModel } from './homebrew.model.js';
 const FolderSchema = mongoose.Schema({
   owner:        { type: String, required: true, index: true },
   folderId:     { type: String, required: true, default: () => nanoid(12), index: true, unique: true },
-  slug:         { type: String, required: true },
-  displayName:  { type: String, required: true, default: '' },
+  slug:         { type: String, required: true, trim: true,
+    validate: {
+      validator: value => value.length > 0,
+      message: 'Folder slug cannot be empty'
+    } },
+  displayName:  { type: String, required: true, default: 'untitled folder', trim: true,
+    validate: {
+      validator: value => value.length > 0,
+      message: 'Folder displayName cannot be empty'
+    } },
   brewIds:      { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, default: false },
   isPrivate:    { type: Boolean, default: false },
-  isBookmarks:  { type: Boolean, default: false },
-  isFavourites: { type: Boolean, default: false },
   createdAt:    { type: Date, default: Date.now },
   updatedAt:    { type: Date, default: Date.now },
 }, { versionKey: false });
-
-FolderSchema.index(
-  { owner: 1, isBookmarks: 1 },
-  { unique: true, partialFilterExpression: { isBookmarks: true } }
-);
-
-FolderSchema.index(
-  { owner: 1, isFavourites: 1 },
-  { unique: true, partialFilterExpression: { isFavourites: true } }
-);
 
 // Application code validates slug for syntax, and also sibling uniqueness
 
@@ -38,19 +34,13 @@ FolderSchema.index(
 
 // No semantics implied by array order of brewIds or subfolderIds.
 
-// isPublished determines if the folder appears in the User's Published Brews section of their user page
+// isPublished determines appearance in the User's Published Brews section of their user page
 // isPrivate means non-owners cannot view the folder even if they have the url
-
-// isBookmarks signifies this folder is used for bookmarks
-// isFavourites signifies this folder is used for favourites
-// both by default would be created with isPrivate = true.
 
 // updatedAt is managed in the app.
 
-const Folder = mongoose.model('Folder', FolderSchema);
 
-
-// Folder operations ...
+// Folder operations .........................................................
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
   const query = { owner: username };
@@ -60,48 +50,65 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
 
   return this.find(query)
     .select(
-      'owner folderId slug displayName brewIds subFolderIds isPublished isPrivate isBookmarks isFavourites'
+      'owner folderId slug displayName brewIds subFolderIds isPublished isPrivate'
     )
     .lean();
 };
 
 
-FolderSchema.statics.createFolder = async function(owner, { displayName = '', slug, isPublished = false, isBookmarks = false } ) {
+FolderSchema.statics.createFolder = async function(
+  owner,
+  { displayName, slug, isPublished, isFavourites, isBookmarks, isPrivate }
+) {
+  // TODO: enforce slug uniqueness within parent folders? [TRICKY]
+  // TODO: pass in parent folderId, add this folderId to parent.subFolderIds[]
   const folder = new this({
     owner,
     displayName,
     slug,
     isPublished,
-    isBookmarks,
+    isPrivate,
   });
 
   return folder.save();
 };
 
 FolderSchema.statics.getFolder = async function(owner, folderId) {
-  return this.findOne({ owner, folderId });
+  // returns folder document, or null
+  return this.findOne({ owner, folderId }).lean();
+  // NOTE: don't throw here if not found, different callers = different messaging
 };
 
-FolderSchema.statics.updateFolder = async function(owner, folderId, { displayName, slug, isPublished }) {
-  const result = await this.updateOne(
+FolderSchema.statics.updateFolder = async function(
+  owner,
+  folderId,
+  { displayName, slug, isPublished, isPrivate }
+) {
+  const updates = {
+    displayName,
+    slug,
+    isPublished,
+    isPrivate,
+    updatedAt: new Date()
+  };
+
+  // Remove fields that weren't supplied.
+  Object.keys(updates).forEach(key => {
+    if(updates[key] === undefined)
+      delete updates[key];
+  });
+
+  const folder = await this.findOneAndUpdate(
     { owner, folderId },
-    {
-      $set: {
-        displayName,
-        slug,
-        isPublished,
-        updatedAt: new Date(),
-      },
-    },
+    { $set: updates },
+    { new: true },
   );
 
-  if(!result.matchedCount)
-    return null;
-
-  return this.getFolder(owner, folderId);
+  return folder;
 };
 
 FolderSchema.statics.deleteFolder = async function(owner, folderId) {
+  // TODO: remove dangling references to this folderId. not essential, just tidy.
   return this.deleteOne({ owner, folderId });
 };
 
@@ -110,64 +117,55 @@ FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) 
   const folder = await this.getFolder(owner, folderId);
 
   if(!folder)
-    return null;
+    return { error: 'FOLDER_NOT_FOUND' };
 
   const brew = await BrewModel.findOne({ owner, brewId });
 
   if(!brew)
-    return null;
+    return { error: 'BREW_NOT_FOUND' };
 
-  await this.updateOne(
+  const result = await this.findOneAndUpdate(
     { owner, folderId },
     {
       $addToSet: { brewIds: brewId },
       $set: { updatedAt: new Date() },
     },
+    new : true,
   );
 
-  return this.getFolder(owner, folderId);
+  return result;
 };
 
 FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, brewId ) {
-  const result = await this.updateOne(
+  // returns null, or returns updated folder
+
+  const brewExists = await mongoose.model('Brew').exists({ brewId });
+
+  if(!brewExists)
+    return null;
+
+  const result = this.findOneAndUpdate(
     { owner, folderId },
     {
       $pull: { brewIds: brewId },
       $set: { updatedAt: new Date() },
     },
+    { new: true },
   );
 
-  if(!result.matchedCount)
-    return null;
-
-  return this.getFolder(owner, folderId);
+  return result;
 };
 
 
-FolderSchema.statics.getBookmarksFolder = async function(owner) {
-  return this.findOne({ owner, isBookmarks: true });
-};
+// TODO: MVP+1 = add bookmarks wrappers
 
-FolderSchema.statics.addBookmark = async function(owner, brewId) {
-  let folder = await this.getBookmarksFolder(owner);
+// TODO: MVP+n = add nesting of folders
+// FolderSchema.statics.addFolderToFolder = async function( owner, parentFolderId, childFolderId) ...
+// FolderSchema.statics.removeFolderFromFolder = async function( owner, parentFolderId, childFolderId ) ...
 
-  if(!folder) {
-    try {
-      // handle concurrency/race condition
-      folder = await this.createFolder(owner, {
-        displayName: 'Bookmarks',
-        slug: 'bookmarks',
-        isBookmarks: true,
-      });
-    }
-    catch(err) {
-      if(err.code !== 11000) // duplicate-key error from isBookmarks constraint
-        throw err;
+// ----------------------------------------------------------------------
 
-      // return the real slim shady
-      folder = await this.getBookmarksFolder(owner);
-    }
-  }
+// Now compile the model ...
+const Folder = mongoose.model('Folder', FolderSchema);
 
-  return this.addBrewToFolder(owner, folder.folderId, brewId);
-};
+export { Folder };

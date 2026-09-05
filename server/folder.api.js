@@ -10,8 +10,9 @@ const router = express.Router();
 const requireAccount = (req, res, next)=>{
   if(!req.account)
     throw {
-      name: 'Access Error',
-      message: 'User is not logged in',
+      HBErrorCode: 100,
+      name: 'FolderAccess Error',
+      message: 'Folder operations require a logged in user.',
       status: 401,
     };
 
@@ -21,12 +22,22 @@ const requireAccount = (req, res, next)=>{
 router.use(dbCheck);
 
 
+// handlers .............................................................
+
 const createFolderApi = async (req, res)=>{
   const folder = await FolderModel.createFolder(req.account.username, {
     displayName: req.body.displayName || 'untitled folder',
     slug: req.body.slug,
     isPublished: req.body.isPublished ?? false,
   });
+
+  if(!folder)
+    throw {
+      HBErrorCode: 105,
+      name: 'FolderCreate Error',
+      message: 'Folder could not be created',
+      status: 404,
+    };
 
   res.status(200).send(folder);
 };
@@ -40,13 +51,15 @@ const updateFolderApi = async (req, res)=>{
 
   if(!folder)
     throw {
+      HBErrorCode: 106,
       name: 'FolderUpdate Error',
-      message: 'Folder not found',
+      message: 'Folder to update could not be found',
       status: 404,
     };
 
   res.status(200).send(folder);
 };
+
 
 const deleteFolderApi = async (req, res)=>{
   const result = await FolderModel.deleteFolder(
@@ -56,8 +69,9 @@ const deleteFolderApi = async (req, res)=>{
 
   if(!result.deletedCount)
     throw {
+      HBErrorCode: 107,
       name: 'FolderDelete Error',
-      message: 'Folder not found',
+      message: 'Folder to delete could not be found',
       status: 404,
     };
 
@@ -66,54 +80,81 @@ const deleteFolderApi = async (req, res)=>{
 
 
 const addBrewToFolderApi = async (req, res)=>{
-  const folder = await FolderModel.addBrewToFolder(
+  const result = await FolderModel.addBrewToFolder(
     req.account.username,
     req.params.folderId,
     req.body.brewId,
   );
 
-  if(!folder)
+  if (result?.error === 'FOLDER_NOT_FOUND') {
     throw {
-      name: 'FolderBrew Error',
-      message: 'Folder or brew not found',
+      HBErrorCode: 111,
+      name: 'FolderAddBrew Error',
+      message: 'Folder to add brew to could not be found.',
       status: 404,
     };
+  }
 
-  res.status(200).send(folder);
+  if (result?.error === 'BREW_NOT_FOUND') {
+    throw {
+      HBErrorCode: 112,
+      name: 'FolderAddBrew Error',
+      message: 'Brew to add to folder could not be found.',
+      status: 404,
+    };
+  }
+
+  res.status(200).send(result);
 };
 
 const removeBrewFromFolderApi = async (req, res)=>{
-  const folder = await FolderModel.removeBrewFromFolder(
+  const result = await FolderModel.removeBrewFromFolder(
     req.account.username,
     req.params.folderId,
     req.params.brewId,
   );
 
-  if(!folder)
+  if (result?.error === 'FOLDER_NOT_FOUND') {
     throw {
-      name: 'FolderBrew Error',
-      message: 'Folder not found',
+      HBErrorCode: 113,
+      name: 'FolderRemoveBrew Error',
+      message: 'Folder to remove brew from could not be found',
       status: 404,
     };
+  }
+
+  if (result?.error === 'BREW_NOT_FOUND') {
+    throw {
+      HBErrorCode: 114,
+      name: 'FolderRemoveBrew Error',
+      message: 'Brew to remove from folder could not be found',
+      status: 404,
+    };
+  }
 
   res.status(200).send(folder);
 };
 
 
+// routes .............................................................
 
-router.post('/folder/',
+router.post('/api/folder/',
   requireAccount, asyncHandler(createFolderApi));
 
-router.put('/folder/:folderId',
+router.put('/api/folder/:folderId',
   requireAccount, asyncHandler(updateFolderApi));
 
-router.delete('/folder/:folderId',
+router.delete('/api/folder/:folderId',
   requireAccount, asyncHandler(deleteFolderApi));
 
-router.post('/folder/:folderId/brewIds',
+
+router.post('/api/folder/:folderId/brews',
   requireAccount, asyncHandler(addBrewToFolderApi));
 
-router.delete('/folder/:folderId/brewIds/:brewId',
+router.delete('/api/folder/:folderId/brews/:brewId',
   requireAccount, asyncHandler(removeBrewFromFolderApi));
+
+
+// ....................................................................
 
 export default router;

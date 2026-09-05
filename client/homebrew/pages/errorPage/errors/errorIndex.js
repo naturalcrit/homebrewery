@@ -15,14 +15,14 @@ const errorIndex = (props)=>{
 		// Default catch all
 		'00' : dedent`
 			## An unknown error occurred!
-			
+
 			We aren't sure what happened, but our server wasn't able to find what you
 			were looking for.`,
 
 		// General Google load error
 		'01' : dedent`
 			## An error occurred while retrieving this brew from Google Drive!
-			
+
 			Google is able to see the brew at this link, but reported an error while attempting to retrieve it.
 
 			### Refreshing your Google Credentials
@@ -39,7 +39,7 @@ const errorIndex = (props)=>{
 		// Google Drive - 404 : brew deleted or access denied
 		'02' : dedent`
 			## We can't find this brew in Google Drive!
-			
+
 			This file was saved on Google Drive, but this link doesn't work anymore.
 			${props.brew.authors?.length > 0
 		? `Note that this brew belongs to the Homebrewery account **${props.brew.authors[0]}**,
@@ -66,7 +66,7 @@ const errorIndex = (props)=>{
 			- **The Google Account may be closed.** Google may have removed the account
 			due to inactivity or violating a Google policy. Make sure the owner can
 			still access Google Drive normally and upload/download files to it.
-			
+
 			If the file isn't found, Google Drive usually puts your file in your Trash folder for
 			30 days. Assuming the trash hasn't been emptied yet, it might be worth checking.
 			You can also find the Activity tab on the right side of the Google Drive page, which
@@ -74,7 +74,7 @@ const errorIndex = (props)=>{
 			the brew was deleted or moved, and by whom.
 			:
 			If the brew still isn't found, some people have had success asking Google to recover
-			accidentally deleted files at this link: 
+			accidentally deleted files at this link:
 			https://support.google.com/drive/answer/1716222?hl=en&ref_topic=7000946.
 			At the bottom of the page there is a button that says *Send yourself an Email*
 			and you will receive instructions on how to request the files be restored.
@@ -91,22 +91,22 @@ const errorIndex = (props)=>{
 		as an author by opening the Edit page for the brew, viewing the {{fa,fa-info-circle}}
 		**Properties** tab, and adding your username to the "invited authors" list. You can
 		then try to access this document again.
-		
+
 		:
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
 		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
-		
+
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
 		// User is not signed in; must be a user on the Authors List
 		'04' : dedent`
 		## Sign-in required to edit this brew.
-		
+
 		You must be logged in to one of the accounts listed as an author of this brew.
 		User is not logged in. Please log in [here](${loginUrl}).
-		
+
 		:
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
@@ -119,10 +119,10 @@ const errorIndex = (props)=>{
 		// Brew load error
 		'05' : dedent`
 		## No Homebrewery document could be found.
-		
+
 		The server could not locate the Homebrewery document. It was likely deleted by
 		its owner.
-		
+
 		:
 
 		**Requested access:** ${props.brew.accessType}
@@ -132,15 +132,15 @@ const errorIndex = (props)=>{
 		// Brew save error
 		'06' : dedent`
 		## Unable to save Homebrewery document.
-		
+
 		An error occurred wil attempting to save the Homebrewery document.`,
 
 		// Brew delete error
 		'07' : dedent`
 		## Unable to delete Homebrewery document.
-		
+
 		An error occurred while attempting to remove the Homebrewery document.
-		
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -148,9 +148,9 @@ const errorIndex = (props)=>{
 		// Author delete error
 		'08' : dedent`
 		## Unable to remove user from Homebrewery document.
-		
+
 		An error occurred while attempting to remove the user from the Homebrewery document author list!
-		
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -158,10 +158,10 @@ const errorIndex = (props)=>{
 		// Theme load error
 		'09' : dedent`
 		## No Homebrewery theme document could be found.
-		
+
 		The server could not locate the Homebrewery document. It was likely deleted by
 		its owner.
-		
+
 		:
 
 		**Requested access:** ${props.brew.accessType}
@@ -171,17 +171,17 @@ const errorIndex = (props)=>{
 		// Theme Not Valid
 		'10' : dedent`
 		## The selected theme is not tagged as a theme.
-		
+
 		The brew selected as a theme exists, but has not been marked for use as a theme with the \`theme:meta\` tag.
-		
+
 		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
 
 		// ID validation error
 		'11' : dedent`
 		## No Homebrewery document could be found.
-		
+
 		The server could not locate the Homebrewery document. The Brew ID failed the validation check.
-		
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -189,9 +189,9 @@ const errorIndex = (props)=>{
 		// Google ID validation error
 		'12' : dedent`
 		## No Google document could be found.
-		
+
 		The server could not locate the Google document. The Google ID failed the validation check.
-		
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}`,
@@ -199,29 +199,29 @@ const errorIndex = (props)=>{
 		// Database Connection Lost
 		'13' : dedent`
 		## Database connection has been lost.
-		
+
 		The server could not communicate with the database.`,
 
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
-		
+
 		You are trying to access the account page, but are not signed in to an account.
-		
+
 		Please login or signup at our [login page](https://www.naturalcrit.com/login?redirect=https://homebrewery.naturalcrit.com/account).`,
 
 		// Brew locked by Administrators error
 		'51' : dedent`
 		## This brew has been locked.
-		
+
 		Only an author may request that this lock is removed.
-		
+
 		:
 
 		**Brew ID:**  ${props.brew.brewId}
-		
+
 		**Brew Title:** ${escape(props.brew.brewTitle)}
-		
+
 		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// ####### Admin page error #######
@@ -261,10 +261,28 @@ const errorIndex = (props)=>{
 
 		// ####### Other Errors
 
-		'90' : dedent` An unexpected error occurred while looking for these brews.  
+		'90' : dedent` An unexpected error occurred while looking for these brews.
             Try again in a few minutes.`,
 
 		'91' : dedent` An unexpected error occurred while trying to get the total of brews.`,
+
+		// ####### Folder API errors
+
+		'100': dedent`Folder operations require a logged in user.`,
+		'101': dedent`A folder with this identifier already exists`,
+		'102': dedent`A bookmarks folder already exists`,
+		'103': dedent`A favourites folder already exists`,
+
+		'104': dedent`Folder could not be found.`,
+		'105': dedent`Folder could not be created.`,
+		'106': dedent`Folder to update could not be found.`,
+		'107': dedent`Folder to delete could not be created.`,
+
+		'111': dedent`Folder to add brew to could not be found.`,
+		'112': dedent`Brew to add to folder could not be found.`,
+		'123': dedent`Folder to remove brew from could not be found.`,
+		'114': dedent`Brew to remove from folder could not be found.`,
+
 	};
 };
 
