@@ -157,4 +157,12 @@ router.delete('/api/folder/:folderId/brews/:brewId',
 
 // ....................................................................
 
+export {
+  createFolderApi,
+  updateFolderApi,
+  deleteFolderApi,
+  addBrewToFolderApi,
+  removeBrewFromFolderApi,
+};
+
 export default router;
