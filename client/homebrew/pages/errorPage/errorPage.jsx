@@ -1,7 +1,7 @@
 import './errorPage.less';
 import React      from 'react';
 import UIPage     from '../basePages/uiPage/uiPage.jsx';
-import Markdown   from '@shared/markdown.js';
+import { hbfm } from 'hbmarkedwrapper';
 import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{
@@ -16,7 +16,7 @@ const ErrorPage = ({ brew })=>{
 					<h4>{brew?.text || 'No error text'}</h4>
 				</div>
 				<hr />
-				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
+				<div dangerouslySetInnerHTML={{ __html: hbfm.render(errorText) }} />
 			</div>
 		</UIPage>
 	);

@@ -6,7 +6,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
-import Markdown from '@shared/markdown.js';
+import { hbfm } from 'hbmarkedwrapper';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
@@ -203,7 +203,7 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			if(pageText.startsWith('\\page')) {
-				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				const firstLineTokens  = hbfm.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
@@ -231,7 +231,7 @@ const BrewRenderer = (props)=>{
 			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 
-			const html = Markdown.render(pageText, index);
+			const html = hbfm.render(pageText, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
