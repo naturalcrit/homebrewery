@@ -69,7 +69,8 @@ const EditPage = (props)=>{
 	const [themeBundle, setThemeBundle] = useState({});
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
-	const [alertLoginToTransfer, setAlertLoginToTransfer] = useState(false);
+	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
+	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
@@ -105,7 +106,7 @@ const EditPage = (props)=>{
 		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.onBeforeUnload = null;
+			window.onbeforeunload = null;
 		};
 	}, []);
 
@@ -162,8 +163,12 @@ const EditPage = (props)=>{
 	};
 
 	const handleGoogleClick = ()=>{
+		if(global.account !== currentBrew.authors[0]) {
+			setalertOwnershipToTransfer(true);
+			return;
+		}
 		if(!global.account?.googleId) {
-			setAlertLoginToTransfer(true);
+			setAlertNoGoogleToTransfer(true);
 			return;
 		}
 
@@ -174,11 +179,13 @@ const EditPage = (props)=>{
 	const closeAlerts = (e)=>{
 		e.stopPropagation(); //Only handle click once so alert doesn't reopen
 		setAlertTrashedGoogleBrew(false);
-		setAlertLoginToTransfer(false);
+		setAlertNoGoogleToTransfer(false);
 		setConfirmGoogleTransfer(false);
+		setalertOwnershipToTransfer(false);
 	};
 
-	const toggleGoogleStorage = ()=>{
+	const toggleGoogleStorage = (e)=>{
+		closeAlerts(e);
 		const newSaveGoogle = !saveGoogle;
 		setSaveGoogle((prev)=>!prev);
 		setError(null);
@@ -260,32 +267,42 @@ const EditPage = (props)=>{
 		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
 			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
 
+
+
+			{alertOwnershipToTransfer && (
+				<div className='errorContainer'>
+					You must be the Owner to transfer between the Homebrewery and Google Drive!
+					The owner of this file is {currentBrew.authors[0]}
+					<div className='confirm' onClick={closeAlerts}> Okay </div>
+				</div>
+			)}
+
+			{alertNoGoogleToTransfer && (
+				<div className='errorContainer'>
+					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
+					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+						<div className='confirm' onClick={closeAlerts}> Sign In </div>
+					</a>
+					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
+				</div>
+			)}
+
+			{alertTrashedGoogleBrew && (
+				<div className='errorContainer'>
+					This brew is currently in your Trash folder on Google Drive!<br />
+					If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
+				</div>
+			)}
+
 			{confirmGoogleTransfer && (
-				<div className='errorContainer' onClick={closeAlerts}>
+				<div className='errorContainer'>
 					{saveGoogle
 						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
 						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
 					<br />
 					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
-					<div className='deny'>                                  No  </div>
-				</div>
-			)}
-
-			{alertLoginToTransfer && (
-				<div className='errorContainer' onClick={closeAlerts}>
-					You must be signed in to a Google account to transfer between the homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
-						<div className='confirm'> Sign In </div>
-					</a>
-					<div className='deny'>      Not Now </div>
-				</div>
-			)}
-
-			{alertTrashedGoogleBrew && (
-				<div className='errorContainer' onClick={closeAlerts}>
-					This brew is currently in your Trash folder on Google Drive!<br />
-					If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'> OK </div>
+					<div className='deny' onClick={closeAlerts}>                                  No  </div>
 				</div>
 			)}
 		</Nav.item>
