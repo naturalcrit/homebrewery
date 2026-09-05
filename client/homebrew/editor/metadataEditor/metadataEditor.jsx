@@ -7,7 +7,6 @@ import request from '../../utils/request-middleware.js';
 import Combobox from '@components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
-
 import Themes from '@themes/themes.json';
 import validations from './validations.js';
 
@@ -83,7 +82,6 @@ const MetadataEditor = createReactClass({
 			const errMessage = validationErr.map((err)=>{
 				return `- ${err}`;
 			}).join('\n');
-
 
 			debouncedReportValidity(e.target, errMessage);
 			return false;
@@ -186,8 +184,8 @@ const MetadataEditor = createReactClass({
 				<label>authors</label>
 				<div className='value'>
 					{authors.length > 0 && (
-						<a href={`/user/${authors[0]}`} className='author-link' target="_blank" title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
-								{authors[0]}{authors.length > 1 && ', '}
+						<a href={`/user/${authors[0]}`} className='author-link' target='_blank' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+							{authors[0]}{authors.length > 1 && ', '}
 						</a>
 					)}
 					{authors.length > 1 && authors.slice(1).map((author, i)=>(
@@ -227,7 +225,6 @@ const MetadataEditor = createReactClass({
 				</ul>
 			</div>
 		);
-
 	},
 
 	renderThemeDropdown : function(){
@@ -264,7 +261,7 @@ const MetadataEditor = createReactClass({
 			dropdown =
 				<div className='value' data-tooltip-top='Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.'>
 					<Combobox trigger='click'
-						id="combobox-themes"
+						id='combobox-themes'
 						className='themes-dropdown'
 						default={currentThemeDisplay}
 						placeholder='Select from below, or enter the Share URL or ID of a brew with the meta:theme tag'
@@ -382,7 +379,7 @@ const MetadataEditor = createReactClass({
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}
-						        aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
+							aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>
@@ -404,7 +401,6 @@ const MetadataEditor = createReactClass({
 					/>
 				</div>
 			</div>
-
 
 			{this.renderLanguageDropdown()}
 
@@ -432,7 +428,6 @@ const MetadataEditor = createReactClass({
 					/>
 				</div>
 			</div>
-
 
 			<h2>Privacy</h2>
 
