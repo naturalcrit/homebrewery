@@ -516,10 +516,9 @@ describe('Folder model', ()=>{
       });
     });
 
-    // FAILS
     it('should remove the brew from the folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
-        .mockResolvedValue(null);
+        .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
         owner    : 'testuser',
@@ -536,6 +535,10 @@ describe('Folder model', ()=>{
         'abc123',
         'brew123',
       );
+
+      expect(BrewModel.exists).toHaveBeenCalledWith({
+        brewId : 'brew123',
+      });
 
       expect(findOneAndUpdate).toHaveBeenCalledWith(
         {
