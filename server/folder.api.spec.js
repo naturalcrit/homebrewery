@@ -55,7 +55,7 @@ describe('Tests for folder api', ()=>{
 
       await api.createFolderApi(req, res);
 
-      expect(model.createFolder).toHaveBeenCalledWith('testuser', {
+      expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
         displayName : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
@@ -76,7 +76,7 @@ describe('Tests for folder api', ()=>{
 
       await api.createFolderApi(req, res);
 
-      expect(model.createFolder).toHaveBeenCalledWith('testuser', {
+      expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
         displayName : 'untitled folder',
         slug        : undefined,
         isPublished : false,
@@ -98,7 +98,7 @@ describe('Tests for folder api', ()=>{
 
       await api.createFolderApi(req, res);
 
-      expect(model.createFolder).toHaveBeenCalledWith('testuser', {
+      expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
         displayName : 'Test',
         slug        : undefined,
         isPublished : false,
@@ -145,7 +145,7 @@ describe('Tests for folder api', ()=>{
 
       await api.updateFolderApi(req, res);
 
-      expect(model.updateFolder).toHaveBeenCalledWith(
+      expect(FolderModel.updateFolder).toHaveBeenCalledWith(
         'testuser',
         'abc123',
         req.body,
@@ -189,7 +189,7 @@ describe('Tests for folder api', ()=>{
 
       await api.deleteFolderApi(req, res);
 
-      expect(model.deleteFolder).toHaveBeenCalledWith(
+      expect(FolderModel.deleteFolder).toHaveBeenCalledWith(
         'testuser',
         'abc123',
       );
@@ -238,7 +238,7 @@ describe('Tests for folder api', ()=>{
 
       await api.addBrewToFolderApi(req, res);
 
-      expect(model.addBrewToFolder).toHaveBeenCalledWith(
+      expect(FolderModel.addBrewToFolder).toHaveBeenCalledWith(
         'testuser',
         'abc123',
         'brew123',
@@ -324,7 +324,7 @@ describe('Tests for folder api', ()=>{
 
       await api.removeBrewFromFolderApi(req, res);
 
-      expect(model.removeBrewFromFolder).toHaveBeenCalledWith(
+      expect(FolderModel.removeBrewFromFolder).toHaveBeenCalledWith(
         'testuser',
         'abc123',
         'brew123',
