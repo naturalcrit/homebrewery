@@ -2,7 +2,14 @@
 
 /* eslint-disable max-lines */
 
-import { model as BrewModel } from './homebrew.model.js';
+jest.mock('./folder.model.js', ()=>({
+  model: {
+    createFolder : jest.fn(),
+  },
+}));
+
+import { model as FolderModel } from './folder.model.js';
+
 
 describe('Tests for folder api', ()=>{
   let api;
@@ -24,6 +31,7 @@ describe('Tests for folder api', ()=>{
     };
   });
 
+
   describe('createFolderApi', ()=>{
     it('should create a folder', async ()=>{
       const folder = {
@@ -34,7 +42,7 @@ describe('Tests for folder api', ()=>{
         isPublished : true,
       };
 
-      model.createFolder = jest.fn(async ()=>folder);
+      FolderModel.createFolder.mockResolvedValue(folder);
 
       const req = {
         account : { username: 'testuser' },
@@ -57,7 +65,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should use the default display name', async ()=>{
-      model.createFolder = jest.fn(async ()=>({ folderId: 'abc123' }));
+      const folder = { folderId: 'abc123' };
+
+      FolderModel.createFolder.mockResolvedValue(folder);
 
       const req = {
         account : { username: 'testuser' },
@@ -74,7 +84,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should preserve a false isPublished value', async ()=>{
-      model.createFolder = jest.fn(async ()=>({ folderId: 'abc123' }));
+      const folder = { folderId: 'abc123' };
+
+      FolderModel.createFolder.mockResolvedValue(folder);
 
       const req = {
         account : { username: 'testuser' },
@@ -94,7 +106,7 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the folder could not be created', async ()=>{
-      model.createFolder = jest.fn(async ()=>undefined);
+      FolderModel.createFolder.mockResolvedValue(undefined);
 
       const req = {
         account : { username: 'testuser' },
@@ -110,6 +122,7 @@ describe('Tests for folder api', ()=>{
     });
   });
 
+
   describe('updateFolderApi', ()=>{
     it('should update a folder', async ()=>{
       const folder = {
@@ -118,7 +131,7 @@ describe('Tests for folder api', ()=>{
         displayName : 'Updated Folder',
       };
 
-      model.updateFolder = jest.fn(async ()=>folder);
+      FolderModel.createFolder.mockResolvedValue(folder);
 
       const req = {
         account : { username: 'testuser' },
@@ -142,7 +155,7 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the folder does not exist', async ()=>{
-      model.updateFolder = jest.fn(async ()=>undefined);
+      FolderModel.createFolder.mockResolvedValue(undefined);
 
       const req = {
         account : { username: 'testuser' },
@@ -159,12 +172,15 @@ describe('Tests for folder api', ()=>{
     });
   });
 
+
   describe('deleteFolderApi', ()=>{
     it('should delete a folder', async ()=>{
-      model.deleteFolder = jest.fn(async ()=>({
+      const result = {
         acknowledged : true,
         deletedCount : 1,
-      }));
+      };
+
+      FolderModel.deleteFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -182,10 +198,12 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the folder does not exist', async ()=>{
-      model.deleteFolder = jest.fn(async ()=>({
+      const result = {
         acknowledged : true,
         deletedCount : 0,
-      }));
+      };
+
+      FolderModel.deleteFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -201,6 +219,7 @@ describe('Tests for folder api', ()=>{
     });
   });
 
+
   describe('addBrewToFolderApi', ()=>{
     it('should add a brew to a folder', async ()=>{
       const result = {
@@ -209,7 +228,7 @@ describe('Tests for folder api', ()=>{
         brewIds  : ['brew123'],
       };
 
-      model.addBrewToFolder = jest.fn(async ()=>result);
+      FolderModel.addBrewToFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -229,9 +248,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the folder does not exist', async ()=>{
-      model.addBrewToFolder = jest.fn(async ()=>({
-        error : 'FOLDER_NOT_FOUND',
-      }));
+      const result = { error : 'FOLDER_NOT_FOUND' };
+
+      FolderModel.addBrewToFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -248,9 +267,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the brew does not exist', async ()=>{
-      model.addBrewToFolder = jest.fn(async ()=>({
-        error : 'BREW_NOT_FOUND',
-      }));
+      const result = { error : 'BREW_NOT_FOUND' };
+
+      FolderModel.addBrewToFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -269,7 +288,7 @@ describe('Tests for folder api', ()=>{
     it('should pass through other results', async ()=>{
       const result = { added: true };
 
-      model.addBrewToFolder = jest.fn(async ()=>result);
+      FolderModel.addBrewToFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -284,6 +303,7 @@ describe('Tests for folder api', ()=>{
     });
   });
 
+
   describe('removeBrewFromFolderApi', ()=>{
     it('should remove a brew from a folder', async ()=>{
       const result = {
@@ -292,7 +312,7 @@ describe('Tests for folder api', ()=>{
         brewIds  : [],
       };
 
-      model.removeBrewFromFolder = jest.fn(async ()=>result);
+      FolderModel.removeBrewFromFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -314,9 +334,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the folder does not exist', async ()=>{
-      model.removeBrewFromFolder = jest.fn(async ()=>({
-        error : 'FOLDER_NOT_FOUND',
-      }));
+      const result = { error : 'FOLDER_NOT_FOUND' };
+
+      FolderModel.removeBrewFromFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -335,9 +355,9 @@ describe('Tests for folder api', ()=>{
     });
 
     it('should throw when the brew does not exist', async ()=>{
-      model.removeBrewFromFolder = jest.fn(async ()=>({
-        error : 'BREW_NOT_FOUND',
-      }));
+      const result = { error : 'BREW_NOT_FOUND' };
+
+      FolderModel.removeBrewFromFolder.mockResolvedValue(result);
 
       const req = {
         account : { username: 'testuser' },
@@ -355,6 +375,7 @@ describe('Tests for folder api', ()=>{
       });
     });
   });
+
 
   describe('requireAccount', ()=>{
     it('should reject a request without an account', async ()=>{
@@ -379,4 +400,5 @@ describe('Tests for folder api', ()=>{
       expect(next).not.toHaveBeenCalled();
     });
   });
+
 });

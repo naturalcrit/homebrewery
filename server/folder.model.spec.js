@@ -67,7 +67,7 @@ describe('Folder model', ()=>{
       const error = folder.validateSync();
 
       expect(error.errors.slug).toBeDefined();
-      expect(error.errors.slug.message).toBe('Folder slug cannot be empty');
+      expect(error.errors.slug.message).toBe('Path `slug` is required.');
     });
 
     it('should trim slug', ()=>{
@@ -90,7 +90,7 @@ describe('Folder model', ()=>{
 
       expect(error.errors.displayName).toBeDefined();
       expect(error.errors.displayName.message)
-        .toBe('Folder displayName cannot be empty');
+        .toBe('Path `displayName` is required.');
     });
 
     it('should trim displayName', ()=>{
@@ -408,6 +408,7 @@ describe('Folder model', ()=>{
       });
     });
 
+    // FAILS w. TIMEOUT
     it('should add the brew to the folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
@@ -447,8 +448,7 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
     });
 
-
-
+    // FAILS w. TIMEOUT
     it('should return the updated folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
@@ -512,6 +512,7 @@ describe('Folder model', ()=>{
       });
     });
 
+    // FAILS
     it('should remove the brew from the folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue(null);
