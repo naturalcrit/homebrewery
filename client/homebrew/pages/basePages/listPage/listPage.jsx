@@ -165,7 +165,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			<div className='filter-option'>
 				<label>
 					<i className='fas fa-search'></i>
-					<input type='search' placeholder='filter title/description' onChange={handleFilterTextChange} value={filterString} />
+					<input type='search' placeholder='filter title/description/tags' onChange={handleFilterTextChange} value={filterString} />
 				</label>
 			</div>
 		);
