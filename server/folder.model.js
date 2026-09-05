@@ -130,7 +130,7 @@ FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) 
       $addToSet: { brewIds: brewId },
       $set: { updatedAt: new Date() },
     },
-    new : true,
+    { new: true },
   );
 
   return result;
