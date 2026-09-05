@@ -13,7 +13,6 @@ const isProd = nodeEnv === 'production';
 
 import HomebrewAPI  from './homebrew.api.js';
 import asyncHandler from 'express-async-handler';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 process.env.ADMIN_USER = process.env.ADMIN_USER || 'admin';
 process.env.ADMIN_PASS = process.env.ADMIN_PASS || 'password3';
@@ -147,8 +146,6 @@ export default function createAdminApi(vite) {
 		properties.forEach((property)=>{
 			brew[property] = cleanText(brew[property]);
 		});
-
-		splitTextStyleAndMetadata(brew);
 
 		req.body = brew;
 
