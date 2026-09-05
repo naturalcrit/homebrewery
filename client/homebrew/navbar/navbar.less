@@ -118,7 +118,14 @@
 			white-space      : nowrap;
 			background-color : transparent;		
 		}
-
+		&.brewPin {
+				&.active i {
+					color: red;
+				}
+				&.inactive i {
+					color: white;
+				}
+			}
 		// "The Homebrewery" logo
 		&.homebrewLogo {
 			.animate(color);

@@ -104,7 +104,9 @@ const api = {
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
+		const userBrewThemes = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }});
+		const pinnedBrewThemes = await HomebrewModel.getUserPinnedThemes(username);
+		const brews = concat(userBrewThemes, pinnedBrewThemes);
 
 		if(brews) {
 			for (const brew of brews) {
@@ -188,8 +190,6 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-
-
 			const fixedStub = migrateSystemsToTags(stub);
 			req.brew = fixedStub;
 			next();
@@ -240,7 +240,7 @@ const api = {
 	excludePropsFromUpdate : (brew)=>{
 		// Remove undesired properties
 		const modified = _.clone(brew);
-		const propsToExclude = ['_id', 'views', 'lastViewed'];
+		const propsToExclude = ['_id', 'views', 'lastViewed', 'pinnedByUsers'];
 		for (const prop of propsToExclude) {
 			delete modified[prop];
 		}
