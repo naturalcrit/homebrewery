@@ -7,6 +7,7 @@ const Combobox = createReactClass({
 	displayName     : 'Combobox',
 	getDefaultProps : function() {
 		return {
+			id			: '',
 			className   : '',
 			trigger     : 'hover',
 			default     : '',
@@ -75,6 +76,7 @@ const Combobox = createReactClass({
 				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
 				{...(this.props.tooltip ? { 'data-tooltip-right': this.props.tooltip } : {})}>
 				<input
+					id={this.props.id}
 					type='text'
 					onChange={(e)=>this.handleInput(e)}
 					value={this.state.value || ''}

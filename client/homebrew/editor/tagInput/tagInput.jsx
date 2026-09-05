@@ -4,7 +4,7 @@ import Combobox from '@components/combobox.jsx';
 
 import { tagSuggestionList, canonizationList } from './curatedTagSuggestionList.js';
 
-const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, placeholder = '', smallText = '', onChange })=>{
+const TagInput = ({ id, tooltip, label, valuePatterns, values = [], unique = true, placeholder = '', smallText = '', onChange })=>{
 	const [tagList, setTagList] = useState(
 		values.map((value)=>({
 			value,
@@ -128,6 +128,7 @@ const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, p
 	return (
 		<div className='tagInputWrap'>
 			<Combobox
+				id={id}
 				trigger='click'
 				className='tagInput-dropdown'
 				default=''
@@ -155,6 +156,7 @@ const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, p
 			<ul className='list'>
 				{tagList.map((t, i)=>t.editing ? (
 					<input
+						id={`${id}-${i}`}
 						key={i}
 						type='text'
 						value={t.draft} // always use draft
