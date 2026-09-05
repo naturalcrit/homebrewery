@@ -172,7 +172,7 @@ const MetadataEditor = createReactClass({
 		return <div className='field delete'>
 			<label htmlFor='delete-button'>delete</label>
 			<div className='value'>
-				<button id='delete-button' className='publish' onClick={this.handleDelete}>
+				<button id='delete-button' onClick={this.handleDelete}>
 					<i className='fas fa-trash-alt' /> delete brew
 				</button>
 			</div>
