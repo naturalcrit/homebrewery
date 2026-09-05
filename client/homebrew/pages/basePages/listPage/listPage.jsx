@@ -19,6 +19,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
+	const [layoutMode, setLayoutMode] = useState('grid');
 
 	const groupVisibilityRef = useRef(groupVisibility);
 	const sortTypeRef = useRef(sortType);
@@ -259,31 +260,61 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			const sortedBrewGroup = sortedBrewCollection[idx];
 			const visible = groupVisibility[brewGroup.class];
 
-			return (
-				<div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
-					<h1
-						className={visible ? 'active' : 'inactive'}
-						onClick={()=>{
-							toggleBrewCollectionState(brewGroup.class);
-						}}>
-						{brewGroup.title || 'No Title'}
-					</h1>
+			return (<>
+				<h1
+					className={visible ? 'active' : 'inactive'}
+					onClick={()=>{
+						toggleBrewCollectionState(brewGroup.class);
+					}}>
+					{brewGroup.title || 'No Title'}
+				</h1>
+				<div key={idx} className={`brewGroup ${brewGroup.class ?? ''} ${layoutMode}`}>
+
 					{visible ? renderBrews(sortedBrewGroup.brews) : <></>}
 				</div>
-			);
+			</>);
 		});
+	};
+
+	const handleLayoutChange = (e, mode)=>{
+		setLayoutMode(e.target.checked ? mode : 'grid');
+		return;
+	};
+
+	const renderLayoutModeOptions = ()=>{
+		return (
+			<div className='layout-container'>
+				<div className='layout-option' title='grid'>
+					<label>
+						<i className='fas fa-grip'></i>
+						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+					</label>
+				</div>
+				<div className='layout-option' title='list'>
+					<label>
+						<i className='fas fa-grip'></i>
+						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
+					</label>
+				</div>
+				<div className='layout-option' title='card'>
+					<label>
+						<i className='fas fa-table'></i>
+						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'card')} checked={layoutMode === 'card'} />
+					</label>
+				</div>
+			</div>
+		);
 	};
 
 	return (
 		<div className='listPage sitePage'>
-			<link href='/themes/V3/Blank/style.css' type='text/css' rel='stylesheet' />
-			<link href='/themes/V3/5ePHB/style.css' type='text/css' rel='stylesheet' />
 			{navItems}
 			{renderSortOptions()}
 			{renderTagsOptions()}
+			{renderLayoutModeOptions()}
 
 			<div className='content V3'>
-				<div className='page'>{renderBrewCollection(brewCollection)}</div>
+				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
 			</div>
 		</div>
 	);

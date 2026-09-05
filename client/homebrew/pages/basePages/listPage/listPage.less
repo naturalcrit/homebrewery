@@ -1,15 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 
 .noColumns() {
-	column-count         : auto;
-	column-fill          : auto;
-	column-gap           : normal;
+	-webkit-column-width : auto;
+	-moz-column-width    : auto;
 	column-width         : auto;
 	-webkit-column-count : auto;
 	-moz-column-count    : auto;
-	-webkit-column-width : auto;
-	-moz-column-width    : auto;
+	column-count         : auto;
+	column-fill          : auto;
 	-webkit-column-gap   : normal;
 	-moz-column-gap      : normal;
+	column-gap           : normal;
 	height               : auto;
 	min-height           : 279.4mm;
 	margin               : 20px auto;
@@ -18,28 +19,48 @@
 .listPage {
 	.content {
 		z-index : 1;
-		.page {
-			.noColumns() !important; //Needed to override PHB Theme since this is on a lower @layer
-			&::after { display : none; }
-			.noBrews {
-				margin     : 10px 0px;
-				font-size  : 1.3em;
-				font-style : italic;
-			}
-			.brewCollection {
-				h1:hover { cursor : pointer; }
-				.active::before, .inactive::before {
+		padding : 100px 250px;
+		.noBrews {
+			margin     : 10px 0px;
+			font-size  : 1.3em;
+			font-style : italic;
+		}
+		.brewCollection {
+			h1 {
+				margin-bottom : 20px;
+				font-size     : 25px;
+				color         : #DDDDDD;
+
+				&.active::before, &.inactive::before {
 					padding-right : 0.5em;
 					font-family   : 'Font Awesome 6 Free';
 					font-size     : 0.6cm;
 					font-weight   : 900;
 				}
-				.active { color : var(--HB_Color_HeaderText); }
-				.active::before { content : '\f107'; }
-				.inactive { color : #707070; }
-				.inactive::before { content : '\f105'; }
+				&.active { color : white; }
+				&.active::before { content : '\f107'; }
+				&.inactive::before { content : '\f105'; }
+
+			}
+			h1:hover { cursor : pointer; }
+			
+			.brewGroup {
+			
+
+				&.list {
+					display        : flex;
+					flex-direction : column;
+					gap            : 2px;
+				}
+				&.card {
+					display   : flex;
+					flex-wrap : wrap;
+					
+					h1 { position : absolute; }
+				}
 			}
 		}
+		
 	}
 	.sort-container {
 		position              : sticky;
@@ -160,5 +181,25 @@
 				&::before { content : '\f518'; }
 			}
 		}
+	}
+	.layout-container {
+		position              : sticky;
+		top                   : 0;
+		left                  : 0;
+		z-index               : 1;
+		display               : flex;
+		flex-wrap             : wrap;
+		row-gap               : 5px;
+		column-gap            : 15px;
+		align-items           : baseline;
+		justify-content       : center;
+		width                 : 100%;
+		height                : 30px;
+		font-family           : 'Open Sans', sans-serif;
+		color                 : white;
+		text-align            : center;
+		background-color      : #555555;
+		border-top            : 1px solid #666666;
+		border-bottom         : 1px solid #666666;
 	}
 }
