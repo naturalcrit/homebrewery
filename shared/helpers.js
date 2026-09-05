@@ -229,5 +229,6 @@ export {
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	yamlSnippetsToText
 };
