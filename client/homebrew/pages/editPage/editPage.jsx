@@ -266,16 +266,7 @@ const EditPage = (props)=>{
 		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
 			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
 
-			{confirmGoogleTransfer && (
-				<div className='errorContainer' onClick={closeAlerts}>
-					{saveGoogle
-						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
-						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
-					<br />
-					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
-					<div className='deny'>                                  No  </div>
-				</div>
-			)}
+			
 
 			{alertOwnershipToTransfer && (
 				<div className='errorContainer' onClick={closeAlerts}>
@@ -299,7 +290,18 @@ const EditPage = (props)=>{
 				<div className='errorContainer' onClick={closeAlerts}>
 					This brew is currently in your Trash folder on Google Drive!<br />
 					If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm'> OK </div>
+					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
+				</div>
+			)}
+
+			{confirmGoogleTransfer && (
+				<div className='errorContainer' onClick={closeAlerts}>
+					{saveGoogle
+						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
+						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
+					<br />
+					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
+					<div className='deny'>                                  No  </div>
 				</div>
 			)}
 		</Nav.item>
