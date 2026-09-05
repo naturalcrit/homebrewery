@@ -114,15 +114,14 @@ FolderSchema.statics.deleteFolder = async function(owner, folderId) {
 
 
 FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) {
-  const folder = await this.getFolder(owner, folderId);
 
-  if(!folder)
-    return { error: 'FOLDER_NOT_FOUND' };
-
-  const brew = await BrewModel.findOne({ owner, brewId });
-
-  if(!brew)
+  const brewExists = await BrewModel.exists({ brewId });
+  if(!brewExists)
     return { error: 'BREW_NOT_FOUND' };
+
+  const folderExists = await this.exists({ owner, folderId });
+  if(!folderExists)
+    return { error: 'FOLDER_NOT_FOUND' };
 
   const result = await this.findOneAndUpdate(
     { owner, folderId },
@@ -139,12 +138,11 @@ FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) 
 FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, brewId ) {
   // returns null, or returns updated folder
 
-  const brewExists = await mongoose.model('Brew').exists({ brewId });
-
+  const brewExists = await BrewModel.exists({ brewId });
   if(!brewExists)
-    return null;
+    return { error: 'BREW_NOT_FOUND' };
 
-  const result = this.findOneAndUpdate(
+  const result = await this.findOneAndUpdate(
     { owner, folderId },
     {
       $pull: { brewIds: brewId },
@@ -152,6 +150,9 @@ FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, bre
     },
     { new: true },
   );
+
+  if (!result)
+    return { error: 'FOLDER_NOT_FOUND' };
 
   return result;
 };

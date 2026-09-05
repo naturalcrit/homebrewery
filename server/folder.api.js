@@ -132,7 +132,7 @@ const removeBrewFromFolderApi = async (req, res)=>{
     };
   }
 
-  res.status(200).send(folder);
+  res.status(200).send(result);
 };
 
 
