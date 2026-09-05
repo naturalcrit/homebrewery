@@ -2,6 +2,8 @@
 
 /* eslint-disable max-lines */
 
+import { model as BrewModel } from './homebrew.model.js';
+
 describe('Tests for folder api', ()=>{
   let api;
   let model;

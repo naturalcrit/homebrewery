@@ -7,21 +7,13 @@ import { model as BrewModel } from './homebrew.model.js';
 
 const FolderSchema = mongoose.Schema({
   owner:        { type: String, required: true, index: true },
-  folderId:     { type: String, required: true, default: () => nanoid(12), index: true, unique: true },
-  slug:         { type: String, required: true, trim: true,
-    validate: {
-      validator: value => value.length > 0,
-      message: 'Folder slug cannot be empty'
-    } },
-  displayName:  { type: String, required: true, default: 'untitled folder', trim: true,
-    validate: {
-      validator: value => value.length > 0,
-      message: 'Folder displayName cannot be empty'
-    } },
+  folderId:     { type: String, required: true, index: true, unique: true, default: () => nanoid(12) },
+  slug:         { type: String, required: true, trim: true, },
+  displayName:  { type: String, required: true, trim: true, default: 'untitled folder', },
   brewIds:      { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
-  isPublished:  { type: Boolean, default: false },
-  isPrivate:    { type: Boolean, default: false },
+  isPublished:  { type: Boolean, required: true, default: false },
+  isPrivate:    { type: Boolean, required: true, default: false },
   createdAt:    { type: Date, default: Date.now },
   updatedAt:    { type: Date, default: Date.now },
 }, { versionKey: false });

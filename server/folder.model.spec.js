@@ -4,6 +4,7 @@
 
 import mongoose from 'mongoose';
 import { Folder } from './folder.model.js';
+import { model as BrewModel } from './homebrew.model.js';
 
 jest.mock('./homebrew.model.js', ()=>({
   model: {
@@ -366,9 +367,8 @@ describe('Folder model', ()=>{
 
   describe('addBrewToFolder', ()=>{
     it('should return BREW_NOT_FOUND when the brew does not exist', async ()=>{
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : jest.fn(async ()=>null),
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue(null);
 
       const result = await Folder.addBrewToFolder(
         'testuser',
@@ -382,12 +382,11 @@ describe('Folder model', ()=>{
     });
 
     it('should return FOLDER_NOT_FOUND when the folder does not exist', async ()=>{
-      const exists = jest
-        .fn()
-        .mockResolvedValueOnce({ _id: 'brew' })
-        .mockResolvedValueOnce(null);
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue({ _id: 'brew' });
 
-      jest.spyOn(mongoose, 'model').mockReturnValue({ exists });
+      jest.spyOn(Folder, 'exists')
+        .mockResolvedValue(null);
 
       const result = await Folder.addBrewToFolder(
         'testuser',
@@ -399,21 +398,19 @@ describe('Folder model', ()=>{
         error : 'FOLDER_NOT_FOUND',
       });
 
-      expect(exists).toHaveBeenNthCalledWith(1, {
+      expect(BrewModel.exists).toHaveBeenCalledWith({
         brewId : 'brew123',
       });
 
-      expect(exists).toHaveBeenNthCalledWith(2, {
+      expect(Folder.exists).toHaveBeenCalledWith({
         owner    : 'testuser',
         folderId : 'missing-folder',
       });
     });
 
     it('should add the brew to the folder', async ()=>{
-      const brewExists = jest.fn(async ()=>({ _id: 'brew' }));
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : brewExists,
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
         owner    : 'testuser',
@@ -450,11 +447,11 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
     });
 
+
+
     it('should return the updated folder', async ()=>{
-      const brewExists = jest.fn(async ()=>({ _id: 'brew' }));
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : brewExists,
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
         owner    : 'testuser',
@@ -471,15 +468,20 @@ describe('Folder model', ()=>{
       );
 
       expect(result).toBe(folder);
+
+      expect(BrewModel.exists).toHaveBeenCalledWith({
+        brewId : 'brew123',
+      });
+
+      expect(Folder.findOneAndUpdate).toHaveBeenCalled();
     });
   });
 
 
   describe('removeBrewFromFolder', ()=>{
     it('should return BREW_NOT_FOUND when the brew does not exist', async ()=>{
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : jest.fn(async ()=>null),
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue(null);
 
       const result = await Folder.removeBrewFromFolder(
         'testuser',
@@ -493,9 +495,8 @@ describe('Folder model', ()=>{
     });
 
     it('should return FOLDER_NOT_FOUND when the folder does not exist', async ()=>{
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : jest.fn(async ()=>({ _id: 'brew' })),
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue({ _id: 'brew' });
 
       jest.spyOn(Folder, 'findOneAndUpdate')
         .mockResolvedValue(null);
@@ -512,9 +513,8 @@ describe('Folder model', ()=>{
     });
 
     it('should remove the brew from the folder', async ()=>{
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : jest.fn(async ()=>({ _id: 'brew' })),
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue(null);
 
       const folder = {
         owner    : 'testuser',
@@ -552,9 +552,8 @@ describe('Folder model', ()=>{
     });
 
     it('should return the updated folder', async ()=>{
-      jest.spyOn(mongoose, 'model').mockReturnValue({
-        exists : jest.fn(async ()=>({ _id: 'brew' })),
-      });
+      jest.spyOn(BrewModel, 'exists')
+        .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
         owner    : 'testuser',
@@ -573,4 +572,5 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
     });
   });
+
 });
