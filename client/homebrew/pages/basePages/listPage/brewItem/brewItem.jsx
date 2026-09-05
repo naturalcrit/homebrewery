@@ -92,7 +92,7 @@ const BrewItem = ({
 		if(!renderStorage) return null;
 		if(brew.googleId) {
 			return (
-				<span title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
+				<span className='storage' title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
 					<a href={brew.webViewLink} target='_blank'>
 						<img className='googleDriveIcon' src={googleDriveIcon} alt='Google Drive Storage' />
 					</a>
@@ -101,7 +101,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<span title='Homebrewery Storage'>
+			<span className='storage' title='Homebrewery Storage'>
 				<img className='homebreweryIcon' src={homebreweryIcon} alt='Homebrewery Storage' />
 			</span>
 		);
@@ -123,7 +123,6 @@ const BrewItem = ({
 				<h2>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
 			</div>
-			<hr />
 			<div className='info'>
 				{brew.tags?.length ? (
 					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
@@ -134,7 +133,7 @@ const BrewItem = ({
 						})}
 					</div>
 				) : null}
-				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+				<span className='brewAuthors' title={`Authors:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user' />{' '}
 					{brew.authors?.map((author, index)=>(
 						<React.Fragment key={index}>
@@ -147,16 +146,16 @@ const BrewItem = ({
 						</React.Fragment>
 					))}
 				</span>
-				<br />
-				<span aria-label={`Viewed ${brew.views} times`} title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
-					<span aria-hidden='true'><i className='fas fa-eye' /> {brew.views}</span>
-				</span>
 				{brew.pageCount && (
-					<span aria-label={`${brew.pageCount} pages`} title={`Page count: ${brew.pageCount}`}>
+					<span className='brewPages' aria-label={`${brew.pageCount} pages`} title={`Page count: ${brew.pageCount}`}>
 						<span aria-hidden='true'><i className='far fa-file' /> {brew.pageCount}</span>
 					</span>
 				)}
+				<span className='lastViewed' aria-label={`Viewed ${brew.views} times`} title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+					<span aria-hidden='true'><i className='fas fa-eye' /> {brew.views}</span>
+				</span>
 				<span
+					className='lastUpdated'
 					aria-label={`Last updated ${moment(brew.updatedAt).fromNow()}`}
 					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
                         Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
