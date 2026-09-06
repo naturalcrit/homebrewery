@@ -276,7 +276,7 @@ const errorIndex = (props)=>{
 		'104': dedent`Folder could not be found.`,
 		'105': dedent`Folder could not be created.`,
 		'106': dedent`Folder to update could not be found.`,
-		'107': dedent`Folder to delete could not be created.`,
+		'107': dedent`Folder to delete could not be found.`,
 
 		'111': dedent`Folder to add brew to could not be found.`,
 		'112': dedent`Brew to add to folder could not be found.`,
