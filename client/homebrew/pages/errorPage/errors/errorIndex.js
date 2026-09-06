@@ -271,7 +271,7 @@ const errorIndex = (props)=>{
 		'100': dedent`Folder operations require a logged in user.`,
 		'101': dedent`A folder with this identifier already exists`,
 		'102': dedent`A bookmarks folder already exists`,
-		'103': dedent`A favourites folder already exists`,
+		'103': dedent`A favorites folder already exists`,
 
 		'104': dedent`Folder could not be found.`,
 		'105': dedent`Folder could not be created.`,
