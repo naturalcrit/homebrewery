@@ -383,6 +383,17 @@ export default async function createApp(vite) {
 			});
 			await Promise.all(renamePromises);
 
+			const pinnedBrews = await HomebrewModel.getUserPinnedThemes(username);
+			const pinRenamePromises = pinnedBrews.map(async (brew)=>{
+				const updatedPinnedByUsers = brew.pinnedByUser.map((pinUser)=>pinUser === username ? newUsername : pinUser
+				);
+				return HomebrewModel.updateOne(
+					{ _id: brew._id },
+					{ $set: { pinnedByUsers: updatedPinnedByUsers } }
+				);
+			});
+			await Promise.all(pinRenamePromises);
+
 			return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
 		} catch (error) {
 			console.error('Error renaming brews:', error);
