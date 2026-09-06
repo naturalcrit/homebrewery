@@ -7,7 +7,7 @@
 @property --activeTriggerColor {
 	syntax: '<color>';
 	inherits: true;
-	initial-value: #DDD;
+	initial-value: #999;
 }
 
 :root{
@@ -30,4 +30,8 @@
 }
 .menu-wrapper:has(:popover-open) > button {                        // if menu is open...
 	background-color: var(--activeTriggerColor, hsl(from var(--menuColor) h s calc(l * .85)));  // tint menu triggers based on menu color
+}
+
+.darkMode .menu-wrapper:has(:popover-open) > button {                        // if menu is open...
+	--activeTriggerColor : #444;  // tint menu triggers based on menu color
 }
