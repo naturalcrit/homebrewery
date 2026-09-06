@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
+@import '@sharedStyles/colors.less';
 
 .noColumns() {
 	-webkit-column-width : auto;
@@ -192,7 +193,7 @@
 		flex-wrap             : wrap;
 		row-gap               : 5px;
 		column-gap            : 15px;
-		align-items           : baseline;
+		align-items           : center;
 		justify-content       : center;
 		width                 : 100%;
 		height                : 30px;
@@ -202,5 +203,17 @@
 		background-color      : #555555;
 		border-top            : 1px solid #666666;
 		border-bottom         : 1px solid #666666;
+
+		input[type="radio"] {
+			display:none;
+		}
+
+		i {
+			transition:color 0.2s;
+		}
+
+		input:checked + i {
+			color:@blue;
+		}
 	}
 }
