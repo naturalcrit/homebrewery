@@ -9,9 +9,11 @@ import BrewItem from './brewItem/brewItem.jsx';
 const USERPAGE_SORT_DIR = 'HB_listPage_sortDir';
 const USERPAGE_SORT_TYPE = 'HB_listPage_sortType';
 const USERPAGE_GROUP_VISIBILITY_PREFIX = 'HB_listPage_visibility_group';
+const USERPAGE_LAYOUT_MODE = 'HB_listPage_layout_mode';
 
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
+const DEFAULT_LAYOUT_MODE = 'grid';
 
 const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
@@ -19,7 +21,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
-	const [layoutMode, setLayoutMode] = useState('grid');
+	const [layoutMode, setLayoutMode] = useState(null);
 
 	const groupVisibilityRef = useRef(groupVisibility);
 	const sortTypeRef = useRef(sortType);
@@ -50,9 +52,12 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			return visibility;
 		}, {});
 
+		const newLayoutMode = layoutMode ?? (localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE);
+
 		setGroupVisibility(namedBrewCollection);
 		setSortType(newSortType);
 		setSortDir(newSortDir);
+		setLayoutMode(newLayoutMode);
 
 		return ()=>{
 			window.onbeforeunload = null;
@@ -65,6 +70,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		});
 		localStorage.setItem(USERPAGE_SORT_TYPE, sortTypeRef.current);
 		localStorage.setItem(USERPAGE_SORT_DIR, sortDirRef.current);
+		localStorage.setItem(USERPAGE_LAYOUT_MODE, layoutMode);
 	};
 
 	const renderBrews = (brews)=>{
