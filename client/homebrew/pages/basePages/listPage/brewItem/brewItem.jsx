@@ -133,7 +133,7 @@ const BrewItem = ({
 						})}
 					</div>
 				) : null}
-				<span className='brewAuthors' title={`Authors:\n${brew.authors?.join('\n')}`}>
+				<div className='brewAuthors' title={`Authors:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user' />{' '}
 					{brew.authors?.map((author, index)=>(
 						<React.Fragment key={index}>
@@ -145,7 +145,7 @@ const BrewItem = ({
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}
-				</span>
+				</div>
 				{brew.pageCount && (
 					<span className='brewPages' aria-label={`${brew.pageCount} pages`} title={`Page count: ${brew.pageCount}`}>
 						<span aria-hidden='true'><i className='far fa-file' /> {brew.pageCount}</span>
