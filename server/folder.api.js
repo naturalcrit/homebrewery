@@ -26,7 +26,7 @@ router.use(dbCheck);
 
 const createFolderApi = async (req, res)=>{
   const folder = await FolderModel.createFolder(req.account.username, {
-    displayName: req.body.displayName || 'untitled folder',
+    title: req.body.title || 'untitled folder',
     slug: req.body.slug,
     isPublished: req.body.isPublished ?? false,
   });

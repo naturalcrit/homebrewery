@@ -6,10 +6,10 @@ import { model as BrewModel } from './homebrew.model.js';
 
 
 const FolderSchema = mongoose.Schema({
-  owner:        { type: String, required: true, index: true },
+  author:       { type: String, required: true, index: true },
   folderId:     { type: String, required: true, index: true, unique: true, default: () => nanoid(12) },
   slug:         { type: String, required: true, trim: true, },
-  displayName:  { type: String, required: true, trim: true, default: 'untitled folder', },
+  title:        { type: String, required: true, trim: true, default: 'untitled folder', },
   brewIds:      { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, required: true, default: false },
@@ -27,7 +27,7 @@ const FolderSchema = mongoose.Schema({
 // No semantics implied by array order of brewIds or subfolderIds.
 
 // isPublished determines appearance in the User's Published Brews section of their user page
-// isPrivate means non-owners cannot view the folder even if they have the url
+// isPrivate means non-authors cannot view the folder even if they have the url
 
 // updatedAt is managed in the app.
 
@@ -35,28 +35,28 @@ const FolderSchema = mongoose.Schema({
 // Folder operations .........................................................
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
-  const query = { owner: username };
+  const query = { author: username };
 
   if(!ownAccount)
     query.isPrivate = false;
 
   return this.find(query)
     .select(
-      'owner folderId slug displayName brewIds subFolderIds isPublished isPrivate'
+      'author folderId slug title brewIds subFolderIds isPublished isPrivate'
     )
     .lean();
 };
 
 
 FolderSchema.statics.createFolder = async function(
-  owner,
-  { displayName, slug, isPublished, isFavourites, isBookmarks, isPrivate }
+  author,
+  { title, slug, isPublished, isPrivate }
 ) {
   // TODO: enforce slug uniqueness within parent folders? [TRICKY]
   // TODO: pass in parent folderId, add this folderId to parent.subFolderIds[]
   const folder = new this({
-    owner,
-    displayName,
+    author,
+    title,
     slug,
     isPublished,
     isPrivate,
@@ -65,19 +65,19 @@ FolderSchema.statics.createFolder = async function(
   return folder.save();
 };
 
-FolderSchema.statics.getFolder = async function(owner, folderId) {
+FolderSchema.statics.getFolder = async function(author, folderId) {
   // returns folder document, or null
-  return this.findOne({ owner, folderId }).lean();
+  return this.findOne({ author, folderId }).lean();
   // NOTE: don't throw here if not found, different callers = different messaging
 };
 
 FolderSchema.statics.updateFolder = async function(
-  owner,
+  author,
   folderId,
-  { displayName, slug, isPublished, isPrivate }
+  { title, slug, isPublished, isPrivate }
 ) {
   const updates = {
-    displayName,
+    title,
     slug,
     isPublished,
     isPrivate,
@@ -91,7 +91,7 @@ FolderSchema.statics.updateFolder = async function(
   });
 
   const folder = await this.findOneAndUpdate(
-    { owner, folderId },
+    { author, folderId },
     { $set: updates },
     { new: true },
   );
@@ -99,24 +99,24 @@ FolderSchema.statics.updateFolder = async function(
   return folder;
 };
 
-FolderSchema.statics.deleteFolder = async function(owner, folderId) {
+FolderSchema.statics.deleteFolder = async function(author, folderId) {
   // TODO: remove dangling references to this folderId. not essential, just tidy.
-  return this.deleteOne({ owner, folderId });
+  return this.deleteOne({ author, folderId });
 };
 
 
-FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) {
+FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId) {
 
   const brewExists = await BrewModel.exists({ brewId });
   if(!brewExists)
     return { error: 'BREW_NOT_FOUND' };
 
-  const folderExists = await this.exists({ owner, folderId });
+  const folderExists = await this.exists({ author, folderId });
   if(!folderExists)
     return { error: 'FOLDER_NOT_FOUND' };
 
   const result = await this.findOneAndUpdate(
-    { owner, folderId },
+    { author, folderId },
     {
       $addToSet: { brewIds: brewId },
       $set: { updatedAt: new Date() },
@@ -127,7 +127,7 @@ FolderSchema.statics.addBrewToFolder = async function( owner, folderId, brewId) 
   return result;
 };
 
-FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, brewId ) {
+FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, brewId ) {
   // returns null, or returns updated folder
 
   const brewExists = await BrewModel.exists({ brewId });
@@ -135,7 +135,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, bre
     return { error: 'BREW_NOT_FOUND' };
 
   const result = await this.findOneAndUpdate(
-    { owner, folderId },
+    { author, folderId },
     {
       $pull: { brewIds: brewId },
       $set: { updatedAt: new Date() },
@@ -153,8 +153,8 @@ FolderSchema.statics.removeBrewFromFolder = async function( owner, folderId, bre
 // TODO: MVP+1 = add bookmarks wrappers
 
 // TODO: MVP+n = add nesting of folders
-// FolderSchema.statics.addFolderToFolder = async function( owner, parentFolderId, childFolderId) ...
-// FolderSchema.statics.removeFolderFromFolder = async function( owner, parentFolderId, childFolderId ) ...
+// FolderSchema.statics.addFolderToFolder = async function( author, parentFolderId, childFolderId) ...
+// FolderSchema.statics.removeFolderFromFolder = async function( author, parentFolderId, childFolderId ) ...
 
 // ----------------------------------------------------------------------
 

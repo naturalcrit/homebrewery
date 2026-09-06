@@ -22,12 +22,12 @@ describe('Folder model', ()=>{
 
     it('should apply defaults', ()=>{
       const folder = new Folder({
-        owner : 'testuser',
-        slug  : 'my-folder',
+        author : 'testuser',
+        slug   : 'my-folder',
       });
 
       expect(folder.folderId).toHaveLength(12);
-      expect(folder.displayName).toBe('untitled folder');
+      expect(folder.title).toBe('untitled folder');
       expect(folder.brewIds).toEqual([]);
       expect(folder.subFolderIds).toEqual([]);
       expect(folder.isPublished).toBe(false);
@@ -49,7 +49,7 @@ describe('Folder model', ()=>{
 
     it('should require slug', ()=>{
       const folder = new Folder({
-        owner : 'testuser',
+        author: 'testuser',
       });
 
       const error = folder.validateSync();
@@ -60,7 +60,7 @@ describe('Folder model', ()=>{
 
     it('should reject an empty slug', ()=>{
       const folder = new Folder({
-        owner : 'testuser',
+        author: 'testuser',
         slug  : '',
       });
 
@@ -72,46 +72,46 @@ describe('Folder model', ()=>{
 
     it('should trim slug', ()=>{
       const folder = new Folder({
-        owner : 'testuser',
-        slug  : '  my-folder  ',
+        author : 'testuser',
+        slug   : '  my-folder  ',
       });
 
       expect(folder.slug).toBe('my-folder');
     });
 
-    it('should reject an empty displayName', ()=>{
+    it('should reject an empty title', ()=>{
       const folder = new Folder({
-        owner       : 'testuser',
+        author      : 'testuser',
         slug        : 'my-folder',
-        displayName : '',
+        title       : '',
       });
 
       const error = folder.validateSync();
 
-      expect(error.errors.displayName).toBeDefined();
-      expect(error.errors.displayName.message)
-        .toBe('Path `displayName` is required.');
+      expect(error.errors.title).toBeDefined();
+      expect(error.errors.title.message)
+        .toBe('Path `title` is required.');
     });
 
-    it('should trim displayName', ()=>{
+    it('should trim title', ()=>{
       const folder = new Folder({
-        owner       : 'testuser',
+        author      : 'testuser',
         slug        : 'my-folder',
-        displayName : '  My Folder  ',
+        title       : '  My Folder  ',
       });
 
-      expect(folder.displayName).toBe('My Folder');
+      expect(folder.title).toBe('My Folder');
     });
 
     it('should generate unique folderIds', ()=>{
       const folder1 = new Folder({
-        owner : 'testuser',
-        slug  : 'one',
+        author : 'testuser',
+        slug   : 'one',
       });
 
       const folder2 = new Folder({
-        owner : 'testuser',
-        slug  : 'two',
+        author : 'testuser',
+        slug   : 'two',
       });
 
       expect(folder1.folderId).toHaveLength(12);
@@ -127,10 +127,10 @@ describe('Folder model', ()=>{
     it('should return all folders for the user when ownAccount is true', async ()=>{
       const folders = [
         {
-          owner       : 'testuser',
+          author      : 'testuser',
           folderId    : 'abc123',
           slug        : 'one',
-          displayName : 'One',
+          title       : 'One',
         },
       ];
 
@@ -141,11 +141,11 @@ describe('Folder model', ()=>{
       const result = await Folder.getByUser('testuser', true);
 
       expect(Folder.find).toHaveBeenCalledWith({
-        owner : 'testuser',
+        author : 'testuser',
       });
 
       expect(select).toHaveBeenCalledWith(
-        'owner folderId slug displayName brewIds subFolderIds isPublished isPrivate',
+        'author folderId slug title brewIds subFolderIds isPublished isPrivate',
       );
 
       expect(result).toBe(folders);
@@ -161,7 +161,7 @@ describe('Folder model', ()=>{
       const result = await Folder.getByUser('testuser', false);
 
       expect(Folder.find).toHaveBeenCalledWith({
-        owner     : 'testuser',
+        author    : 'testuser',
         isPrivate : false,
       });
 
@@ -175,8 +175,8 @@ describe('Folder model', ()=>{
 
     it('should create and save a folder', async ()=>{
       const folder = {
-        owner       : 'testuser',
-        displayName : 'My Folder',
+        author      : 'testuser',
+        title       : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
         isPrivate   : false,
@@ -187,7 +187,7 @@ describe('Folder model', ()=>{
       jest.spyOn(Folder.prototype, 'save').mockImplementation(save);
 
       const result = await Folder.createFolder('testuser', {
-        displayName : 'My Folder',
+        title       : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
         isPrivate   : false,
@@ -204,14 +204,14 @@ describe('Folder model', ()=>{
         });
 
       const result = await Folder.createFolder('testuser', {
-        displayName : 'My Folder',
+        title       : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
         isPrivate   : true,
       });
 
       expect(result.owner).toBe('testuser');
-      expect(result.displayName).toBe('My Folder');
+      expect(result.title).toBe('My Folder');
       expect(result.slug).toBe('my-folder');
       expect(result.isPublished).toBe(true);
       expect(result.isPrivate).toBe(true);
@@ -225,7 +225,7 @@ describe('Folder model', ()=>{
 
       await expect(
         Folder.createFolder('testuser', {
-          displayName : 'My Folder',
+          title       : 'My Folder',
           slug        : 'my-folder',
         }),
       ).rejects.toBe(error);
@@ -238,7 +238,7 @@ describe('Folder model', ()=>{
 
     it('should find a folder belonging to the user', async ()=>{
       const folder = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       };
 
@@ -248,7 +248,7 @@ describe('Folder model', ()=>{
       const result = await Folder.getFolder('testuser', 'abc123');
 
       expect(Folder.findOne).toHaveBeenCalledWith({
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       });
 
@@ -272,9 +272,9 @@ describe('Folder model', ()=>{
 
     it('should update supplied fields', async ()=>{
       const folder = {
-        owner       : 'testuser',
+        author      : 'testuser',
         folderId    : 'abc123',
-        displayName : 'Updated',
+        title       : 'Updated',
       };
 
       const findOneAndUpdate = jest
@@ -282,7 +282,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue(folder);
 
       await Folder.updateFolder('testuser', 'abc123', {
-        displayName : 'Updated',
+        title       : 'Updated',
         slug        : 'updated',
         isPublished : true,
         isPrivate   : true,
@@ -291,11 +291,11 @@ describe('Folder model', ()=>{
       const [query, update, options] = findOneAndUpdate.mock.calls[0];
 
       expect(query).toEqual({
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       });
 
-      expect(update.$set.displayName).toBe('Updated');
+      expect(update.$set.title).toBe('Updated');
       expect(update.$set.slug).toBe('updated');
       expect(update.$set.isPublished).toBe(true);
       expect(update.$set.isPrivate).toBe(true);
@@ -309,14 +309,14 @@ describe('Folder model', ()=>{
         .mockResolvedValue({});
 
       await Folder.updateFolder('testuser', 'abc123', {
-        displayName : 'Updated',
+        title : 'Updated',
       });
 
       const [, update] = findOneAndUpdate.mock.calls[0];
 
       expect(update.$set).toEqual(
         expect.objectContaining({
-          displayName : 'Updated',
+          title : 'Updated',
         }),
       );
 
@@ -331,7 +331,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue(null);
 
       const result = await Folder.updateFolder('testuser', 'missing', {
-        displayName : 'Updated',
+        title : 'Updated',
       });
 
       expect(result).toBeNull();
@@ -353,7 +353,7 @@ describe('Folder model', ()=>{
       const actual = await Folder.deleteFolder('testuser', 'abc123');
 
       expect(Folder.deleteOne).toHaveBeenCalledWith({
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       });
 
@@ -415,7 +415,7 @@ describe('Folder model', ()=>{
       });
 
       expect(Folder.exists).toHaveBeenCalledWith({
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'missing-folder',
       });
     });
@@ -428,7 +428,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue({ _id: 'folder' });
 
       const folder = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
         brewIds  : ['brew123'],
       };
@@ -445,7 +445,7 @@ describe('Folder model', ()=>{
 
       expect(findOneAndUpdate).toHaveBeenCalledWith(
         {
-          owner    : 'testuser',
+          author   : 'testuser',
           folderId : 'abc123',
         },
         expect.objectContaining({
@@ -470,7 +470,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue({ _id: 'folder' });
 
       const folder = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       };
 
@@ -535,7 +535,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
         brewIds  : [],
       };
@@ -556,7 +556,7 @@ describe('Folder model', ()=>{
 
       expect(findOneAndUpdate).toHaveBeenCalledWith(
         {
-          owner    : 'testuser',
+          author   : 'testuser',
           folderId : 'abc123',
         },
         expect.objectContaining({
@@ -578,7 +578,7 @@ describe('Folder model', ()=>{
         .mockResolvedValue({ _id: 'brew' });
 
       const folder = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
       };
 

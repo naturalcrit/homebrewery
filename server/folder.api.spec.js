@@ -33,9 +33,9 @@ describe('Tests for folder api', ()=>{
 
     it('should create a folder', async ()=>{
       const folder = {
-        owner       : 'testuser',
+        author      : 'testuser',
         folderId    : 'abc123',
-        displayName : 'My Folder',
+        title       : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
       };
@@ -45,7 +45,7 @@ describe('Tests for folder api', ()=>{
       const req = {
         account : { username: 'testuser' },
         body    : {
-          displayName : 'My Folder',
+          title       : 'My Folder',
           slug        : 'my-folder',
           isPublished : true,
         },
@@ -54,7 +54,7 @@ describe('Tests for folder api', ()=>{
       await api.createFolderApi(req, res);
 
       expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
-        displayName : 'My Folder',
+        title       : 'My Folder',
         slug        : 'my-folder',
         isPublished : true,
       });
@@ -75,7 +75,7 @@ describe('Tests for folder api', ()=>{
       await api.createFolderApi(req, res);
 
       expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
-        displayName : 'untitled folder',
+        title       : 'untitled folder',
         slug        : undefined,
         isPublished : false,
       });
@@ -89,7 +89,7 @@ describe('Tests for folder api', ()=>{
       const req = {
         account : { username: 'testuser' },
         body    : {
-          displayName : 'Test',
+          title       : 'Test',
           isPublished : false,
         },
       };
@@ -97,7 +97,7 @@ describe('Tests for folder api', ()=>{
       await api.createFolderApi(req, res);
 
       expect(FolderModel.createFolder).toHaveBeenCalledWith('testuser', {
-        displayName : 'Test',
+        title       : 'Test',
         slug        : undefined,
         isPublished : false,
       });
@@ -126,9 +126,9 @@ describe('Tests for folder api', ()=>{
 
     it('should update a folder', async ()=>{
       const folder = {
-        owner       : 'testuser',
+        author      : 'testuser',
         folderId    : 'abc123',
-        displayName : 'Updated Folder',
+        title       : 'Updated Folder',
       };
 
       FolderModel.updateFolder.mockResolvedValue(folder);
@@ -137,7 +137,7 @@ describe('Tests for folder api', ()=>{
         account : { username: 'testuser' },
         params  : { folderId: 'abc123' },
         body    : {
-          displayName : 'Updated Folder',
+          title       : 'Updated Folder',
           slug        : 'updated-folder',
           isPublished : true,
         },
@@ -223,7 +223,7 @@ describe('Tests for folder api', ()=>{
 
     it('should add a brew to a folder', async ()=>{
       const result = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
         brewIds  : ['brew123'],
       };
@@ -287,9 +287,9 @@ describe('Tests for folder api', ()=>{
 
     it('should pass through other results', async ()=>{
       const result = {
-        owner       : 'testuser',
+        author      : 'testuser',
         folderId    : 'abc123',
-        displayName : 'My Folder',
+        title       : 'My Folder',
         slug        : 'my-folder',
         brewIds     : ['existing-brew', 'brew123'],
         isPublished : true,
@@ -321,7 +321,7 @@ describe('Tests for folder api', ()=>{
 
     it('should remove a brew from a folder', async ()=>{
       const result = {
-        owner    : 'testuser',
+        author   : 'testuser',
         folderId : 'abc123',
         brewIds  : [],
       };
