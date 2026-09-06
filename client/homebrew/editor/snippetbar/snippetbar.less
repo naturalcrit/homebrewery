@@ -3,8 +3,10 @@
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	--activeTriggerColor: inherit;
 	--menuColor      : #DDDDDD;
+	--textColor      : black;
+	--hoverMenuColor : #999;
+
 	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
@@ -12,8 +14,8 @@
 	reading-flow     : flex-visual;
 	justify-content  : space-between;
 	height           : auto;
-	color            : black;
-	background-color : #DDDDDD;
+	color            : var(--textColor);
+	background-color : var(--menuColor);
 	font-size        : .65rem;
 	font-family: 'Open Sans', sans-serif;
 	text-transform: uppercase;
@@ -44,7 +46,7 @@
 
 				&.editorTool:not(.active) { cursor : not-allowed; }
 
-				&:hover,&.selected { background-color : #999999; }
+				&:hover,&.selected { background-color : var(--hoverMenuColor) }
 				&.text {
 					.tooltipLeft('Brew Editor');
 				}
@@ -100,11 +102,6 @@
 						position         : relative;
 						background-color : #999999;
 					}
-				}
-				&.divider {
-					width      : 5px;
-					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-					&:hover { background-color : inherit; }
 				}
 			}
 			.themeSelector {
@@ -207,7 +204,7 @@
 			border-radius : 12px;
 		}
 		&:hover {
-			background-color : #999999;
+			background-color : var(--hoverMenuColor);
 		}
 		&:disabled {
 			color: gray;
@@ -233,3 +230,8 @@
 	}
 }
 
+.editor.darkMode .snippetBar {
+	--menuColor      : #666;
+	--textColor      : #eee;
+	--hoverMenuColor : #444;
+}

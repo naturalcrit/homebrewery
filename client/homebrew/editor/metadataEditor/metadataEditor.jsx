@@ -7,7 +7,6 @@ import request from '../../utils/request-middleware.js';
 import Combobox from '@components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
-
 import Themes from '@themes/themes.json';
 import validations from './validations.js';
 
@@ -84,7 +83,6 @@ const MetadataEditor = createReactClass({
 				return `- ${err}`;
 			}).join('\n');
 
-
 			debouncedReportValidity(e.target, errMessage);
 			return false;
 		}
@@ -156,11 +154,11 @@ const MetadataEditor = createReactClass({
 
 	renderPublish : function(){
 		if(this.props.metadata.published){
-			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
+			return <button id='publish-button' className='unpublish' onClick={()=>this.handlePublish(false)}>
 				<i className='fas fa-ban' aria-hidden='true' /> unpublish
 			</button>;
 		} else {
-			return <button className='publish' onClick={()=>this.handlePublish(true)}>
+			return <button id='publish-button' className='publish' onClick={()=>this.handlePublish(true)}>
 				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
@@ -170,9 +168,9 @@ const MetadataEditor = createReactClass({
 		if(!this.props.metadata.editId) return;
 
 		return <div className='field delete'>
-			<label>delete</label>
+			<label htmlFor='delete-button'>delete</label>
 			<div className='value'>
-				<button className='publish' onClick={this.handleDelete}>
+				<button id='delete-button' onClick={this.handleDelete}>
 					<i className='fas fa-trash-alt' /> delete brew
 				</button>
 			</div>
@@ -186,8 +184,8 @@ const MetadataEditor = createReactClass({
 				<label>authors</label>
 				<div className='value'>
 					{authors.length > 0 && (
-						<a href={`/user/${authors[0]}`} className='author-link' target="_blank" title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
-								{authors[0]}{authors.length > 1 && ', '}
+						<a href={`/user/${authors[0]}`} className='author-link' target='_blank' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+							{authors[0]}{authors.length > 1 && ', '}
 						</a>
 					)}
 					{authors.length > 1 && authors.slice(1).map((author, i)=>(
@@ -227,7 +225,6 @@ const MetadataEditor = createReactClass({
 				</ul>
 			</div>
 		);
-
 	},
 
 	renderThemeDropdown : function(){
@@ -264,6 +261,7 @@ const MetadataEditor = createReactClass({
 			dropdown =
 				<div className='value' data-tooltip-top='Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.'>
 					<Combobox trigger='click'
+						id='combobox-themes'
 						className='themes-dropdown'
 						default={currentThemeDisplay}
 						placeholder='Select from below, or enter the Share URL or ID of a brew with the meta:theme tag'
@@ -284,7 +282,7 @@ const MetadataEditor = createReactClass({
 		}
 
 		return <div className='field themes'>
-			<label>theme</label>
+			<label htmlFor='combobox-themes'>theme</label>
 			{dropdown}
 		</div>;
 	},
@@ -303,9 +301,10 @@ const MetadataEditor = createReactClass({
 		};
 
 		return <div className='field language'>
-			<label>language</label>
+			<label htmlFor='combobox-language'>language</label>
 			<div className='value' data-tooltip-right='Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.'>
 				<Combobox trigger='click'
+					id='combobox-language'
 					className='language-dropdown'
 					default={this.props.metadata.lang || ''}
 					placeholder='en'
@@ -359,7 +358,7 @@ const MetadataEditor = createReactClass({
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>
-				<label for='title_field'>title</label>
+				<label htmlFor='title_field'>title</label>
 				<input type='text' id='title_field' className='value'
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
@@ -367,12 +366,12 @@ const MetadataEditor = createReactClass({
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label for='description_field'>description</label>
+						<label htmlFor='description_field'>description</label>
 						<textarea id='description_field' defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
-						<label for='thumbnail_field'>thumbnail</label>
+						<label htmlFor='thumbnail_field'>thumbnail</label>
 						<input type='text'
 							id='thumbnail_field'
 							defaultValue={this.props.metadata.thumbnail}
@@ -380,7 +379,7 @@ const MetadataEditor = createReactClass({
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
 						<button className='display' onClick={this.toggleThumbnailDisplay}
-						        aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
+							aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>
@@ -389,9 +388,10 @@ const MetadataEditor = createReactClass({
 			</div>
 
 			<div className='field tags'>
-				<label>Tags</label>
+				<label htmlFor='combobox-tags'>Tags</label>
 				<div className='value' >
 					<TagInput
+						id='combobox-tags'
 						label='tags'
 						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
 						placeholder='add tag' unique={true}
@@ -401,7 +401,6 @@ const MetadataEditor = createReactClass({
 					/>
 				</div>
 			</div>
-
 
 			{this.renderLanguageDropdown()}
 
@@ -414,9 +413,10 @@ const MetadataEditor = createReactClass({
 			{this.renderAuthors()}
 
 			<div className='field invitedAuthors'>
-				<label>Invited authors</label>
+				<label htmlFor='combobox-invited-authors'>Invited authors</label>
 				<div className='value'>
 					<TagInput
+						id='combobox-invited-authors'
 						label='invited authors'
 						valuePatterns={/.+/}
 						validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
@@ -429,11 +429,10 @@ const MetadataEditor = createReactClass({
 				</div>
 			</div>
 
-
 			<h2>Privacy</h2>
 
 			<div className='field publish'>
-				<label>publish</label>
+				<label htmlFor='publish-button'>publish</label>
 				<div className='value'>
 					{this.renderPublish()}
 					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>

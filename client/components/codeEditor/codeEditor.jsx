@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 405 }] */
+/* eslint max-lines: ["error", { "max": 410 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -88,6 +88,7 @@ const CodeEditor = forwardRef(
 			onChange = ()=>{},
 			onCursorChange = ()=>{},
 			onViewChange = ()=>{},
+			onThemeChange = ()=>{},
 			editorTheme = 'default',
 			style,
 			renderer,
@@ -308,6 +309,9 @@ const CodeEditor = forwardRef(
 			view.dispatch({
 				effects : themeCompartment.reconfigure(themeExtension),
 			});
+
+			const isDark = view.state.facet(EditorView.darkTheme);
+			onThemeChange(isDark);
 		}, [editorTheme, tab]);
 
 		useEffect(()=>{

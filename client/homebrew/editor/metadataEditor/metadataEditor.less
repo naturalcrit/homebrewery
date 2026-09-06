@@ -1,3 +1,4 @@
+@import '@themes/assets/assets.less';
 @import '@sharedStyles/core.less';
 
 .userThemeName {
@@ -6,26 +7,42 @@
 }
 
 .metadataEditor {
-	position         : absolute;
-	box-sizing       : border-box;
-	width            : 100%;
-	height           : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
-	padding          : 25px;
-	overflow-y       : auto;
-	font-size        : 13px;
-	background-color : #999999;
+	--bg-clr                : white;
+	--bg-image              : @backgroundImageAlt;
+	--h1-clr                : black;
+	--h2-clr                : #000077;
+	--label-clr             : black;
+	--input-bg              : white;
+	--input-bg-hover        : #DDDDDD;
+	--input-text-clr        : black;
+	--input-placeholder-clr : grey;
+
+	position                : absolute;
+	box-sizing              : border-box;
+	width                   : 100%;
+	height                  : calc(100vh - 54px); // 54px is the height of the navbar + snippet bar.  probably a better way to dynamic get this.
+	padding                 : 25px;
+	overflow-y              : auto;
+	font-size               : 13px;
+	color                   : var(--label-clr);
+	background-color        : var(--bg-clr);
+	background-image        : var(--bg-image);
+	background-size         : cover;
 
 	h1 {
 		margin         : 0 0 40px;
+		font-size      : 18px;
 		font-weight    : bold;
+		color          : var(--h1-clr);
 		text-transform : uppercase;
 	}
 	
 	h2 {
-		margin        : 20px 0;
+		margin        : 16px 0;
+		font-size     : 15px;
 		font-weight   : bold;
-		color         : #555555;
-		border-bottom : 2px solid gray;
+		color         : var(--h2-clr);
+		border-bottom : 2px solid currentColor;
 	}
 
 	& > div { margin-bottom : 10px; }
@@ -39,7 +56,7 @@
 
 	.field-column {
 		display        : flex;
-		flex           : 5 0 200px;
+		flex           : 5 0 250px;
 		flex-direction : column;
 		gap            : 10px;
 	}
@@ -49,13 +66,15 @@
 		display       : flex;
 		flex-wrap     : wrap;
 		width         : 100%;
-		min-width     : 200px;
+		min-width     : 250px;
+		padding-left  : 10px;
 		& > label {
-			width          : 80px;
-			font-size      : 0.9em;
+			width          : 100px;
+			font-size      : 1em;
 			font-weight    : 800;
 			line-height    : 1.8em;
-			text-transform : uppercase;
+			color          : inherit;
+			text-transform : capitalize;
 		}
 		& > .value {
 			flex           : 1 1 auto;
@@ -70,8 +89,11 @@
 			}
 		}
 		input[type='text'], textarea {
-			border : 1px solid gray;
-			&:focus { outline : 1px solid #444444; }
+			color            : var(--input-text-clr);
+			background-color : var(--input-bg);
+			border           : 1px solid var(--input-placeholder-clr);
+			&:hover, :focus { outline          : 1px solid var(--input-placeholder-clr); background-color : var(--input-bg-hover); }
+			&::placeholder { color : var(--input-placeholder-clr); }
 		}
 		
 		&.description {
@@ -82,7 +104,6 @@
 				resize      : none;
 			}
 		}
-
 		&.thumbnail, &.themes {
 			label { line-height : 2.0em; }
 			.value {
@@ -92,22 +113,30 @@
 			button {
 				.colorButton();
 				padding          : 0px 5px;
-				color            : white;
-				background-color : black;
+				color            : var(--input-text-clr);
+				background-color : var(--input-bg);
 				border           : 1px solid #999999;
 				&:hover { background-color : #777777; }
 			}
 		}
-
 		&.tags .tagInput-dropdown {
 			z-index   : 400;
 			max-width : 200px;
+
+			.dropdown-options {
+				color            : var(--input-text-clr);
+				background-color : var(--input-bg);
+
+				.item:hover {
+					color            : var(--input-bg);
+					background-color : var(--input-text-clr);
+				}
+			}
 		}
 		&.language .value {
 			z-index   : 300;
 			max-width : 150px;
 		}
-
 		&.themes {
 			.value {
 				overflow      : visible;
@@ -137,7 +166,6 @@
 		object-fit       : contain;
 		background-color : #AAAAAA;
 	}
-
 	.renderers.field .value {
 		label {
 			display        : inline-flex;
@@ -167,64 +195,53 @@
 			.colorButton(@silver);
 		}
 	}
-
 	.delete.field .value {
 		button {
 			.colorButton(@red);
 		}
 	}
+
+	.tag {
+		color      : var(--input-bg);
+		background : var(--input-text-clr);
+	}
 	.authors.field {
 		.tag {
-			font-weight:300;
-			transition:background-color 0.2s;
+			font-weight : 300;
+			transition  : background-color 0.2s;
 
 			&.owner {
-				position: relative;
-				background-color:@silverLight;
-				min-width:25px;
-				display:grid;
-				place-items:center;
-				font-weight: 900;
+				position         : relative;
+				display          : grid;
+				place-items      : center;
+				min-width        : 25px;
+				font-weight      : 900;
+				background-color : @silverLight;
 
 				&::after {
-					content: "\f521";
-					font-family: "Font Awesome 6 Free";
-					color:gold;
-					position: absolute;
-					top: 0;
-					left: 0;
-					width:15px;
-					height:15px;
-					rotate:-25deg;
-					translate:-30% -50%;
-					transform: scaleY(0.7);
+					position    : absolute;
+					top         : 0;
+					left        : 0;
+					width       : 15px;
+					height      : 15px;
+					font-family : 'Font Awesome 6 Free';
+					color       : gold;
+					content     : '\f521';
+					transform   : scaleY(0.7);
+					rotate      : -25deg;
+					translate   : -30% -50%;
 				}
 			}
-			&:has(button) a {
-				padding-right:5px;
-			}
-			&:has(button:hover) {
-				background:#d97d7d;
-			}
+			&:has(button) a { padding-right : 5px; }
+			&:has(button:hover) { background : #D97D7D; }
 
-			button {
-				color:@red;
-			}
+			button { color : @red; }
 
-		
 		}
-		a {
-			color:black;
-			text-underline-offset:0.2em;
-		}
+		a { text-underline-offset : 0.2em; }
 	}
-
 	.themes.field {
-		& .dropdown-container {
-			position         : relative;
-			z-index          : 200;
-			background-color : white;
-		}
+		& .dropdown-container { z-index          : 200; }
 		& .dropdown-options { overflow-y : visible; }
 		.disabled {
 			font-style       : italic;
@@ -233,32 +250,34 @@
 		}
 		.item {
 			position          : relative;
-			padding           : 3px 3px;
 			overflow          : visible;
-			background-color  : white;
-			border-top        : 1px solid rgb(118, 118, 118);
+			color             : inherit;
+			background-color  : var(--input-bg);
+			border-top        : 1px solid #767676;
 			.preview {
 				position       : absolute;
 				top            : 0;
 				right          : 0;
-				z-index        : 1;
+				z-index        : 10;
 				display        : flex;
 				flex-direction : column;
 				width          : 200px;
 				overflow       : hidden;
-				color          : black;
-				background     : #CCCCCC;
+				color          : var(--input-text-clr);
+				background     : var(--input-bg);
 				border-radius  : 5px;
-				box-shadow     : 0 0 5px black;
+				box-shadow     : 0 0 5px var(--input-text-clr);
 				opacity        : 0;
 				transition     : opacity 250ms ease;
 				h6 {
 					padding-block  : 0.5em;
 					padding-inline : 1em;
 					font-weight    : 900;
-					border-bottom  : 2px solid hsl(0,0%,40%);
+					border-bottom  : 2px solid #666666;
 				}
 			}
+
+			input { padding-right : 25px; }
 
 			.texture-container {
 				position   : absolute;
@@ -279,15 +298,9 @@
 				}
 			}
 
-			&:hover {
-				color            : white;
-				background-color : @blue;
-				filter           : unset;
-			}
 			&:hover > .preview { opacity : 1; }
 		}
 	}
-
 	.field .list {
 		display   : flex;
 		flex      : 1 0;
@@ -322,13 +335,14 @@
 			padding          : 0.35em;
 			margin           : 2px;
 			font-size        : 0.95em;
-			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 
 			.icon { #groupedIcon; }
 
 			button {
 				cursor : pointer;
+
+				&:hover { color : @redLight; }
 			}
 		}
 
@@ -370,5 +384,30 @@
 				}
 			}
 		}
+	}
+}
+
+.editor.darkMode .metadataEditor {
+	--bg-clr                : #555555;
+	--bg-image              : @backgroundImageAlt;
+	--h1-clr                : white;
+	--h2-clr                : #AAAAFF;
+	--label-clr             : #DDDDDD;
+	--input-bg              : #333333;
+	--input-bg-hover        : #666666;
+	--input-text-clr        : #EEEEEE;
+	--input-placeholder-clr : #AAAAAA;
+
+	--bg-image              : @backgroundImageAltDark;
+
+	a {
+		color : @blueLight;
+
+		&:visited { color : #CB8AD8; }
+	}
+
+	.thumbnail-preview[src='/client/homebrew/thumbnail.png'] { filter : invert(0.8); }
+	button.publish {
+		.colorButton(#3137de) !important;
 	}
 }
