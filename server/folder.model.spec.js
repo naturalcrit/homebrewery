@@ -28,7 +28,7 @@ describe('Folder model', ()=>{
 
       expect(folder.folderId).toHaveLength(12);
       expect(folder.title).toBe('untitled folder');
-      expect(folder.brewIds).toEqual([]);
+      expect(folder.shareIds).toEqual([]);
       expect(folder.subFolderIds).toEqual([]);
       expect(folder.isPublished).toBe(false);
       expect(folder.isPrivate).toBe(false);
@@ -145,7 +145,7 @@ describe('Folder model', ()=>{
       });
 
       expect(select).toHaveBeenCalledWith(
-        'author folderId slug title brewIds subFolderIds isPublished isPrivate',
+        'author folderId slug title shareIds subFolderIds isPublished isPrivate',
       );
 
       expect(result).toBe(folders);
@@ -428,9 +428,9 @@ describe('Folder model', ()=>{
         .mockResolvedValue({ _id: 'folder' });
 
       const folder = {
-        author   : 'testuser',
-        folderId : 'abc123',
-        brewIds  : ['brew123'],
+        author    : 'testuser',
+        folderId  : 'abc123',
+        shareIds  : ['brew123'],
       };
 
       const findOneAndUpdate = jest
@@ -450,7 +450,7 @@ describe('Folder model', ()=>{
         },
         expect.objectContaining({
           $addToSet : {
-            brewIds : 'brew123',
+            shareIds : 'brew123',
           },
           $set : expect.objectContaining({
             updatedAt : expect.any(Date),
@@ -537,7 +537,7 @@ describe('Folder model', ()=>{
       const folder = {
         author   : 'testuser',
         folderId : 'abc123',
-        brewIds  : [],
+        shareIds : [],
       };
 
       const findOneAndUpdate = jest
@@ -561,7 +561,7 @@ describe('Folder model', ()=>{
         },
         expect.objectContaining({
           $pull : {
-            brewIds : 'brew123',
+            shareIds : 'brew123',
           },
           $set : expect.objectContaining({
             updatedAt : expect.any(Date),

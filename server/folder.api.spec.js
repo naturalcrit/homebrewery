@@ -225,7 +225,7 @@ describe('Tests for folder api', ()=>{
       const result = {
         author   : 'testuser',
         folderId : 'abc123',
-        brewIds  : ['brew123'],
+        shareIds : ['brew123'],
       };
 
       FolderModel.addBrewToFolder.mockResolvedValue(result);
@@ -291,7 +291,7 @@ describe('Tests for folder api', ()=>{
         folderId    : 'abc123',
         title       : 'My Folder',
         slug        : 'my-folder',
-        brewIds     : ['existing-brew', 'brew123'],
+        shareIds    : ['existing-brew', 'brew123'],
         isPublished : true,
       };
 
@@ -323,7 +323,7 @@ describe('Tests for folder api', ()=>{
       const result = {
         author   : 'testuser',
         folderId : 'abc123',
-        brewIds  : [],
+        shareIds : [],
       };
 
       FolderModel.removeBrewFromFolder.mockResolvedValue(result);

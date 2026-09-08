@@ -10,7 +10,7 @@ const FolderSchema = mongoose.Schema({
   folderId:     { type: String, required: true, index: true, unique: true, default: () => nanoid(12) },
   slug:         { type: String, required: true, trim: true, },
   title:        { type: String, required: true, trim: true, default: 'untitled folder', },
-  brewIds:      { type: [String], default: [] },
+  shareIds:     { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, required: true, default: false },
   isPrivate:    { type: Boolean, required: true, default: false },
@@ -20,11 +20,13 @@ const FolderSchema = mongoose.Schema({
 
 // Application code validates slug for syntax, and also sibling uniqueness
 
+// Folders reference brew shareIds.
+
 // Folders can contain sub-folders, as a DAG, not a tree
 // subfolderIds contains outgoing edges in the folder DAG
 // Application code prevents self-references and cycles
 
-// No semantics implied by array order of brewIds or subfolderIds.
+// No semantics implied by array order of shareIds or subfolderIds.
 
 // isPublished determines appearance in the User's Published Brews section of their user page
 // isPrivate means non-authors cannot view the folder even if they have the url
@@ -42,7 +44,7 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
 
   return this.find(query)
     .select(
-      'author folderId slug title brewIds subFolderIds isPublished isPrivate'
+      'author folderId slug title shareIds subFolderIds isPublished isPrivate'
     )
     .lean();
 };
@@ -118,7 +120,7 @@ FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId)
   const result = await this.findOneAndUpdate(
     { author, folderId },
     {
-      $addToSet: { brewIds: brewId },
+      $addToSet: { shareIds: brewId },
       $set: { updatedAt: new Date() },
     },
     { new: true },
@@ -137,7 +139,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
   const result = await this.findOneAndUpdate(
     { author, folderId },
     {
-      $pull: { brewIds: brewId },
+      $pull: { shareIds: brewId },
       $set: { updatedAt: new Date() },
     },
     { new: true },
