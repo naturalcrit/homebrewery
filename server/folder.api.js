@@ -4,6 +4,7 @@ import express      from 'express';
 import asyncHandler from 'express-async-handler';
 import dbCheck      from './middleware/dbCheck.js';
 import { model as FolderModel } from './folder.model.js';
+import ErrorIndex   from './errors/errorIndex.js';
 
 const router = express.Router();
 
@@ -31,13 +32,16 @@ const createFolderApi = async (req, res)=>{
     isPublished: req.body.isPublished ?? false,
   });
 
-  if(!folder)
-    throw {
+  if(!folder) {
+   const error = {
       HBErrorCode: 105,
       name: 'FolderCreate Error',
-      message: 'Folder could not be created',
       status: 404,
     };
+    error.message = ErrorIndex()[error.HBErrorCode.toString()];
+
+    throw error;
+  }
 
   res.status(200).send(folder);
 };
