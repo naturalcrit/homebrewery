@@ -93,7 +93,7 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Saturday 9/27/2026 - v3.23.0
+### Monday 9/07/2026 - v3.23.0
 {{taskList
 ##### firstmatekidd (new contributor!)
 * [x] Add nav buttons to tab order for accesibility
@@ -140,7 +140,7 @@ Fixes issue [#4904](https://github.com/naturalcrit/homebrewery/issues/4904)
 * [x] Multiple background fixes and code cleanups
 }}
 
-### Saturday 5/13/2026 - v3.22.1
+### Wednesday 5/13/2026 - v3.22.1
 {{taskList
 ##### Frederlk (new Contributor!)
 * [x] Add "share current page" to {{openSans **SHARE :fas_share_nodes:**}} menu
