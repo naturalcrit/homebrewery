@@ -38,7 +38,7 @@ const createFolderApi = async (req, res)=>{
       name: 'FolderCreate Error',
       status: 404,
     };
-    error.message = ErrorIndex()[error.HBErrorCode.toString()];
+    error.message = ErrorIndex({folderId: 'xyz', folderName: 'abc'})[error.HBErrorCode.toString()];
 
     throw error;
   }
