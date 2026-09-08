@@ -15,7 +15,8 @@ jest.mock('./folder.model.js', ()=>({
 }));
 
 import { model as FolderModel } from './folder.model.js';
-import * as api from './folder.api.js';
+import * as api                 from './folder.api.js';
+import ErrorIndex               from '../client/homebrew/pages/errorPage/errors/errorIndex.js';
 
 describe('Tests for folder api', ()=>{
   let res;

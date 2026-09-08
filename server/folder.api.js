@@ -1,10 +1,10 @@
 // /server/folder.api.js
 
+import { model as FolderModel } from './folder.model.js';
 import express      from 'express';
 import asyncHandler from 'express-async-handler';
 import dbCheck      from './middleware/dbCheck.js';
-import { model as FolderModel } from './folder.model.js';
-import ErrorIndex   from './errors/errorIndex.js';
+import ErrorIndex   from '../client/homebrew/pages/errorPage/errors/errorIndex.js';
 
 const router = express.Router();
 
