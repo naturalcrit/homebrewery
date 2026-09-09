@@ -41,7 +41,6 @@ const neverSaved      = true;
 const HomePage =(props)=>{
 	props = {
 		brew : DEFAULT_BREW,
-		ver  : '0.0.0',
 		...props
 	};
 
