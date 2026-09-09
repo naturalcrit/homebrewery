@@ -181,6 +181,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		if(filterTags?.length == 0) return;
 		return (
 			<div className='tags-container'>
+				Tags: 
 				{_.map(filterTags, (tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
@@ -191,7 +192,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 								updateUrl(filterString, sortType, sortDir, tag);
 							}}>
 							{matches[2]}
-						</span>
+						</span>						
 					);
 				})}
 			</div>
@@ -207,7 +208,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderSortOption('Updated Date', 'updated')}
 				{renderSortOption('Views', 'views')}
 				{/* {renderSortOption('Latest', 'latest')} */}
-				{renderFilterOption()}
 			</div>
 		);
 	};
@@ -290,6 +290,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const renderLayoutModeOptions = ()=>{
 		return (
 			<div className='layout-container'>
+				View:
 				<div className='layout-option' title='grid'>
 					<label>
 						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
@@ -308,16 +309,28 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 						<i className='fas fa-table'></i>
 					</label>
 				</div>
-			</div>
+			</div>			
 		);
 	};
+
+	const renderNav = () =>{
+
+		return (
+			<div className="listPageNav">
+				{renderSortOptions()}
+				{renderFilterOption()}
+				{renderTagsOptions()}
+				{renderLayoutModeOptions()}
+			</div>
+		);
+			
+	} 
 
 	return (
 		<div className='listPage sitePage'>
 			{navItems}
-			{renderSortOptions()}
-			{renderTagsOptions()}
-			{renderLayoutModeOptions()}
+
+			{renderNav()}
 
 			<div className='content V3'>
 				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
