@@ -10,18 +10,20 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from '@navbar/nav.jsx';
-import Navbar                    from '@navbar/navbar.jsx';
-import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '@navbar/account.navitem.jsx';
-import ErrorNavItem              from '@navbar/error-navitem.jsx';
-import HelpNavItem               from '@navbar/help.navitem.jsx';
-import VaultNavItem              from '@navbar/vault.navitem.jsx';
-import PrintNavItem              from '@navbar/print.navitem.jsx';
+import Nav            from '@navbar/nav.jsx';
+import Navbar         from '@navbar/navbar.jsx';
+import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
+import ErrorNavItem   from '@navbar/error-navitem.jsx';
+import HelpNavItem    from '@navbar/help.navitem.jsx';
+import VaultNavItem   from '@navbar/vault.navitem.jsx';
+import PrintNavItem   from '@navbar/print.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
@@ -59,6 +61,23 @@ const HomePage =(props)=>{
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
 	const unsavedChangesRef = useRef(unsavedChanges);
+
+	const {
+		handleBrewChange
+	} = useCommonEditPageFunctions({
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		fetchThemeBundle,
+		hbfm	
+	});
 
 	useEffect(()=>{
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -110,29 +129,6 @@ const HomePage =(props)=>{
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
-	};
-
-	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
-		if(subfield == 'renderer' || subfield == 'theme')
-			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
-
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
-			setHTMLErrors(hbfm.validate(value));
-
-		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
-		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
-
-		if(useLocalStorage) {
-			if(field == 'text')     localStorage.setItem(BREWKEY, value);
-			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
-			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
-			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
-				renderer : value.renderer,
-				theme    : value.theme,
-				lang     : value.lang
-			}));
-		}
 	};
 
 	const renderSaveButton = ()=>{
