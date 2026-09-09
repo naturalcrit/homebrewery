@@ -146,7 +146,7 @@ const printCurrentBrew = async ()=>{
 	}
 };
 
-const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
+const fetchThemeBundle = async (setError = ()=>{}, setThemeBundle = ()=>{}, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
