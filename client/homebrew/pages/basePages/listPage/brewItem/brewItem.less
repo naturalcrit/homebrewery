@@ -125,7 +125,7 @@
 	position: relative;
 	box-sizing: border-box;
 	display: inline-block;
-	width: clamp(400px, 48%, 600px);
+	width: clamp(300px, 48%, 600px);
 	min-height: 125px;
 	padding: 5px 15px 2px 6px;
 	padding-right: 15px;
@@ -133,14 +133,14 @@
 	vertical-align: top;
 	background-color: #cab2802e;
 	background-image: url('https://ik.imagekit.io/5eCleric/background%20note.png');
-	background-size:cover;
+	background-size: cover;
 	border: 1px solid #c9ad6a;
 	border-radius: 5px;
 	box-shadow: 0px 4px 5px 0px #333333;
 	break-inside: avoid;
 	-webkit-column-break-inside: avoid;
 	page-break-inside: avoid;
-	isolation:isolate;
+	isolation: isolate;
 	.thumbnail {
 		position: absolute;
 		top: 0;
@@ -165,8 +165,8 @@
 	.info {
 		position: initial;
 		bottom: 2px;
-		
-		font-size: .9em;
+
+		font-size: 0.9em;
 		& > span {
 			margin-right: 12px;
 			line-height: 1.5em;
@@ -292,8 +292,8 @@
 			white-space: nowrap;
 			font-size: 20px;
 			font-weight: 900;
-			height:100%;
-			min-height:1.4em;
+			height: 100%;
+			min-height: 1.4em;
 			align-content: center;
 			vertical-align: middle;
 		}
@@ -309,21 +309,20 @@
 		grid-template-areas: 'tags authors views pages update storage';
 		justify-content: end;
 		align-content: space-around;
-		align-items:center;
-		    grid-template-columns: 2fr 1.5fr 0.7fr 0.6fr 1.5fr 20px;
+		align-items: center;
+		grid-template-columns: 2fr 1.5fr 0.7fr 0.6fr 1.5fr 20px;
 		br {
 			display: none;
 		}
 		.brewTags {
 			display: inline-block;
 			grid-area: tags;
-			min-width:100px;
+			min-width: 100px;
 		}
 		.brewAuthors {
 			display: inline-block;
 			grid-area: authors;
 			height: fit-content;
-			overflow: hidden;
 			width: 150px;
 			overflow: hidden;
 			text-overflow: ellipsis;
@@ -332,19 +331,19 @@
 			-webkit-box-orient: vertical;
 
 			&:has(a:only-of-type) {
-				width:fit-content;
+				width: fit-content;
 			}
 		}
 
 		.lastViewed {
 			display: inline-block;
 			grid-area: views;
-			min-width:50px;
+			min-width: 50px;
 		}
 		.brewPages {
 			display: inline-block;
 			grid-area: pages;
-			min-width:40px;
+			min-width: 40px;
 		}
 		[title*='Created'] {
 			display: inline-block;
@@ -354,10 +353,6 @@
 			display: inline-block;
 			grid-area: storage;
 			filter: drop-shadow(0 0 10px white);
-		}
-
-		.brewTags {
-			padding-left: 10px;
 		}
 
 		.brewTags:has(span:nth-of-type(4)) {
@@ -440,56 +435,55 @@
 }
 
 .card > .brewItem {
-	background-color:grey;
-	background-image:url('@themes/assets/naturalCritLogoBlack.svg');
-	background-size:60%;
-	background-position:center 20%;
-	background-repeat:no-repeat;
+	background-color: grey;
+	background-image: url('@themes/assets/naturalCritLogoBlack.svg');
+	background-size: 60%;
+	background-position: center 20%;
+	background-repeat: no-repeat;
 	background-blend-mode: soft-light;
-	width:300px;
-	height:400px;
-	border:1px solid;
-	margin:10px;
-	border-radius:10px;
-	padding:10px;
-	padding-top:100px;
+	width: 300px;
+	height: 400px;
+	border: 1px solid;
+	margin: 10px;
+	border-radius: 10px;
+	padding: 10px;
+	padding-top: 100px;
 	padding-bottom: 50px;
-	display:flex;
+	display: flex;
 	flex-direction: column;
 	justify-content: flex-end;
 	isolation: isolate;
-	position:relative;
-	color:white;
+	position: relative;
+	color: white;
 	font-size: 13px;
-	
 
 	&::before {
-		display:block;
-		content:'';
-		height:50%;
-		position:absolute;
-		bottom:0;
-		left:0;
-		right:0;
-		background-image:linear-gradient(0deg, #777f 0 , #7770 90%);
-		z-index:-1;
+		display: block;
+		content: '';
+		height: 50%;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-image: linear-gradient(0deg, #777f 0, #7770 90%);
+		z-index: -1;
 		transition: height 0.2s;
 	}
 
 	&:hover {
 		&::before {
-			height:100%;
-			background-image:linear-gradient(0deg, #777f 0 ,#777f 42%, #7770 55%);
+			height: 100%;
+			background-image: linear-gradient(0deg, #777f 0, #777f 42%, #7770 55%);
 		}
 		.text .description {
-			height:fit-content;
+			height: fit-content;
 		}
 	}
 
 	.thumbnail {
 		position: absolute;
 		top: 0;
-		left:0;
+		left: 0;
 		z-index: -2;
 		width: 100%;
 		height: 100%;
@@ -499,43 +493,43 @@
 	}
 
 	.text {
-		filter:drop-shadow(0 1px 4px black);
+		filter: drop-shadow(0 1px 4px black);
 
 		h2 {
-			font-weight:900;
-			font-size:1.2em;
+			font-weight: 900;
+			font-size: 1.2em;
 		}
 
 		.description {
-			height:0;
-			overflow:hidden;
-			transition:height .2s;
+			height: 0;
+			overflow: hidden;
+			transition: height 0.2s;
 		}
 	}
 
 	.info {
-		filter:drop-shadow(0 1px 2px black);
+		filter: drop-shadow(0 1px 2px black);
 		height: 130px;
-		display:grid;
+		display: grid;
 		grid-template-areas:
-		"tags tags tags"
-		"author author author"
-		"pages views views"
-		"update update storage";
+			'tags tags tags'
+			'authors authors authors'
+			'pages views views'
+			'update update storage';
 
 		.brewTags {
-			color:black;
+			color: black;
 			grid-area: tags;
-		
+
 			i {
-				color:white;
+				color: white;
 			}
 			> span {
-				background:hsl( from currentColor h 20% 80%);
+				background: hsl(from currentColor h 20% 80%);
 			}
 		}
 		.brewAuthors {
-			grid-area: author;
+			grid-area: authors;
 		}
 		.brewPages {
 			grid-area: pages;
@@ -547,57 +541,48 @@
 			grid-area: update;
 		}
 		.storage {
-			grid-area:storage;
+			grid-area: storage;
 		}
-
 	}
 
 	.links {
-		position:absolute;
-		bottom:0;
-		left:0;
-		right:0;
-		height:40px;
-		display:flex;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: 40px;
+		display: flex;
 	}
-
 }
 
-
-@media screen and (max-width: 1400px)  {
-	.brewCollection {
-		background:@yellow;
-	}
-
+@media screen and (max-width: 1400px) {
 	.brewCollection .brewGroup {
 		&.list {
 			.brewItem:not(.detailsOpen) {
 				grid-template-columns: 3fr 2.5fr 1fr;
 				.info {
 					width: clamp(200px, 100%, 650px);
-					grid-template-columns: 2fr 1fr  20px;
+					grid-template-columns: 2fr 1fr 20px;
 					grid-template-areas: 'tags update storage';
 				}
 
-				.brewPages, .lastViewed, .brewAuthors {
-					display:none;
-				}		
+				.brewPages,
+				.lastViewed,
+				.brewAuthors {
+					display: none;
+				}
 			}
 			.brewItem {
-				transition:height 0.2s;
+				transition: height 0.2s;
 			}
 			.detailsOpen {
-				height:70px;
+				height: 70px;
 			}
 		}
 	}
 }
 
-@media screen and (max-width: 1200px)  {
-	.brewCollection {
-		background:@yellow;
-	}
-
+@media screen and (max-width: 1200px) {
 	.brewCollection .brewGroup {
 		&.list {
 			.brewItem:not(.detailsOpen) {
@@ -608,17 +593,126 @@
 					grid-template-areas: 'tags storage';
 				}
 
-				.brewPages, .lastViewed, .brewAuthors, .lastUpdated {
-					display:none;
-				}		
+				.brewPages,
+				.lastViewed,
+				.brewAuthors,
+				.lastUpdated {
+					display: none;
+				}
 			}
 			.detailsOpen {
-				grid-template-columns: 1fr 2fr;
-				.links{
-					display:none;
+				grid-template-columns: 3fr 2fr 1fr;
+
+				.info {
+					width: clamp(200px, 100%, 650px);
+					display: grid;
+					grid-template-columns: 2fr 1fr 1fr;
+					grid-template-rows: 1fr 1fr;
+					grid-template-areas:
+						'tags views pages'
+						'authors update storage';
+				}
+				.lastUpdated {
+					width: 100px;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					word-break: break-all;
 				}
 			}
 		}
 	}
 }
 
+@media screen and (max-width: 800px) {
+	.brewCollection .brewGroup {
+		&.list {
+			.brewItem:not(.detailsOpen) {
+				.info {
+					width: clamp(200px, 100%, 650px);
+					grid-template-columns: 1fr;
+					grid-template-areas: 'tags';
+				}
+
+				.brewPages,
+				.lastViewed,
+				.brewAuthors,
+				.lastUpdated,
+				.storage {
+					display: none;
+				}
+			}
+
+			.brewItem {
+				transition: height 0.2s;
+			}
+			.detailsOpen {
+				height: 100px;
+				padding: 5px;
+				display: grid;
+				grid-template-columns: 3fr 3fr 30px;
+
+				.text {
+					height: 100%;
+					padding: 0;
+
+					h2 {
+						height: fit-content;
+						white-space: wrap;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						display: -webkit-box;
+						-webkit-line-clamp: 3;
+						-webkit-box-orient: vertical;
+					}
+				}
+
+				.info {
+					height: 100%;
+					width: 100%;
+					display: grid;
+					grid-template-columns: 2fr 1fr 1fr 20px;
+					grid-template-areas:
+						'tags pages views views'
+						'authors update update storage';
+				}
+				.links {
+					display: flex;
+					flex-direction: column;
+					gap: 5px;
+					a,
+					button {
+						margin: 0;
+					}
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 650px) {
+	.brewCollection .brewGroup {
+		&.list {
+			.brewItem:not(.detailsOpen) {
+				grid-template-columns: 3fr 1fr;
+				.info {
+					display: none;
+				}
+			}
+			.detailsOpen {
+				grid-template-rows: 1fr 2fr;
+				.info {
+					display: grid;
+
+					.lastUpdated {
+						width: 100px;
+						overflow: hidden;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						word-break: break-all;
+					}
+				}
+			}
+		}
+	}
+}

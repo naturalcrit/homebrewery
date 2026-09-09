@@ -23,7 +23,7 @@ async function start() {
 	const app = await createApp(vite);
 
 	const PORT = process.env.PORT || config.get('web_port') || 3000;
-	app.listen(PORT, ()=>{
+	app.listen(PORT, '0.0.0.0', ()=>{
 		const reset = '\x1b[0m'; // Reset to default style
 		const bright = '\x1b[1m'; // Bright (bold) style
 		const cyan = '\x1b[36m'; // Cyan color
