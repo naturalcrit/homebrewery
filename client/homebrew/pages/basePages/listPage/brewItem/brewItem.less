@@ -125,13 +125,10 @@
 	position: relative;
 	box-sizing: border-box;
 	display: inline-block;
-	width: 48%;
-	min-width:400px;
+	width: clamp(400px, 48%, 600px);
 	min-height: 125px;
 	padding: 5px 15px 2px 6px;
 	padding-right: 15px;
-	margin-right: 15px;
-	margin-bottom: 15px;
 	overflow: hidden;
 	vertical-align: top;
 	background-color: #cab2802e;
@@ -226,9 +223,6 @@
 			opacity: 1;
 		}
 	}
-	&:nth-child(2n) {
-		margin-right: 0px;
-	}
 	.links {
 		.animate(opacity);
 		position: absolute;
@@ -276,7 +270,7 @@
 	min-height: unset;
 	width: 100%;
 	display: grid;
-	grid-template-columns: 2fr 2fr 1fr;
+	grid-template-columns: 2fr 3fr 1fr;
 	align-items: center;
 	color: rgb(2, 2, 2);
 	background: #efefef;
@@ -309,29 +303,26 @@
 		}
 	}
 
-	hr {
-		display: none;
-	}
-
 	.info {
-		width: 100%;
+		width: clamp(400px, 100%, 650px);
 		display: grid;
 		grid-template-areas: 'tags authors views pages update storage';
 		justify-content: end;
 		align-content: space-around;
 		align-items:center;
-		grid-template-columns: 200px 150px 70px 60px 150px 20px;
+		    grid-template-columns: 2fr 1.5fr 0.7fr 0.6fr 1.5fr 20px;
 		br {
 			display: none;
 		}
 		.brewTags {
 			display: inline-block;
 			grid-area: tags;
+			min-width:100px;
 		}
-		[title*='Authors:'] {
+		.brewAuthors {
 			display: inline-block;
 			grid-area: authors;
-			height: 40px;
+			height: fit-content;
 			overflow: hidden;
 			width: 150px;
 			overflow: hidden;
@@ -339,14 +330,21 @@
 			display: -webkit-box;
 			-webkit-line-clamp: 3;
 			-webkit-box-orient: vertical;
+
+			&:has(a:only-of-type) {
+				width:fit-content;
+			}
 		}
-		[title*='Last'] {
+
+		.lastViewed {
 			display: inline-block;
 			grid-area: views;
+			min-width:50px;
 		}
-		[title*='Page'] {
+		.brewPages {
 			display: inline-block;
 			grid-area: pages;
+			min-width:40px;
 		}
 		[title*='Created'] {
 			display: inline-block;
@@ -564,3 +562,63 @@
 	}
 
 }
+
+
+@media screen and (max-width: 1400px)  {
+	.brewCollection {
+		background:@yellow;
+	}
+
+	.brewCollection .brewGroup {
+		&.list {
+			.brewItem:not(.detailsOpen) {
+				grid-template-columns: 3fr 2.5fr 1fr;
+				.info {
+					width: clamp(200px, 100%, 650px);
+					grid-template-columns: 2fr 1fr  20px;
+					grid-template-areas: 'tags update storage';
+				}
+
+				.brewPages, .lastViewed, .brewAuthors {
+					display:none;
+				}		
+			}
+			.brewItem {
+				transition:height 0.2s;
+			}
+			.detailsOpen {
+				height:70px;
+			}
+		}
+	}
+}
+
+@media screen and (max-width: 1200px)  {
+	.brewCollection {
+		background:@yellow;
+	}
+
+	.brewCollection .brewGroup {
+		&.list {
+			.brewItem:not(.detailsOpen) {
+				grid-template-columns: 3fr 2fr 1fr;
+				.info {
+					width: clamp(200px, 100%, 650px);
+					grid-template-columns: 1fr 20px;
+					grid-template-areas: 'tags storage';
+				}
+
+				.brewPages, .lastViewed, .brewAuthors, .lastUpdated {
+					display:none;
+				}		
+			}
+			.detailsOpen {
+				grid-template-columns: 1fr 2fr;
+				.links{
+					display:none;
+				}
+			}
+		}
+	}
+}
+

@@ -1,5 +1,5 @@
 import './brewItem.less';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import moment from 'moment';
 import request from '../../../../utils/request-middleware.js';
 
@@ -18,6 +18,8 @@ const BrewItem = ({
 	reportError = ()=>{},
 	renderStorage = true,
 })=>{
+
+	const [detailsOpen, setDetailsOpen] = useState(false);
 
 	const deleteBrew = useCallback(()=>{
 		if(brew.authors.length <= 1) {
@@ -117,7 +119,7 @@ const BrewItem = ({
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 	return (
-		<div className='brewItem'>
+		<div className={`brewItem${detailsOpen ? ' detailsOpen' : ''}`} onClick={() => setDetailsOpen(!detailsOpen)} >
 			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
 				<h2>{brew.title}</h2>
@@ -160,7 +162,7 @@ const BrewItem = ({
 					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
                         Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
 				>
-					<span aria-hidden='true'><i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}</span>
+					<i className='fas fa-sync-alt' /><span aria-hidden='true'> {moment(brew.updatedAt).fromNow()}</span>
 				</span>
 				{renderStorageIcon()}
 			</div>

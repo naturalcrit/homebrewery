@@ -21,7 +21,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
-	const [layoutMode, setLayoutMode] = useState(null);
+	const [layoutMode, setLayoutMode] = useState(DEFAULT_LAYOUT_MODE);
 
 	const groupVisibilityRef = useRef(groupVisibility);
 	const sortTypeRef = useRef(sortType);
@@ -52,7 +52,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			return visibility;
 		}, {});
 
-		const newLayoutMode = layoutMode ?? (localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE);
+		const newLayoutMode = localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE;
 
 		setGroupVisibility(namedBrewCollection);
 		setSortType(newSortType);
@@ -70,7 +70,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		});
 		localStorage.setItem(USERPAGE_SORT_TYPE, sortTypeRef.current);
 		localStorage.setItem(USERPAGE_SORT_DIR, sortDirRef.current);
-		localStorage.setItem(USERPAGE_LAYOUT_MODE, layoutMode);
 	};
 
 	const renderBrews = (brews)=>{
@@ -284,6 +283,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const handleLayoutChange = (e, mode)=>{
 		setLayoutMode(e.target.checked ? mode : 'grid');
+		localStorage.setItem(USERPAGE_LAYOUT_MODE, e.target.checked ? mode : 'grid');
 		return;
 	};
 
