@@ -12,38 +12,38 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	if(themeBundleSnippets) {
 		for (const themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
-				const userSnippets = {
-						snippet : [],
-						style :[]
+				const themeSnippets = {
+					snippet : [],
+					style   : []
 				};
-				const snipSplit = userBrewSnippets.trim().split(textSplit).slice(1);
+				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
 				for (let snips = 0; snips < snipSplit.length; snips+=3) {
 					if((!snipSplit[snips].startsWith('\\snippet ')) && (!snipSplit[snips].startsWith('\\style '))) break;
 					const snipStyleLabel = titleSplit.exec(snipSplit[snips]);
 					if(!['style', 'snippet'].includes(snipStyleLabel[2])) break;
 					const snippetName = snipStyleLabel[3].trim();
 					if(snippetName.length != 0) {
-						userSnippets.push({
+						themeSnippets[snipStyleLabel[2]].push({
 							name : snippetName,
 							icon : '',
 							gen  : snipSplit[snips + 2].replace(/\n$/, ''),
 						});
 					}
 				}
-				if(userSnippets.snippet.length > 0) {
+				if(themeSnippets.snippet.length > 0) {
 					mpAsSnippets.push({
 						name        : themes.name,
 						icon        : '',
 						gen         : '',
-						subsnippets : userSnippets.snippet
+						subsnippets : themeSnippets.snippet
 					});
 				}
-				if(userSnippets.style.length > 0) {
-					mpAsSnippets.push({
+				if(themeSnippets.style.length > 0) {
+					mpAsStyles.push({
 						name        : themes.name,
 						icon        : '',
 						gen         : '',
-						subsnippets : userSnippets.style
+						subsnippets : themeSnippets.style
 					});
 				}
 			}
@@ -52,8 +52,8 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	// Local Snippets
 	if(userBrewSnippets) {
 		const userSnippets = {
-				snippet : [],
-				style :[]
+			snippet : [],
+			style :[]
 		};
 		const snipSplit = userBrewSnippets.trim().split(textSplit).slice(1);
 		for (let snips = 0; snips < snipSplit.length; snips+=3) {
@@ -86,11 +86,11 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	}
 
 	const returnObj = {
-		snippets :  {
-			snippets: mpAsSnippets,
+		snippets : {
+			snippets : mpAsSnippets,
 		},
-		styles :   {
-			snippets: mpAsStyles
+		styles : {
+			snippets : mpAsStyles
 		}
 	};
 
@@ -111,7 +111,6 @@ const yamlSnippetsToText = (yamlObj)=>{
 
 	let snippetsText = '';
 
-	console.log(yamlObj);
 	if(!yamlObj?.snippets) {
 		for (const snippet of yamlObj) {
 			for (const subSnippet of snippet.subsnippets) {
@@ -122,12 +121,12 @@ const yamlSnippetsToText = (yamlObj)=>{
 		return snippetsText;
 	}
 
-	for (const snippet of yamlObj.snippets) {
+	for (const snippet of yamlObj.snippets.snippets) {
 		for (const subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
 	}
-	for (const snippet of yamlObj.styles) {
+	for (const snippet of yamlObj.styles.snippets) {
 		for (const subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\style ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
