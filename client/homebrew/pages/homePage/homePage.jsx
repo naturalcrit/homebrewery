@@ -65,6 +65,7 @@ const HomePage =(props)=>{
 
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const warnUnsavedTimeout = useRef(null);
 	const unsavedChangesRef = useRef(unsavedChanges);
 
 	const {

@@ -65,7 +65,7 @@ const NewPage = (props)=>{
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
-	// const warnUnsavedTimeout = useRef(null);
+	const warnUnsavedTimeout = useRef(null);
 	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
