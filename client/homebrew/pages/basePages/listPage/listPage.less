@@ -1,32 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 @import '@sharedStyles/colors.less';
 
-.noColumns() {
-	-webkit-column-width : auto;
-	-moz-column-width    : auto;
-	column-width         : auto;
-	-webkit-column-count : auto;
-	-moz-column-count    : auto;
-	column-count         : auto;
-	column-fill          : auto;
-	-webkit-column-gap   : normal;
-	-moz-column-gap      : normal;
-	column-gap           : normal;
-	height               : auto;
-	min-height           : 279.4mm;
-	margin               : 20px auto;
-	contain              : unset;
-}
 .listPage {
 	.content {
-		z-index        : 1;
-		padding-block  : clamp(20px, 5vh, 200px);
-		padding-inline : clamp(20px, 20vw, 200px);
+		padding: clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
 
 		.noBrews {
 			margin     : 10px 0px;
 			font-size  : 1.3em;
 			font-style : italic;
+			color:white;
+			font-weight:900;
 		}
 		.brewCollection {
 			h1 {
@@ -101,10 +85,10 @@
 		height          : fit-content;
 		font-family     : 'Open Sans', sans-serif;
 		color           : white;
-		background      : #555555;
-		border-top      : 1px solid #666666;
-		border-bottom   : 1px solid #666666;
-		row-rule        : 1px solid #666666;
+		background      : #555;
+		border-top      : 1px solid #666;
+		border-bottom   : 1px solid #666;
+		row-rule        : 1px solid #666;
 
 		> div {
 			width          : fit-content;
