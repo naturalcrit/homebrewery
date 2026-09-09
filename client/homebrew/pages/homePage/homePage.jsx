@@ -33,7 +33,7 @@ import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
 const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 90000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
@@ -160,8 +160,8 @@ const HomePage =(props)=>{
 			resetWarnUnsavedTimer();
 			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? 'for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? 'for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
+				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
+				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 						Reminder...
