@@ -60,6 +60,7 @@ const HomePage =(props)=>{
 	const [themeBundle, setThemeBundle]                = useState({});
 	const [unsavedChanges, setUnsavedChanges]             = useState(false);
 	const [isSaving, setIsSaving]                   = useState(false);
+	const [lastSavedTime, setLastSavedTime] = useState(new Date());
 	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 

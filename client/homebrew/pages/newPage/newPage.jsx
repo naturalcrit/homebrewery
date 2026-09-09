@@ -51,6 +51,7 @@ const NewPage = (props)=>{
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
 	const [isSaving, setIsSaving] = useState(false);
+	const [lastSavedTime, setLastSavedTime] = useState(new Date());
 	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError] = useState(null);
 	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
