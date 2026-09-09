@@ -28,15 +28,20 @@ import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
+const SAVE_TIMEOUT = 10000;
+const UNSAVED_WARNING_TIMEOUT = 90000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
-const METAKEY  = 'HB_newPage_metadata';
 const SNIPKEY  = 'HB_newPage_snippets';
+const METAKEY  = 'HB_newPage_meta';
+
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
 const useLocalStorage = true;
-const neverSaved      = true;
+const sandbox         = true;
 
 const NewPage = (props)=>{
 	props = {
@@ -55,6 +60,7 @@ const NewPage = (props)=>{
 	const [themeBundle, setThemeBundle] = useState({});
 	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
+	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
@@ -62,6 +68,10 @@ const NewPage = (props)=>{
 	// const warnUnsavedTimeout = useRef(null);
 	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
+
+	useEffect(()=>{
+		loadBrew();
+	}, []);
 
 	const {
 		handleBrewChange
@@ -81,7 +91,11 @@ const NewPage = (props)=>{
 	});
 
 	useEffect(()=>{
-		loadBrew();
+		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+
+		setAutoSaveEnabled(autoSavePref);
+		setWarnUnsavedChanges(!autoSavePref);
+		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		const handleControlKeys = (e)=>{
@@ -95,9 +109,14 @@ const NewPage = (props)=>{
 		};
 
 		document.addEventListener('keydown', handleControlKeys);
+		window.onbeforeunload = ()=>{
+			if(unsavedChangesRef.current)
+				return 'You have unsaved changes!';
+		};
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.onbeforeunload = null;
 		};
 	}, []);
 
@@ -146,6 +165,12 @@ const NewPage = (props)=>{
 		editorRef.current.update();
 	};
 
+	const resetWarnUnsavedTimer = ()=>{
+		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		clearTimeout(warnUnsavedTimeout.current);
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
+	};
+
 	const trySave = async ()=>{
   	setIsSaving(true);
 
@@ -180,18 +205,18 @@ const NewPage = (props)=>{
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		// if(unsavedChanges && warnUnsavedChanges) {
-		// 	resetWarnUnsavedTimer();
-		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-		// 	const text = elapsedTime === 0
-		// 		? 'Autosave is OFF.'
-		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+		if(unsavedChanges && warnUnsavedChanges) {
+			resetWarnUnsavedTimer();
+			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+			const text = elapsedTime === 0
+				? `Autosave is OFF${sandbox ?? 'for this sandbox page'}.`
+				: `Autosave is OFF${sandbox ?? 'for this sandbox page'}, and you haven't saved for ${elapsedTime} minutes.`;
 
-		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-		// 					Reminder...
-		// 		<div className='errorContainer'>{text}</div>
-		// 	</Nav.item>;
-		// }
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+						Reminder...
+						<div className='errorContainer'>{text}</div>
+			</Nav.item>;
+		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
@@ -201,8 +226,8 @@ const NewPage = (props)=>{
 		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved</Nav.item>;
 
-		// #5 - No unsaved changes, and has never been saved, hide the button
-		if(neverSaved)
+		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
+		if(sandbox)
 			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED

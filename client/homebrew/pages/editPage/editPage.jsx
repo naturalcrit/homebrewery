@@ -40,7 +40,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 import googleDriveIcon from '../../googleDrive.svg';
 
 const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_TIMEOUT = 90000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
@@ -50,7 +50,7 @@ const SNIPKEY  = 'HB_newPage_snippets';
 const METAKEY  = 'HB_newPage_meta';
 
 const useLocalStorage = false;
-const neverSaved	  = false;
+const sandbox	      = false;
 
 const EditPage = (props)=>{
 	props = {
@@ -101,7 +101,8 @@ const EditPage = (props)=>{
 	});
 
 	useEffect(()=>{
-		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(hbfm.validate(currentBrew.text));
@@ -122,6 +123,7 @@ const EditPage = (props)=>{
 			if(unsavedChangesRef.current)
 				return 'You have unsaved changes!';
 		};
+
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 			window.onbeforeunload = null;
@@ -313,12 +315,12 @@ const EditPage = (props)=>{
 			resetWarnUnsavedTimer();
 			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
-				? 'Autosave is OFF.'
-				: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+				? `Autosave is OFF${sandbox ?? 'for this sandbox page'}.`
+				: `Autosave is OFF${sandbox ?? 'for this sandbox page'}, and you haven't saved for ${elapsedTime} minutes.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-							Reminder...
-				<div className='errorContainer'>{text}</div>
+						Reminder...
+						<div className='errorContainer'>{text}</div>
 			</Nav.item>;
 		}
 
@@ -330,9 +332,9 @@ const EditPage = (props)=>{
 		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved</Nav.item>;
 
-		// #5 - No unsaved changes, and has never been saved, hide the button
-		if(neverSaved)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
+		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
+		if(sandbox)
+			return <Nav.item className='save sandbox' disabled={true}>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
 		return <Nav.item className='save saved'>saved</Nav.item>;
