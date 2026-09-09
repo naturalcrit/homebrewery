@@ -315,8 +315,8 @@ const EditPage = (props)=>{
 			resetWarnUnsavedTimer();
 			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
 			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ?? 'for this sandbox page'}.`
-				: `Autosave is OFF${sandbox ?? 'for this sandbox page'}, and you haven't saved for ${elapsedTime} minutes.`;
+				? `Autosave is OFF${sandbox ? 'for this sandbox page' : ''}.`
+				: `Autosave is OFF${sandbox ? 'for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 						Reminder...
