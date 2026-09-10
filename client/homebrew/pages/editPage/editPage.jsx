@@ -161,7 +161,7 @@ const EditPage = (props)=>{
 
 	const handleGoogleClick = ()=>{
 		if(global.account !== currentBrew.authors[0]) {
-			setalertOwnershipToTransfer(true);
+			setAlertOwnershipToTransfer(true);
 			return;
 		}
 		if(!global.account?.googleId) {
@@ -178,7 +178,7 @@ const EditPage = (props)=>{
 		setAlertTrashedGoogleBrew(false);
 		setAlertNoGoogleToTransfer(false);
 		setConfirmGoogleTransfer(false);
-		setalertOwnershipToTransfer(false);
+		setAlertOwnershipToTransfer(false);
 	};
 
 	const toggleGoogleStorage = (e)=>{
