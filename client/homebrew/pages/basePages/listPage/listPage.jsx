@@ -294,13 +294,13 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				<div className='layout-option' title='grid'>
 					<label>
 						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
-						<i className='fas fa-grip'></i>
+						<i className='fas fa-grip-vertical'></i>
 					</label>
 				</div>
 				<div className='layout-option' title='list'>
 					<label>
 						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
-						<i className='fas fa-grip'></i>
+						<i className='fas fa-list'></i>
 					</label>
 				</div>
 				<div className='layout-option' title='card'>
