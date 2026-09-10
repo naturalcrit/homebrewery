@@ -167,6 +167,7 @@ const NewPage = (props)=>{
 		localStorage.removeItem(BREWKEY);
 		localStorage.removeItem(STYLEKEY);
 		localStorage.removeItem(METAKEY);
+		window.onbeforeunload = null;
 		window.location = `/edit/${savedBrew.editId}`;
 	};
 
