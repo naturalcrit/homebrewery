@@ -160,7 +160,7 @@ const EditPage = (props)=>{
 	};
 
 	const handleGoogleClick = ()=>{
-		if(global.account !== currentBrew.authors[0]) {
+		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
 			setAlertOwnershipToTransfer(true);
 			return;
 		}
@@ -264,12 +264,11 @@ const EditPage = (props)=>{
 		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
 			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
 
-
-
 			{alertOwnershipToTransfer && (
 				<div className='errorContainer'>
-					You must be the Owner to transfer between the Homebrewery and Google Drive!
-					The owner of this file is {currentBrew.authors[0]}
+					You must be the Owner to transfer between the Homebrewery and Google Drive! 
+					The owner of this file is {currentBrew.authors[0]}.
+					<br></br>
 					<div className='confirm' onClick={closeAlerts}> Okay </div>
 				</div>
 			)}
