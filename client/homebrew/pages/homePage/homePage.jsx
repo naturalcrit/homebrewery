@@ -10,18 +10,20 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
-import Nav                       from '@navbar/nav.jsx';
-import Navbar                    from '@navbar/navbar.jsx';
-import NewBrewItem               from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem            from '@navbar/account.navitem.jsx';
-import ErrorNavItem              from '@navbar/error-navitem.jsx';
-import HelpNavItem               from '@navbar/help.navitem.jsx';
-import VaultNavItem              from '@navbar/vault.navitem.jsx';
-import PrintNavItem              from '@navbar/print.navitem.jsx';
+import Nav            from '@navbar/nav.jsx';
+import Navbar         from '@navbar/navbar.jsx';
+import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
+import ErrorNavItem   from '@navbar/error-navitem.jsx';
+import HelpNavItem    from '@navbar/help.navitem.jsx';
+import VaultNavItem   from '@navbar/vault.navitem.jsx';
+import PrintNavItem   from '@navbar/print.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
@@ -30,18 +32,22 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
-const BREWKEY  = 'homebrewery-new';
-const STYLEKEY = 'homebrewery-new-style';
-const SNIPKEY  = 'homebrewery-new-snippets';
-const METAKEY  = 'homebrewery-new-meta';
+const SAVE_TIMEOUT = 10000;
+const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
+
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+const BREWKEY  = 'HB_newPage_content';
+const STYLEKEY = 'HB_newPage_style';
+const SNIPKEY  = 'HB_newPage_snippets';
+const METAKEY  = 'HB_newPage_meta';
 
 const useLocalStorage = false;
-const neverSaved      = true;
+const sandbox         = true;
 
 const HomePage =(props)=>{
 	props = {
 		brew : DEFAULT_BREW,
-		ver  : '0.0.0',
 		...props
 	};
 
@@ -54,13 +60,38 @@ const HomePage =(props)=>{
 	const [themeBundle, setThemeBundle]                = useState({});
 	const [unsavedChanges, setUnsavedChanges]             = useState(false);
 	const [isSaving, setIsSaving]                   = useState(false);
-	const [autoSaveEnabled, setAutoSaveEnable]             = useState(false);
+	const [lastSavedTime, setLastSavedTime] = useState(new Date());
+	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
+	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const warnUnsavedTimeout = useRef(null);
 	const unsavedChangesRef = useRef(unsavedChanges);
 
+	const {
+		handleBrewChange
+	} = useCommonEditPageFunctions({
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		fetchThemeBundle,
+		hbfm	
+	});
+
 	useEffect(()=>{
+		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+
+		setAutoSaveEnabled(autoSavePref);
+		setWarnUnsavedChanges(!autoSavePref);
+		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		const handleControlKeys = (e)=>{
@@ -78,6 +109,7 @@ const HomePage =(props)=>{
 			if(unsavedChangesRef.current)
 				return 'You have unsaved changes!';
 		};
+
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 			window.onbeforeunload = null;
@@ -112,27 +144,10 @@ const HomePage =(props)=>{
 		editorRef.current.update();
 	};
 
-	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
-		if(subfield == 'renderer' || subfield == 'theme')
-			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
-
-		//If there are HTML errors, run the validator on every change to give quick feedback
-		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
-			setHTMLErrors(hbfm.validate(value));
-
-		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
-		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
-
-		if(useLocalStorage) {
-			if(field == 'text')     localStorage.setItem(BREWKEY, value);
-			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
-			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
-			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
-				renderer : value.renderer,
-				theme    : value.theme,
-				lang     : value.lang
-			}));
-		}
+	const resetWarnUnsavedTimer = ()=>{
+		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		clearTimeout(warnUnsavedTimeout.current);
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
 	};
 
 	const renderSaveButton = ()=>{
@@ -141,18 +156,18 @@ const HomePage =(props)=>{
 			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
 
 		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		// if(unsavedChanges && warnUnsavedChanges) {
-		// 	resetWarnUnsavedTimer();
-		// 	const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-		// 	const text = elapsedTime === 0
-		// 		? 'Autosave is OFF.'
-		// 		: `Autosave is OFF, and you haven't saved for ${elapsedTime} minutes.`;
+		if(unsavedChanges && warnUnsavedChanges) {
+			resetWarnUnsavedTimer();
+			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+			const text = elapsedTime === 0
+				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
+				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
 
-		// 	return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-		// 					Reminder...
-		// 		<div className='errorContainer'>{text}</div>
-		// 	</Nav.item>;
-		// }
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+						Reminder...
+						<div className='errorContainer'>{text}</div>
+			</Nav.item>;
+		}
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
@@ -162,8 +177,8 @@ const HomePage =(props)=>{
 		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved</Nav.item>;
 
-		// #5 - No unsaved changes, and has never been saved, hide the button
-		if(neverSaved)
+		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
+		if(sandbox)
 			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
 
 		// DEFAULT - No unsaved changes, show SAVED
