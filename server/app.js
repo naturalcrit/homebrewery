@@ -17,13 +17,15 @@ import fs      from 'fs-extra';
 
 import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+import folderApi                   from './folder.api.js';
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import GoogleActions               from './googleActions.js';
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import sanitizeFilename            from 'sanitize-filename';
 import asyncHandler                from 'express-async-handler';
-import { model as HomebrewModel }   from './homebrew.model.js';
+import { model as HomebrewModel }  from './homebrew.model.js';
+import { model as FolderModel }    from './folder.model.js';
 
 import { DEFAULT_BREW }              from './brewDefaults.js';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
@@ -113,6 +115,7 @@ export default async function createApp(vite) {
 	});
 
 	app.use(homebrewApi);
+	app.use(folderApi);
 	app.use(adminApi(vite));
 	app.use(vaultApi);
 
@@ -309,9 +312,9 @@ export default async function createApp(vite) {
 		];
 
 		let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
-	.catch((err)=>{
-		console.log(err);
-	});
+		.catch((err)=>{
+			console.log(err);
+		});
 
 		brews.forEach((brew)=>brew.stubbed = true); //All brews from MongoDB are "stubbed"
 
@@ -348,6 +351,13 @@ export default async function createApp(vite) {
 			brew.description = brew.description?.trim();
 			return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 		});
+
+		let folders = await FolderModel.getByUser(req.params.username, ownAccount)
+			.catch((err) => {
+				console.log(err);
+			});
+
+		req.folders = folders;
 
 		return next();
 	});
@@ -568,6 +578,7 @@ export default async function createApp(vite) {
 			url         : req.customUrl || req.originalUrl,
 			brew        : req.brew,
 			brews       : req.brews,
+			folders     : req.folders,
 			googleBrews : req.googleBrews,
 			account     : req.account,
 			config      : configuration,
