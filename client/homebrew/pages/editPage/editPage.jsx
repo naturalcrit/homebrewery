@@ -101,36 +101,6 @@ const EditPage = (props)=>{
 	});
 
 	useEffect(()=>{
-		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
-
-		setAutoSaveEnabled(autoSavePref);
-		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(hbfm.validate(currentBrew.text));
-		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
-
-		const handleControlKeys = (e)=>{
-			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true, true, saveGoogle);
-			if(e.keyCode === 80) printCurrentBrew();
-			if([83, 80].includes(e.keyCode)) {
-				e.stopPropagation();
-				e.preventDefault();
-			}
-		};
-
-		document.addEventListener('keydown', handleControlKeys);
-		window.onbeforeunload = ()=>{
-			if(unsavedChangesRef.current)
-				return 'You have unsaved changes!';
-		};
-
-		return ()=>{
-			document.removeEventListener('keydown', handleControlKeys);
-			window.onbeforeunload = null;
-		};
-	}, []);
-
-	useEffect(()=>{
 		trySaveRef.current = trySave;
 		unsavedChangesRef.current = unsavedChanges;
 	});
