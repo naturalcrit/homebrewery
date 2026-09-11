@@ -122,7 +122,7 @@ const BrewItem = ({
 		<div className={`brewItem${detailsOpen ? ' detailsOpen' : ''}`} onClick={() => setDetailsOpen(!detailsOpen)} >
 			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
-				<h2>{brew.title}</h2>
+				<h2 title={brew.title}>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
 			</div>
 			<div className='info'>
