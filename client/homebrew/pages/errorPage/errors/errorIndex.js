@@ -12,11 +12,12 @@ const authorLinks = (authors = []) =>
 		.map((author) => `[${escape(author)}](/user/${encodeURIComponent(author)})`)
 		.join(', ');
 
-//NOTE: errorCode is a string, not a number
-//			01-51 : Brew errors
-//			52-99 : Other pages errors
 
 const errorIndex = (errorCode, props = {})=>{
+	//NOTE: errorCode is a string, not a number, and switch() uses strict equality ===
+	//			01-51 : Brew errors
+	//			52-99 : Other pages errors
+
 	switch(errorCode) {
 
 		// Default catch all
@@ -44,6 +45,9 @@ const errorIndex = (errorCode, props = {})=>{
 				- If this was the source of the issue, it should now be resolved.
 
 				If following these steps does not resolve the issue, please let us know!`;
+
+
+		// ####### Brew Page Errors ...
 
 		// Google Drive - 404 : brew deleted or access denied
 		case '02':
@@ -249,11 +253,14 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Brew Authors:**	 ${authorLinks(props.brew?.authors) || 'Unable to list authors'}`;
 
+
 		//####### Admin page error #######
+
 		case '52':
 			return dedent`
 				## Access Denied
 				You need to provide correct administrator credentials to access this page.`;
+
 
 		// ####### Lock Errors
 		case '60':
@@ -298,6 +305,7 @@ const errorIndex = (errorCode, props = {})=>{
 		case '73':
 			return dedent`Lock Remove Review Error: Brew not found`;
 
+
 		// ####### Other Errors
 
 		case '90':
@@ -306,6 +314,9 @@ const errorIndex = (errorCode, props = {})=>{
 
 		case '91':
 			return dedent`An unexpected error occurred while trying to get the total of brews.`;
+
+
+		// ####### Default unknown error
 
 		default:
 			return dedent`## An unknown error occurred!`;
