@@ -2,6 +2,33 @@
 
 import errorIndex, { escape, authorLinks } from './errorIndex.js';
 
+
+// helpers..
+const codeStrings = (from, to, width = String(to).length) => {
+  const values = [];
+  for (let i = Number(from); i <= Number(to); i++) {
+    values.push(String(i).padStart(width, '0'));
+  }
+  return values;
+};
+
+const assertErrorMessages = (errorCodes, props = {}) => {
+  const defaultResult = errorIndex('NO_SUCH_ERROR');
+  errorCodes.forEach((errorCode) => {
+    let result;
+
+    expect(() => {
+      result = errorIndex(errorCode, props);
+    }).not.toThrow();
+
+    expect(typeof result).toBe('string');
+    expect(result).not.toBe(defaultResult);
+    expect(result.length).toBeGreaterThan(0);
+  });
+};
+
+
+// tests..
 describe('errorIndex', () => {
 
   describe('static messages', () => {
@@ -91,12 +118,8 @@ describe('errorIndex', () => {
     it('returns the switch default for an unknown error code', () => {
       const result = errorIndex('NO_SUCH_CODE');
 
-      expect(result).toBe(
-        errorIndex('NO_SUCH_CODE')
-      );
-      expect(result).not.toBe(
-        errorIndex('00')
-      );
+      expect(errorIndex('NO_SUCH_CODE')).toBe(result);
+      expect(errorIndex('00')).not.toBe(result);
     });
 
     it.each([
@@ -109,6 +132,12 @@ describe('errorIndex', () => {
       expect(errorIndex(errorCode)).toBe(
         errorIndex('NO_SUCH_CODE')
       );
+    });
+
+    it('escapes an unexpected error code in the default message', () => {
+      const result = errorIndex('<script>');
+      expect(result).toContain('&#60;script&#62;');
+      expect(result).not.toContain('<script>');
     });
 
   });
@@ -143,10 +172,48 @@ describe('errorIndex', () => {
   });
 
 
-  describe('common typo', () => {
+  describe('defined error codes', () => {
 
-    it('throws if errorIndex is called with the wrong capitalization', () => {
-      expect(() => ErrorIndex('01')).toThrow(ReferenceError);
+    it('returns usable messages for all defined error codes', () => {
+      // generic errors});
+      let errorCodes = [ '00', '01', '02' ];
+      assertErrorMessages(errorCodes);
+
+      // brew errors
+      errorCodes = codeStrings('03', '51');
+      const brewProps = {
+        brew: {
+          authors: [ 'Alice Smith', 'Bob Jones' ],
+          account: 'Alice Smith',
+          brewTitle: 'Test Brew',
+          shareId: 'test-share-id',
+          accessType: 'edit',
+          brewId: 'test-brew-id'
+        }
+      };
+      assertErrorMessages(errorCodes, brewProps);
+
+      // admin errors
+      errorCodes = [ '52' ];
+      assertErrorMessages(errorCodes);
+
+      // lock errors
+      errorCodes = codeStrings('60', '73');
+      assertErrorMessages(errorCodes);
+
+      // other errors
+      errorCodes = [ '90', '91' ];
+      assertErrorMessages(errorCodes);
+
+      // folder errors
+      errorCodes = codeStrings('103', '103');
+      const folderProps = {
+        folder: {
+          folderId: 'test-folder-id',
+          displayName: 'Test Folder'
+        }
+      };
+      assertErrorMessages(errorCodes, folderProps);
     });
 
   });
