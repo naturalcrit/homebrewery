@@ -149,7 +149,8 @@ const Snippetbar = createReactClass({
 		}
 
 		const userSnippetsasJSON = brewSnippetsToJSON(this.props.brew.title || 'New Document', this.props.brew.snippets, this.props.themeBundle.snippets);
-		compiledSnippets.push(userSnippetsasJSON);
+		compiledSnippets.push(userSnippetsasJSON.snippets);
+		compiledSnippets.push(userSnippetsasJSON.styles);
 
 		return compiledSnippets;
 	},

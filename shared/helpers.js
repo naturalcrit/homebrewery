@@ -4,31 +4,46 @@ import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
-	const textSplit  = /^(\\snippet +.+\n)/gm;
+	const textSplit  = /^(\\(snippet|style) +.+\n)/gm;
+	const titleSplit  = /^(\\(snippet|style) +(.+))/;
 	const mpAsSnippets = [];
+	const mpAsStyles = [];
 	// Snippets from Themes first.
 	if(themeBundleSnippets) {
 		for (const themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
-				const userSnippets = [];
+				const themeSnippets = {
+					snippet : [],
+					style   : []
+				};
 				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
-				for (let snips = 0; snips < snipSplit.length; snips+=2) {
-					if(!snipSplit[snips].startsWith('\\snippet ')) break;
-					const snippetName = snipSplit[snips].split(/\\snippet +/)[1].split('\n')[0].trim();
+				for (let snips = 0; snips < snipSplit.length; snips+=3) {
+					if((!snipSplit[snips].startsWith('\\snippet ')) && (!snipSplit[snips].startsWith('\\style '))) break;
+					const snipStyleLabel = titleSplit.exec(snipSplit[snips]);
+					if(!['style', 'snippet'].includes(snipStyleLabel[2])) break;
+					const snippetName = snipStyleLabel[3].trim();
 					if(snippetName.length != 0) {
-						userSnippets.push({
+						themeSnippets[snipStyleLabel[2]].push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
+							gen  : snipSplit[snips + 2].replace(/\n$/, ''),
 						});
 					}
 				}
-				if(userSnippets.length > 0) {
+				if(themeSnippets.snippet.length > 0) {
 					mpAsSnippets.push({
 						name        : themes.name,
 						icon        : '',
 						gen         : '',
-						subsnippets : userSnippets
+						subsnippets : themeSnippets.snippet
+					});
+				}
+				if(themeSnippets.style.length > 0) {
+					mpAsStyles.push({
+						name        : themes.name,
+						icon        : '',
+						gen         : '',
+						subsnippets : themeSnippets.style
 					});
 				}
 			}
@@ -36,37 +51,56 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	}
 	// Local Snippets
 	if(userBrewSnippets) {
-		const userSnippets = [];
+		const userSnippets = {
+			snippet : [],
+			style :[]
+		};
 		const snipSplit = userBrewSnippets.trim().split(textSplit).slice(1);
-		for (let snips = 0; snips < snipSplit.length; snips+=2) {
-			if(!snipSplit[snips].startsWith('\\snippet ')) break;
-			const snippetName = snipSplit[snips].split(/\\snippet +/)[1].split('\n')[0].trim();
+		for (let snips = 0; snips < snipSplit.length; snips+=3) {
+			const snipStyleLabel = titleSplit.exec(snipSplit[snips]);
+			if(!['style', 'snippet'].includes(snipStyleLabel[2])) break;
+			const snippetName = snipStyleLabel[3].trim();
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
+					gen  : snipSplit[snips + 2].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
-				userSnippets.push(subSnip);
+				userSnippets[snipStyleLabel[2]].push(subSnip);
 			}
 		}
-		if(userSnippets.length) {
+		if(userSnippets.snippet?.length) {
 			mpAsSnippets.push({
-				name        : menuTitle,
+				name        : menuTitle || 'brew_snippets',
 				// icon        : '',
-				subsnippets : userSnippets
+				subsnippets : userSnippets.snippet
+			});
+		}
+		if(userSnippets.style?.length) {
+			mpAsStyles.push({
+				name        : menuTitle || 'brew_styles',
+				// icon        : '',
+				subsnippets : userSnippets.style
 			});
 		}
 	}
 
 	const returnObj = {
-		snippets : mpAsSnippets
+		snippets : {
+			snippets : mpAsSnippets,
+		},
+		styles : {
+			snippets : mpAsStyles
+		}
 	};
 
 	if(full) {
-		returnObj.groupName = 'Brew Snippets';
-		returnObj.icon = 'fas fa-th-list';
-		returnObj.view = 'text';
+		returnObj.snippets.groupName = 'Brew Snippets';
+		returnObj.snippets.icon = 'fas fa-th-list';
+		returnObj.snippets.view = 'text';
+		returnObj.styles.groupName = 'Brew Styles';
+		returnObj.styles.icon = 'fas fa-th-list';
+		returnObj.styles.view = 'style';
 	}
 
 	return returnObj;
@@ -77,9 +111,24 @@ const yamlSnippetsToText = (yamlObj)=>{
 
 	let snippetsText = '';
 
-	for (const snippet of yamlObj) {
+	if(!yamlObj?.snippets) {
+		for (const snippet of yamlObj) {
+			for (const subSnippet of snippet.subsnippets) {
+				snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
+			}
+		}
+
+		return snippetsText;
+	}
+
+	for (const snippet of yamlObj.snippets.snippets) {
 		for (const subSnippet of snippet.subsnippets) {
 			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
+		}
+	}
+	for (const snippet of yamlObj.styles.snippets) {
+		for (const subSnippet of snippet.subsnippets) {
+			snippetsText = `${snippetsText}\\style ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
 	}
 	return snippetsText;
