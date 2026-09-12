@@ -65,11 +65,6 @@ const HomePage =(props)=>{
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
 	const warnUnsavedTimeout = useRef(null);
-	const unsavedChangesRef = useRef(unsavedChanges);
-
-	useEffect(()=>{
-		unsavedChangesRef.current = unsavedChanges;
-	}, [unsavedChanges]);
 
 	const save = ()=>{
 		request.post('/api')
@@ -168,7 +163,7 @@ const HomePage =(props)=>{
 		autoSaveEnabled,
 		setAutoSaveEnabled,
 		setWarnUnsavedChanges,
-		unsavedChangesRef,
+		unsavedChanges,
 		setUnsavedChanges,
 		sandbox,
 		lastSavedBrew

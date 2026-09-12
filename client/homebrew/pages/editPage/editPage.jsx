@@ -78,11 +78,6 @@ const EditPage = (props)=>{
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
-
-	useEffect(()=>{
-		unsavedChangesRef.current = unsavedChanges;
-	});
 
 	const handleSplitMove = ()=>{
 		editorRef.current?.update();
@@ -344,7 +339,7 @@ const EditPage = (props)=>{
 		autoSaveEnabled,
 		setAutoSaveEnabled,
 		setWarnUnsavedChanges,
-		unsavedChangesRef,
+		unsavedChanges,
 		setUnsavedChanges,
 		trySave,
 		sandbox,

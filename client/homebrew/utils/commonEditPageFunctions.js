@@ -24,10 +24,12 @@ export default function useCommonEditPageFunctions(dependencies) {
 		trySave = ()=>{},
 		sandbox,
 		saveGoogle = false,
-		unsavedChangesRef,
+		unsavedChanges,
 		setUnsavedChanges,
 		lastSavedBrew
 	} = dependencies;
+
+	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	//==--------- Page setup ----------==//
 	useEffect(()=>{
@@ -63,6 +65,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 	useEffect(()=>{
 		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
 		setUnsavedChanges(hasChange);
+		unsavedChangesRef.current = hasChange;
 
 		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
 	}, [currentBrew]);
