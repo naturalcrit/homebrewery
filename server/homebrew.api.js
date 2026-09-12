@@ -588,7 +588,6 @@ const api = {
 					);
 				}
 
-				// Remove the user from the authors array.
 				brew.authors = _.pull(brew.authors, username);
 
 				if(brew.authors.length === 0) {
