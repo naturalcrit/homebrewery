@@ -21,7 +21,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		autoSaveEnabled,
 		setAutoSaveEnabled,
 		setWarnUnsavedChanges,
-		trySaveRef,
+		trySave = ()=>{},
 		sandbox,
 		saveGoogle = false,
 		unsavedChangesRef,
@@ -40,7 +40,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 		const handleControlKeys = (e)=>{
 			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true, true, saveGoogle);
+			if(e.keyCode === 83) trySave(true, true, saveGoogle);
 			if(e.keyCode === 80) printCurrentBrew();
 			if([83, 80].includes(e.keyCode)) {
 				e.stopPropagation();
@@ -64,7 +64,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
 		setUnsavedChanges(hasChange);
 
-		if(autoSaveEnabled) trySaveRef.current(false, hasChange, saveGoogle);
+		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
 	}, [currentBrew]);
 
 

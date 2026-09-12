@@ -2,7 +2,7 @@
 import './newPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
@@ -66,37 +66,11 @@ const NewPage = (props)=>{
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
 	useEffect(()=>{
 		loadBrew();
 	}, []);
-
-	const {
-		handleBrewChange
-	} = useCommonEditPageFunctions({
-		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		trySaveRef,
-		unsavedChangesRef,
-		setUnsavedChanges,
-		sandbox,
-		lastSavedBrew
-	});
 
 	const loadBrew = ()=>{
 		const brew = { ...currentBrew };
@@ -128,7 +102,6 @@ const NewPage = (props)=>{
 	};
 
 	useEffect(()=>{
-		trySaveRef.current = trySave;
 		unsavedChangesRef.current = unsavedChanges;
 	});
 
@@ -142,7 +115,7 @@ const NewPage = (props)=>{
 		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
 	};
 
-	const trySave = async ()=>{
+	const trySave = useEffectEvent(async ()=>{
   	setIsSaving(true);
 
 		const updatedBrew = { ...currentBrew };
@@ -169,7 +142,7 @@ const NewPage = (props)=>{
 		localStorage.removeItem(METAKEY);
 		window.onbeforeunload = null;
 		window.location = `/edit/${savedBrew.editId}`;
-	};
+	});
 
 	const renderSaveButton = ()=>{
 		// #1 - Currently saving, show SAVING
@@ -230,6 +203,31 @@ const NewPage = (props)=>{
 			</Nav.section>
 		</Navbar>
 	);
+
+		const {
+		handleBrewChange
+	} = useCommonEditPageFunctions({
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		unsavedChangesRef,
+		setUnsavedChanges,
+		trySave,
+		sandbox,
+		lastSavedBrew
+	});
 
 	return (
 		<div className='newPage sitePage'>
