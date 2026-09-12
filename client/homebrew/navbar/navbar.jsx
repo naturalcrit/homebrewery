@@ -1,36 +1,18 @@
-require('./navbar.less');
-const React = require('react');
-const createClass = require('create-react-class');
+import './navbar.less';
+import React from 'react';
+import createReactClass from 'create-react-class';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
-const PatreonNavItem = require('./patreon.navitem.jsx');
+import Nav from './nav.jsx';
+import PatreonNavItem from './patreon.navitem.jsx';
 
-const Navbar = createClass({
+const Navbar = createReactClass({
 	displayName     : 'Navbar',
 	getInitialState : function() {
-		return {
-			//showNonChromeWarning : false,
-			ver : '0.0.0'
-		};
+  		return {
+    		ver : global.version || '0.0.0'
+  		};
 	},
 
-	getInitialState : function() {
-		return {
-			ver : global.version
-		};
-	},
-
-	/*
-	renderChromeWarning : function(){
-		if(!this.state.showNonChromeWarning) return;
-		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
-			Optimized for Chrome
-			<div className='dropdown'>
-				If you are experiencing rendering issues, use Chrome instead
-			</div>
-		</Nav.item>
-	},
-*/
 	render : function(){
 		return <Nav.base>
 			<Nav.section>
@@ -49,4 +31,4 @@ const Navbar = createClass({
 	}
 });
 
-module.exports = Navbar;
+export default Navbar;

@@ -71,10 +71,14 @@ const Anchored = ({ children })=>{
 // forward ref for AnchoredTrigger
 const AnchoredTrigger = forwardRef(({ toggleVisibility, visible, children, className, ...props }, ref)=>(
 	<button
-		ref={ref}
+		ref={(el)=>{
+			// setAttribute bypasses React's style sanitization so the anchor polyfill can read it
+			el?.setAttribute('style', `anchor-name: --${props.id}`);
+			if(typeof ref === 'function') ref(el);
+			else if(ref) ref.current = el;
+		}}
 		className={`anchored-trigger${visible ? ' active' : ''} ${className}`}
 		onClick={toggleVisibility}
-		style={{ anchorName: `--${props.id}` }}   // setting anchor properties here allows greater recyclability.
 		{...props}
 	>
 		{children}
@@ -84,9 +88,12 @@ const AnchoredTrigger = forwardRef(({ toggleVisibility, visible, children, class
 // forward ref for AnchoredBox
 const AnchoredBox = forwardRef(({ visible, children, className, anchorId, ...props }, ref)=>(
 	<div
-		ref={ref}
+		ref={(el)=>{
+			el?.setAttribute('style', `position-anchor: --${anchorId}`);
+			if(typeof ref === 'function') ref(el);
+			else if(ref) ref.current = el;
+		}}
 		className={`anchored-box${visible ? ' active' : ''} ${className}`}
-		style={{ positionAnchor: `--${anchorId}` }}   // setting anchor properties here allows greater recyclability.
 		{...props}
 	>
 		{children}

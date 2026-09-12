@@ -1,6 +1,6 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
-module.exports = function(classname){
+function classFeatureGen(classname) {
 
 	classname = _.sample(['archivist', 'fancyman', 'linguist', 'fletcher',
 		'notary', 'berserker-typist', 'fishmongerer', 'manicurist', 'haberdasher', 'concierge']);
@@ -49,4 +49,6 @@ module.exports = function(classname){
 		`- ${_.sample(['10 lint fluffs', '1 button', 'a cherished lost sock'])}`,
 		'\n\n\n'
 	].join('\n');
-};
+}
+
+export default classFeatureGen;

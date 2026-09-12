@@ -1,7 +1,7 @@
-require('./errorBar.less');
-const React = require('react');
+import './errorBar.less';
+import React from 'react';
 
-import Dialog from '../../../components/dialog.jsx';
+import Dialog from '@components/dialog.jsx';
 
 const DISMISS_BUTTON = <i className='fas fa-times dismiss' />;
 
@@ -50,4 +50,4 @@ const ErrorBar = (props)=>{
 	);
 };
 
-module.exports = ErrorBar;
+export default ErrorBar;

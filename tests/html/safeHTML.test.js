@@ -1,8 +1,6 @@
-
-
-require('jsdom-global')();
-
-import { safeHTML } from '../../client/homebrew/brewRenderer/safeHTML';
+import globalJsdom from 'jsdom-global';
+globalJsdom();
+import safeHTML from '../../client/homebrew/brewRenderer/safeHTML';
 
 test('Exit if no document', function() {
 	const doc = document;
@@ -43,6 +41,12 @@ test('Javascript via inline event handler - onMouseOver', function() {
 	const source = `<div onmouseover="alert('This is a JavaScript injection via inline event handler')">Hover over me</div>`;
 	const rendered = safeHTML(source);
 	expect(rendered).toBe('<div>Hover over me</div>');
+});
+
+test('Javascript via multiple inline event handlers - onClick + onMouseOver', function() {
+	const source = `<div onclick="alert('This is a JavaScript injection via inline event handler')" onmouseover="alert('This is a JavaScript injection via inline event handler')">Hover over or Click me</div>`;
+	const rendered = safeHTML(source);
+	expect(rendered).toBe('<div>Hover over or Click me</div>');
 });
 
 test('Javascript via data attribute', function() {

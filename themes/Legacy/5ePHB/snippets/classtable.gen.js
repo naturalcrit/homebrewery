@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const features = [
 	'Astrological Botany',
@@ -50,7 +50,7 @@ const getFeature = (level)=>{
 	return res.join(', ');
 };
 
-module.exports = {
+export default {
 	full : function(){
 		const classname = _.sample(classnames);
 

@@ -1,7 +1,7 @@
 import './lockNotification.less';
 import * as React from 'react';
 import request from '../../../utils/request-middleware.js';
-import Dialog from '../../../../components/dialog.jsx';
+import Dialog from '@components/dialog.jsx';
 
 function LockNotification(props) {
 	props = {
@@ -40,4 +40,4 @@ function LockNotification(props) {
 	</Dialog>;
 };
 
-module.exports = LockNotification;
+export default LockNotification;

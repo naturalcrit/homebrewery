@@ -1,7 +1,7 @@
-const _ = require('lodash');
-const dedent = require('dedent-tabs').default;
+import _ from 'lodash';
+import dedent from 'dedent';
 
-module.exports = {
+export default {
 	dwarvish : ()=>{
 		return dedent `##### Dwarvish Runes: Sample Alphabet
             {{runeTable,wide,frame,font-family:Davek

@@ -4,15 +4,16 @@ import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
-import Markdown                      from '../shared/naturalcrit/markdown.js';
-import yaml                          from 'js-yaml';
+import { hbfm }   from 'hbmarkedwrapper';
+import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import {makePatches, applyPatches, stringifyPatches, parsePatch} from '@sanity/diff-match-patch';
+import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
-import { splitTextStyleAndMetadata, 
+import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
+import dbCheck                       from './middleware/dbCheck.js';
 
 
 const router = express.Router();
@@ -29,6 +30,27 @@ const isStaticTheme = (renderer, themeName)=>{
 // 		cb(brews);
 // 	});
 // };
+
+
+const migrateSystemsToTags = (brew)=>{
+	if(!('systems' in brew)) return brew;
+
+	if(!Array.isArray(brew.systems) || brew.systems.length === 0) {
+		brew.systems = undefined;
+		return brew;
+	}
+	const systemMap = {
+		'5e'         : 'system:D&D 5e',
+		'4e'         : 'system:D&D 4e',
+		'3.5e'       : 'system:D&D 3.5e',
+		'Pathfinder' : 'system:Pathfinder 2e'
+	};
+	const systemTags = brew.systems.map((s)=>systemMap[s]);
+	brew.tags = _.uniq([...(brew.tags || []), ...systemTags]);
+
+	brew.systems = undefined;
+	return brew;
+};
 
 const MAX_TITLE_LENGTH = 100;
 
@@ -52,13 +74,13 @@ const api = {
 		// ID Validation Checks
 		// Homebrewery ID
 		// Typically 12 characters, but the DB shows a range of 7 to 14 characters
-		if(!id.match(/^[A-Za-z0-9_-]{7,14}$/)){
+		if(!id.match(/^[a-zA-Z0-9-_]{7,14}$/)){
 			throw { name: 'ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '11', brewId: id };
 		}
 		// Google ID
 		// Typically 33 characters, old format is 44 - always starts with a 1
 		// Managed by Google, may change outside of our control, so any length between 33 and 44 is acceptable
-		if(googleId && !googleId.match(/^1(?:[A-Za-z0-9+\/]{32,43})$/)){
+		if(googleId && !googleId.match(/^1(?:[a-zA-Z0-9-_]{32,43})$/)){
 			throw { name: 'Google ID Error', message: 'Invalid ID', status: 404, HBErrorCode: '12', brewId: id };
 		}
 
@@ -166,11 +188,13 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-			req.brew = stub;
+
+
+			const fixedStub = migrateSystemsToTags(stub);
+			req.brew = fixedStub;
 			next();
 		};
 	},
-
 	getCSS : async (req, res)=>{
 		const { brew } = req;
 		if(!brew) return res.status(404).send('');
@@ -183,7 +207,6 @@ const api = {
 		});
 		return res.status(200).send(brew.style);
 	},
-
 	mergeBrewText : (brew)=>{
 		let text = brew.text;
 		if(brew.style !== undefined) {
@@ -192,18 +215,25 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'systems', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
+		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
+		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
+		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
+		metadata.columns = brew?.columns;
+		metadata.columnGutter = brew?.columnGutter;
+		metadata.license = brew?.license;
+		metadata.legalAuthors = brew?.legalAuthors;
+
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
 			`\`\`\`\n\n` +
 			`${text}`;
 		return text;
 	},
-
 	getGoodBrewTitle : (text)=>{
-		const tokens = Markdown.marked.lexer(text);
+		const tokens = hbfm.marked.lexer(text);
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 			.slice(0, MAX_TITLE_LENGTH);
 	},
@@ -367,30 +397,40 @@ const api = {
 
 		if(brewFromServer?.hash !== brewFromClient?.hash) {
 			console.log(`Hash mismatch on brew ${brewFromClient.editId}`);
-			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			res.setHeader('Content-Type', 'application/json');
 			return res.status(409).send(JSON.stringify({ message: `The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.` }));
 		}
 
+		let result = [];
 		try {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
-			const patchedResult = applyPatches(patches, brewFromServer.text, { allowExceedingIndices: true })[0];
-			if(patchedResult != brewFromClient.text)
-				throw("Patches did not apply cleanly, text mismatch detected");
+			result = applyPatches(patches, encodeURI(brewFromServer.text));
+			const failedPatches = patches.map((patch, index)=>{if(!result[1][index]){ return patch; }});
+			if(failedPatches > 0){
+				throw (`Patch failure: ${failedPatches}/${result[1].length} did not apply`);
+			}
+			if(decodeURI(result[0]) != brewFromClient.text){
+				throw ('Patches did not apply cleanly, text mismatch detected');
+			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
-			//debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
+			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
-				patches : brewFromClient.patches,
-				brewId  : brewFromClient.editId || 'unknown',
-				error   : err
+				// patches : brewFromClient.patches,
+				// result  : result,
+				brewId : brewFromClient.editId || 'unknown',
+				error  : err
 			});
 			// While running in parallel, don't throw the error upstream.
 			// throw err; // rethrow to preserve the 500 behavior
 		}
 
 		let brew         = _.assign(brewFromServer, brewFromClient);
+
+		migrateSystemsToTags(brew);
+
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
@@ -480,6 +520,7 @@ const api = {
 				await HomebrewModel.deleteOne({ editId: id });
 				return next();
 			}
+			throw (err);
 		}
 
 		let brew = req.brew;
@@ -529,6 +570,8 @@ const api = {
 		res.status(204).send();
 	}
 };
+
+router.use(dbCheck);
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
 router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));

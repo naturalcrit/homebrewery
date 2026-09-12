@@ -1,12 +1,11 @@
-require('./brewItem.less');
-const React = require('react');
-const { useCallback } = React;
-const moment = require('moment');
+import './brewItem.less';
+import React, { useCallback } from 'react';
+import moment from 'moment';
 import request from '../../../../utils/request-middleware.js';
 
-const googleDriveIcon = require('../../../../googleDrive.svg');
-const homebreweryIcon = require('../../../../thumbnail.svg');
-const dedent = require('dedent-tabs').default;
+import googleDriveIcon from '../../../../googleDrive.svg';
+import homebreweryIcon from '../../../../thumbnail.svg';
+import dedent from 'dedent';
 
 const BrewItem = ({
 	brew = {
@@ -40,9 +39,9 @@ const BrewItem = ({
 		if(!brew.editId) return null;
 
 		return (
-			<a className='deleteLink' onClick={deleteBrew}>
-				<i className='fas fa-trash-alt' title='Delete' />
-			</a>
+			<button aria-label={`Delete ${brew.title}`} className='deleteLink' onClick={deleteBrew}>
+				<i className='fas fa-trash-alt' aria-hidden='true' title='Delete' />
+			</button>
 		);
 	};
 
@@ -53,7 +52,7 @@ const BrewItem = ({
 		if(brew.googleId && !brew.stubbed) editLink = brew.googleId + editLink;
 
 		return (
-			<a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='editLink' href={`/edit/${editLink}`} aria-label={`Edit ${brew.title}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-pencil-alt' title='Edit' />
 			</a>
 		);
@@ -68,7 +67,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='shareLink' href={`/share/${shareLink}`} aria-label={`Share ${brew.title}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-share-alt' title='Share' />
 			</a>
 		);
@@ -83,7 +82,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<a className='downloadLink' href={`/download/${shareLink}`}>
+			<a className='downloadLink' aria-label={`Download ${brew.title}`} href={`/download/${shareLink}`}>
 				<i className='fas fa-download' title='Download' />
 			</a>
 		);
@@ -95,7 +94,7 @@ const BrewItem = ({
 			return (
 				<span title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
 					<a href={brew.webViewLink} target='_blank'>
-						<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+						<img className='googleDriveIcon' src={googleDriveIcon} alt='Google Drive Storage' />
 					</a>
 				</span>
 			);
@@ -103,7 +102,7 @@ const BrewItem = ({
 
 		return (
 			<span title='Homebrewery Storage'>
-				<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
+				<img className='homebreweryIcon' src={homebreweryIcon} alt='Homebrewery Storage' />
 			</span>
 		);
 	};
@@ -143,25 +142,26 @@ const BrewItem = ({
 								<span title="Username contained an email address; hidden to protect user's privacy">
 									{author}
 								</span>
-							) : (<a href={`/user/${author}`}>{author}</a>)}
+							) : (<a href={`/user/${encodeURIComponent(author)}`}>{author}</a>)}
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}
 				</span>
 				<br />
-				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
-					<i className='fas fa-eye' /> {brew.views}
+				<span aria-label={`Viewed ${brew.views} times`} title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+					<span aria-hidden='true'><i className='fas fa-eye' /> {brew.views}</span>
 				</span>
 				{brew.pageCount && (
-					<span title={`Page count: ${brew.pageCount}`}>
-						<i className='far fa-file' /> {brew.pageCount}
+					<span aria-label={`${brew.pageCount} pages`} title={`Page count: ${brew.pageCount}`}>
+						<span aria-hidden='true'><i className='far fa-file' /> {brew.pageCount}</span>
 					</span>
 				)}
 				<span
+					aria-label={`Last updated ${moment(brew.updatedAt).fromNow()}`}
 					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
                         Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
 				>
-					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
+					<span aria-hidden='true'><i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}</span>
 				</span>
 				{renderStorageIcon()}
 			</div>
@@ -176,4 +176,4 @@ const BrewItem = ({
 	);
 };
 
-module.exports = BrewItem;
+export default BrewItem;

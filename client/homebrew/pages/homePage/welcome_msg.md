@@ -36,7 +36,7 @@ After clicking the "Print" item in the navbar a new page will open and a print d
 If you want to save ink or have a monochrome printer, add the **PRINT → {{fas,fa-tint}} Ink Friendly** snippet to your brew!
 }}
 
-![homebrew mug](https://i.imgur.com/hMna6G0.png) {position:absolute,bottom:20px,left:130px,width:220px}
+![homebrew mug](https://homebrewery.naturalcrit.com/assets/homebrewerymug.png) {position:absolute,bottom:20px,left:130px,width:220px}
 
 {{artist,bottom:160px,left:100px
 ##### Homebrew Mug
@@ -77,16 +77,16 @@ If you wish to sell or in some way gain profit for what's created on this site, 
 If you'd like to credit us in your brew, we'd be flattered! Just reference that you made it with The Homebrewery.
 
 ### More Homebrew Resources
-[![Discord](/assets/discordOfManyThings.svg){width:50px,float:right,padding-left:10px}](https://discord.gg/by3deKx)
+[![Discord](https://homebrewery.naturalcrit.com/assets/discordOfManyThings.svg){width:50px,float:right,padding-left:10px}](https://discord.gg/by3deKx)
 
 If you are looking for more 5e Homebrew resources check out [r/UnearthedArcana](https://www.reddit.com/r/UnearthedArcana/) and their list of useful resources [here](https://www.reddit.com/r/UnearthedArcana/wiki/resources). The [Discord Of Many Things](https://discord.gg/by3deKx) is another great resource to connect with fellow homebrewers for help and feedback.
 
 
 {{position:absolute;top:20px;right:20px;width:auto
-[![Discord](/assets/discord.png){height:30px}](https://discord.gg/by3deKx)
-[![Github](/assets/github.png){height:30px}](https://github.com/naturalcrit/homebrewery)
-[![Patreon](/assets/patreon.png){height:30px}](https://patreon.com/NaturalCrit)
-[![Reddit](/assets/reddit.png){height:30px}](https://www.reddit.com/r/homebrewery/)
+[![Discord](https://homebrewery.naturalcrit.com/assets/discord.png){height:30px}](https://discord.gg/by3deKx)
+[![Github](https://homebrewery.naturalcrit.com/assets/github.png){height:30px}](https://github.com/naturalcrit/homebrewery)
+[![Patreon](https://homebrewery.naturalcrit.com/assets/patreon.png){height:30px}](https://patreon.com/NaturalCrit)
+[![Reddit](https://homebrewery.naturalcrit.com/assets/reddit.png){height:30px}](https://www.reddit.com/r/homebrewery/)
 }}
 
 \page
@@ -162,7 +162,7 @@ Images must be hosted online somewhere, like [Imgur](https://www.imgur.com). You
 
 Using *Curly Injection* you can assign an id, classes, or inline CSS properties to the Markdown image syntax.
 
-![alt-text](https://s-media-cache-ak0.pinimg.com/736x/4a/81/79/4a8179462cfdf39054a418efd4cb743e.jpg) {width:100px,border:"2px solid",border-radius:10px}
+![alt-text](https://homebrewery.naturalcrit.com/assets/catwarrior.jpg) {width:100px,border:"2px solid",border-radius:10px}
 
 \* *When using Imgur-hosted images, use the "direct link", which can be found when you click into your image in the Imgur interface.*
 

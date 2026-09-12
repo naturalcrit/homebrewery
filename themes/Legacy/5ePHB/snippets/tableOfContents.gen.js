@@ -1,4 +1,4 @@
-const _ = require('lodash');
+import _ from 'lodash';
 
 const getTOC = (pages)=>{
 	const add1 = (title, page)=>{
@@ -47,7 +47,8 @@ const getTOC = (pages)=>{
 	return res;
 };
 
-module.exports = function(props){
+function tableOfContentsGen(props){
+
 	const pages = props.brew.text.split('\\page');
 	const TOC = getTOC(pages);
 	const markdown = _.reduce(TOC, (r, g1, idx1)=>{
@@ -69,4 +70,6 @@ module.exports = function(props){
 ##### Table Of Contents
 ${markdown}
 </div>\n`;
-};
+}
+
+export default tableOfContentsGen;

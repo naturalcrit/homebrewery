@@ -1,4 +1,4 @@
-@import 'naturalcrit/styles/colors.less';
+@import '@sharedStyles/core.less';
 
 .userThemeName {
 	padding-right : 10px;
@@ -44,8 +44,6 @@
 		gap            : 10px;
 	}
 
-
-
 	.field {
 		position      : relative;
 		display       : flex;
@@ -62,6 +60,7 @@
 		& > .value {
 			flex           : 1 1 auto;
 			width          : 50px;
+			&[data-tooltip-right] { max-width : 380px; }
 			&:invalid { background : #FFB9B9; }
 			small {
 				display     : block;
@@ -74,6 +73,16 @@
 			border : 1px solid gray;
 			&:focus { outline : 1px solid #444444; }
 		}
+		
+		&.description {
+			flex : 1;
+			textarea.value {
+				height      : auto;
+				font-family : 'Open Sans', sans-serif;
+				resize      : none;
+			}
+		}
+
 		&.thumbnail, &.themes {
 			label { line-height : 2.0em; }
 			.value {
@@ -90,6 +99,15 @@
 			}
 		}
 
+		&.tags .tagInput-dropdown {
+			z-index   : 400;
+			max-width : 200px;
+		}
+		&.language .value {
+			z-index   : 300;
+			max-width : 150px;
+		}
+
 		&.themes {
 			.value {
 				overflow      : visible;
@@ -101,21 +119,12 @@
 			}
 		}
 
-		&.description {
-			flex : 1;
-			textarea.value {
-				height      : auto;
-				font-family : 'Open Sans', sans-serif;
-				resize      : none;
-			}
-		}
-
-		&.language .language-dropdown {
-			z-index   : 200;
-			max-width : 150px;
+		&.invitedAuthors .value {
+			z-index   : 100;
+			
+			.tagInput-dropdown { max-width : 200px; }
 		}
 	}
-
 
 	.thumbnail-preview {
 		position         : relative;
@@ -129,7 +138,7 @@
 		background-color : #AAAAAA;
 	}
 
-	.systems.field .value {
+	.renderers.field .value {
 		label {
 			display        : inline-flex;
 			align-items    : center;
@@ -164,12 +173,56 @@
 			.colorButton(@red);
 		}
 	}
-	.authors.field .value { line-height    : 1.5em; }
+	.authors.field {
+		.tag {
+			font-weight:300;
+			transition:background-color 0.2s;
+
+			&.owner {
+				position: relative;
+				background-color:@silverLight;
+				min-width:25px;
+				display:grid;
+				place-items:center;
+				font-weight: 900;
+
+				&::after {
+					content: "\f521";
+					font-family: "Font Awesome 6 Free";
+					color:gold;
+					position: absolute;
+					top: 0;
+					left: 0;
+					width:15px;
+					height:15px;
+					rotate:-25deg;
+					translate:-30% -50%;
+					transform: scaleY(0.7);
+				}
+			}
+			&:has(button) a {
+				padding-right:5px;
+			}
+			&:has(button:hover) {
+				background:#d97d7d;
+			}
+
+			button {
+				color:@red;
+			}
+
+		
+		}
+		a {
+			color:black;
+			text-underline-offset:0.2em;
+		}
+	}
 
 	.themes.field {
 		& .dropdown-container {
 			position         : relative;
-			z-index          : 100;
+			z-index          : 200;
 			background-color : white;
 		}
 		& .dropdown-options { overflow-y : visible; }
@@ -266,13 +319,17 @@
 		}
 
 		.tag {
-			padding          : 0.3em;
+			padding          : 0.35em;
 			margin           : 2px;
-			font-size        : 0.9em;
+			font-size        : 0.95em;
 			background-color : #DDDDDD;
 			border-radius    : 0.5em;
 
 			.icon { #groupedIcon; }
+
+			button {
+				cursor : pointer;
+			}
 		}
 
 		.input-group {

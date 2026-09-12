@@ -1,6 +1,6 @@
-import Markdown from '../../../../shared/naturalcrit/markdown.js';
+import hbfm   from 'hbmarkedwrapper';
 
-module.exports = {
+export default {
 	createFooterFunc : function(headerSize=1){
 		return (props)=>{
 			const cursorPos = props.cursorPos;
