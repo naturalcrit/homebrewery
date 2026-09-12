@@ -384,27 +384,31 @@ export default async function createApp(vite) {
 	app.delete('/api/user/delete', async (req, res)=>{
 		const { username } = req.body;
 
-		const ownAccount = req.account && (req.account.username == username);
-		if(!ownAccount) return res.status(403).json({ error: 'Must be logged in to delete your account' });
+		if(!req.account || req.account.username !== username) {
+			return res.status(403).json({error : 'Must be logged in to delete your account'});
+		}
 
 		try {
-			const brews = await HomebrewModel.getByUser(username, true, ['_id', 'googleId', 'editId', 'authors']);
+			const result = await api.deleteUserBrews(username, req.account);
 
-			const deletePromises = brews.map((brew)=>{
-				req.brew = brew;
-				return new Promise((resolve, reject)=>{
-					api.deleteBrew(req, res, (err)=>err ? reject(err) : resolve());
+			if(!result.success) {
+				return res.status(500).json({
+					error    : 'Failed to delete brew.',
+					brewId   : result.brewId,
+					googleId : result.googleId
 				});
-			});
-
-			await Promise.all(deletePromises);
-
-			return res.json({ success: true, message: `All brews for ${username} have been deleted.` });
-		} catch (error) {
-			console.error('Error deleting brews:', error);
-			if(!res.headersSent) {
-				return res.status(500).json({ error: 'Failed to delete the brews.' });
 			}
+
+			return res.json({
+				success : true,
+				message : `All brews for ${username} have been processed.`
+			});
+		} catch (error) {
+			console.error('Error deleting user brews:', error);
+
+			return res.status(500).json({
+				error : 'Failed to process user brews.'
+			});
 		}
 	});
 

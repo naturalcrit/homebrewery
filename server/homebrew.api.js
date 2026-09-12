@@ -568,7 +568,50 @@ const api = {
 		}
 
 		res.status(204).send();
-	}
+	},
+	deleteUserBrews : async (username, account)=>{
+		const brews = await HomebrewModel.getByUser(
+			username,
+			true,
+			['_id', 'googleId', 'editId', 'shareId', 'authors']
+		);
+
+		for (const brew of brews) {
+			const isOwner = brew.authors[0] === username;
+
+			try {
+				if(brew.googleId && isOwner) {
+					await api.deleteGoogleBrew(
+						account,
+						brew.googleId,
+						brew.editId
+					);
+				}
+
+				// Remove the user from the authors array.
+				brew.authors = _.pull(brew.authors, username);
+
+				if(brew.authors.length === 0) {
+					await HomebrewModel.deleteOne({ _id: brew._id });
+				} else {
+					brew.markModified('authors');
+					await brew.save();
+				}
+			} catch (error) {
+				console.error(`Failed to delete${googleId ? ' google' : ''} brew with shareId ${brew.shareId}:`, error);
+
+				return {
+					success  : false,
+					brewId   : brew.shareId,
+					googleId : brew.googleId || null
+				};
+			}
+		}
+
+		return {
+			success : true
+		};
+	},
 };
 
 router.use(dbCheck);
