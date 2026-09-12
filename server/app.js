@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 550, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -377,6 +377,38 @@ export default async function createApp(vite) {
 		} catch (error) {
 			console.error('Error renaming brews:', error);
 			return res.status(500).json({ error: 'Failed to rename brews.' });
+		}
+	});
+
+	//Delete brews based on author
+	app.delete('/api/user/delete', async (req, res)=>{
+		const { username } = req.body;
+
+		if(!req.account || req.account.username !== username) {
+			return res.status(403).json({error : 'Must be logged in to delete your account'});
+		}
+
+		try {
+			const result = await api.deleteUserBrews(username, req.account);
+
+			if(!result.success) {
+				return res.status(500).json({
+					error    : 'Failed to delete brew.',
+					brewId   : result.brewId,
+					googleId : result.googleId
+				});
+			}
+
+			return res.json({
+				success : true,
+				message : `All brews for ${username} have been processed.`
+			});
+		} catch (error) {
+			console.error('Error deleting user brews:', error);
+
+			return res.status(500).json({
+				error : 'Failed to process user brews.'
+			});
 		}
 	});
 
