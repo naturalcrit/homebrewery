@@ -4,33 +4,33 @@ import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
 export default function useCommonEditPageFunctions(dependencies) {
-    const {
-        setError,
-        setThemeBundle,
-        HTMLErrors,
-        setHTMLErrors,
-        currentBrew,
-        setCurrentBrew,
-        useLocalStorage,
-        BREWKEY,
-        STYLEKEY,
-        SNIPKEY,
-        METAKEY,
-        hbfm,
-        autoSaveEnabled,
-        setAutoSaveEnabled,
-        setWarnUnsavedChanges,
-        trySaveRef,
-        sandbox,
-        saveGoogle = false,
-        unsavedChangesRef
-        } = dependencies;
+	const {
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		trySaveRef,
+		sandbox,
+		saveGoogle = false,
+		unsavedChangesRef
+	} = dependencies;
 
-    //==--------- Page setup ----------==//
-    useEffect(()=>{
+	//==--------- Page setup ----------==//
+	useEffect(()=>{
 		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
-        console.log(autoSavePref)
+		console.log(autoSavePref)
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -56,30 +56,30 @@ export default function useCommonEditPageFunctions(dependencies) {
 		};
 	}, []);
 
-    const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
-        if(subfield == 'renderer' || subfield == 'theme')
-            fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
+	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
+		if(subfield == 'renderer' || subfield == 'theme')
+			fetchThemeBundle(setError, setThemeBundle, value.renderer, value.theme);
 
-        //If there are HTML errors, run the validator on every change to give quick feedback
-        if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
-            setHTMLErrors(hbfm.validate(value));
+		//If there are HTML errors, run the validator on every change to give quick feedback
+		if(HTMLErrors.length && (field == 'text' || field == 'snippets'))
+			setHTMLErrors(hbfm.validate(value));
 
-        if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
-        else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
+		if(field == 'metadata') setCurrentBrew((prev)=>({ ...prev, ...value }));
+		else                    setCurrentBrew((prev)=>({ ...prev, [field]: value }));
 
-        if(useLocalStorage) {
-            if(field == 'text')     localStorage.setItem(BREWKEY, value);
-            if(field == 'style')    localStorage.setItem(STYLEKEY, value);
-            if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
-            if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
-                renderer : value.renderer,
-                theme    : value.theme,
-                lang     : value.lang
-            }));
-        }
-    };
+		if(useLocalStorage) {
+			if(field == 'text')	    localStorage.setItem(BREWKEY, value);
+			if(field == 'style')	  localStorage.setItem(STYLEKEY, value);
+			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
+			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
+				renderer : value.renderer,
+				theme	   : value.theme,
+				lang	   : value.lang
+			}));
+		}
+	};
 
-    return {
-        handleBrewChange
-    }
+	return {
+		handleBrewChange
+	}
 }
