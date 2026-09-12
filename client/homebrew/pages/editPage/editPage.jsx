@@ -84,6 +84,7 @@ const EditPage = (props)=>{
 	const {
 		handleBrewChange
 	} = useCommonEditPageFunctions({
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -101,21 +102,15 @@ const EditPage = (props)=>{
 		setWarnUnsavedChanges,
 		trySaveRef,
 		unsavedChangesRef,
+		setUnsavedChanges,
 		sandbox,
-		saveGoogle
+		lastSavedBrew
 	});
 
 	useEffect(()=>{
 		trySaveRef.current = trySave;
 		unsavedChangesRef.current = unsavedChanges;
 	});
-
-	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
-		setUnsavedChanges(hasChange);
-
-		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
-	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
 		editorRef.current?.update();

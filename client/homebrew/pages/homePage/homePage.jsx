@@ -88,7 +88,9 @@ const HomePage =(props)=>{
 		setWarnUnsavedChanges,
 		trySaveRef,
 		unsavedChangesRef,
-		sandbox
+		setUnsavedChanges,
+		sandbox,
+		lastSavedBrew
 	});
 
 	useEffect(()=>{
@@ -107,13 +109,6 @@ const HomePage =(props)=>{
 				window.location = `/edit/${saved.editId}`;
 			});
 	};
-
-	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
-		setUnsavedChanges(hasChange);
-
-		if(autoSaveEnabled) trySave(false, hasChange);
-	}, [currentBrew]);
 
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
