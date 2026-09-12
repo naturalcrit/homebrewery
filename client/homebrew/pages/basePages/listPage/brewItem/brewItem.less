@@ -1,13 +1,15 @@
 @import '@sharedStyles/core.less';
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
-
 .brewItem {
+	display:flex;
+	flex-direction        : column;
 	position                    : relative;
 	overflow                    : hidden;
 	font-size                   : 15px;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
+	isolation             : isolate;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -45,13 +47,11 @@
 			font-family  : 'Font Awesome 6 Free';
 			font-size    : 12px;
 		}
-
 		--tag-base       : #C8AC6E;
 		--tag-type       : #008000;
 		--tag-group      : #000000;
 		--tag-meta       : #000080;
 		--tag-system     : #800000;
-
 		&.type {
 			color            : var(--tag-type);
 			background-color : rgba(from var(--tag-type) r g b / 0.231);
@@ -91,18 +91,19 @@
 		button {
 			display         : block;
 			width           : 100%;
+			
 			font-size       : 1.3em;
 			color           : white;
 			text-decoration : unset;
+			align-content : center;
+			height        : 100%;
+			text-align    : center;
+		
 			i { cursor : pointer; }
 		}
 	}
-	
 }
-
 .grid > .brewItem {
-	display          : flex;
-	flex-direction   : column;
 	justify-content  : space-between;
 	width            : clamp(300px, 48%, 500px);
 	min-height       : 125px;
@@ -162,7 +163,6 @@
 		}
 	}
 }
-
 .list > .brewItem {
 	display               : grid;
 	grid-template-columns : 35% 3fr 150px;
@@ -170,25 +170,21 @@
 	align-items           : center;
 	width                 : 100%;
 	height                : 50px;
-	color                 : #000000;
-	background            : #EEEEEE;
-
+	color                 : white;
+	background            : #666;
+	.thumbnail { display:none; }
 	.text {
 		padding-left : 10px;
-
 		h2 {
 			align-content  : center;
 			min-height     : 1.4em;
 			overflow       : hidden;
 			text-overflow  : ellipsis;
-			font-weight    : 900;
 			vertical-align : middle;
 			white-space    : nowrap;
 		}
-
 		.description { display : none; }
 	}
-
 	.info {
 		display               : grid;
 		grid-template-areas   : 'tags authors pages views update storage';
@@ -202,7 +198,6 @@
 			display   : inline-block;
 			grid-area : tags;
 			min-width : 100px;
-
 			span {
 				--tag-base   : #AE9913;
 				--tag-type   : #3D843D;
@@ -210,7 +205,6 @@
 				--tag-meta   : #5050B1;
 				--tag-system : #C55656;
 			}
-
 		}
 		.brewAuthors {
 			display            : -webkit-box;
@@ -223,10 +217,8 @@
 			-webkit-line-clamp : 3;
 			line-clamp         : 3;
 			-webkit-box-orient : vertical;
-
 			&:has(a:only-of-type) { width : fit-content; }
 		}
-
 		.lastViewed {
 			display   : inline-block;
 			grid-area : views;
@@ -246,15 +238,12 @@
 			grid-area : storage;
 			filter    : drop-shadow(0 0 10px white);
 		}
-
 		.brewTags:has(span:nth-of-type(4)) {
 			position  : relative;
 			display   : flex;
 			flex-wrap : wrap;
 			overflow  : hidden;
-
 			span:nth-of-type(n + 2) { display : none; }
-
 			&:hover {
 				position   : absolute;
 				top        : 0;
@@ -264,9 +253,7 @@
 				padding    : 10px;
 				overflow   : visible;
 				background : #707070;
-
 				span:nth-of-type(n + 4) { display : block; }
-
 				&::after {
 					position                   : absolute;
 					top                        : 48px;
@@ -286,40 +273,32 @@
 			}
 		}
 	}
-
 	.links {
 		position        : relative;
 		display         : flex;
 		align-items     : center;
 		justify-content : space-evenly;
 		height          : 100%;
-
 		a, button {
 			align-content : center;
 			height        : 100%;
 			text-align    : center;
 			&:hover { background-color : hsl(from currentColor h 30% 90%); }
 		}
-	
 		.shareLink { color : @yellow; }
 		.editLink { color : @green; }
 		.downloadLink { color : @blueLight; }
 		.deleteLink { color : @red; }
 	}
 }
-
 .card > .brewItem {
-	display               : flex;
-	flex-direction        : column;
 	gap                   : 5px;
 	justify-content       : flex-end;
 	width                 : 300px;
 	height                : 400px;
-	padding               : 10px;
-	padding-top           : 100px;
-	padding-bottom        : 50px;
+	padding               : 100px 10px 50px;
 	color                 : white;
-	background-color      : grey;
+	background-color      : #555;
 	background-image      : url('@themes/assets/naturalCritLogoBlack.svg');
 	background-repeat     : no-repeat;
 	background-position   : center 20%;
@@ -327,8 +306,6 @@
 	border                : 1px solid;
 	border-radius         : 10px;
 	background-blend-mode : soft-light;
-	isolation             : isolate;
-
 	&::before {
 		position         : absolute;
 		right            : 0;
@@ -338,18 +315,16 @@
 		display          : block;
 		height           : 50%;
 		content          : '';
-		background-image : linear-gradient(0deg, #777777FF 0, #77777700 90%);
+		background-image : linear-gradient(0deg, #555F 0, #5550 90%);
 		transition       : height 0.2s;
 	}
-
 	&:hover {
 		&::before {
 			height           : 100%;
-			background-image : linear-gradient(0deg, #777777FF 0, #777777FF 55%, #77777700 65%);
+			background-image : linear-gradient(0deg, #555F 0, #555F 55%, #5550 65%);
 		}
 		.text .description { height : fit-content; }
 	}
-
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -361,19 +336,15 @@
 		background-position : right top;
 		background-size     : cover;
 	}
-
 	.text {
 		filter : drop-shadow(0 1px 4px black);
-
 		h2 { font-weight : 900; }
-
 		.description {
 			height     : 0;
 			overflow   : hidden;
 			transition : height 0.2s;
 		}
 	}
-
 	.info {
 		display               : grid;
 		grid-template-areas   : 'tags tags tags tags'
@@ -383,11 +354,9 @@
 		grid-template-columns : 1fr 1fr 1fr 30px;
 		height                : 110px;
 		filter                : drop-shadow(0 1px 2px black);
-
 		.brewTags {
 			grid-area : tags;
 			color     : black;
-
 			i { color : white; }
 			> span { background : hsl(from currentColor h 20% 80%); }
 		}
@@ -397,7 +366,6 @@
 		.lastUpdated { grid-area : update; }
 		.storage { grid-area : storage; }
 	}
-
 	.links {
 		position : absolute;
 		right    : 0;
@@ -407,7 +375,6 @@
 		height   : 40px;
 	}
 }
-
 @media screen and (max-width : 1400px) {
 	.brewCollection .brewGroup {
 		&.list {
@@ -418,7 +385,6 @@
 					grid-template-columns : 2fr 1fr 20px;
 					width                 : clamp(200px, 100%, 650px);
 				}
-
 				.brewPages,
 				.lastViewed,
 				.brewAuthors { display : none; }
@@ -431,7 +397,6 @@
 		}
 	}
 }
-
 @media screen and (max-width : 1200px) {
 	.brewCollection .brewGroup {
 		&.list {
@@ -442,7 +407,6 @@
 					grid-template-columns : 1fr 20px;
 					width                 : clamp(200px, 100%, 650px);
 				}
-
 				.brewPages,
 				.lastViewed,
 				.brewAuthors,
@@ -450,7 +414,6 @@
 			}
 			.detailsOpen {
 				height : 100px;
-
 				.info {
 					display               : grid;
 					grid-template-areas   : 'tags views pages .'
@@ -470,7 +433,6 @@
 		}
 	}
 }
-
 @media screen and (max-width : 800px) {
 	.brewCollection .brewGroup {
 		&.list {
@@ -480,25 +442,21 @@
 					grid-template-columns : 1fr;
 					width                 : clamp(200px, 100%, 650px);
 				}
-
 				.brewPages,
 				.lastViewed,
 				.brewAuthors,
 				.lastUpdated,
 				.storage { display : none; }
 			}
-
 			.brewItem { transition : height 0.2s; }
 			.detailsOpen {
 				display               : grid;
 				grid-template-columns : 3fr 3fr 30px;
 				height                : 100px;
 				padding               : 5px;
-
 				.text {
 					height  : 100%;
 					padding : 0;
-
 					h2 {
 						display            : -webkit-box;
 						height             : fit-content;
@@ -510,7 +468,6 @@
 						-webkit-box-orient : vertical;
 					}
 				}
-
 				.info {
 					display               : grid;
 					grid-template-areas   : 'tags pages views views'
@@ -530,7 +487,6 @@
 		}
 	}
 }
-
 @media screen and (max-width : 650px) {
 	.brewCollection .brewGroup {
 		&.list {
@@ -542,7 +498,6 @@
 				grid-template-rows : 1fr 2fr;
 				.info {
 					display : grid;
-
 					.lastUpdated {
 						width         : 100px;
 						overflow      : hidden;
