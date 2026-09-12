@@ -4,7 +4,7 @@ const loginUrl = 'https://www.naturalcrit.com/login';
 
 // Prevent parsing text (e.g. document titles) as markdown
 const escape = (text = '')=>{
-	return text.split('').map((char)=>`&#${char.charCodeAt(0)};`).join('');
+	return text.replace(/[^a-zA-Z0-9 ]/g, (char)=>`&#${char.charCodeAt(0)};`);
 };
 
 const authorLinks = (authors = []) =>
