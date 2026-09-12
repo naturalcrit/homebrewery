@@ -312,4 +312,5 @@ const errorIndex = (errorCode, props = {})=>{
 	}
 };
 
+export { escape, authorLinks };
 export default errorIndex;
