@@ -3,8 +3,8 @@ import dedent from 'dedent';
 const loginUrl = 'https://www.naturalcrit.com/login';
 
 // Prevent parsing text (e.g. document titles) as markdown
-const escape = (text = '')=>{
-	text = String(text);
+const escape = (text)=>{
+	text = String(text); // undefined => 'undefined', null => 'null'
 	return text.replace(/[^a-zA-Z0-9 ]/g, (char)=>`&#${char.charCodeAt(0)};`);
 };
 
