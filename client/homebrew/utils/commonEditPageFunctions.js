@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
+import _                                      from 'lodash';
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
@@ -23,7 +24,9 @@ export default function useCommonEditPageFunctions(dependencies) {
 		trySaveRef,
 		sandbox,
 		saveGoogle = false,
-		unsavedChangesRef
+		unsavedChangesRef,
+		setUnsavedChanges,
+		lastSavedBrew
 	} = dependencies;
 
 	//==--------- Page setup ----------==//
@@ -55,6 +58,15 @@ export default function useCommonEditPageFunctions(dependencies) {
 			window.onBeforeUnload = null;
 		};
 	}, []);
+
+	//======----- Check for unsaved changes and autosave if enabled -----======
+	useEffect(()=>{
+		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
+		setUnsavedChanges(hasChange);
+
+		if(autoSaveEnabled) trySaveRef.current(false, hasChange, saveGoogle);
+	}, [currentBrew]);
+
 
 	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
 		if(subfield == 'renderer' || subfield == 'theme')

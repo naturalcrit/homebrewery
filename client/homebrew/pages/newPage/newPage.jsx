@@ -93,7 +93,9 @@ const NewPage = (props)=>{
 		setWarnUnsavedChanges,
 		trySaveRef,
 		unsavedChangesRef,
-		sandbox
+		setUnsavedChanges,
+		sandbox,
+		lastSavedBrew
 	});
 
 	const loadBrew = ()=>{
@@ -124,13 +126,6 @@ const NewPage = (props)=>{
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
-
-	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
-		setUnsavedChanges(hasChange);
-
-		if(autoSaveEnabled) trySave(false, hasChange);
-	}, [currentBrew]);
 
 	useEffect(()=>{
 		trySaveRef.current = trySave;
