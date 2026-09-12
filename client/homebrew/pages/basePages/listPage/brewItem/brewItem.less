@@ -2,14 +2,14 @@
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 .brewItem {
-	display:flex;
-	flex-direction        : column;
 	position                    : relative;
+	display                     : flex;
+	flex-direction              : column;
 	overflow                    : hidden;
 	font-size                   : 15px;
+	isolation                   : isolate;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
-	isolation             : isolate;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -23,7 +23,7 @@
 	}
 	.text {
 		h2 {
-			font-family : "Alata";
+			font-family : 'Alata';
 			font-size   : 1.25em;
 		}
 	}
@@ -90,14 +90,14 @@
 		a,
 		button {
 			display         : block;
+			align-content   : center;
 			width           : 100%;
+			height          : 100%;
 			
 			font-size       : 1.3em;
 			color           : white;
+			text-align      : center;
 			text-decoration : unset;
-			align-content : center;
-			height        : 100%;
-			text-align    : center;
 		
 			i { cursor : pointer; }
 		}
@@ -171,8 +171,8 @@
 	width                 : 100%;
 	height                : 50px;
 	color                 : white;
-	background            : #666;
-	.thumbnail { display:none; }
+	background            : #666666;
+	.thumbnail { display : none; }
 	.text {
 		padding-left : 10px;
 		h2 {
@@ -298,7 +298,7 @@
 	height                : 400px;
 	padding               : 100px 10px 50px;
 	color                 : white;
-	background-color      : #555;
+	background-color      : #555555;
 	background-image      : url('@themes/assets/naturalCritLogoBlack.svg');
 	background-repeat     : no-repeat;
 	background-position   : center 20%;
@@ -315,13 +315,13 @@
 		display          : block;
 		height           : 50%;
 		content          : '';
-		background-image : linear-gradient(0deg, #555F 0, #5550 90%);
+		background-image : linear-gradient(0deg, #555555FF 0, #55555500 90%);
 		transition       : height 0.2s;
 	}
 	&:hover {
 		&::before {
 			height           : 100%;
-			background-image : linear-gradient(0deg, #555F 0, #555F 55%, #5550 65%);
+			background-image : linear-gradient(0deg, #555555FF 0, #555555FF 55%, #55555500 65%);
 		}
 		.text .description { height : fit-content; }
 	}
