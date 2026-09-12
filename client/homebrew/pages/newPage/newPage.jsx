@@ -32,7 +32,6 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -81,14 +80,20 @@ const NewPage = (props)=>{
 		setThemeBundle,
 		HTMLErrors,
 		setHTMLErrors,
+		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
 		BREWKEY,
 		STYLEKEY,
 		SNIPKEY,
 		METAKEY,
-		fetchThemeBundle,
-		hbfm	
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		trySaveRef,
+		unsavedChangesRef,
+		sandbox
 	});
 
 	const loadBrew = ()=>{

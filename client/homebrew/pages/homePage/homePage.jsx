@@ -8,7 +8,6 @@ import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
 
@@ -36,7 +35,6 @@ const SAVE_TIMEOUT = 10000;
 const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
-const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -67,6 +65,7 @@ const HomePage =(props)=>{
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
 	const warnUnsavedTimeout = useRef(null);
+	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef = useRef(unsavedChanges);
 
 	const {
@@ -76,14 +75,20 @@ const HomePage =(props)=>{
 		setThemeBundle,
 		HTMLErrors,
 		setHTMLErrors,
+		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
 		BREWKEY,
 		STYLEKEY,
 		SNIPKEY,
 		METAKEY,
-		fetchThemeBundle,
-		hbfm	
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		trySaveRef,
+		unsavedChangesRef,
+		sandbox
 	});
 
 	useEffect(()=>{

@@ -1,23 +1,36 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
+
+const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+
 export default function useCommonEditPageFunctions(dependencies) {
     const {
         setError,
         setThemeBundle,
         HTMLErrors,
         setHTMLErrors,
+        currentBrew,
         setCurrentBrew,
         useLocalStorage,
         BREWKEY,
         STYLEKEY,
         SNIPKEY,
         METAKEY,
-        fetchThemeBundle,
-        hbfm
+        hbfm,
+        autoSaveEnabled,
+        setAutoSaveEnabled,
+        setWarnUnsavedChanges,
+        trySaveRef,
+        sandbox,
+        saveGoogle = false,
+        unsavedChangesRef
         } = dependencies;
 
     //==--------- Page setup ----------==//
     useEffect(()=>{
-		const autoSavePref = JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
+		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
+        console.log(autoSavePref)
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
