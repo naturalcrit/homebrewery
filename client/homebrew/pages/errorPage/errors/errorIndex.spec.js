@@ -122,6 +122,7 @@ describe('errorIndex', () => {
       expect(errorIndex('00')).not.toBe(result);
     });
 
+
     it.each([
       -1,
       undefined,
@@ -129,9 +130,12 @@ describe('errorIndex', () => {
       '',
       'NO_SUCH_CODE'
     ])('uses the switch default for %p', (errorCode) => {
-      expect(errorIndex(errorCode)).toBe(
-        errorIndex('NO_SUCH_CODE')
-      );
+      const result = errorIndex(errorCode);
+
+      expect(result).toContain('An unexpected error occurred.');
+      expect(result).toContain('we don\'t even have an error message');
+      expect(result).toContain(escape(errorCode));
+      expect(result).not.toBe(errorIndex('00'));
     });
 
     it('escapes an unexpected error code in the default message', () => {
