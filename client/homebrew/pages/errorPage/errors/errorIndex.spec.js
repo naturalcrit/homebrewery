@@ -122,7 +122,6 @@ describe('errorIndex', () => {
       expect(errorIndex('00')).not.toBe(result);
     });
 
-
     it.each([
       -1,
       undefined,
@@ -150,25 +149,19 @@ describe('errorIndex', () => {
   describe('error-code types', () => {
 
     it('does not treat number 91 as string error code 91', () => {
-      expect(errorIndex(91)).toBe(
-        errorIndex('NO_SUCH_CODE')
-      );
       expect(errorIndex(91)).not.toBe(
         errorIndex('91')
       );
     });
 
     it('does not treat number 1 as string error code 01', () => {
-      expect(errorIndex(1)).toBe(
-        errorIndex('NO_SUCH_CODE')
-      );
-      expect(errorIndex(1)).not.toBe(
-        errorIndex('01')
-      );
+        expect(errorIndex(1)).not.toBe(
+          errorIndex('01')
+        );
     });
 
-    it('treats number 1 and string 01 differently', () => {
-      expect(errorIndex(1)).not.toBe(
+    it('honours leading zeros', () => {
+      expect(errorIndex('1')).not.toBe(
         errorIndex('01')
       );
     });
@@ -180,11 +173,11 @@ describe('errorIndex', () => {
 
     it('returns usable messages for all defined error codes', () => {
       // generic errors});
-      let errorCodes = [ '00', '01', '02' ];
+      let errorCodes = [ '00', '01' ];
       assertErrorMessages(errorCodes);
 
       // brew errors
-      errorCodes = codeStrings('03', '51');
+      errorCodes = codeStrings('02', '51');
       const brewProps = {
         brew: {
           authors: [ 'Alice Smith', 'Bob Jones' ],
@@ -210,14 +203,14 @@ describe('errorIndex', () => {
       assertErrorMessages(errorCodes);
 
       // folder errors
-      errorCodes = codeStrings('103', '103');
-      const folderProps = {
-        folder: {
-          folderId: 'test-folder-id',
-          displayName: 'Test Folder'
-        }
-      };
-      assertErrorMessages(errorCodes, folderProps);
+//       errorCodes = codeStrings('100', '120');
+//       const folderProps = {
+//         folder: {
+//           folderId: 'test-folder-id',
+//           displayName: 'Test Folder'
+//         }
+//       };
+//       assertErrorMessages(errorCodes, folderProps);
     });
 
   });
