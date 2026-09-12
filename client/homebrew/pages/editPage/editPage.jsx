@@ -79,10 +79,6 @@ const EditPage = (props)=>{
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
 
-	const handleSplitMove = ()=>{
-		editorRef.current?.update();
-	};
-
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
 		...prevBrew,
 		style    : newData.style,
@@ -321,6 +317,7 @@ const EditPage = (props)=>{
 	};
 
 	const {
+		handleSplitMove,
 		handleBrewChange
 	} = useCommonEditPageFunctions({
 		saveGoogle,
@@ -343,7 +340,8 @@ const EditPage = (props)=>{
 		setUnsavedChanges,
 		trySave,
 		sandbox,
-		lastSavedBrew
+		lastSavedBrew,
+		editorRef
 	});
 
 	return (

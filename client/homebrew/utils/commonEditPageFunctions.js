@@ -26,7 +26,8 @@ export default function useCommonEditPageFunctions(dependencies) {
 		saveGoogle = false,
 		unsavedChanges,
 		setUnsavedChanges,
-		lastSavedBrew
+		lastSavedBrew,
+		editorRef
 	} = dependencies;
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
@@ -35,7 +36,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 	useEffect(()=>{
 		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
-		console.log(autoSavePref)
 		setWarnUnsavedChanges(!autoSavePref);
 		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
@@ -70,6 +70,9 @@ export default function useCommonEditPageFunctions(dependencies) {
 		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
 	}, [currentBrew]);
 
+	const handleSplitMove = ()=>{
+		editorRef.current.update();
+	};
 
 	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
 		if(subfield == 'renderer' || subfield == 'theme')
@@ -95,6 +98,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 	};
 
 	return {
+		handleSplitMove,
 		handleBrewChange
 	}
 }

@@ -62,8 +62,8 @@ const HomePage =(props)=>{
 	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
-	const editorRef         = useRef(null);
-	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
+	const editorRef          = useRef(null);
+	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const warnUnsavedTimeout = useRef(null);
 
 	const save = ()=>{
@@ -77,10 +77,6 @@ const HomePage =(props)=>{
 				const saved = res.body;
 				window.location = `/edit/${saved.editId}`;
 			});
-	};
-
-	const handleSplitMove = ()=>{
-		editorRef.current.update();
 	};
 
 	const resetWarnUnsavedTimer = ()=>{
@@ -145,7 +141,8 @@ const HomePage =(props)=>{
 		</Navbar>;
 	};
 
-		const {
+	const {
+		handleSplitMove,
 		handleBrewChange
 	} = useCommonEditPageFunctions({
 		setError,
@@ -166,7 +163,8 @@ const HomePage =(props)=>{
 		unsavedChanges,
 		setUnsavedChanges,
 		sandbox,
-		lastSavedBrew
+		lastSavedBrew,
+		editorRef
 	});
 
 	return (

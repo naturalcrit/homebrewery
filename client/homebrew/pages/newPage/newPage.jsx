@@ -62,8 +62,8 @@ const NewPage = (props)=>{
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
-	const editorRef     = useRef(null);
-	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
+	const editorRef          = useRef(null);
+	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	// const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
 
@@ -98,10 +98,6 @@ const NewPage = (props)=>{
 		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
-	};
-
-	const handleSplitMove = ()=>{
-		editorRef.current.update();
 	};
 
 	const resetWarnUnsavedTimer = ()=>{
@@ -199,7 +195,8 @@ const NewPage = (props)=>{
 		</Navbar>
 	);
 
-		const {
+	const {
+		handleSplitMove,
 		handleBrewChange
 	} = useCommonEditPageFunctions({
 		setError,
@@ -221,7 +218,8 @@ const NewPage = (props)=>{
 		setUnsavedChanges,
 		trySave,
 		sandbox,
-		lastSavedBrew
+		lastSavedBrew,
+		editorRef
 	});
 
 	return (
