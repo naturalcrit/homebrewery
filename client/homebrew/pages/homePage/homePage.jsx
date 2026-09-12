@@ -2,7 +2,7 @@
 import './homePage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
@@ -65,33 +65,7 @@ const HomePage =(props)=>{
 	const editorRef         = useRef(null);
 	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef = useRef(unsavedChanges);
-
-	const {
-		handleBrewChange
-	} = useCommonEditPageFunctions({
-		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		trySaveRef,
-		unsavedChangesRef,
-		setUnsavedChanges,
-		sandbox,
-		lastSavedBrew
-	});
 
 	useEffect(()=>{
 		unsavedChangesRef.current = unsavedChanges;
@@ -175,6 +149,30 @@ const HomePage =(props)=>{
 			</Nav.section>
 		</Navbar>;
 	};
+
+		const {
+		handleBrewChange
+	} = useCommonEditPageFunctions({
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		unsavedChangesRef,
+		setUnsavedChanges,
+		sandbox,
+		lastSavedBrew
+	});
 
 	return (
 		<div className='homePage sitePage'>

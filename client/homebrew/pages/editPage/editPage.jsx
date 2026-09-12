@@ -2,7 +2,7 @@
 import './editPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import { hbfm } from 'hbmarkedwrapper';
 import _                                      from 'lodash';
@@ -78,37 +78,9 @@ const EditPage = (props)=>{
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 	const saveTimeout        = useRef(null);
 	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
 	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
 
-	const {
-		handleBrewChange
-	} = useCommonEditPageFunctions({
-		saveGoogle,
-		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		trySaveRef,
-		unsavedChangesRef,
-		setUnsavedChanges,
-		sandbox,
-		lastSavedBrew
-	});
-
 	useEffect(()=>{
-		trySaveRef.current = trySave;
 		unsavedChangesRef.current = unsavedChanges;
 	});
 
@@ -159,7 +131,7 @@ const EditPage = (props)=>{
 		trySave(true, true, newSaveGoogle);
 	};
 
-	const trySave = (immediate = false, hasChanges = true, saveToGoogle = false)=>{
+	const trySave = useEffectEvent((immediate = false, hasChanges = true, saveToGoogle = false)=>{
 		clearTimeout(saveTimeout.current);
 		if(isSaving) return;
 		if(!hasChanges && !immediate) return;
@@ -176,7 +148,7 @@ const EditPage = (props)=>{
 			setLastSavedTime(new Date());
 			if(!autoSaveEnabled) resetWarnUnsavedTimer();
 		}, newTimeout);
-	};
+	});
 
 	const save = async (brew, saveToGoogle)=>{
 		setHTMLErrors(hbfm.validate(brew.text));
@@ -352,6 +324,32 @@ const EditPage = (props)=>{
 			</Nav.section>
 		</Navbar>;
 	};
+
+	const {
+		handleBrewChange
+	} = useCommonEditPageFunctions({
+		saveGoogle,
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		autoSaveEnabled,
+		setAutoSaveEnabled,
+		setWarnUnsavedChanges,
+		unsavedChangesRef,
+		setUnsavedChanges,
+		trySave,
+		sandbox,
+		lastSavedBrew
+	});
 
 	return (
 		<div className='editPage sitePage'>
