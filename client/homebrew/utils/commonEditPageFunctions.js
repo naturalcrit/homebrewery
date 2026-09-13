@@ -1,14 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
+const SAVE_TIMEOUT                  = 10000;  //Autosave 10 seconds after last change
 const UNSAVED_WARNING_TIMEOUT       = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -24,18 +26,21 @@ export default function useCommonEditPageFunctions(dependencies) {
 		autoSaveEnabled,
 		setAutoSaveEnabled,
 		setWarnUnsavedChanges,
-		trySave = ()=>{},
 		sandbox,
-		saveGoogle = false,
 		unsavedChanges,
 		setUnsavedChanges,
 		lastSavedBrew,
 		editorRef,
-		saveTimeout = undefined
+		isSaving,
+		setIsSaving,
+		save,
+		lastSavedTime,
+		setLastSavedTime
 	} = dependencies;
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
+	const saveTimeout        = useRef(null);
 
 	//==--------- Page setup ----------==//
 	useEffect(()=>{
@@ -116,10 +121,30 @@ export default function useCommonEditPageFunctions(dependencies) {
 		setWarnUnsavedChanges(autoSaveEnabled);
 	};
 
+	const trySave = useEffectEvent((forceSave = false, hasChanges = true, saveToGoogle = false)=>{
+		clearTimeout(saveTimeout.current);
+		if(isSaving) return;
+		if(!forceSave && !hasChanges) return;
+		const newTimeout = forceSave ? 0 : SAVE_TIMEOUT;
+
+		saveTimeout.current = setTimeout(async ()=>{
+			setIsSaving(true);
+			setError(null);
+			await save(currentBrew, saveToGoogle)
+			.catch((err)=>{
+				setError(err);
+			});
+			setIsSaving(false);
+			setLastSavedTime(new Date());
+			if(!autoSaveEnabled) resetWarnUnsavedTimer();
+		}, newTimeout);
+	});
+
 	return {
 		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange,
-		toggleAutoSave
+		toggleAutoSave,
+		trySave,
 	}
 }

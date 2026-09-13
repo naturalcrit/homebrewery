@@ -38,8 +38,6 @@ import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
-const SAVE_TIMEOUT = 10000;
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -74,7 +72,6 @@ const EditPage = (props)=>{
 
 	const editorRef     = useRef(null);
 	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
-	const saveTimeout   = useRef(null);
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
 		...prevBrew,
@@ -112,25 +109,6 @@ const EditPage = (props)=>{
 		setError(null);
 		trySave(true, true, newSaveGoogle);
 	};
-
-	const trySave = useEffectEvent((immediate = false, hasChanges = true, saveToGoogle = false)=>{
-		clearTimeout(saveTimeout.current);
-		if(isSaving) return;
-		if(!hasChanges && !immediate) return;
-		const newTimeout = immediate ? 0 : SAVE_TIMEOUT;
-
-		saveTimeout.current = setTimeout(async ()=>{
-			setIsSaving(true);
-			setError(null);
-			await save(currentBrew, saveToGoogle)
-			.catch((err)=>{
-				setError(err);
-			});
-			setIsSaving(false);
-			setLastSavedTime(new Date());
-			if(!autoSaveEnabled) resetWarnUnsavedTimer();
-		}, newTimeout);
-	});
 
 	const save = async (brew, saveToGoogle)=>{
 		setHTMLErrors(hbfm.validate(brew.text));
@@ -303,7 +281,8 @@ const EditPage = (props)=>{
 		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange,
-		toggleAutoSave
+		toggleAutoSave,
+		trySave
 	} = useCommonEditPageFunctions({
 		saveGoogle,
 		setError,
@@ -323,11 +302,14 @@ const EditPage = (props)=>{
 		setWarnUnsavedChanges,
 		unsavedChanges,
 		setUnsavedChanges,
-		trySave,
 		sandbox,
 		lastSavedBrew,
 		editorRef,
-		saveTimeout
+		isSaving,
+		setIsSaving,
+		save,
+		lastSavedTime,
+		setLastSavedTime
 	});
 
 	return (
