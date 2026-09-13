@@ -9,22 +9,10 @@ const Navbar = createReactClass({
 	displayName     : 'Navbar',
 	getInitialState : function() {
   		return {
-			// showNonChromeWarning: false, // uncomment if needed
     		ver : global.version || '0.0.0'
   		};
 	},
 
-	/*
-	renderChromeWarning : function(){
-		if(!this.state.showNonChromeWarning) return;
-		return <Nav.item className='warning' icon='fa-exclamation-triangle'>
-			Optimized for Chrome
-			<div className='dropdown'>
-				If you are experiencing rendering issues, use Chrome instead
-			</div>
-		</Nav.item>
-	},
-*/
 	render : function(){
 		return <Nav.base>
 			<Nav.section>
