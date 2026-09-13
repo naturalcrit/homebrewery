@@ -197,18 +197,31 @@ const makeLink = (view)=>{
 	return true;
 };
 
-const makeList = (type)=>(view)=>{
+const makeList = (type) => (view) => {
 	const { from, to } = view.state.selection.main;
+	const startLine = view.state.doc.lineAt(from);
+	const endLine = view.state.doc.lineAt(to);
 	const lines = [];
-	for (let l = from; l <= to; l++) {
-		const lineText = view.state.doc.line(l + 1).text;
-		lines.push(lineText);
+
+	for (let lineNo = startLine.number; lineNo <= endLine.number; lineNo++) {
+		lines.push(view.state.doc.line(lineNo).text);
 	}
 	const joined = lines.join('\n');
-	let newText;
-	if(type === 'UL') newText = joined.replace(/^/gm, '- ');
-	else newText = joined.replace(/^/gm, (m, i)=>`${i + 1}. `);
-	view.dispatch({ changes: { from, to, insert: newText } });
+
+	const newText = type === 'UL'
+		? joined.replace(/^/gm, '- ')
+		: joined.replace(/^/gm, (_, offset) => {
+			const lineNumber = joined.slice(0, offset).split('\n').length;
+			return `${lineNumber}. `;
+		});
+
+	view.dispatch({
+		changes: {
+			from: startLine.from,
+			to: endLine.to,
+			insert: newText
+		}
+	});
 	return true;
 };
 
@@ -260,8 +273,8 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-m',     run: makeDiv },
 	{ key: 'Mod-/',           run: makeComment },
 	{ key: 'Mod-k',           run: makeLink },
-	{ key: 'Mod-l',           run: makeList('UL') },
-	{ key: 'Shift-Mod-l',     run: makeList('OL') },
+	{ key: 'Mod-Shift-u',     run: makeList('UL') },
+	{ key: 'Mod-Shift-o',     run: makeList('OL') },
 	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
 	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
 	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
