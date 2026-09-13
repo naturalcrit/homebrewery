@@ -28,8 +28,6 @@ import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-const SAVE_TIMEOUT = 10000;
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -96,24 +94,22 @@ const NewPage = (props)=>{
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
 
-	const trySave = useEffectEvent(async ()=>{
-  	setIsSaving(true);
-
-		const updatedBrew = { ...currentBrew };
-		splitTextStyleAndMetadata(updatedBrew);
-
-		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm;
-		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
+	const save = async (brew, saveToGoogle)=>{
+		//Prepare content to send to server
+		const brewToSave = {
+			...brew,
+			text      : brew.text.normalize('NFC'),
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
+			textBin   : undefined
+		};
 
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
-			.send(updatedBrew)
+			.send(brewToSave)
 			.catch((err)=>{
-				setIsSaving(false);
+				console.error('Error Updating Local Brew');
 				setError(err);
 			});
-
-		setIsSaving(false);
 		if(!res) return;
 
 		const savedBrew = res.body;
@@ -123,7 +119,7 @@ const NewPage = (props)=>{
 		localStorage.removeItem(METAKEY);
 		window.onbeforeunload = null;
 		window.location = `/edit/${savedBrew.editId}`;
-	});
+	};
 
 	const renderSaveButton = ()=>{
 		// #1 - Currently saving, show SAVING
@@ -146,7 +142,7 @@ const NewPage = (props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={trySave} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
@@ -188,8 +184,10 @@ const NewPage = (props)=>{
 	const {
 		resetWarnUnsavedTimer,
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		trySave
 	} = useCommonEditPageFunctions({
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -207,10 +205,14 @@ const NewPage = (props)=>{
 		setWarnUnsavedChanges,
 		unsavedChanges,
 		setUnsavedChanges,
-		trySave,
 		sandbox,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		isSaving,
+		setIsSaving,
+		save,
+		lastSavedTime,
+		setLastSavedTime
 	});
 
 	return (
