@@ -4,6 +4,9 @@ import _                                      from 'lodash';
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
+const UNSAVED_WARNING_TIMEOUT       = 900000; //Warn user afer 15 minutes of unsaved changes
+const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
+
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
 		setError,
@@ -27,10 +30,12 @@ export default function useCommonEditPageFunctions(dependencies) {
 		unsavedChanges,
 		setUnsavedChanges,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		saveTimeout = undefined
 	} = dependencies;
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
+	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
 
 	//==--------- Page setup ----------==//
 	useEffect(()=>{
@@ -70,6 +75,12 @@ export default function useCommonEditPageFunctions(dependencies) {
 		if(autoSaveEnabled) trySave(false, hasChange, saveGoogle);
 	}, [currentBrew]);
 
+	const resetWarnUnsavedTimer = ()=>{
+		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
+		clearTimeout(warnUnsavedTimeout.current);
+		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
+	};
+
 	const handleSplitMove = ()=>{
 		editorRef.current.update();
 	};
@@ -97,8 +108,18 @@ export default function useCommonEditPageFunctions(dependencies) {
 		}
 	};
 
+	const toggleAutoSave = ()=>{
+		clearTimeout(warnUnsavedTimeout.current);
+		clearTimeout(saveTimeout.current);
+		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
+		setAutoSaveEnabled(!autoSaveEnabled);
+		setWarnUnsavedChanges(autoSaveEnabled);
+	};
+
 	return {
+		resetWarnUnsavedTimer,
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		toggleAutoSave
 	}
 }

@@ -32,8 +32,6 @@ import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
 const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
@@ -64,7 +62,6 @@ const HomePage =(props)=>{
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	const warnUnsavedTimeout = useRef(null);
 
 	const save = ()=>{
 		request.post('/api')
@@ -77,12 +74,6 @@ const HomePage =(props)=>{
 				const saved = res.body;
 				window.location = `/edit/${saved.editId}`;
 			});
-	};
-
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
 	};
 
 	const renderSaveButton = ()=>{
@@ -142,6 +133,7 @@ const HomePage =(props)=>{
 	};
 
 	const {
+		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange
 	} = useCommonEditPageFunctions({

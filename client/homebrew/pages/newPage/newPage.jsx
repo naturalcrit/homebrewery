@@ -29,8 +29,6 @@ const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
 const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
 
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
@@ -64,8 +62,6 @@ const NewPage = (props)=>{
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	// const saveTimeout        = useRef(null);
-	const warnUnsavedTimeout = useRef(null);
 
 	useEffect(()=>{
 		loadBrew();
@@ -98,12 +94,6 @@ const NewPage = (props)=>{
 		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
-	};
-
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
 	};
 
 	const trySave = useEffectEvent(async ()=>{
@@ -196,6 +186,7 @@ const NewPage = (props)=>{
 	);
 
 	const {
+		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange
 	} = useCommonEditPageFunctions({
