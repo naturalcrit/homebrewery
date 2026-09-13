@@ -15,18 +15,20 @@ import dbCheck                       from './middleware/dbCheck.js';
 import sanitizeFilename              from 'sanitize-filename';
 import { DEFAULT_BREW }              from './brewDefaults.js';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import GoogleActions               from './googleActions.js';
+
+import api from './homebrew.api.js';
+const { getBrew, getUsersBrewThemes } = api;
+
+const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
+const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
+const migrateText       = fs.readFileSync('./client/homebrew/pages/homePage/migrate.md', 'utf8');
+const changelogText     = fs.readFileSync('changelog.md', 'utf8');
+const faqText           = fs.readFileSync('faq.md', 'utf8');
 
 export default function pageRoutes({
 	defaultMetaTags,
-	welcomeText,
-	welcomeTextLegacy,
-	migrateText,
-	changelogText,
-	faqText,
-	getBrew,
-	getUsersBrewThemes,
 	HomebrewModel,
-	GoogleActions,
 	sanitizeBrew,
 }) {
 	const app = express.Router();
