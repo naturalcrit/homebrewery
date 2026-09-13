@@ -38,17 +38,13 @@ import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
 const METAKEY  = 'HB_newPage_meta';
 
 const useLocalStorage = false;
-const sandbox	      = false;
+const sandbox	        = false;
 
 const EditPage = (props)=>{
 	props = {
@@ -74,10 +70,8 @@ const EditPage = (props)=>{
 	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
-	const editorRef          = useRef(null);
-	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	const saveTimeout        = useRef(null);
-	const warnUnsavedTimeout = useRef(null);
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
 		...prevBrew,
@@ -85,12 +79,6 @@ const EditPage = (props)=>{
 		text     : newData.text,
 		snippets : newData.snippets
 	}));
-
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
-	};
 
 	const handleGoogleClick = ()=>{
 		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
@@ -121,25 +109,6 @@ const EditPage = (props)=>{
 		setError(null);
 		trySave(true, true, newSaveGoogle);
 	};
-
-	const trySave = useEffectEvent((immediate = false, hasChanges = true, saveToGoogle = false)=>{
-		clearTimeout(saveTimeout.current);
-		if(isSaving) return;
-		if(!hasChanges && !immediate) return;
-		const newTimeout = immediate ? 0 : SAVE_TIMEOUT;
-
-		saveTimeout.current = setTimeout(async ()=>{
-			setIsSaving(true);
-			setError(null);
-			await save(currentBrew, saveToGoogle)
-			.catch((err)=>{
-				setError(err);
-			});
-			setIsSaving(false);
-			setLastSavedTime(new Date());
-			if(!autoSaveEnabled) resetWarnUnsavedTimer();
-		}, newTimeout);
-	});
 
 	const save = async (brew, saveToGoogle)=>{
 		setHTMLErrors(hbfm.validate(brew.text));
@@ -272,14 +241,6 @@ const EditPage = (props)=>{
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
-	const toggleAutoSave = ()=>{
-		clearTimeout(warnUnsavedTimeout.current);
-		clearTimeout(saveTimeout.current);
-		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
-		setAutoSaveEnabled(!autoSaveEnabled);
-		setWarnUnsavedChanges(autoSaveEnabled);
-	};
-
 	const renderAutoSaveButton = ()=>(
 		<Nav.item onClick={toggleAutoSave}>
 			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
@@ -317,8 +278,11 @@ const EditPage = (props)=>{
 	};
 
 	const {
+		resetWarnUnsavedTimer,
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		toggleAutoSave,
+		trySave
 	} = useCommonEditPageFunctions({
 		saveGoogle,
 		setError,
@@ -338,10 +302,14 @@ const EditPage = (props)=>{
 		setWarnUnsavedChanges,
 		unsavedChanges,
 		setUnsavedChanges,
-		trySave,
 		sandbox,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		isSaving,
+		setIsSaving,
+		save,
+		lastSavedTime,
+		setLastSavedTime
 	});
 
 	return (

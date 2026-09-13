@@ -31,10 +31,6 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -50,6 +46,7 @@ const HomePage =(props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew]                = useState(props.brew);
+	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError]                      = useState(undefined);
 	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(props.brew.text));
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
@@ -64,25 +61,20 @@ const HomePage =(props)=>{
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	const warnUnsavedTimeout = useRef(null);
 
-	const save = ()=>{
-		request.post('/api')
-			.send(currentBrew)
-			.end((err, res)=>{
-				if(err) {
-					setError(err);
-					return;
-				}
-				const saved = res.body;
-				window.location = `/edit/${saved.editId}`;
+	const save = async (brew, saveToGoogle)=>{
+		const res = await request
+			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.send(brew)
+			.catch((err)=>{
+				console.error('Error Updating Local Brew');
+				setError(err);
 			});
-	};
+		if(!res) return;
 
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
+		const saved = res.body;
+		window.onbeforeunload = null;
+		window.location = `/edit/${saved.editId}`;
 	};
 
 	const renderSaveButton = ()=>{
@@ -106,7 +98,7 @@ const HomePage =(props)=>{
 
 		// #3 - Unsaved changes exist, click to save, show SAVE NOW
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
 		if(autoSaveEnabled)
@@ -142,9 +134,12 @@ const HomePage =(props)=>{
 	};
 
 	const {
+		resetWarnUnsavedTimer,
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		trySave
 	} = useCommonEditPageFunctions({
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -164,7 +159,12 @@ const HomePage =(props)=>{
 		setUnsavedChanges,
 		sandbox,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		isSaving,
+		setIsSaving,
+		save,
+		lastSavedTime,
+		setLastSavedTime
 	});
 
 	return (
@@ -198,7 +198,7 @@ const HomePage =(props)=>{
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={()=>trySave(true, true, saveGoogle)}>
 				Save current <i className='fas fa-save' />
 			</div>
 
