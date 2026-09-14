@@ -112,11 +112,6 @@ const HomePage =(props)=>{
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
-	};
-
 	const renderNavbar = ()=>{
 		return <Navbar ver={props.ver}>
 			<Nav.section>
@@ -137,6 +132,7 @@ const HomePage =(props)=>{
 		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange,
+		clearError,
 		trySave
 	} = useCommonEditPageFunctions({
 		saveGoogle,

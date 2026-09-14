@@ -121,6 +121,11 @@ export default function useCommonEditPageFunctions(dependencies) {
 		setWarnUnsavedChanges(autoSaveEnabled);
 	};
 
+	const clearError = ()=>{
+		setError(null);
+		setIsSaving(false);
+	};
+
 	const trySave = useEffectEvent((forceSave = false, hasChanges = true, saveToGoogle = false)=>{
 		clearTimeout(saveTimeout.current);
 		if(isSaving) return;
@@ -145,6 +150,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		handleSplitMove,
 		handleBrewChange,
 		toggleAutoSave,
+		clearError,
 		trySave,
 	}
 }

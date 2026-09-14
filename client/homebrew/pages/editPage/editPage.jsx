@@ -247,11 +247,6 @@ const EditPage = (props)=>{
 		</Nav.item>
 	);
 
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
-	};
-
 	const renderNavbar = ()=>{
 		return <Navbar>
 			<Nav.section>
@@ -282,6 +277,7 @@ const EditPage = (props)=>{
 		handleSplitMove,
 		handleBrewChange,
 		toggleAutoSave,
+		clearError,
 		trySave
 	} = useCommonEditPageFunctions({
 		saveGoogle,
