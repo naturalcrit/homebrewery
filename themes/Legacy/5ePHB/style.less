@@ -115,13 +115,14 @@ body { counter-reset : phb-page-numbers; }
 		font-size           : 0.987cm;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
-		& + p::first-letter {
-			float       : left;
-			font-family : 'Solberry';
-			font-size   : 10em;
-			line-height : 0.795em;
-			color       : #222222;
-		}
+	}
+	.first-letter, .drop-cap,
+	h1 + p::first-letter {
+		float       : left;
+		font-family : 'Solberry';
+		font-size   : 10em;
+		line-height : 0.795em;
+		color       : #222222;
 	}
 	h2 { font-size : 0.705cm; }
 	h3 {

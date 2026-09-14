@@ -85,22 +85,23 @@
 		line-height         : 1em;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
-		& + p::first-letter {
-			float                   : left;
-			padding-bottom          : 2px;
-			padding-left            : 40px; //Allow background color to extend into margins
-			margin-top              : -0.3cm;
-			margin-bottom           : -20px;
-			margin-left             : -40px;
-			font-family             : 'SolberaImitationRemake';
-			font-size               : 3.5cm;
-			line-height             : 1em;
-			color                   : rgba(0, 0, 0, 0);
-			background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
-			-webkit-background-clip : text;
-			background-clip         : text;
-		}
 		& + p::first-line { font-variant : small-caps; }
+	}
+	.first-letter, .drop-cap,
+	h1 + p::first-letter {
+		float                   : left;
+		padding-bottom          : 2px;
+		padding-left            : 40px; //Allow background color to extend into margins
+		margin-top              : -0.3cm;
+		margin-bottom           : -20px;
+		margin-left             : -40px;
+		font-family             : 'SolberaImitationRemake';
+		font-size               : 3.5cm;
+		line-height             : 1em;
+		color                   : rgba(0, 0, 0, 0);
+		background-image        : linear-gradient(-45deg, #322814, #998250, #322814);
+		-webkit-background-clip : text;
+		background-clip         : text;
 	}
 	h2 {
 		//margin-top    : 0px; //Font is misaligned. Shift up slightly
@@ -196,7 +197,7 @@
 		}
 
 		& + * { margin-top : 0.54cm; }
-		
+
 	}
 
 	// *****************************
@@ -279,7 +280,7 @@
 	.watermark { color : black; }
 
 	/* Watercolor */
-	
+
 	.watercolor1 { --wc : @watercolor1; }
 	.watercolor2 { --wc : @watercolor2; }
 	.watercolor3 { --wc : @watercolor3; }
