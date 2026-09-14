@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
+import Nav                                    from '@navbar/nav.jsx';
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
@@ -23,20 +24,17 @@ export default function useCommonEditPageFunctions(dependencies) {
 		SNIPKEY,
 		METAKEY,
 		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
 		sandbox,
-		unsavedChanges,
-		setUnsavedChanges,
 		lastSavedBrew,
 		editorRef,
-		isSaving,
-		setIsSaving,
 		save,
-		lastSavedTime,
-		setLastSavedTime
 	} = dependencies;
+
+	const [isSaving, setIsSaving] = useState(false);
+	const [lastSavedTime, setLastSavedTime] = useState(new Date());
+	const [autoSaveEnabled, setAutoSaveEnabled] = useState(!sandbox);
+	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
+	const [unsavedChanges, setUnsavedChanges] = useState(false);
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
@@ -59,7 +57,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 				e.preventDefault();
 			}
 		};
-
 		document.addEventListener('keydown', handleControlKeys);
 		window.onbeforeunload = ()=>{
 			if(unsavedChangesRef.current)
@@ -145,12 +142,43 @@ export default function useCommonEditPageFunctions(dependencies) {
 		}, newTimeout);
 	});
 
+	const renderSaveButton = ()=>{
+		if(isSaving)
+			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
+
+		if(unsavedChanges && warnUnsavedChanges) {
+			resetWarnUnsavedTimer();
+			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
+			const text = elapsedTime === 0
+				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
+				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
+
+			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
+						Reminder...
+						<div className='errorContainer'>{text}</div>
+			</Nav.item>;
+		}
+
+		if(unsavedChanges)
+			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
+
+		if(autoSaveEnabled)
+			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+
+		if(sandbox)
+			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
+
+		return <Nav.item className='save saved'>saved</Nav.item>;
+	};
+
 	return {
-		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange,
 		toggleAutoSave,
 		clearError,
 		trySave,
+		renderSaveButton,
+		autoSaveEnabled,
+		unsavedChanges,
 	}
 }

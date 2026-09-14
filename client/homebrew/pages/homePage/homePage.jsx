@@ -53,11 +53,6 @@ const HomePage =(props)=>{
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle, setThemeBundle]                = useState({});
-	const [unsavedChanges, setUnsavedChanges]             = useState(false);
-	const [isSaving, setIsSaving]                   = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
-	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
-	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
@@ -77,41 +72,6 @@ const HomePage =(props)=>{
 		window.location = `/edit/${saved.editId}`;
 	};
 
-	const renderSaveButton = ()=>{
-		// #1 - Currently saving, show SAVING
-		if(isSaving)
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(unsavedChanges && warnUnsavedChanges) {
-			resetWarnUnsavedTimer();
-			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-						Reminder...
-						<div className='errorContainer'>{text}</div>
-			</Nav.item>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
-
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
-
-		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
-		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
-
-		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved</Nav.item>;
-	};
-
 	const renderNavbar = ()=>{
 		return <Navbar ver={props.ver}>
 			<Nav.section>
@@ -129,10 +89,11 @@ const HomePage =(props)=>{
 	};
 
 	const {
-		resetWarnUnsavedTimer,
 		handleSplitMove,
 		handleBrewChange,
 		clearError,
+		renderSaveButton,
+		unsavedChanges,
 		trySave
 	} = useCommonEditPageFunctions({
 		saveGoogle,
@@ -148,19 +109,10 @@ const HomePage =(props)=>{
 		SNIPKEY,
 		METAKEY,
 		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		unsavedChanges,
-		setUnsavedChanges,
 		sandbox,
 		lastSavedBrew,
 		editorRef,
-		isSaving,
-		setIsSaving,
 		save,
-		lastSavedTime,
-		setLastSavedTime
 	});
 
 	return (
