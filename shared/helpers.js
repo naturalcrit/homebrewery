@@ -4,8 +4,8 @@ import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
 const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=null, full=true)=>{
-	const textSplit  = /^(\\(snippet|style) +.+\n)/gm;
-	const titleSplit  = /^(\\(snippet|style) +(.+))/;
+	const textSplit  = /^(\\(snippet|style|text) +.+\n)/gm;
+	const titleSplit  = /^(\\(snippet|style|text) +(.+))/;
 	const mpAsSnippets = [];
 	const mpAsStyles = [];
 	// Snippets from Themes first.
@@ -13,20 +13,20 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 		for (const themes of themeBundleSnippets) {
 			if(typeof themes !== 'string') {
 				const themeSnippets = {
-					snippet : [],
-					style   : []
+					text  : [],
+					style : []
 				};
 				const snipSplit = themes.snippets.trim().split(textSplit).slice(1);
 				for (let snips = 0; snips < snipSplit.length; snips+=3) {
-					if((!snipSplit[snips].startsWith('\\snippet ')) && (!snipSplit[snips].startsWith('\\style '))) break;
 					const snipStyleLabel = titleSplit.exec(snipSplit[snips]);
-					if(!['style', 'snippet'].includes(snipStyleLabel[2])) break;
+					if(!['style', 'snippet', 'text'].includes(snipStyleLabel[2])) break;
 					const snippetName = snipStyleLabel[3].trim();
+					const snipType = snipStyleLabel[2] == 'snippet' ? 'text' : snipStyleLabel[2];
 					if(snippetName.length != 0) {
-						themeSnippets[snipStyleLabel[2]].push({
+						themeSnippets[snipType].push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 2].replace(/\n$/, ''),
+							gen  : snipSplit[snips + 2 ].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -35,7 +35,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						name        : themes.name,
 						icon        : '',
 						gen         : '',
-						subsnippets : themeSnippets.snippet
+						subsnippets : themeSnippets.text
 					});
 				}
 				if(themeSnippets.style.length > 0) {
@@ -52,28 +52,29 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 	// Local Snippets
 	if(userBrewSnippets) {
 		const userSnippets = {
-			snippet : [],
-			style :[]
+			text  : [],
+			style : []
 		};
 		const snipSplit = userBrewSnippets.trim().split(textSplit).slice(1);
 		for (let snips = 0; snips < snipSplit.length; snips+=3) {
 			const snipStyleLabel = titleSplit.exec(snipSplit[snips]);
-			if(!['style', 'snippet'].includes(snipStyleLabel[2])) break;
+			if(!['style', 'snippet', 'text'].includes(snipStyleLabel[2])) break;
 			const snippetName = snipStyleLabel[3].trim();
+			const snipType = snipStyleLabel[2] == 'snippet' ? 'text' : snipStyleLabel[2];
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
 					gen  : snipSplit[snips + 2].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
-				userSnippets[snipStyleLabel[2]].push(subSnip);
+				userSnippets[snipType].push(subSnip);
 			}
 		}
 		if(userSnippets.snippet?.length) {
 			mpAsSnippets.push({
 				name        : menuTitle || 'brew_snippets',
 				// icon        : '',
-				subsnippets : userSnippets.snippet
+				subsnippets : userSnippets.text
 			});
 		}
 		if(userSnippets.style?.length) {
@@ -123,7 +124,7 @@ const yamlSnippetsToText = (yamlObj)=>{
 
 	for (const snippet of yamlObj.snippets.snippets) {
 		for (const subSnippet of snippet.subsnippets) {
-			snippetsText = `${snippetsText}\\snippet ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
+			snippetsText = `${snippetsText}\\text ${subSnippet.name}\n${subSnippet.gen || ''}\n`;
 		}
 	}
 	for (const snippet of yamlObj.styles.snippets) {
