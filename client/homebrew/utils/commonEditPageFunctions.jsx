@@ -30,11 +30,11 @@ export default function useCommonEditPageFunctions(dependencies) {
 		save,
 	} = dependencies;
 
-	const [isSaving, setIsSaving] = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
-	const [autoSaveEnabled, setAutoSaveEnabled] = useState(!sandbox);
+	const [isSaving          , setIsSaving]           = useState(false);
+	const [lastSavedTime     , setLastSavedTime]      = useState(new Date());
+	const [autoSaveEnabled   , setAutoSaveEnabled]    = useState(!sandbox);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
-	const [unsavedChanges, setUnsavedChanges] = useState(false);
+	const [unsavedChanges    , setUnsavedChanges]     = useState(false);
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
