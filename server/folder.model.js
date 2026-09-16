@@ -8,7 +8,8 @@ import { model as BrewModel } from './homebrew.model.js';
 const FolderSchema = mongoose.Schema({
   author:       { type: String, required: true, index: true },
   folderId:     { type: String, required: true, index: true, unique: true, default: () => nanoid(12) },
-  slug:         { type: String, required: true, trim: true, },
+  slug:         { type: String, required: true, trim: true, lowercase: true,
+    match: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, },
   title:        { type: String, required: true, trim: true, default: 'untitled folder', },
   shareIds:     { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
@@ -32,6 +33,20 @@ const FolderSchema = mongoose.Schema({
 // isPrivate means non-authors cannot view the folder even if they have the url
 
 // updatedAt is managed in the app.
+
+
+// Folder utilities ..........................................................
+
+function slugify(str) {
+  return str
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")  // Remove accents
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s_-]/g, "")    // Remove special characters
+    .replace(/[\s_-]+/g, "-")         // Spaces/underscores → hyphens
+    .replace(/^-+|-+$/g, "");         // Trim hyphens
+}
 
 
 // Folder operations .........................................................
