@@ -70,7 +70,7 @@ const createFolderApi = async (req, res)=>{
     throw error;
   }
 
-  res.status(200).send(folder);
+  res.status(201).send(folder);
 };
 
 const updateFolderApi = async (req, res)=>{
@@ -110,7 +110,7 @@ const deleteFolderApi = async (req, res)=>{
     throw error;
   }
 
-  res.status(204).send();
+  res.sendStatus(204);
 };
 
 

@@ -58,7 +58,7 @@ describe('Tests for folder api', ()=>{
         slug        : 'my-folder',
         isPublished : true,
       });
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(201);
       expect(res.send).toHaveBeenCalledWith(folder);
     });
 
@@ -115,7 +115,7 @@ describe('Tests for folder api', ()=>{
         HBErrorCode : 105,
         name        : 'FolderCreate Error',
         message     : 'Folder could not be created',
-        status      : 404,
+        status      : 500,
       });
     });
 
