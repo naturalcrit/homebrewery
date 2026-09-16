@@ -4,18 +4,44 @@ import { model as FolderModel } from './folder.model.js';
 import express      from 'express';
 import asyncHandler from 'express-async-handler';
 import dbCheck      from './middleware/dbCheck.js';
-import ErrorIndex   from '../client/homebrew/pages/errorPage/errors/errorIndex.js';
 
 const router = express.Router();
 
+// error codes ...........................................................
+
+const folderApiErrors = {
+  '100': `Folder operations require a logged in user.`,
+  '101': `A folder with this identifier already exists`,
+  '102': `A bookmarks folder already exists`,
+  '103': `A favorites folder already exists`,
+
+  '104': `Folder could not be found.`,
+  '105': `Folder could not be created.`,
+
+  '106': `Folder to update could not be found.`,
+  '107': `Folder to delete could not be found.`,
+
+  '111': `Folder to add brew to could not be found.`,
+  '112': `Brew to add to folder could not be found.`,
+  '113': `Folder to remove brew from could not be found.`,
+  '114': `Brew to remove from folder could not be found.`,
+
+  '121': `Folder slug is not valid`,
+};
+
+// utilities .............................................................
+
 const requireAccount = (req, res, next)=>{
-  if(!req.account)
-    throw {
+  if(!req.account) {
+    const error = {
       HBErrorCode: 100,
       name: 'FolderAccess Error',
-      message: 'Folder operations require a logged in user.',
       status: 401,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+
+    throw error;
+  }
 
   next();
 };
@@ -26,19 +52,20 @@ router.use(dbCheck);
 // handlers .............................................................
 
 const createFolderApi = async (req, res)=>{
+
   const folder = await FolderModel.createFolder(req.account.username, {
-    title: req.body.title || 'untitled folder',
+    title: req.body.title,
     slug: req.body.slug,
-    isPublished: req.body.isPublished ?? false,
+    isPublished: req.body.isPublished,
   });
 
   if(!folder) {
-   const error = {
+    const error = {
       HBErrorCode: 105,
       name: 'FolderCreate Error',
-      status: 404,
+      status: 500,
     };
-    error.message = ErrorIndex({folderId: 'xyz', folderName: 'abc'})[error.HBErrorCode.toString()];
+    error.message = folderApiErrors[error.HBErrorCode];
 
     throw error;
   }
@@ -53,13 +80,15 @@ const updateFolderApi = async (req, res)=>{
     req.body,
   );
 
-  if(!folder)
-    throw {
+  if(!folder) {
+    const error = {
       HBErrorCode: 106,
       name: 'FolderUpdate Error',
-      message: 'Folder to update could not be found',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
+  }
 
   res.status(200).send(folder);
 };
@@ -71,13 +100,15 @@ const deleteFolderApi = async (req, res)=>{
     req.params.folderId,
   );
 
-  if(!result.deletedCount)
-    throw {
+  if(!result.deletedCount) {
+    const error = {
       HBErrorCode: 107,
       name: 'FolderDelete Error',
-      message: 'Folder to delete could not be found',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
+  }
 
   res.status(204).send();
 };
@@ -91,21 +122,23 @@ const addBrewToFolderApi = async (req, res)=>{
   );
 
   if (result?.error === 'FOLDER_NOT_FOUND') {
-    throw {
+    const error = {
       HBErrorCode: 111,
       name: 'FolderAddBrew Error',
-      message: 'Folder to add brew to could not be found.',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
   }
 
   if (result?.error === 'BREW_NOT_FOUND') {
-    throw {
+    const error = {
       HBErrorCode: 112,
       name: 'FolderAddBrew Error',
-      message: 'Brew to add to folder could not be found.',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
   }
 
   res.status(200).send(result);
@@ -119,21 +152,23 @@ const removeBrewFromFolderApi = async (req, res)=>{
   );
 
   if (result?.error === 'FOLDER_NOT_FOUND') {
-    throw {
+    const error = {
       HBErrorCode: 113,
       name: 'FolderRemoveBrew Error',
-      message: 'Folder to remove brew from could not be found',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
   }
 
   if (result?.error === 'BREW_NOT_FOUND') {
-    throw {
+    const error = {
       HBErrorCode: 114,
       name: 'FolderRemoveBrew Error',
-      message: 'Brew to remove from folder could not be found',
       status: 404,
     };
+    error.message = folderApiErrors[error.HBErrorCode];
+    throw error;
   }
 
   res.status(200).send(result);
