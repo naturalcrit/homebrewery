@@ -280,7 +280,7 @@ const errorIndex = (props)=>{
 
 		'111': dedent`Folder to add brew to could not be found.`,
 		'112': dedent`Brew to add to folder could not be found.`,
-		'123': dedent`Folder to remove brew from could not be found.`,
+		'113': dedent`Folder to remove brew from could not be found.`,
 		'114': dedent`Brew to remove from folder could not be found.`,
 
 	};
