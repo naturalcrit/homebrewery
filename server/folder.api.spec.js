@@ -384,7 +384,7 @@ describe('Tests for folder api', ()=>{
       await expect(api.removeBrewFromFolderApi(req, res)).rejects.toEqual({
         HBErrorCode : 114,
         name        : 'FolderRemoveBrew Error',
-        message     : 'Brew to remove from folder could not be found',
+        message     : 'Brew to remove from folder could not be found.',
         status      : 404,
       });
     });
