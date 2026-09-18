@@ -133,7 +133,6 @@ const BrewRenderer = (props)=>{
 
 	const [headerState, setHeaderState] = useState(false);
 
-	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
@@ -334,7 +333,7 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			<ErrorBar errors={props.errors} />
-			<div className='popups' ref={mainRef}>
+			<div className='popups'>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
