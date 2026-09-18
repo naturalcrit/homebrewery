@@ -103,7 +103,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const [visiblePages, setVisiblePages] = useState([]);
-	const [centerPage, setCenterPage] = useState(1);
+	const [centerPage  , setCenterPage  ] = useState(1);
 
 	const [state, setState] = useState({
 		isMounted  : false,
