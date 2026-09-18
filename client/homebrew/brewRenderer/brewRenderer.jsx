@@ -23,7 +23,6 @@ import safeHTML from './safeHTML.js';
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
-const PAGE_HEIGHT = 1056;
 
 const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
@@ -100,11 +99,9 @@ const BrewRenderer = (props)=>{
 		text                       : '',
 		style                      : '',
 		renderer                   : 'legacy',
-		theme                      : '5ePHB',
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentEditorViewPageNum   : 1,
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
@@ -138,7 +135,6 @@ const BrewRenderer = (props)=>{
 
 	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
-	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
