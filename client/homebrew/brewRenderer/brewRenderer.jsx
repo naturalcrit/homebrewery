@@ -111,11 +111,12 @@ const BrewRenderer = (props)=>{
 		...props
 	};
 
+	const [visiblePages, setVisiblePages] = useState([]);
+	const [centerPage  , setCenterPage  ] = useState(1);
+
 	const [state, setState] = useState({
 		isMounted    : false,
-		visibility   : 'hidden',
-		visiblePages : [],
-		centerPage   : 1
+		visibility   : 'hidden'
 	});
 
 	const [displayOptions, setDisplayOptions] = useState({
@@ -145,21 +146,17 @@ const BrewRenderer = (props)=>{
 		rawPages = props.text.split(PAGEBREAK_REGEX_V3);
 	}
 
-	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
-		setState((prevState)=>{
-			const updatedVisiblePages = new Set(prevState.visiblePages);
-			if(!isCenter)
-				isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
-
-			return {
-				...prevState,
-				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b),
-				centerPage   : isCenter ? pageNum : prevState.centerPage
-			};
+	const handlePageVisibilityChange = (pageNum, isVisible, isCenter) => {
+		setVisiblePages(prev => {
+			const updatedVisiblePages = new Set(prev);
+			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
+			return [...updatedVisiblePages].sort((a, b) => a - b);
 		});
 
-		if(isCenter)
+		if (isCenter) {
+			setCenterPage(pageNum);
 			props.onPageChange(pageNum);
+		}
 	};
 
 	const isInView = (index)=>{
@@ -346,7 +343,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={visiblePages.length > 0 ? visiblePages : [centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer'  title="Rendered Brew Content" initialContent={INITIAL_CONTENT}
