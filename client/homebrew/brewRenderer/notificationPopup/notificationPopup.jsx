@@ -1,7 +1,7 @@
 import './notificationPopup.less';
 import React, { useEffect, useState } from 'react';
 import request from '../../utils/request-middleware.js';
-import Markdown from '@shared/markdown.js';
+import { hbfm } from 'hbmarkedwrapper';
 
 import Dialog from '@components/dialog.jsx';
 
@@ -44,7 +44,7 @@ const NotificationPopup = ()=>{
 		return notifications.map((notification)=>(
 			<li key={notification.dismissKey} >
 				<em>{notification.title}</em><br />
-				<p dangerouslySetInnerHTML={{ __html: Markdown.render(notification.text) }}></p>
+				<p dangerouslySetInnerHTML={{ __html: hbfm.render(notification.text) }}></p>
 			</li>
 		));
 	};

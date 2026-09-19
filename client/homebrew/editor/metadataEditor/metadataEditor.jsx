@@ -157,11 +157,11 @@ const MetadataEditor = createReactClass({
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fas fa-ban' /> unpublish
+				<i className='fas fa-ban' aria-hidden='true' /> unpublish
 			</button>;
 		} else {
 			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fas fa-globe' /> publish
+				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
 	},
@@ -359,26 +359,28 @@ const MetadataEditor = createReactClass({
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>
-				<label>title</label>
-				<input type='text' className='value'
+				<label for='title_field'>title</label>
+				<input type='text' id='title_field' className='value'
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>description</label>
-						<textarea defaultValue={this.props.metadata.description} className='value'
+						<label for='description_field'>description</label>
+						<textarea id='description_field' defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
-						<label>thumbnail</label>
+						<label for='thumbnail_field'>thumbnail</label>
 						<input type='text'
+							id='thumbnail_field'
 							defaultValue={this.props.metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
-						<button className='display' onClick={this.toggleThumbnailDisplay}>
+						<button className='display' onClick={this.toggleThumbnailDisplay}
+						        aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>

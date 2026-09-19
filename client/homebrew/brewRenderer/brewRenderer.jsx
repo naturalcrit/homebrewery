@@ -6,7 +6,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
-import Markdown from '@shared/markdown.js';
+import { hbfm } from 'hbmarkedwrapper';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
@@ -23,7 +23,6 @@ import safeHTML from './safeHTML.js';
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
-const PAGE_HEIGHT = 1056;
 
 const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
@@ -47,31 +46,25 @@ const BrewPage = (props)=>{
 	};
 	const pageRef   = useRef(null);
 	const cleanText = safeHTML(props.contents);
+	const pageNum   = props.index + 1;
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
 
-		// Observer for tracking pages within the `.pages` div
+		// Observer for tracking which pages are at least 30% visible in the iframe
 		const visibleObserver = new IntersectionObserver(
-			(entries)=>{
-				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
-						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
-					else
-						props.onVisibilityChange(props.index + 1, false, false);
-				});
-			},
+			(entries)=>entries.forEach((entry)=>{
+				props.onVisibilityChange(pageNum, entry.isIntersecting, false); // add page to array of visible pages.
+			}),
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
 		// Observer for tracking the page at the center of the iframe.
 		const centerObserver = new IntersectionObserver(
-			(entries)=>{
-				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
-						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
-				});
-			},
+			(entries)=>entries.forEach((entry)=>{
+				if(entry.isIntersecting)
+					props.onVisibilityChange(pageNum, true, true); // Set this page as the center page
+			}),
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
@@ -92,7 +85,7 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
-let pageTemplates = [];
+const pageTemplates = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -100,22 +93,21 @@ const BrewRenderer = (props)=>{
 		text                       : '',
 		style                      : '',
 		renderer                   : 'legacy',
-		theme                      : '5ePHB',
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentEditorViewPageNum   : 1,
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
 	};
 
+	const [visiblePages, setVisiblePages] = useState([]);
+	const [centerPage  , setCenterPage  ] = useState(1);
+
 	const [state, setState] = useState({
-		isMounted    : false,
-		visibility   : 'hidden',
-		visiblePages : [],
-		centerPage   : 1
+		isMounted  : false,
+		visibility : 'hidden'
 	});
 
 	const [displayOptions, setDisplayOptions] = useState({
@@ -135,9 +127,7 @@ const BrewRenderer = (props)=>{
 
 	const [headerState, setHeaderState] = useState(false);
 
-	const mainRef  = useRef(null);
 	const pagesRef = useRef(null);
-	const urlRef = useRef('');
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
@@ -146,20 +136,16 @@ const BrewRenderer = (props)=>{
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
-		setState((prevState)=>{
-			const updatedVisiblePages = new Set(prevState.visiblePages);
-			if(!isCenter)
-				isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
-
-			return {
-				...prevState,
-				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b),
-				centerPage   : isCenter ? pageNum : prevState.centerPage
-			};
+		setVisiblePages((prev)=>{
+			const updatedVisiblePages = new Set(prev);
+			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
+			return [...updatedVisiblePages].sort((a, b)=>a - b);
 		});
 
-		if(isCenter)
+		if(isCenter) {
+			setCenterPage(pageNum);
 			props.onPageChange(pageNum);
+		}
 	};
 
 	const isInView = (index)=>{
@@ -203,7 +189,7 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			if(pageText.startsWith('\\page')) {
-				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				const firstLineTokens  = hbfm.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
@@ -231,7 +217,7 @@ const BrewRenderer = (props)=>{
 			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 
-			const html = Markdown.render(pageText, index);
+			const html = hbfm.render(pageText, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
@@ -341,19 +327,19 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			<ErrorBar errors={props.errors} />
-			<div className='popups' ref={mainRef}>
+			<div className='popups'>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={visiblePages.length > 0 ? visiblePages : [centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer'  title="Rendered Brew Content" initialContent={INITIAL_CONTENT}
+			<Frame id='BrewRenderer'  title='Rendered Brew Content' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
-				sandbox="allow-same-origin allow-modals allow-top-navigation"
+				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
 				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}

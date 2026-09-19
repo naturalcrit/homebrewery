@@ -181,6 +181,7 @@ const TagInput = ({ tooltip, label, valuePatterns, values = [], unique = true, p
 						{t.value}
 						<button
 							type='button'
+							aria-label={`remove ${t.value} tag`}
 							onClick={(e)=>{
 								e.stopPropagation();
 								removeTag(i);

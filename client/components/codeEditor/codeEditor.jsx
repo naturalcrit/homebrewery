@@ -43,9 +43,9 @@ const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
 
-import { generalKeymap, markdownKeymap } from './extensions/customKeyMaps.js';
+import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
-import { customHighlightPlugin, customHighlightStyle } from './extensions/customHighlight.js';
+import { customHighlightStyle , customHighlightPlugin } from './extensions/customHighlight.js';
 import { legacyCustomHighlightStyle } from './extensions/legacyCustomHighlight.js';
 
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
@@ -186,7 +186,7 @@ const CodeEditor = forwardRef(
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
 				generalKeymap,
-				...(tab !== 'brewStyles' ? [markdownKeymap] : []),
+				...(tab === 'brewStyles' ? [cssKeymap] : [markdownKeymap]),
 
 				//multiple cursors and selections
 				drawSelection(),
@@ -355,6 +355,8 @@ const CodeEditor = forwardRef(
 					});
 				}, 400);
 			},
+
+			formatCode : ()=>formatCSS(viewRef.current),
 
 			undo : ()=>undo(viewRef.current),
 			redo : ()=>redo(viewRef.current),
