@@ -138,11 +138,10 @@ const HomePage =(props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
+						themeBundle={themeBundle}
 						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
-						themeBundle={themeBundle}
 					/>
 				</SplitPane>
 			</div>

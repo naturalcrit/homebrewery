@@ -289,12 +289,10 @@ const EditPage = (props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
-						theme={currentBrew.theme}
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
 						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
