@@ -16,17 +16,14 @@ import path from 'path';
 import fs      from 'fs-extra';
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+const { homebrewApi, getBrew, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
-import GoogleActions               from './googleActions.js';
+import pageRoutes from './page-routes.js';
+
 import serveCompressedStaticAssets from './static-assets.mv.js';
-import sanitizeFilename            from 'sanitize-filename';
 import asyncHandler                from 'express-async-handler';
 import { model as HomebrewModel }   from './homebrew.model.js';
-
-import { DEFAULT_BREW }              from './brewDefaults.js';
-import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 //==== Middleware Imports ====//
 import contentNegotiation from './middleware/content-negotiation.js';
@@ -116,12 +113,6 @@ export default async function createApp(vite) {
 	app.use(adminApi(vite));
 	app.use(vaultApi);
 
-	const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
-	const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
-	const migrateText       = fs.readFileSync('./client/homebrew/pages/homePage/migrate.md', 'utf8');
-	const changelogText     = fs.readFileSync('changelog.md', 'utf8');
-	const faqText           = fs.readFileSync('faq.md', 'utf8');
-
 	String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
 	const defaultMetaTags = {
@@ -132,132 +123,15 @@ export default async function createApp(vite) {
 		type        : 'website'
 	};
 
+	app.use(pageRoutes({
+        defaultMetaTags,
+		HomebrewModel,
+		sanitizeBrew,
+    }));
+
 	//Robots.txt
 	app.get('/robots.txt', (req, res)=>{
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
-	});
-
-	//Home page
-	app.get('/', (req, res, next)=>{
-		req.brew = {
-			text     : welcomeText,
-			renderer : 'V3',
-			theme    : '5ePHB'
-		},
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Homepage',
-			description : 'Homepage'
-		};
-
-		splitTextStyleAndMetadata(req.brew);
-		return next();
-	});
-
-	//Home page Legacy
-	app.get('/legacy', (req, res, next)=>{
-		req.brew = {
-			text     : welcomeTextLegacy,
-			renderer : 'legacy',
-			theme    : '5ePHB'
-		},
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Homepage (Legacy)',
-			description : 'Homepage'
-		};
-
-		splitTextStyleAndMetadata(req.brew);
-		return next();
-	});
-
-	//Legacy/Other Document -> v3 Migration Guide
-	app.get('/migrate', (req, res, next)=>{
-		req.brew = {
-			text     : migrateText,
-			renderer : 'V3',
-			theme    : '5ePHB'
-		},
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'v3 Migration Guide',
-			description : 'A brief guide to converting Legacy documents to the v3 renderer.'
-		};
-
-		splitTextStyleAndMetadata(req.brew);
-		return next();
-	});
-
-	//Changelog page
-	app.get('/changelog', async (req, res, next)=>{
-		req.brew = {
-			title    : 'Changelog',
-			text     : changelogText,
-			renderer : 'V3',
-			theme    : '5ePHB'
-		},
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'Changelog',
-			description : 'Development changelog.'
-		};
-
-		splitTextStyleAndMetadata(req.brew);
-		return next();
-	});
-
-	//FAQ page
-	app.get('/faq', async (req, res, next)=>{
-		req.brew = {
-			title    : 'FAQ',
-			text     : faqText,
-			renderer : 'V3',
-			theme    : '5ePHB'
-		},
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'FAQ',
-			description : 'Frequently Asked Questions'
-		};
-
-		splitTextStyleAndMetadata(req.brew);
-		return next();
-	});
-
-	//Source page
-	app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
-		const { brew } = req;
-
-		const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
-		let text = brew.text;
-		for (const replaceStr in replaceStrings) {
-			text = text.replaceAll(replaceStr, replaceStrings[replaceStr]);
-		}
-		text = `<code><pre style="white-space: pre-wrap;">${text}</pre></code>`;
-		res.status(200).send(text);
-	});
-
-	//Download brew source page
-	app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
-		const { brew } = req;
-		sanitizeBrew(brew, 'share');
-		const prefix = 'HB - ';
-
-		const encodeRFC3986ValueChars = (str)=>{
-			return (
-				encodeURIComponent(str)
-				.replace(/[!'()*]/g, (char)=>{`%${char.charCodeAt(0).toString(16).toUpperCase()}`;})
-			);
-		};
-
-		let fileName = sanitizeFilename(`${prefix}${brew.title}`).replaceAll(' ', '');
-		if(!fileName || !fileName.length) { fileName = `${prefix}-Untitled-Brew`; };
-		res.set({
-			'Cache-Control'       : 'no-cache',
-			'Content-Type'        : 'text/plain',
-			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
-		});
-		res.status(200).send(brew.text);
 	});
 
 	//Serve brew metadata
@@ -279,78 +153,6 @@ export default async function createApp(vite) {
 
 	//Serve brew styling
 	app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
-
-	//User Page
-	app.get('/user/:username', dbCheck, async (req, res, next)=>{
-		const ownAccount = req.account && (req.account.username == req.params.username);
-
-		req.ogMeta = { ...defaultMetaTags,
-			title       : `${req.params.username}'s Collection`,
-			description : 'View my collection of homebrew on the Homebrewery.'
-		// type        :  could be 'profile'?
-		};
-
-		const fields = [
-			'googleId',
-			'title',
-			'pageCount',
-			'description',
-			'authors',
-			'lang',
-			'published',
-			'views',
-			'shareId',
-			'editId',
-			'createdAt',
-			'updatedAt',
-			'lastViewed',
-			'thumbnail',
-			'tags'
-		];
-
-		let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
-	.catch((err)=>{
-		console.log(err);
-	});
-
-		brews.forEach((brew)=>brew.stubbed = true); //All brews from MongoDB are "stubbed"
-
-		if(ownAccount && req?.account?.googleId){
-			const auth = await GoogleActions.authCheck(req.account, res);
-			let googleBrews = await GoogleActions.listGoogleBrews(auth)
-			.catch((err)=>{
-				console.error(err);
-			});
-
-			// If stub matches file from Google, use Google metadata over stub metadata
-			if(googleBrews && googleBrews.length > 0) {
-				for (const brew of brews.filter((brew)=>brew.googleId)) {
-					const match = googleBrews.findIndex((b)=>b.editId === brew.editId);
-					if(match !== -1) {
-						brew.googleId = googleBrews[match].googleId;
-						brew.pageCount = googleBrews[match].pageCount;
-						brew.renderer = googleBrews[match].renderer;
-						brew.version = googleBrews[match].version;
-						brew.webViewLink = googleBrews[match].webViewLink;
-						googleBrews.splice(match, 1);
-					}
-				}
-
-				//Remaining unstubbed google brews display current user as author
-				googleBrews = googleBrews.map((brew)=>({ ...brew, authors: [req.account.username] }));
-				brews = _.concat(brews, googleBrews);
-			}
-		}
-
-		req.brews = _.map(brews, (brew)=>{
-		// Clean up brew data
-			brew.title = brew.title?.trim();
-			brew.description = brew.description?.trim();
-			return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
-		});
-
-		return next();
-	});
 
 	//Change author name on brews
 	app.put('/api/user/rename', dbCheck, async (req, res)=>{
@@ -530,15 +332,6 @@ export default async function createApp(vite) {
 	// Add Static Local Paths
 	app.use('/staticImages', express.static(config.get('hb_images') && fs.existsSync(config.get('hb_images')) ? config.get('hb_images') :'staticImages'));
 	app.use('/staticFonts', express.static(config.get('hb_fonts')  && fs.existsSync(config.get('hb_fonts')) ? config.get('hb_fonts'):'staticFonts'));
-
-	//Vault Page
-	app.get('/vault', asyncHandler(async(req, res, next)=>{
-		req.ogMeta = { ...defaultMetaTags,
-			title       : 'The Vault',
-			description : 'Search for Brews'
-		};
-		return next();
-	}));
 
 	//Send rendered page
 	app.use(asyncHandler(async (req, res, next)=>{
