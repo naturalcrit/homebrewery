@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 300 }] */
+/* eslint max-lines: ["error", { "max": 400 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
 import { EditorSelection } from '@codemirror/state';
@@ -92,25 +92,67 @@ const insertTab = (view)=>{
 	return true;
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>{
-	const changes = [];
+const wrapSelection = (prefix, suffix) => (view) => {
+	view.dispatch(
+		view.state.changeByRange((range) => {
+			const { from, to } = range;
+			const doc = view.state.doc;
 
-	for (const range of view.state.selection.ranges) {
-		const { from, to } = range;
-		const selected = view.state.doc.sliceString(from, to);
+			if (from === to) {
+				return {
+					changes: {
+						from,
+						to,
+						insert: prefix + suffix
+					},
+					range: EditorSelection.cursor(from + prefix.length)
+				};
+			}
 
-		let text;
+			const before = doc.sliceString(
+				Math.max(0, from - prefix.length),
+				from
+			);
 
-		if(from === to) { text = prefix + suffix; } else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
-			text = selected.slice(prefix.length, -suffix.length);
-		} else {text = `${prefix}${selected}${suffix}`;}
+			const after = doc.sliceString(
+				to,
+				to + suffix.length
+			);
 
-		changes.push({ from, to, insert: text });
-	}
+			if (before === prefix && after === suffix) {
+				return {
+					changes: [
+						{
+							from: from - prefix.length,
+							to,
+							insert: ""
+						},
+						{
+							from: to,
+							to: to + suffix.length,
+							insert: ""
+						}
+					],
+					range: EditorSelection.range(
+						from - prefix.length,
+						to - prefix.length
+					)
+				};
+			}
 
-	view.dispatch({
-		changes
-	});
+			return {
+				changes: {
+					from,
+					to,
+					insert: prefix + doc.sliceString(from, to) + suffix
+				},
+				range: EditorSelection.range(
+					from + prefix.length,
+					to + prefix.length
+				)
+			};
+		})
+	);
 
 	return true;
 };
