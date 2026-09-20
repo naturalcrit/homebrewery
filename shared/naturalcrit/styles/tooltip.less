@@ -3,18 +3,23 @@
 @arrowSize     : 6px;
 @arrowPosition : 18px;
 [data-tooltip] {
+	position:relative;
 	.tooltip(attr(data-tooltip));
 }
 [data-tooltip-top] {
+	position:relative;
 	.tooltipTop(attr(data-tooltip-top));
 }
 [data-tooltip-bottom] {
+	position:relative;
 	.tooltipBottom(attr(data-tooltip-bottom));
 }
 [data-tooltip-left] {
+	position:relative;
 	.tooltipLeft(attr(data-tooltip-left));
 }
 [data-tooltip-right] {
+	position:relative;
 	.tooltipRight(attr(data-tooltip-right));
 }
 .tooltip(@content) {
@@ -30,6 +35,7 @@
 	&::before, &::after {
 		bottom : 100%;
 		left   : 50%;
+		translate: -50% 0;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateY(-(@arrowSize + 2)));
@@ -45,6 +51,7 @@
 	&::before, &::after {
 		top  : 100%;
 		left : 50%;
+		translate: -50% 0;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateY(@arrowSize + 2));
@@ -57,7 +64,10 @@
 		margin-bottom     : -@arrowSize;
 		border-left-color : @tooltipColor;
 	}
-	&::after { margin-bottom : -14px;}
+	&::after {
+		margin-bottom : -14px;
+		max-width   : 50ch;
+	}
 	&::before, &::after {
 		right  : 100%;
 		bottom : 50%;
@@ -73,10 +83,14 @@
 		margin-left        : -@arrowSize * 2;
 		border-right-color : @tooltipColor;
 	}
-	&::after { margin-bottom : -14px;}
+	&::after {
+		margin-bottom : -14px;
+		max-width   : 50ch;
+	}
 	&::before, &::after {
-		bottom : 50%;
+		top : 50%;
 		left   : 100%;
+		translate:0 -50%;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateX(@arrowSize + 2));
@@ -106,9 +120,12 @@
 		font-size   : 12px;
 		line-height : 12px;
 		color       : white;
-		white-space : nowrap;
 		content     : @content;
 		background  : @tooltipColor;
+		max-width   : 60ch;
+		width		:max-content;
+		word-break	: break-word;
+		overflow-wrap : break-word;
 	}
 	&:hover::before, &:hover::after {
 		visibility : visible;

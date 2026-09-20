@@ -1,4 +1,4 @@
-const dedent = require('dedent-tabs').default;
+import dedent from 'dedent';
 
 const loginUrl = 'https://www.naturalcrit.com/login';
 
@@ -96,7 +96,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 		
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -111,7 +111,7 @@ const errorIndex = (props)=>{
 
 		**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}
+		**Current Authors:** ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}
 
 		[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
@@ -176,6 +176,32 @@ const errorIndex = (props)=>{
 		
 		If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
 
+		// ID validation error
+		'11' : dedent`
+		## No Homebrewery document could be found.
+		
+		The server could not locate the Homebrewery document. The Brew ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Google ID validation error
+		'12' : dedent`
+		## No Google document could be found.
+		
+		The server could not locate the Google document. The Google ID failed the validation check.
+		
+		:
+
+		**Brew ID:**  ${props.brew.brewId}`,
+
+		// Database Connection Lost
+		'13' : dedent`
+		## Database connection has been lost.
+		
+		The server could not communicate with the database.`,
+
 		//account page when account is not defined
 		'50' : dedent`
 		## You are not signed in
@@ -196,7 +222,7 @@ const errorIndex = (props)=>{
 		
 		**Brew Title:** ${escape(props.brew.brewTitle)}
 		
-		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${author})`;}).join(', ') || 'Unable to list authors'}`,
+		**Brew Authors:**  ${props.brew.authors?.map((author)=>{return `[${author}](/user/${encodeURIComponent(author)})`;}).join(', ') || 'Unable to list authors'}`,
 
 		// ####### Admin page error #######
 		'52' : dedent`
@@ -242,4 +268,4 @@ const errorIndex = (props)=>{
 	};
 };
 
-module.exports = errorIndex;
+export default errorIndex;

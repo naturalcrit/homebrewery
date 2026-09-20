@@ -1,8 +1,8 @@
-const React = require('react');
+import React from 'react';
 
-const Nav = require('naturalcrit/nav/nav.jsx');
+import Nav from './nav.jsx';
 
-module.exports = function (props) {
+export default function (props) {
 	return (
 		<Nav.item
 			color='purple'

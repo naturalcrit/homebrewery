@@ -1,8 +1,8 @@
-require('./errorPage.less');
-const React      = require('react');
-const UIPage     = require('../basePages/uiPage/uiPage.jsx');
-import Markdown  from '../../../../shared/naturalcrit/markdown.js';
-const ErrorIndex = require('./errors/errorIndex.js');
+import './errorPage.less';
+import React      from 'react';
+import UIPage     from '../basePages/uiPage/uiPage.jsx';
+import { hbfm } from 'hbmarkedwrapper';
+import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{
 	// Retrieving the error text based on the brew's error code from ErrorIndex
@@ -16,10 +16,10 @@ const ErrorPage = ({ brew })=>{
 					<h4>{brew?.text || 'No error text'}</h4>
 				</div>
 				<hr />
-				<div dangerouslySetInnerHTML={{ __html: Markdown.render(errorText) }} />
+				<div dangerouslySetInnerHTML={{ __html: hbfm.render(errorText) }} />
 			</div>
 		</UIPage>
 	);
 };
 
-module.exports = ErrorPage;
+export default ErrorPage;

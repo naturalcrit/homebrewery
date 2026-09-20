@@ -1,12 +1,11 @@
-const React = require('react');
-const createClass = require('create-react-class');
-const cx    = require('classnames');
+import React from 'react';
+import createReactClass from 'create-react-class';
+import request from 'superagent';
+import cx from 'classnames';
 
-const request = require('superagent');
-const Moment = require('moment');
+import Moment from 'moment';
 
-
-const BrewLookup = createClass({
+const BrewLookup = createReactClass({
 	getDefaultProps() {
 		return {};
 	},
@@ -110,4 +109,4 @@ const BrewLookup = createClass({
 	}
 });
 
-module.exports = BrewLookup;
+export default BrewLookup;

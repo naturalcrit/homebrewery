@@ -1,17 +1,14 @@
 /* eslint-disable max-lines */
+import MagicGen         from './snippets/magic.gen.js';
+import ClassTableGen    from './snippets/classtable.gen.js';
+import MonsterBlockGen  from './snippets/monsterblock.gen.js';
+import scriptGen        from './snippets/script.gen.js';
+import ClassFeatureGen  from './snippets/classfeature.gen.js';
+import CoverPageGen     from './snippets/coverpage.gen.js';
+import QuoteGen 		from './snippets/quote.gen.js';
+import dedent           from 'dedent';
 
-const MagicGen           = require('./snippets/magic.gen.js');
-const ClassTableGen      = require('./snippets/classtable.gen.js');
-const MonsterBlockGen    = require('./snippets/monsterblock.gen.js');
-const scriptGen          = require('./snippets/script.gen.js');
-const ClassFeatureGen    = require('./snippets/classfeature.gen.js');
-const CoverPageGen       = require('./snippets/coverpage.gen.js');
-const QuoteGen 			 = require('./snippets/quote.gen.js');
-const dedent             = require('dedent-tabs').default;
-
-
-
-module.exports = [
+export default [
 	{
 		groupName : 'Style Editor',
 		icon      : 'fas fa-pencil-alt',
@@ -112,28 +109,24 @@ module.exports = [
 				gen  : MonsterBlockGen.monster('monster,frame,wide', 4),
 			},
 			{
-				name         : 'Front Cover Page',
-				icon         : 'fac book-front-cover',
-				gen          : CoverPageGen.front,
-				experimental : true
+				name : 'Front Cover Page',
+				icon : 'fac book-front-cover',
+				gen  : CoverPageGen.front,
 			},
 			{
-				name         : 'Inside Cover Page',
-				icon         : 'fac book-inside-cover',
-				gen          : CoverPageGen.inside,
-				experimental : true
+				name : 'Inside Cover Page',
+				icon : 'fac book-inside-cover',
+				gen  : CoverPageGen.inside,
 			},
 			{
-				name         : 'Part Cover Page',
-				icon         : 'fac book-part-cover',
-				gen          : CoverPageGen.part,
-				experimental : true
+				name : 'Part Cover Page',
+				icon : 'fac book-part-cover',
+				gen  : CoverPageGen.part,
 			},
 			{
-				name      		 : 'Back Cover Page',
-				icon      		 : 'fac book-back-cover',
-				gen       		 : CoverPageGen.back,
-				experimental : true
+				name : 'Back Cover Page',
+				icon : 'fac book-back-cover',
+				gen	 : CoverPageGen.back,
 			},
 			{
 				name : 'Magic Item',
@@ -146,8 +139,8 @@ module.exports = [
 				gen  : function(){
 					return dedent`
 						{{artist,top:90px,right:30px
-						##### Starry Night
-						[Van Gogh](https://www.vangoghmuseum.nl/en)
+						##### Bird with autumn foliage
+						[by L. Prang & Co.](https://www.loc.gov/resource/pga.14148)
 						}}
 						\n`;
 				},
@@ -212,11 +205,10 @@ module.exports = [
 				]
 			},
 			{
-				name         : 'Rune Table',
-				icon         : 'fas fa-language',
-				gen          : scriptGen.dwarvish,
-				experimental : true,
-				subsnippets  : [
+				name        : 'Rune Table',
+				icon        : 'fas fa-language',
+				gen         : scriptGen.dwarvish,
+				subsnippets : [
 					{
 						name : 'Dwarvish',
 						icon : 'fac davek',
