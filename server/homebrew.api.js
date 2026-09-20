@@ -21,6 +21,8 @@ const router = express.Router();
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
 
+import Stream from './eventStreamSource.js';
+
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
@@ -499,6 +501,8 @@ const api = {
 		if(!after) return;
 
 		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
+
+		Stream.emit('sendUpdate', 'brewUpdated', { time: new Date, shareId: brew.shareId, version: brew.version });
 
 		res.status(200).send(saved);
 	},
