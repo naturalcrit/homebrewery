@@ -170,8 +170,7 @@ const api = {
 
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
-						const reason = googleError.errors?.[0].reason;
-						if(reason == 'notFound')
+						if(googleError.code === 404 || googleError.status === 404)
 							throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
 						else
 							throw { ...googleError, HBErrorCode: '01' };
