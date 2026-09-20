@@ -39,8 +39,8 @@ const SharePage = (props)=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
 
+        // listen for changes in the brew version
 		const eventSource = new EventSource('/stream');
-
 		eventSource.addEventListener('message', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
