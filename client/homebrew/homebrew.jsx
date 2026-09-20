@@ -1,6 +1,5 @@
 import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
@@ -45,18 +44,6 @@ const Homebrew = (props)=>{
 	global.version       = version;
 	global.config        = config;
 	global.enablev4      = enablev4;
-
-	useEffect(()=>{
-		const eventSource = new EventSource('/stream');
-
-		eventSource.addEventListener('message', (evt)=>{
-			const messageData = JSON.parse(evt.data);
-
-			if(messageData.eventType == 'initStream'){
-				console.log('window.location.reload()');
-			}
-		});
-	}, []);
 
 	const backgroundObject = ()=>{
 		if(config?.deployment || (config?.local && config?.development)) {
