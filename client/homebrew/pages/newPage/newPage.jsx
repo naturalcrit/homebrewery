@@ -10,7 +10,7 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -28,10 +28,6 @@ import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -49,8 +45,6 @@ const NewPage = (props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [isSaving, setIsSaving] = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
 	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError] = useState(null);
 	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
@@ -58,14 +52,9 @@ const NewPage = (props)=>{
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle, setThemeBundle] = useState({});
-	const [unsavedChanges, setUnsavedChanges] = useState(false);
-	const [autoSaveEnabled, setAutoSaveEnabled] = useState(false);
-	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	// const saveTimeout        = useRef(null);
-	const warnUnsavedTimeout = useRef(null);
 
 	useEffect(()=>{
 		loadBrew();
@@ -100,30 +89,22 @@ const NewPage = (props)=>{
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
 
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
-	};
-
-	const trySave = useEffectEvent(async ()=>{
-  	setIsSaving(true);
-
-		const updatedBrew = { ...currentBrew };
-		splitTextStyleAndMetadata(updatedBrew);
-
-		const pageRegex = updatedBrew.renderer === 'legacy' ? /\\page/g : /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm;
-		updatedBrew.pageCount = (updatedBrew.text.match(pageRegex) || []).length + 1;
+	const save = async (brew, saveToGoogle)=>{
+		//Prepare content to send to server
+		const brewToSave = {
+			...brew,
+			text      : brew.text.normalize('NFC'),
+			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
+			textBin   : undefined
+		};
 
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
-			.send(updatedBrew)
+			.send(brewToSave)
 			.catch((err)=>{
-				setIsSaving(false);
+				console.error('Error Updating Local Brew');
 				setError(err);
 			});
-
-		setIsSaving(false);
 		if(!res) return;
 
 		const savedBrew = res.body;
@@ -133,46 +114,6 @@ const NewPage = (props)=>{
 		localStorage.removeItem(METAKEY);
 		window.onbeforeunload = null;
 		window.location = `/edit/${savedBrew.editId}`;
-	});
-
-	const renderSaveButton = ()=>{
-		// #1 - Currently saving, show SAVING
-		if(isSaving)
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(unsavedChanges && warnUnsavedChanges) {
-			resetWarnUnsavedTimer();
-			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-						Reminder...
-						<div className='errorContainer'>{text}</div>
-			</Nav.item>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if(unsavedChanges)
-			return <Nav.item className='save' onClick={trySave} color='blue' icon='fas fa-save'>save now</Nav.item>;
-
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
-
-		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
-		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
-
-		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved</Nav.item>;
-	};
-
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
 	};
 
 	const renderNavbar = ()=>(
@@ -197,8 +138,11 @@ const NewPage = (props)=>{
 
 	const {
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		clearError,
+		renderSaveButton
 	} = useCommonEditPageFunctions({
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -211,15 +155,10 @@ const NewPage = (props)=>{
 		SNIPKEY,
 		METAKEY,
 		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		unsavedChanges,
-		setUnsavedChanges,
-		trySave,
 		sandbox,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		save,
 	});
 
 	return (
@@ -244,12 +183,10 @@ const NewPage = (props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
-						theme={currentBrew.theme}
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
 						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}

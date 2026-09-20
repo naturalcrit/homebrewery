@@ -9,7 +9,7 @@ import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -31,10 +31,6 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -50,79 +46,30 @@ const HomePage =(props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew]                = useState(props.brew);
+	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError]                      = useState(undefined);
 	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(props.brew.text));
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle, setThemeBundle]                = useState({});
-	const [unsavedChanges, setUnsavedChanges]             = useState(false);
-	const [isSaving, setIsSaving]                   = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
-	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
-	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
 	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	const warnUnsavedTimeout = useRef(null);
 
-	const save = ()=>{
-		request.post('/api')
-			.send(currentBrew)
-			.end((err, res)=>{
-				if(err) {
-					setError(err);
-					return;
-				}
-				const saved = res.body;
-				window.location = `/edit/${saved.editId}`;
+	const save = async (brew, saveToGoogle)=>{
+		const res = await request
+			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.send(brew)
+			.catch((err)=>{
+				console.error('Error Updating Local Brew');
+				setError(err);
 			});
-	};
+		if(!res) return;
 
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
-	};
-
-	const renderSaveButton = ()=>{
-		// #1 - Currently saving, show SAVING
-		if(isSaving)
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(unsavedChanges && warnUnsavedChanges) {
-			resetWarnUnsavedTimer();
-			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-						Reminder...
-						<div className='errorContainer'>{text}</div>
-			</Nav.item>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if(unsavedChanges)
-			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
-
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
-
-		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
-		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
-
-		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved</Nav.item>;
-	};
-
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
+		const saved = res.body;
+		window.onbeforeunload = null;
+		window.location = `/edit/${saved.editId}`;
 	};
 
 	const renderNavbar = ()=>{
@@ -143,8 +90,13 @@ const HomePage =(props)=>{
 
 	const {
 		handleSplitMove,
-		handleBrewChange
+		handleBrewChange,
+		clearError,
+		renderSaveButton,
+		unsavedChanges,
+		trySave
 	} = useCommonEditPageFunctions({
+		saveGoogle,
 		setError,
 		setThemeBundle,
 		HTMLErrors,
@@ -157,14 +109,10 @@ const HomePage =(props)=>{
 		SNIPKEY,
 		METAKEY,
 		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		unsavedChanges,
-		setUnsavedChanges,
 		sandbox,
 		lastSavedBrew,
-		editorRef
+		editorRef,
+		save,
 	});
 
 	return (
@@ -190,15 +138,14 @@ const HomePage =(props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
+						themeBundle={themeBundle}
 						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
-						themeBundle={themeBundle}
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={()=>trySave(true, true, saveGoogle)}>
 				Save current <i className='fas fa-save' />
 			</div>
 
