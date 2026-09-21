@@ -39,6 +39,18 @@ const SharePage = (props)=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
 
+        // listen for changes in the brew version
+		const eventSource = new EventSource('/stream');
+		eventSource.addEventListener('message', (evt)=>{
+			const messageData = JSON.parse(evt.data);
+
+			if(messageData.eventType == 'brewUpdated'){
+				if(messageData.shareId == brew.shareId && messageData.version != brew.version) {
+					console.log(`brew has been updated, viewing ${brew.version}, new version is ${messageData.version}`);
+				}
+			}
+		});
+
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
