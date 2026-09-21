@@ -14,6 +14,7 @@ import express from 'express';
 import config  from './config.js';
 import path from 'path';
 import fs      from 'fs-extra';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getCSS } = api;
@@ -135,6 +136,15 @@ export default async function createApp(vite) {
 	app.get('/robots.txt', (req, res)=>{
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
 	});
+	//serve brew for sharepage rerender
+	app.get('/api/fetch/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res) => {
+		const { brew } = req;
+		brew.authors.includes(req.account?.username)
+			? sanitizeBrew(brew, 'shareAuthor')
+			: sanitizeBrew(brew, 'share');
+		splitTextStyleAndMetadata(brew);
+		res.json({ brew });
+	}));
 
 	//Serve brew metadata
 	app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
