@@ -12,6 +12,8 @@ const { both: RecentNavItem } = RecentNavItems;
 import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
+import request from '../../utils/request-middleware.js';
+
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
@@ -36,19 +38,43 @@ const SharePage = (props)=>{
 		}
 	};
 
+	const fetchUpdatedBrew = async ()=>{
+		const response = await request
+			.get(`/api/fetch/${currentBrew.shareId}`)
+			.catch((error)=>{
+				console.log('error at fetching updated brew: ', error);
+			});
+		if(response.ok && !!response.body.brew) {
+			const updatedBrew = response.body.brew;
+
+			setCurrentBrew((prev)=>{
+				const changed = Object.keys(updatedBrew).filter((key)=>{
+					if(key === 'text' || key === 'textBin') {
+						return prev[key] !== updatedBrew[key];
+					}
+					return JSON.stringify(prev[key]) !== JSON.stringify(updatedBrew[key]);
+				});
+				return {
+					...prev,
+					...updatedBrew
+				};
+			});
+		}
+	};
+
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
-        // listen for changes in the brew version
+		// listen for changes in the brew version
 		const eventSource = new EventSource('/stream');
 		eventSource.addEventListener('message', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
 			if(messageData.eventType == 'brewUpdated'){
 				if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
-					console.log(`brew has been updated, viewing ${currentBrew.version}, new version is ${messageData.version}`);
 					console.log('should fetch brew');
+					fetchUpdatedBrew();
 				}
 			}
 		});
