@@ -16,8 +16,9 @@ import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { disableMeta = false } = props;
 
+	const [currentBrew, setCurrentBrew] = useState(props.brew || DEFAULT_BREW_LOAD);
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
@@ -37,7 +38,7 @@ const SharePage = (props)=>{
 
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
+		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
         // listen for changes in the brew version
 		const eventSource = new EventSource('/stream');
@@ -45,8 +46,9 @@ const SharePage = (props)=>{
 			const messageData = JSON.parse(evt.data);
 
 			if(messageData.eventType == 'brewUpdated'){
-				if(messageData.shareId == brew.shareId && messageData.version != brew.version) {
-					console.log(`brew has been updated, viewing ${brew.version}, new version is ${messageData.version}`);
+				if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
+					console.log(`brew has been updated, viewing ${currentBrew.version}, new version is ${messageData.version}`);
+					console.log('should fetch brew');
 				}
 			}
 		});
@@ -57,13 +59,13 @@ const SharePage = (props)=>{
 	}, []);
 
 	const processShareId = ()=>{
-		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
+		return currentBrew.googleId && !currentBrew.stubbed ? currentBrew.googleId + currentBrew.shareId : currentBrew.shareId;
 	};
 
 	const renderEditLink = ()=>{
-		if(!brew.editId) return null;
+		if(!currentBrew.editId) return null;
 
-		const editLink = brew.googleId && ! brew.stubbed ? brew.googleId + brew.editId : brew.editId;
+		const editLink = currentBrew.googleId && ! currentBrew.stubbed ? currentBrew.googleId + currentBrew.editId : currentBrew.editId;
 
 		return (
 			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
@@ -74,7 +76,7 @@ const SharePage = (props)=>{
 
 	const titleEl = (
 		<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
-			{brew.title}
+			{currentBrew.title}
 		</Nav.item>
 	);
 
@@ -83,11 +85,11 @@ const SharePage = (props)=>{
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section className='titleSection'>
-					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
+					{disableMeta ? titleEl : <MetadataNav brew={currentBrew}>{titleEl}</MetadataNav>}
 				</Nav.section>
 
 				<Nav.section>
-					{brew.shareId && (
+					{currentBrew.shareId && (
 						<>
 							<PrintNavItem />
 							<Nav.dropdown>
@@ -120,18 +122,18 @@ const SharePage = (props)=>{
 							</Nav.dropdown>
 						</>
 					)}
-					<RecentNavItem brew={brew} storageKey='view' />
+					<RecentNavItem brew={currentBrew} storageKey='view' />
 					<Account />
 				</Nav.section>
 			</Navbar>
 
 			<div className='content'>
 				<BrewRenderer
-					text={brew.text}
-					style={brew.style}
-					lang={brew.lang}
-					renderer={brew.renderer}
-					theme={brew.theme}
+					text={currentBrew.text}
+					style={currentBrew.style}
+					lang={currentBrew.lang}
+					renderer={currentBrew.renderer}
+					theme={currentBrew.theme}
 					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}
 					currentBrewRendererPageNum={currentBrewRendererPageNum}
