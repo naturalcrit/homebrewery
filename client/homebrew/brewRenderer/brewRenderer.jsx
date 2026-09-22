@@ -312,8 +312,8 @@ const BrewRenderer = (props)=>{
 		rowGap    : `${displayOptions.rowGap}px`
 	};
 
-	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
+	const renderedStyle = useMemo(()=>renderStyle(), [props.style, centerPage, props.themeBundle]);
+	renderedPages = useMemo(()=>renderPages(), [props.text, centerPage, displayOptions]);
 
 	return (
 		<>

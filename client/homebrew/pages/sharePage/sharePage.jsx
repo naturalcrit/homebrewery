@@ -45,20 +45,7 @@ const SharePage = (props)=>{
 				console.log('error at fetching updated brew: ', error);
 			});
 		if(response.ok && !!response.body.brew) {
-			const updatedBrew = response.body.brew;
-
-			setCurrentBrew((prev)=>{
-				const changed = Object.keys(updatedBrew).filter((key)=>{
-					if(key === 'text' || key === 'textBin') {
-						return prev[key] !== updatedBrew[key];
-					}
-					return JSON.stringify(prev[key]) !== JSON.stringify(updatedBrew[key]);
-				});
-				return {
-					...prev,
-					...updatedBrew
-				};
-			});
+			setCurrentBrew(response.body.brew);
 		}
 	};
 
