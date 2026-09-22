@@ -85,7 +85,6 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
-let renderedPageTexts = [];
 const pageTemplates = [];
 let rawPages      = [];
 
@@ -93,7 +92,6 @@ const BrewRenderer = (props)=>{
 	props = {
 		text                       : '',
 		style                      : '',
-		version                    : 1,
 		renderer                   : 'legacy',
 		lang                       : '',
 		errors                     : [],
@@ -232,15 +230,12 @@ const BrewRenderer = (props)=>{
 
 		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
 			renderedPages.length = 0;
-			renderedPageTexts.length = 0;
 			pageTemplates.length = 0;
 		}
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
-		if(rawPages.length > props.currentEditorCursorPageNum -1) {
+		if(rawPages.length > props.currentEditorCursorPageNum -1)
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
-			renderedPageTexts[props.currentEditorCursorPageNum - 1] = rawPages[props.currentEditorCursorPageNum - 1];
-		}
 
 		_.forEach(rawPages, (page, index)=>{
 			const varsOnPageRegex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g; // Find out if there are any vars on the page.
@@ -248,12 +243,8 @@ const BrewRenderer = (props)=>{
 				!props.hoisted &&
 				(page.match(varsOnPageRegex));  // forceRender forces pages outside of the PPR range to render if true.
 			                                    // This is necessary on the first load to fully populate the variable table.
-
-			const pageTextChanged = renderedPageTexts[index] !== page;
-
-			if(((isInView(index) && pageTextChanged) || !renderedPages[index] || forceRender) && typeof window !== 'undefined') {
-				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render changed pages in PPR range
-				renderedPageTexts[index] = page;
+			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
+				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
 		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
@@ -322,10 +313,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(
-		()=>renderPages(),
-		[props.version, props.currentBrewRendererPageNum, props.currentEditorCursorPageNum, displayOptions]
-	);
+	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
 
 	return (
 		<>
