@@ -159,6 +159,7 @@ const SharePage = (props)=>{
 					style={currentBrew.style}
 					lang={currentBrew.lang}
 					renderer={currentBrew.renderer}
+					version={currentBrew.version}
 					theme={currentBrew.theme}
 					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}

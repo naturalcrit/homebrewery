@@ -138,6 +138,7 @@ const HomePage =(props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
+						version={currentBrew.version}
 						themeBundle={themeBundle}
 						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
