@@ -159,11 +159,10 @@ const BrewRenderer = (props)=>{
 		return false;
 	};
 
-	const renderDummyPage = (index)=>{
-		return <div className='phb page' id={`p${index + 1}`} key={index}>
+	const renderDummyPage = (index)=>
+		<div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
-	};
 
 	const renderStyle = ()=>{
 		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
