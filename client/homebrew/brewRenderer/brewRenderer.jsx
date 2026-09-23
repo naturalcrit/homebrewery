@@ -312,7 +312,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
+	renderedPages = useMemo(()=>renderPages(), [props.text, centerPage, displayOptions]);
 
 	return (
 		<>
