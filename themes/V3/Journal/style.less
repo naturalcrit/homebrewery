@@ -82,7 +82,8 @@
 		line-height         : 1em;
 		& + p::first-line { font-variant : small-caps; }
 	}
-	.first-letter, .drop-cap,
+	p.first-letter::first-letter,
+	p.drop-cap::first-letter,
 	h1 + p::first-letter {
 		float                   : left;
 		padding-top             : 0.3em;

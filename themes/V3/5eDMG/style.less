@@ -14,7 +14,8 @@
 	.note table tbody tr:nth-child(odd) { background : #FFFFFF; }
 
 	/* DROP CAP */
-	.first-letter, .drop-cap
+	p.first-letter::first-letter,
+	p.drop-cap::first-letter,
 	h1 + p::first-letter {
 		color            : black;
 		background-image : unset;
