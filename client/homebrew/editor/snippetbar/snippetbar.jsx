@@ -35,22 +35,22 @@ const Snippetbar = createReactClass({
 	displayName     : 'SnippetBar',
 	getDefaultProps : function() {
 		return {
-			brew              : {},
-			view              : 'text',
-			onViewChange      : ()=>{},
-			onInject          : ()=>{},
-			onToggle          : ()=>{},
-			showEditButtons   : true,
-			renderer          : 'legacy',
-			undo              : ()=>{},
-			redo              : ()=>{},
-			historySize       : ()=>{},
-			foldCode          : ()=>{},
-			unfoldCode        : ()=>{},
-			formatCode        : ()=>{},
-			cursorPos         : {},
-			themeBundle       : [],
-			updateBrew        : ()=>{}
+			brew            : {},
+			view            : 'text',
+			onViewChange    : ()=>{},
+			onInject        : ()=>{},
+			onToggle        : ()=>{},
+			showEditButtons : true,
+			renderer        : 'legacy',
+			undo            : ()=>{},
+			redo            : ()=>{},
+			historySize     : ()=>{},
+			foldCode        : ()=>{},
+			unfoldCode      : ()=>{},
+			formatCode      : ()=>{},
+			cursorPos       : {},
+			themeBundle     : [],
+			updateBrew      : ()=>{}
 		};
 	},
 

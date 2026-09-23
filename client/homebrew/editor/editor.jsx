@@ -138,7 +138,7 @@ const Editor = forwardRef(
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorViewPageNum, false); }, [currentEditorViewPageNum, liveScroll]);
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorCursorPageNum, false); }, [currentEditorCursorPageNum, liveScroll]);
 
-		const handleFormatCode = () => {
+		const handleFormatCode = ()=>{
 			codeEditor.current?.formatCode();
 		};
 

@@ -6,24 +6,24 @@
 	--activeTriggerColor : inherit;
 	--menuColor          : #DDDDDD;
 	@menuHeight      : 25px;
-	position         : relative;
-	display          : flex;
-	flex-wrap        : wrap-reverse;
-	reading-flow     : flex-visual;
-	justify-content  : space-between;
-	height           : auto;
-	color            : black;
-	background-color : #DDDDDD;
-	font-size        : .65rem;
-	font-family: 'Open Sans', sans-serif;
-	text-transform: uppercase;
-	font-weight: 800;
+	position             : relative;
+	display              : flex;
+	flex-wrap            : wrap-reverse;
+	justify-content      : space-between;
+	height               : auto;
+	font-family          : 'Open Sans', sans-serif;
+	font-size            : 0.65rem;
+	font-weight          : 800;
+	color                : black;
+	text-transform       : uppercase;
+	background-color     : #DDDDDD;
+	reading-flow         : flex-visual;
 
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-		font-size: .85rem;
+		font-size       : 0.85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 		reading-order   : 2;
 
@@ -211,7 +211,7 @@
 	}
 }
 @container editor (width < 841px) {
- 	.snippetBar {
+	.snippetBar {
 		.editors { 
 			flex            : 1;
 			justify-content : space-between;
