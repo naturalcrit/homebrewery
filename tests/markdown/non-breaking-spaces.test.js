@@ -1,6 +1,6 @@
 
 
-import {hbfm} from 'hbmarkedwrapper';
+import {hbfm} from 'marked-hbfm';
 
 describe('Non-Breaking Spaces Interactions', ()=>{
 	test('I am actually a single-line definition list!', function() {
