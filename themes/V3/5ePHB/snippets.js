@@ -30,7 +30,8 @@ export default [
 				name : 'Tweak Drop Cap',
 				icon : 'fas fa-sliders-h',
 				gen  : dedent`/* Drop Cap settings */
-						.page .first-letter, .page .drop-cap,
+						.page p.first-letter::first-letter,
+						.page p.drop-cap::first-letter,
 						.page h1 + p::first-letter {
 							font-family: SolberaImitationRemake;
 							font-size: 3.5cm;
