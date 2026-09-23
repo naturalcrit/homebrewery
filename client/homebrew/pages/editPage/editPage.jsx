@@ -2,14 +2,14 @@
 import './editPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -38,17 +38,13 @@ import LockNotification from './lockNotification/lockNotification.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
 const METAKEY  = 'HB_newPage_meta';
 
 const useLocalStorage = false;
-const sandbox	      = false;
+const sandbox	        = false;
 
 const EditPage = (props)=>{
 	props = {
@@ -57,8 +53,6 @@ const EditPage = (props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [isSaving, setIsSaving] = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
 	const [saveGoogle, setSaveGoogle] = useState(!!props.brew.googleId);
 	const [error, setError] = useState(null);
 	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
@@ -66,55 +60,13 @@ const EditPage = (props)=>{
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle, setThemeBundle] = useState({});
-	const [unsavedChanges, setUnsavedChanges] = useState(false);
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
 	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
 	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
-	const [autoSaveEnabled, setAutoSaveEnabled] = useState(true);
-	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
-	const editorRef          = useRef(null);
-	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-	const saveTimeout        = useRef(null);
-	const warnUnsavedTimeout = useRef(null);
-	const trySaveRef         = useRef(null); // CTRL+S listener lives outside React and needs ref to use trySave with latest copy of brew
-	const unsavedChangesRef  = useRef(unsavedChanges); // Similarly, onBeforeUnload lives outside React and needs ref to unsavedChanges
-
-	const {
-		handleBrewChange
-	} = useCommonEditPageFunctions({
-		saveGoogle,
-		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
-		autoSaveEnabled,
-		setAutoSaveEnabled,
-		setWarnUnsavedChanges,
-		trySaveRef,
-		unsavedChangesRef,
-		setUnsavedChanges,
-		sandbox,
-		lastSavedBrew
-	});
-
-	useEffect(()=>{
-		trySaveRef.current = trySave;
-		unsavedChangesRef.current = unsavedChanges;
-	});
-
-	const handleSplitMove = ()=>{
-		editorRef.current?.update();
-	};
+	const editorRef     = useRef(null);
+	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
 		...prevBrew,
@@ -122,12 +74,6 @@ const EditPage = (props)=>{
 		text     : newData.text,
 		snippets : newData.snippets
 	}));
-
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
-	};
 
 	const handleGoogleClick = ()=>{
 		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
@@ -157,25 +103,6 @@ const EditPage = (props)=>{
 		setSaveGoogle((prev)=>!prev);
 		setError(null);
 		trySave(true, true, newSaveGoogle);
-	};
-
-	const trySave = (immediate = false, hasChanges = true, saveToGoogle = false)=>{
-		clearTimeout(saveTimeout.current);
-		if(isSaving) return;
-		if(!hasChanges && !immediate) return;
-		const newTimeout = immediate ? 0 : SAVE_TIMEOUT;
-
-		saveTimeout.current = setTimeout(async ()=>{
-			setIsSaving(true);
-			setError(null);
-			await save(currentBrew, saveToGoogle)
-			.catch((err)=>{
-				setError(err);
-			});
-			setIsSaving(false);
-			setLastSavedTime(new Date());
-			if(!autoSaveEnabled) resetWarnUnsavedTimer();
-		}, newTimeout);
 	};
 
 	const save = async (brew, saveToGoogle)=>{
@@ -274,59 +201,11 @@ const EditPage = (props)=>{
 		</Nav.item>
 	);
 
-	const renderSaveButton = ()=>{
-		// #1 - Currently saving, show SAVING
-		if(isSaving)
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(unsavedChanges && warnUnsavedChanges) {
-			resetWarnUnsavedTimer();
-			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-						Reminder...
-						<div className='errorContainer'>{text}</div>
-			</Nav.item>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
-
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
-
-		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
-		if(sandbox)
-			return <Nav.item className='save sandbox' disabled={true}>save now</Nav.item>;
-
-		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved</Nav.item>;
-	};
-
-	const toggleAutoSave = ()=>{
-		clearTimeout(warnUnsavedTimeout.current);
-		clearTimeout(saveTimeout.current);
-		localStorage.setItem(AUTOSAVE_KEY, JSON.stringify(!autoSaveEnabled));
-		setAutoSaveEnabled(!autoSaveEnabled);
-		setWarnUnsavedChanges(autoSaveEnabled);
-	};
-
 	const renderAutoSaveButton = ()=>(
 		<Nav.item onClick={toggleAutoSave}>
 			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
 		</Nav.item>
 	);
-
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
-	};
 
 	const renderNavbar = ()=>{
 		return <Navbar>
@@ -352,6 +231,34 @@ const EditPage = (props)=>{
 			</Nav.section>
 		</Navbar>;
 	};
+
+	const {
+		handleSplitMove,
+		handleBrewChange,
+		toggleAutoSave,
+		clearError,
+		renderSaveButton,
+		autoSaveEnabled,
+		trySave
+	} = useCommonEditPageFunctions({
+		saveGoogle,
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		sandbox,
+		lastSavedBrew,
+		editorRef,
+		save,
+	});
 
 	return (
 		<div className='editPage sitePage'>
@@ -382,12 +289,10 @@ const EditPage = (props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
-						theme={currentBrew.theme}
 						themeBundle={themeBundle}
 						errors={HTMLErrors}
 						lang={currentBrew.lang}
 						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
 						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
