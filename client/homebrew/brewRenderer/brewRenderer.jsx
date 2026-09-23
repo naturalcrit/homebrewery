@@ -6,7 +6,7 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
@@ -54,7 +54,7 @@ const BrewPage = (props)=>{
 		// Observer for tracking which pages are at least 30% visible in the iframe
 		const visibleObserver = new IntersectionObserver(
 			(entries)=>entries.forEach((entry)=>{
-				props.onVisibilityChange(pageNum, entry.isIntersecting, false); // add page to array of visible pages.
+				props.onVisibilityChange(pageNum, entry.isIntersecting, false); // add/remove page from array of visible pages.
 			}),
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
@@ -102,8 +102,11 @@ const BrewRenderer = (props)=>{
 		...props
 	};
 
+	const pagesRef = useRef(null);
+
 	const [visiblePages, setVisiblePages] = useState([]);
 	const [centerPage  , setCenterPage  ] = useState(1);
+	const [headerState , setHeaderState ] = useState(false);
 
 	const [state, setState] = useState({
 		isMounted  : false,
@@ -124,10 +127,6 @@ const BrewRenderer = (props)=>{
 		const toolbarState = JSON.parse(window.localStorage.getItem(TOOLBAR_STATE_KEY));
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
-
-	const [headerState, setHeaderState] = useState(false);
-
-	const pagesRef = useRef(null);
 
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
