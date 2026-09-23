@@ -1,6 +1,5 @@
 import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
