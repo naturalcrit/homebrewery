@@ -1,6 +1,6 @@
 
 
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 
 test('Processes the markdown within an HTML block if its just a class wrapper', function() {
 	const source = '<div>*Bold text*</div>';
