@@ -221,8 +221,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = (checkHoists = false)=>{
-
-		if(props.errors && props.errors.length)
+		if(props.errors?.length)
 			return renderedPages;
 
 		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
@@ -244,7 +243,7 @@ const BrewRenderer = (props)=>{
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
-		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
+		props.hoisted = true; // Only fully hoist once.
 		return renderedPages;
 	};
 
