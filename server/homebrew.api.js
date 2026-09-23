@@ -21,6 +21,8 @@ const router = express.Router();
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
 
+import Stream from './eventStreamSource.js';
+
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
@@ -168,8 +170,7 @@ const api = {
 
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
-						const reason = googleError.errors?.[0].reason;
-						if(reason == 'notFound')
+						if(googleError.code === 404 || googleError.status === 404)
 							throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
 						else
 							throw { ...googleError, HBErrorCode: '01' };
@@ -500,6 +501,8 @@ const api = {
 		if(!after) return;
 
 		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
+
+		Stream.emit('sendUpdate', 'brewUpdated', { time: new Date, shareId: brew.shareId, version: brew.version });
 
 		res.status(200).send(saved);
 	},
