@@ -104,7 +104,7 @@
     "@codemirror/state": "^6.7.5",
     "@codemirror/view": "^6.43.12",
     "@dmsnell/diff-match-patch": "^1.1.0",
-    "@googleapis/drive": "^21.0.0",
+    "@googleapis/drive": "^26.0.0",
     "@lezer/highlight": "^1.2.3",
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.0",
