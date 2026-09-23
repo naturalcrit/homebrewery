@@ -57,7 +57,6 @@ const Snippetbar = createReactClass({
 	getInitialState : function() {
 		return {
 			renderer      : this.props.renderer,
-			themeSelector : false,
 			snippets      : [],
 			showHistory   : false,
 			historyExists : false,
@@ -74,7 +73,6 @@ const Snippetbar = createReactClass({
 
 	componentDidUpdate : async function(prevProps, prevState) {
 		if(prevProps.renderer != this.props.renderer ||
-			prevProps.theme != this.props.theme ||
 			prevProps.themeBundle != this.props.themeBundle ||
 			prevProps.brew.snippets != this.props.brew.snippets) {
 			this.setState({
@@ -227,11 +225,6 @@ const Snippetbar = createReactClass({
 					<button className={`editorTool formatCode ${this.props.formatCode ? 'active' : ''}`}
 						onClick={this.props.formatCode} >
 						<i className='fas fa-wand-magic-sparkles' />
-					</button>
-					<button className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
-						onClick={this.toggleThemeSelector} >
-						<i className='fas fa-palette' />
-						{this.state.themeSelector && this.renderThemeSelector()}
 					</button>
 				</div></>}
 
