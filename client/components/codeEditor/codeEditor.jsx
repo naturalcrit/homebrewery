@@ -87,7 +87,7 @@ const createSettingsExtensions = (settings)=>[
 	...(settings.fontSize
 		? [EditorView.theme({
 			'&, .cm-content' : {
-				fontSize : `${settings.fontSize}px`,
+				fontSize : `${settings.fontSize || 1}em`,
 			},
 		})]
 		: []),

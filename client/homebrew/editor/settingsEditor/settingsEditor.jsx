@@ -4,17 +4,7 @@ import React from 'react';
 const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
 
 	const validations = {
-		fontSize : [
-			(value)=>{
-				const number = Number(value);
 
-				if(number < 9 || number > 30) {
-					return 'Font size must be between 9 and 30.';
-				}
-
-				return null;
-			},
-		],
 	};
 
 	const handleFieldChange = (setting, e)=>{
@@ -129,12 +119,13 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 				</label>
 
 				<div className='value'>
-					<small>from 9px to 30px</small>
+					<small style={{ fontSize: `${settings.fontSize || 1}em` }}>from 9px to 30px</small>
 					<input
 						id='fontSize'
-						type='number'
-						min={9}
-						max={30}
+						type='range'
+						min={.6}
+						step={.1}
+						max={2}
 						name='fontSize'
 						value={settings.fontSize}
 						onChange={(e)=>handleFieldChange('fontSize', e)}

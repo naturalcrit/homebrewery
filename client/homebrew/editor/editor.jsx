@@ -91,7 +91,7 @@ const Editor = forwardRef(
 			showImagePreviews : true,
 			activeLineShading : true,
 			lineNumbers       : true,
-			fontSize          : 13,
+			fontSize          : 1,
 			editorTheme       : 'default',
 		});
 
