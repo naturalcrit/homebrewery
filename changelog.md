@@ -128,7 +128,7 @@ Fixes issue [#4858](https://github.com/naturalcrit/homebrewery/issues/4858)
 Fixes part of issue [#4101](https://github.com/naturalcrit/homebrewery/issues/4101)
 
 ##### G-Ambatte
-* [x] Fix editor panel shrinking when openingdev tools
+* [x] Fix editor panel shrinking when opening dev tools
 
 Fixes issue [#4866](https://github.com/naturalcrit/homebrewery/issues/4866)
 
@@ -154,7 +154,7 @@ Fixes issue [#4904](https://github.com/naturalcrit/homebrewery/issues/4904)
 ##### 5e-Cleric, Gazook89
 * [x] Fix various issues with Codemirror 6
 
-Fixes issues [#4771](https://github.com/naturalcrit/homebrewery/issues/4771), [#4583](https://github.com/naturalcrit/homebrewery/issues/4783)
+Fixes issues [#4771](https://github.com/naturalcrit/homebrewery/issues/4771), [#4783](https://github.com/naturalcrit/homebrewery/issues/4783)
 }}
 
 \page
@@ -170,7 +170,6 @@ Fixes issues [#4771](https://github.com/naturalcrit/homebrewery/issues/4771), [#
 
 ##### 5e-Cleric
 * [x] Add auto-suggest to tag entry input box
-* [x] Replace all example artwork with
 * [x] Added tooltips to the {{openSans :fas_circle_info: **Properties**}} menu
 * [x] Removed {{openSans **SYSTEMS**}} checkboxes from {{openSans :fas_circle_info: **Properties**}} menu; instead {{openSans **TAGS**}} should be used for this purpose
 * [x] Replace all AI-generated art with public domain art
@@ -222,7 +221,7 @@ Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
 ##### G-Ambatte
 * [x] Fix default save location failing on new documents 
 
-Fixes issue [#4437](https://github.com/naturalcrit/homebrewery/issues/3175)
+Fixes issue [#4437](https://github.com/naturalcrit/homebrewery/issues/4437)
 * [x] Fix usernames with special symbols unable to open userpage
 
 Fixes issue [#807](https://github.com/naturalcrit/homebrewery/issues/807)
