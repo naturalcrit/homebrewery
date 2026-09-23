@@ -96,7 +96,6 @@ const BrewRenderer = (props)=>{
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
@@ -154,7 +153,7 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorCursorPageNum - 1)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - props.currentBrewRendererPageNum - 1) <= 3)
+		if(Math.abs(index - centerPage - 1) <= 3)
 			return true;
 
 		return false;
