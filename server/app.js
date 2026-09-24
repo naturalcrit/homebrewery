@@ -245,11 +245,12 @@ export default async function createApp(vite) {
 
 		// Create configuration object
 		const configuration = {
-			local       : isLocalEnvironment,
-			publicUrl   : config.get('publicUrl') ?? '',
-			baseUrl     : `${req.protocol}://${req.get('host')}`,
-			environment : nodeEnv,
-			deployment  : config.get('heroku_app_name') ?? ''
+			local            : isLocalEnvironment,
+			publicUrl        : config.get('publicUrl') ?? '',
+			baseUrl          : `${req.protocol}://${req.get('host')}`,
+			environment      : nodeEnv,
+			deployment       : config.get('heroku_app_name') ?? '',
+			developmentStyle : config.get('development_style')
 		};
 		const props = {
 			version     : version,
