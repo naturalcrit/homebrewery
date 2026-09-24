@@ -96,7 +96,6 @@ const BrewRenderer = (props)=>{
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
@@ -154,17 +153,16 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorCursorPageNum - 1)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - props.currentBrewRendererPageNum - 1) <= 3)
+		if(Math.abs(index - centerPage - 1) <= 3)
 			return true;
 
 		return false;
 	};
 
-	const renderDummyPage = (index)=>{
-		return <div className='phb page' id={`p${index + 1}`} key={index}>
+	const renderDummyPage = (index)=>
+		<div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
-	};
 
 	const renderStyle = ()=>{
 		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
@@ -223,8 +221,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderPages = (checkHoists = false)=>{
-
-		if(props.errors && props.errors.length)
+		if(props.errors?.length)
 			return renderedPages;
 
 		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
@@ -246,7 +243,7 @@ const BrewRenderer = (props)=>{
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
-		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
+		props.hoisted = true; // Only fully hoist once.
 		return renderedPages;
 	};
 
@@ -337,7 +334,7 @@ const BrewRenderer = (props)=>{
 			<Frame id='BrewRenderer'  title='Rendered Brew Content' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
+				onClick={emitClick}
 				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
 				<div className='brewRenderer'
