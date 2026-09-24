@@ -194,7 +194,6 @@ export default async function createApp(vite) {
 		}
 	});
 
-<<<<<<< HEAD
 	//Edit Page
 	app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 		req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
@@ -329,7 +328,6 @@ export default async function createApp(vite) {
 
 		return next();
 	}));
-=======
 	// Create Event Stream source for pages to listen to
 	app.get('/stream', (req, res)=>{
 		res.writeHead(200, {
@@ -350,7 +348,6 @@ export default async function createApp(vite) {
 		Stream.emit('sendUpdate', 'initStream', { time: new Date });
 	}, 1000);
 
->>>>>>> master
 
 	// Local only
 	if(isLocalEnvironment){
