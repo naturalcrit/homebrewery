@@ -47,7 +47,7 @@ const Homebrew = (props)=>{
 	global.enablev4      = enablev4;
 
 	const backgroundObject = ()=>{
-		if(config?.deployment || (config?.local && config?.development)) {
+		if(config?.deployment || config?.developmentStyle) {
 			const bgText = config?.deployment || 'Local';
 			return {
 				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
@@ -61,7 +61,7 @@ const Homebrew = (props)=>{
 	if(brew.pureError) {
 		return (
 			<Router>
-				<div className={`homebrew${(config?.deployment || (config?.local && config?.development)) ? ' deployment' : ''}`} style={backgroundObject()}>
+				<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
 					<Routes>
 						<Route path={brew.originalUrl} element={<WithRoute el={ErrorPage} brew={brew} />} />
 					</Routes>
@@ -73,7 +73,7 @@ const Homebrew = (props)=>{
 
 	return (
 		<Router>
-			<div className={`homebrew${(config?.deployment || (config?.local && config?.development)) ? ' deployment' : ''}`} style={backgroundObject()}>
+			<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
