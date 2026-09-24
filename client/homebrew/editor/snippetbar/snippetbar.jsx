@@ -2,6 +2,7 @@
 import './snippetbar.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
+import { Dropdown } from '@components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
 import cx from 'classnames';
@@ -64,6 +65,7 @@ const Snippetbar = createReactClass({
 			historySize       : ()=>{},
 			foldCode          : ()=>{},
 			unfoldCode        : ()=>{},
+			formatCode        : ()=>{},
 			updateEditorTheme : ()=>{},
 			cursorPos         : {},
 			themeBundle       : [],
@@ -187,7 +189,7 @@ const Snippetbar = createReactClass({
 		const snippets = this.state.snippets.filter((snippetGroup)=>snippetGroup.view === this.props.view);
 		if(snippets.length === 0) return null;
 
-		return <div className='snippets'>
+		return <ul className='snippets' role='menubar' aria-label='Snippets Menubar'>
 			{_.map(snippets, (snippetGroup)=>{
 				return <SnippetGroup
 					brew={this.props.brew}
@@ -200,7 +202,7 @@ const Snippetbar = createReactClass({
 				/>;
 			})
 			}
-		</div>;
+		</ul>;
 	},
 
 	replaceContent : function(item){
@@ -245,53 +247,57 @@ const Snippetbar = createReactClass({
 		return (
 			<div className='editors'>
 				{this.props.view !== 'meta' && <><div className='historyTools'>
-					<div className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
+					<button className={`editorTool snippetGroup history ${this.state.historyExists ? 'active' : ''}`}
 						onClick={this.toggleHistoryMenu} >
 						<i className='fas fa-clock-rotate-left' />
 						{ this.state.showHistory && this.renderHistoryItems() }
-					</div>
-					<div className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool undo ${this.props.historySize.done ? 'active' : ''}`}
 						onClick={this.props.undo} >
 						<i className='fas fa-undo' />
-					</div>
-					<div className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool redo ${this.props.historySize.undone ? 'active' : ''}`}
 						onClick={this.props.redo} >
 						<i className='fas fa-redo' />
-					</div>
+					</button>
 				</div>
 				<div className='codeTools'>
-					<div className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
+					<button className={`editorTool foldAll ${this.props.foldCode ? 'active' : ''}`}
 						onClick={this.props.foldCode} >
 						<i className='fas fa-compress-alt' />
-					</div>
-					<div className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool unfoldAll ${this.props.unfoldCode ? 'active' : ''}`}
 						onClick={this.props.unfoldCode} >
 						<i className='fas fa-expand-alt' />
-					</div>
-					<div className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
+					</button>
+					<button className={`editorTool formatCode ${this.props.formatCode ? 'active' : ''}`}
+						onClick={this.props.formatCode} >
+						<i className='fas fa-wand-magic-sparkles' />
+					</button>
+					<button className={`editorTheme ${this.state.themeSelector ? 'active' : ''}`}
 						onClick={this.toggleThemeSelector} >
 						<i className='fas fa-palette' />
 						{this.state.themeSelector && this.renderThemeSelector()}
-					</div>
+					</button>
 				</div></>}
 
 				<div className='tabs'>
-					<div className={cx('text', { selected: this.props.view === 'text' })}
+					<button className={cx('text', { selected: this.props.view === 'text' })}
 						onClick={()=>this.props.onViewChange('text')}>
 						<i className='fa fa-beer' />
-					</div>
-					<div className={cx('style', { selected: this.props.view === 'style' })}
+					</button>
+					<button className={cx('style', { selected: this.props.view === 'style' })}
 						onClick={()=>this.props.onViewChange('style')}>
 						<i className='fa fa-paint-brush' />
-					</div>
-					<div className={cx('snippet', { selected: this.props.view === 'snippet' })}
+					</button>
+					<button className={cx('snippet', { selected: this.props.view === 'snippet' })}
 						onClick={()=>this.props.onViewChange('snippet')}>
 						<i className='fas fa-th-list' />
-					</div>
-					<div className={cx('meta', { selected: this.props.view === 'meta' })}
+					</button>
+					<button className={cx('meta', { selected: this.props.view === 'meta' })}
 						onClick={()=>this.props.onViewChange('meta')}>
 						<i className='fas fa-info-circle' />
-					</div>
+					</button>
 				</div>
 
 			</div>
@@ -320,36 +326,35 @@ const SnippetGroup = createReactClass({
 		};
 	},
 	handleSnippetClick : function(e, snippet){
-		e.stopPropagation();
 		this.props.onSnippetClick(execute(snippet.gen, this.props));
 	},
 	renderSnippets : function(snippets){
 		return _.map(snippets, (snippet)=>{
-			return <div className='snippet' key={snippet.name} onClick={(e)=>this.handleSnippetClick(e, snippet)}>
-				<i className={snippet.icon} />
-				<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
-				{snippet.experimental && <span className='beta'>beta</span>}
-				{snippet.disabled     && <span className='beta' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
-				{snippet.subsnippets && <>
-					<i className='fas fa-caret-right'></i>
-					<div className='dropdown side'>
+			if(!snippet.subsnippets){
+				return (
+					<li key={snippet.name} role='none'>
+						<button className='menu-item'  onClick={(e)=>this.handleSnippetClick(e, snippet)} role='menuitem' aria-label={snippet.name} disabled={snippet.disabled}>
+							<i className={snippet.icon} />
+							<span className={`name${snippet.disabled ? ' disabled' : ''}`} title={snippet.name}>{snippet.name}</span>
+							{snippet.experimental && <span className='status'>beta</span>}
+							{snippet.disabled     && <span className='status' title='temporarily disabled due to large slowdown; under re-design'>disabled</span>}
+						</button>
+					</li>
+				);
+			} else if(snippet.subsnippets){
+				return (
+					<Dropdown groupName={snippet.name} icon={snippet.icon} key={snippet.name}>
 						{this.renderSnippets(snippet.subsnippets)}
-					</div></>}
-			</div>;
+					</Dropdown>
+				)
+			}
 
 		});
 	},
 
 	render : function(){
-		const snippetGroup = `snippetGroup snippetBarButton ${this.props.snippets.length === 0 ? 'disabledSnippets' : ''}`;
-		return <div className={snippetGroup}>
-			<div className='text'>
-				<i className={this.props.icon} />
-				<span className='groupName'>{this.props.groupName}</span>
-			</div>
-			<div className='dropdown'>
-				{this.renderSnippets(this.props.snippets)}
-			</div>
-		</div>;
+		return <Dropdown groupName={this.props.groupName} id={this.props.groupName} icon={this.props.icon}>
+			{this.renderSnippets(this.props.snippets)}
+		</Dropdown>;
 	},
 });

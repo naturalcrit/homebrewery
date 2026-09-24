@@ -89,7 +89,7 @@
 			&::before { content : '\f518'; }
 		}
 	}
-	&:hover {
+	&:hover, &:focus-within {
 		.links { opacity : 1; }
 	}
 	&:nth-child(2n + 1) { margin-right : 0px; }
@@ -103,7 +103,7 @@
 		text-align       : center;
 		background-color : fade(black, 60%);
 		opacity          : 0;
-		a {
+		a, button {
 			.animate(opacity);
 			display         : block;
 			margin          : 8px 0px;
@@ -111,6 +111,7 @@
 			color           : white;
 			text-decoration : unset;
 			opacity         : 0.6;
+			width           : 100%;
 			&:hover { opacity : 1; }
 			i { cursor : pointer; }
 		}

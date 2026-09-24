@@ -32,12 +32,12 @@ function safeHTML(htmlString) {
 			return;
 		}
 		// Check remaining elements for blacklisted attributes
-		for (const attribute of element.attributes){
+		[...element.attributes].forEach((attribute)=>{
 			if(blacklistAttrs.some((test)=>{return test(attribute);})) {
-				element.removeAttribute(attribute.localName);
-				break;
+				element.removeAttribute(attribute.name);
+				return;
 			};
-		};
+		});
 	});
 
 	return div.innerHTML;

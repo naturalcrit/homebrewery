@@ -6,12 +6,12 @@ import React, { useState, useRef, useMemo, useEffect } from 'react';
 import _ from 'lodash';
 
 import MarkdownLegacy from '@shared/markdownLegacy.js';
-import Markdown from '@shared/markdown.js';
+import { hbfm } from 'marked-hbfm';
 import ErrorBar from './errorBar/errorBar.jsx';
 import ToolBar  from './toolBar/toolBar.jsx';
 
 //TODO: move to the brew renderer
-import RenderWarnings from '../../components/renderWarnings/renderWarnings.jsx';
+import RenderWarnings from '@components/renderWarnings/renderWarnings.jsx';
 import NotificationPopup from './notificationPopup/notificationPopup.jsx';
 import Frame from 'react-frame-component';
 import dedent from 'dedent';
@@ -23,12 +23,12 @@ import safeHTML from './safeHTML.js';
 const PAGEBREAK_REGEX_V3 = /^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/m;
 const PAGEBREAK_REGEX_LEGACY = /\\page(?:break)?/m;
 const COLUMNBREAK_REGEX_LEGACY = /\\column(:?break)?/m;
-const PAGE_HEIGHT = 1056;
 
 const TOOLBAR_STATE_KEY = 'HB_renderer_toolbarState';
 
 const INITIAL_CONTENT = dedent`
 	<!DOCTYPE html><html><head>
+	<title>Rendered Brew Content</title>
 	<link href='/homebrew/bundle.css' type="text/css" rel='stylesheet' />
 	<link href="${brewRendererStylesUrl}" rel="stylesheet" />
 	<link href="${headerNavStylesUrl}" rel="stylesheet" />
@@ -46,31 +46,25 @@ const BrewPage = (props)=>{
 	};
 	const pageRef   = useRef(null);
 	const cleanText = safeHTML(props.contents);
+	const pageNum   = props.index + 1;
 
 	useEffect(()=>{
 		if(!pageRef.current) return;
 
-		// Observer for tracking pages within the `.pages` div
+		// Observer for tracking which pages are at least 30% visible in the iframe
 		const visibleObserver = new IntersectionObserver(
-			(entries)=>{
-				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
-						props.onVisibilityChange(props.index + 1, true, false); // add page to array of visible pages.
-					else
-						props.onVisibilityChange(props.index + 1, false, false);
-				});
-			},
+			(entries)=>entries.forEach((entry)=>{
+				props.onVisibilityChange(pageNum, entry.isIntersecting, false); // add/remove page from array of visible pages.
+			}),
 			{ threshold: .3, rootMargin: '0px 0px 0px 0px'  } // detect when >30% of page is within bounds.
 		);
 
 		// Observer for tracking the page at the center of the iframe.
 		const centerObserver = new IntersectionObserver(
-			(entries)=>{
-				entries.forEach((entry)=>{
-					if(entry.isIntersecting)
-						props.onVisibilityChange(props.index + 1, true, true); // Set this page as the center page
-				});
-			},
+			(entries)=>entries.forEach((entry)=>{
+				if(entry.isIntersecting)
+					props.onVisibilityChange(pageNum, true, true); // Set this page as the center page
+			}),
 			{ threshold: 0, rootMargin: '-50% 0px -50% 0px' } // Detect when the page is at the center
 		);
 
@@ -91,6 +85,7 @@ const BrewPage = (props)=>{
 
 //v=====--------------------< Brew Renderer Component >-------------------=====v//
 let renderedPages = [];
+const pageTemplates = [];
 let rawPages      = [];
 
 const BrewRenderer = (props)=>{
@@ -98,22 +93,24 @@ const BrewRenderer = (props)=>{
 		text                       : '',
 		style                      : '',
 		renderer                   : 'legacy',
-		theme                      : '5ePHB',
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentEditorViewPageNum   : 1,
 		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
 	};
 
+	const pagesRef = useRef(null);
+
+	const [visiblePages, setVisiblePages] = useState([]);
+	const [centerPage  , setCenterPage  ] = useState(1);
+	const [headerState , setHeaderState ] = useState(false);
+
 	const [state, setState] = useState({
-		isMounted    : false,
-		visibility   : 'hidden',
-		visiblePages : [],
-		centerPage   : 1
+		isMounted  : false,
+		visibility : 'hidden'
 	});
 
 	const [displayOptions, setDisplayOptions] = useState({
@@ -131,12 +128,6 @@ const BrewRenderer = (props)=>{
 		toolbarState &&	setDisplayOptions(toolbarState);
 	}, []);
 
-	const [headerState, setHeaderState] = useState(false);
-
-	const mainRef  = useRef(null);
-	const pagesRef = useRef(null);
-	const urlRef = useRef('');
-
 	if(props.renderer == 'legacy') {
 		rawPages = props.text.split(PAGEBREAK_REGEX_LEGACY);
 	} else {
@@ -144,20 +135,16 @@ const BrewRenderer = (props)=>{
 	}
 
 	const handlePageVisibilityChange = (pageNum, isVisible, isCenter)=>{
-		setState((prevState)=>{
-			const updatedVisiblePages = new Set(prevState.visiblePages);
-			if(!isCenter)
-				isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
-
-			return {
-				...prevState,
-				visiblePages : [...updatedVisiblePages].sort((a, b)=>a - b),
-				centerPage   : isCenter ? pageNum : prevState.centerPage
-			};
+		setVisiblePages((prev)=>{
+			const updatedVisiblePages = new Set(prev);
+			isVisible ? updatedVisiblePages.add(pageNum) : updatedVisiblePages.delete(pageNum);
+			return [...updatedVisiblePages].sort((a, b)=>a - b);
 		});
 
-		if(isCenter)
+		if(isCenter) {
+			setCenterPage(pageNum);
 			props.onPageChange(pageNum);
+		}
 	};
 
 	const isInView = (index)=>{
@@ -201,13 +188,27 @@ const BrewRenderer = (props)=>{
 			return <BrewPage className='page phb' index={index} key={index} contents={html} style={styles} onVisibilityChange={handlePageVisibilityChange} />;
 		} else {
 			if(pageText.startsWith('\\page')) {
-				const firstLineTokens  = Markdown.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
+				const firstLineTokens  = hbfm.marked.lexer(pageText.split('\n', 1)[0])[0].tokens;
 				const injectedTags = firstLineTokens?.find((obj)=>obj.injectedTags !== undefined)?.injectedTags;
 				if(injectedTags) {
 					styles     = { ...styles, ...injectedTags.styles };
 					styles     = _.mapKeys(styles, (v, k)=>k.startsWith('--') ? k : _.camelCase(k)); // Convert CSS to camelCase for React
 					classes    = [classes, injectedTags.classes].join(' ').trim();
 					attributes = injectedTags.attributes;
+					if(global.enablev4) {
+						if(attributes && Object.hasOwn(attributes, 'hbtemplate')) {
+							pageTemplates[index] = attributes['hbtemplate'];
+						}
+					}
+				}
+				if(global.enablev4) {
+					// If we don't have a template for this page, look backwards until one is found or the first page.
+					if(!pageTemplates[index]) {
+						for (let i=index;i>=0; i--) {
+							// If one is found, add the template attribute
+							if(pageTemplates[i]) attributes['hbtemplate'] = pageTemplates[i];
+						}
+					}
 				}
 				pageText = pageText.includes('\n') ? pageText.substring(pageText.indexOf('\n') + 1) : ''; // Remove the \page line
 			}
@@ -215,7 +216,7 @@ const BrewRenderer = (props)=>{
 			// DO NOT REMOVE!!! REQUIRED FOR BACKWARDS COMPATIBILITY WITH NON-UPGRADABLE VERSIONS OF CHROME.
 			pageText += `\n\n&nbsp;\n\\column\n&nbsp;`; //Artificial column break at page end to emulate column-fill:auto (until `wide` is used, when column-fill:balance will reappear)
 
-			const html = Markdown.render(pageText, index);
+			const html = hbfm.render(pageText, index);
 
 			return <BrewPage className={classes} index={index} key={index} contents={html} style={styles} attributes={attributes} onVisibilityChange={handlePageVisibilityChange} />;
 		}
@@ -226,8 +227,10 @@ const BrewRenderer = (props)=>{
 		if(props.errors && props.errors.length)
 			return renderedPages;
 
-		if(rawPages.length != renderedPages.length) // Re-render all pages when page count changes
+		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
 			renderedPages.length = 0;
+			pageTemplates.length = 0;
+		}
 
 		// Render currently-edited page first so cross-page effects (variables, links) can propagate out first
 		if(rawPages.length > props.currentEditorCursorPageNum -1)
@@ -309,7 +312,7 @@ const BrewRenderer = (props)=>{
 	};
 
 	const renderedStyle = useMemo(()=>renderStyle(), [props.style, props.themeBundle]);
-	renderedPages = useMemo(()=>renderPages(), [props.text, displayOptions]);
+	renderedPages = useMemo(()=>renderPages(), [props.text, centerPage, displayOptions]);
 
 	return (
 		<>
@@ -323,18 +326,19 @@ const BrewRenderer = (props)=>{
 				: null}
 
 			<ErrorBar errors={props.errors} />
-			<div className='popups' ref={mainRef}>
+			<div className='popups'>
 				<RenderWarnings />
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={state.visiblePages.length > 0 ? state.visiblePages : [state.centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={visiblePages.length > 0 ? visiblePages : [centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
-			<Frame id='BrewRenderer' initialContent={INITIAL_CONTENT}
+			<Frame id='BrewRenderer'  title='Rendered Brew Content' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
 				onClick={()=>{emitClick();}}
+				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
 				<div className='brewRenderer'
 					onKeyDown={handleControlKeys}

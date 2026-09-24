@@ -1,5 +1,5 @@
 import _       from 'lodash';
-import yaml    from 'js-yaml';
+import * as yaml from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
@@ -93,6 +93,15 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const metadata = yaml.load(metadataSection);
 		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+
+		brew.bleedSize = { ...metadata.bleedSize };
+		brew.safetySpace = { ...metadata.safetySpace };
+		brew.trimSize  = { ...metadata.trimSize };
+		brew.columns = metadata?.columns;
+		brew.columnGutter = metadata?.columnGutter;
+		brew.license = metadata?.license;
+		brew.legalAuthors = metadata.legalAuthors;
+
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -137,7 +146,7 @@ const printCurrentBrew = async ()=>{
 	}
 };
 
-const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
+const fetchThemeBundle = async (setError = ()=>{}, setThemeBundle = ()=>{}, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
@@ -220,5 +229,6 @@ export {
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	yamlSnippetsToText
 };

@@ -4,7 +4,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
 import request from '../../utils/request-middleware.js';
-import Combobox from '../../../components/combobox.jsx';
+import Combobox from '@components/combobox.jsx';
 import TagInput from '../tagInput/tagInput.jsx';
 
 
@@ -44,6 +44,7 @@ const MetadataEditor = createReactClass({
 
 	getInitialState : function(){
 		return {
+			isOwner       : global.account?.username && global.account?.username === this.props.metadata?.authors[0],
 			showThumbnail : true
 		};
 	},
@@ -144,14 +145,23 @@ const MetadataEditor = createReactClass({
 			});
 	},
 
+	handleDeleteAuthor : function(author){
+		if(!confirm('Are you sure you want to remove this author? They will lose all edit access to this brew, and it will dissapear from their userpage.')) return;
+		if(!this.props.metadata.authors.includes(author)) return;
+		this.props.onChange({
+    		...this.props.metadata,
+    		authors : this.props.metadata.authors.filter((a)=>a !== author)
+		});
+	},
+
 	renderPublish : function(){
 		if(this.props.metadata.published){
 			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fas fa-ban' /> unpublish
+				<i className='fas fa-ban' aria-hidden='true' /> unpublish
 			</button>;
 		} else {
 			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fas fa-globe' /> publish
+				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
 	},
@@ -170,16 +180,54 @@ const MetadataEditor = createReactClass({
 	},
 
 	renderAuthors : function(){
-		let text = 'None.';
-		if(this.props.metadata.authors && this.props.metadata.authors.length){
-			text = this.props.metadata.authors.join(', ');
-		}
-		return <div className='field authors'>
-			<label>authors</label>
-			<div className='value'>
-				{text}
+		const authors = this.props.metadata.authors;
+		if(!this.state.isOwner || authors.length < 2) return (
+			<div className='field authors'>
+				<label>authors</label>
+				<div className='value'>
+					{authors.length > 0 && (
+						<a href={`/user/${authors[0]}`} className='author-link' target="_blank" title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}{authors.length > 1 && ', '}
+						</a>
+					)}
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
+        					{author}{i+2 < authors.length && ', '}
+        				</a>
+        			))}
+				</div>
 			</div>
-		</div>;
+		);
+		return (
+			<div className='field authors'>
+				<label>Authors</label>
+				<ul className='list'>
+					{authors.length > 0 && (
+						<li className='tag owner' title='Owner'>
+							<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}
+							</a>
+						</li>
+					)}
+
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<li className='tag author' key={i + 1} title='Author'>
+        					<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${authors[0]}'s profile in a new tab`}>
+        						{author}
+        					</a>
+        					<button
+								onClick={()=>this.handleDeleteAuthor(author)}
+								className='delete'
+								title={`Remove ${author} as an author`}
+        					>
+        						<i className='fa fa-times fa-fw' />
+        					</button>
+        				</li>
+        			))}
+				</ul>
+			</div>
+		);
+
 	},
 
 	renderThemeDropdown : function(){
@@ -311,26 +359,28 @@ const MetadataEditor = createReactClass({
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>
-				<label>title</label>
-				<input type='text' className='value'
+				<label for='title_field'>title</label>
+				<input type='text' id='title_field' className='value'
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
 			<div className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>description</label>
-						<textarea defaultValue={this.props.metadata.description} className='value'
+						<label for='description_field'>description</label>
+						<textarea id='description_field' defaultValue={this.props.metadata.description} className='value'
 							onChange={(e)=>this.handleFieldChange('description', e)} />
 					</div>
 					<div className='field thumbnail'>
-						<label>thumbnail</label>
+						<label for='thumbnail_field'>thumbnail</label>
 						<input type='text'
+							id='thumbnail_field'
 							defaultValue={this.props.metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
 							className='value'
 							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
-						<button className='display' onClick={this.toggleThumbnailDisplay}>
+						<button className='display' onClick={this.toggleThumbnailDisplay}
+						        aria-label={`${this.state.showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>

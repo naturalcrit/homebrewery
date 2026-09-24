@@ -43,6 +43,12 @@ test('Javascript via inline event handler - onMouseOver', function() {
 	expect(rendered).toBe('<div>Hover over me</div>');
 });
 
+test('Javascript via multiple inline event handlers - onClick + onMouseOver', function() {
+	const source = `<div onclick="alert('This is a JavaScript injection via inline event handler')" onmouseover="alert('This is a JavaScript injection via inline event handler')">Hover over or Click me</div>`;
+	const rendered = safeHTML(source);
+	expect(rendered).toBe('<div>Hover over or Click me</div>');
+});
+
 test('Javascript via data attribute', function() {
 	const source = `<div data-code="javascript:alert('This is a JavaScript injection via data attribute')">Test</div>`;
 	const rendered = safeHTML(source);
