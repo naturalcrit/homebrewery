@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import './metadataEditor.less';
+import '../uiEditor.less';
 import React from 'react';
 import createReactClass from 'create-react-class';
 import _ from 'lodash';
@@ -355,7 +355,7 @@ const MetadataEditor = createReactClass({
 	},
 
 	render : function(){
-		return <div className='metadataEditor'>
+		return <div className='metadataEditor ui-editor'>
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>
