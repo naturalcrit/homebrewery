@@ -80,20 +80,22 @@
 		font-size           : 0.89cm;
 		font-variant        : small-caps;
 		line-height         : 1em;
-		& + p::first-letter {
-			float                   : left;
-			padding-top             : 0.3em;
-			padding-bottom          : 2px;
-			padding-left            : 40px; //Allow background color to extend into margins
-			margin-top              : -0.3cm;
-			margin-right            : 0.1em;
-			margin-bottom           : -20px;
-			margin-left             : -40px;
-			font-family             : 'FrederickaTheGreat';
-			font-size               : 1.9em;
-			line-height             : 1em;
-		}
 		& + p::first-line { font-variant : small-caps; }
+	}
+	p.first-letter::first-letter,
+	p.drop-cap::first-letter,
+	h1 + p::first-letter {
+		float                   : left;
+		padding-top             : 0.3em;
+		padding-bottom          : 2px;
+		padding-left            : 40px; //Allow background color to extend into margins
+		margin-top              : -0.3cm;
+		margin-right            : 0.1em;
+		margin-bottom           : -20px;
+		margin-left             : -40px;
+		font-family             : 'FrederickaTheGreat';
+		font-size               : 1.9em;
+		line-height             : 1em;
 	}
 	h2 {
 		font-size     : 0.62cm;

@@ -4,7 +4,7 @@ import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
-import { hbfm }   from 'hbmarkedwrapper';
+import { hbfm }   from 'marked-hbfm';
 import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
@@ -20,6 +20,8 @@ const router = express.Router();
 
 import { DEFAULT_BREW, DEFAULT_BREW_LOAD } from './brewDefaults.js';
 import Themes from '../themes/themes.json' with { type: 'json' };
+
+import Stream from './eventStreamSource.js';
 
 const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
@@ -168,8 +170,7 @@ const api = {
 
 				const googleBrew = await GoogleActions.getGoogleBrew(oAuth2Client, googleId, id, accessType)
 					.catch((googleError)=>{
-						const reason = googleError.errors?.[0].reason;
-						if(reason == 'notFound')
+						if(googleError.code === 404 || googleError.status === 404)
 							throw { ...googleError, HBErrorCode: '02', authors: stub?.authors, account: req.account?.username };
 						else
 							throw { ...googleError, HBErrorCode: '01' };
@@ -501,6 +502,8 @@ const api = {
 
 		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
 
+		Stream.emit('sendUpdate', 'brewUpdated', { time: new Date, shareId: brew.shareId, version: brew.version });
+
 		res.status(200).send(saved);
 	},
 	deleteGoogleBrew : async (account, id, editId, res)=>{
@@ -574,9 +577,9 @@ const api = {
 router.use(dbCheck);
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew)); //alt endpoint, unused
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew)); //alt endpoint, unused
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 
