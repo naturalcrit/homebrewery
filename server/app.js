@@ -1,4 +1,4 @@
-/*eslint max-lines: ["warn", {"max": 500, "skipBlankLines": true, "skipComments": true}]*/
+/*eslint max-lines: ["warn", {"max": 400, "skipBlankLines": true, "skipComments": true}]*/
 // Set working directory to project root
 import { dirname }       from 'path';
 import { fileURLToPath } from 'url';
@@ -14,6 +14,7 @@ import express from 'express';
 import config  from './config.js';
 import path from 'path';
 import fs      from 'fs-extra';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getCSS } = api;
@@ -30,6 +31,8 @@ import contentNegotiation from './middleware/content-negotiation.js';
 import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
+
+import Stream from './eventStreamSource.js';
 import dbCheck            from './middleware/dbCheck.js';
 
 import cors from 'cors';
@@ -124,15 +127,24 @@ export default async function createApp(vite) {
 	};
 
 	app.use(pageRoutes({
-        defaultMetaTags,
+		defaultMetaTags,
 		HomebrewModel,
 		sanitizeBrew,
-    }));
+	}));
 
 	//Robots.txt
 	app.get('/robots.txt', (req, res)=>{
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
 	});
+	//serve brew for sharepage rerender
+	app.get('/api/fetch/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res) => {
+		const { brew } = req;
+		brew.authors.includes(req.account?.username)
+			? sanitizeBrew(brew, 'shareAuthor')
+			: sanitizeBrew(brew, 'share');
+		splitTextStyleAndMetadata(brew);
+		res.json({ brew });
+	}));
 
 	//Serve brew metadata
 	app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
@@ -182,6 +194,7 @@ export default async function createApp(vite) {
 		}
 	});
 
+<<<<<<< HEAD
 	//Edit Page
 	app.get('/edit/:id', asyncHandler(getBrew('edit')), asyncHandler(async(req, res, next)=>{
 		req.brew = req.brew.toObject ? req.brew.toObject() : req.brew;
@@ -316,6 +329,28 @@ export default async function createApp(vite) {
 
 		return next();
 	}));
+=======
+	// Create Event Stream source for pages to listen to
+	app.get('/stream', (req, res)=>{
+		res.writeHead(200, {
+			'Content-Type'     : 'text/event-stream',
+			'Cache-Control'    : 'no-cache',
+			'Connection'       : 'keep-alive',
+			'Content-Encoding' : 'none'
+		});
+
+		Stream.on('sendUpdate', (event, data)=>{
+			console.log('Event:', event, '\nData:', data);
+			res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
+		});
+	});
+
+	// After Stream starts, send initStream event
+	setTimeout(()=>{
+		Stream.emit('sendUpdate', 'initStream', { time: new Date });
+	}, 1000);
+
+>>>>>>> master
 
 	// Local only
 	if(isLocalEnvironment){
@@ -347,11 +382,12 @@ export default async function createApp(vite) {
 
 		// Create configuration object
 		const configuration = {
-			local       : isLocalEnvironment,
-			publicUrl   : config.get('publicUrl') ?? '',
-			baseUrl     : `${req.protocol}://${req.get('host')}`,
-			environment : nodeEnv,
-			deployment  : config.get('heroku_app_name') ?? ''
+			local            : isLocalEnvironment,
+			publicUrl        : config.get('publicUrl') ?? '',
+			baseUrl          : `${req.protocol}://${req.get('host')}`,
+			environment      : nodeEnv,
+			deployment       : config.get('heroku_app_name') ?? '',
+			developmentStyle : config.get('development_style')
 		};
 		const props = {
 			version     : version,
