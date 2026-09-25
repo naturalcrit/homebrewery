@@ -119,7 +119,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 				</label>
 
 				<div className='value'>
-					<small style={{ fontSize: `${settings.fontSize || 1}em` }}>from 9px to 30px</small>
+					<small style={{ fontSize: `${settings.fontSize || 1}em` }}>from 6.5px to 26px</small>
 					<input
 						id='fontSize'
 						type='range'
