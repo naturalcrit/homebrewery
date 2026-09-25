@@ -277,11 +277,12 @@ export default async function createApp(vite) {
 
 		// Create configuration object
 		const configuration = {
-			local       : isLocalEnvironment,
-			publicUrl   : config.get('publicUrl') ?? '',
-			baseUrl     : `${req.protocol}://${req.get('host')}`,
-			environment : nodeEnv,
-			deployment  : config.get('heroku_app_name') ?? ''
+			local            : isLocalEnvironment,
+			publicUrl        : config.get('publicUrl') ?? '',
+			baseUrl          : `${req.protocol}://${req.get('host')}`,
+			environment      : nodeEnv,
+			deployment       : config.get('heroku_app_name') ?? '',
+			developmentStyle : config.get('development_style')
 		};
 		const props = {
 			version     : version,
@@ -311,9 +312,14 @@ export default async function createApp(vite) {
 			html = await vite.transformIndexHtml(req.originalUrl, html);
 		}
 
+		const safeProps = JSON.stringify(props).replace(/<(?=\/?script)/ig, '\\u003c');
 		html = html.replace(
 			'<head>',
-			()=>{ return `<head>\n<script id="props" >window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n${ogMetaTags}`; }
+			`<head>\n`
+			+ `<script id="props">`
+			+  `window.__INITIAL_PROPS__ = ` + safeProps
+			+ `</script>\n`
+			+ ogMetaTags
 		);
 
 		return html;
