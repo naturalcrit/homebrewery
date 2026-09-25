@@ -65,7 +65,7 @@ const indexSplit=(src)=>{
 	} else {
 		working = cleanReferencePrefixes(src).split(indexSplitRegex);
 		if(working[1]?.length > 0) {
-			index = working[0].replace('\\:', ':').trim();
+			index = working[0].replace('\\:', ':').trim().slice(2, -1);
 			if(!working[1]?.trim()>0) {
 				working.splice(1, 1);
 			}
@@ -147,15 +147,13 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 };
 
 const findIndexEntries = (pages, indexes, runningErrors)=>{
-	const theRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
+	// const theRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
+	const theRegex = /^([@]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:((?:\n? *[^\s].*)+)(?=\n+|$)/mg;
 	for (const [pageNumber, page] of pages.entries()) {
 		if(page.match(theRegex)) {
 			let match;
 			while ((match = theRegex.exec(page)) !== null){
-				// Dumb check to make sure we aren't sending a header
-				if((match[0][1] !== '#') && (match[0][1] !== ' ')) {
-					insertIndex(indexes, match[0].slice(1).trim(), pageNumber, runningErrors);
-				}
+				insertIndex(indexes, match[0], pageNumber, runningErrors);
 			}
 		}
 	};
@@ -274,6 +272,7 @@ const markup = (indexes, indexName, index, runningErrors)=>{
 			results = results.concat(topicResults);
 		}
 	}
+	console.log(results);
 	return results;
 };
 
@@ -289,22 +288,22 @@ export default (props)=>{
 
 	let  resultIndexes = '';
 
-	if(indexes.get('Index').size == 0) indexes.delete('Index');
+	if(indexes.get('Index')?.size == 0) indexes.delete('Index');
 
 	const sortedIndexes = sortMap(indexes);
 
 	for (const [indexName, index] of sortedIndexes) {
 		const markdown = markup(indexes, indexName.replace(/[^\w\s\']|_/g, '').replace(/\s+/g, ''), index, runningErrors);
 		if(markdown.length > 0) {
-			resultIndexes +=dedent`
-			{{index,wide
-			##### ${indexName}
+			resultIndexes += `
+{{index,wide
+##### ${indexName}
 
-			${markdown}
-			}}
-			\page
+${markdown}
+}}
+\\page
 
-			`;
+`;
 			resultIndexes += '\n';
 		}
 	};
