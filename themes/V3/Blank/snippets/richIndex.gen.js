@@ -147,7 +147,6 @@ const insertIndex = (indexes, entry, pageNumber, runningErrors)=>{
 };
 
 const findIndexEntries = (pages, indexes, runningErrors)=>{
-	// const theRegex = /^#((.+)(?<!\\):)?(.+)((?:(?<!\\)\/(.+)))?\n/mg;
 	const theRegex = /^([@]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]:((?:\n? *[^\s].*)+)(?=\n+|$)/mg;
 	for (const [pageNumber, page] of pages.entries()) {
 		if(page.match(theRegex)) {
@@ -196,7 +195,7 @@ const sanityCheckUnders = (indexes, entryAddress)=>{
 
 
 // Processes a list of Index Marker targets, either as page numbers or as Cross References
-const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
+const formatIndexLocations = (indexes, pagesArray, entry, subentry, runningErrors)=>{
 	let results = '';
 	const regularRef = [];
 	const seeRef = [];
@@ -207,7 +206,7 @@ const formatIndexLocations = (indexes, pagesArray, entry, runningErrors)=>{
 	if(pagesArray) {
 		for (const [k, pageNumber] of pagesArray.entries()) {
 			if(typeof pageNumber == 'number') {
-				regularRef.push(`[${parseInt(pageNumber+1)}](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')})`);
+				regularRef.push(`[${parseInt(pageNumber+1)}](#p${parseInt(pageNumber)}_${entry.toLowerCase().replaceAll(' ', '')}${subentry == null ? '' : `_${subentry.toLowerCase().replaceAll(' ', '')}`})`);
 			} else {
 				let targetIndex = pageNumber.index?.length > 0 ? cleanReferencePrefixes(pageNumber.index) : 'Index';
 				const targetTopic = cleanReferencePrefixes(pageNumber.topic);
@@ -251,7 +250,7 @@ const markup = (indexes, indexName, index, runningErrors)=>{
 		if(subjectHeadingContents.has('setAnchor')) {
 			setAnchor.push(`<a id="idx_${indexName.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}"></a>`);
 		}
-		const topicLocations = formatIndexLocations(indexes, subjectHeadingContents.get('pages'), subjectHeading, runningErrors);
+		const topicLocations = formatIndexLocations(indexes, subjectHeadingContents.get('pages'), subjectHeading, null, runningErrors);
 		const subEntries = subjectHeadingContents.get('entries');
 		if(subEntries?.size) {
 			const sortedEntries = sortMap(subEntries);
@@ -260,7 +259,7 @@ const markup = (indexes, indexName, index, runningErrors)=>{
 				if(sortedEntries.get(entry).has('setAnchor')) {
 					setSubAnchor.push(`<a id="idx_${indexName.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${subjectHeading.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}_${entry.replace(/\s/g, '').replace(/\|/g, '_').toLowerCase()}"></a>`);
 				}
-				const subtopicLocations = formatIndexLocations(indexes, entryPages.get('pages'), entry, runningErrors);
+				const subtopicLocations = formatIndexLocations(indexes, entryPages.get('pages'), subjectHeading, entry, runningErrors);
 				if(subtopicLocations.length > 1) {
 					subtopicResults = subtopicResults.concat('  - ', setSubAnchor.join(''), entry, subtopicLocations);
 				}
