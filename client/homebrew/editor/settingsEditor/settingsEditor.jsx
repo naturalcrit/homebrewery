@@ -3,9 +3,7 @@ import React from 'react';
 
 const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
 
-	const validations = {
-
-	};
+	const validations = {};
 
 	const handleFieldChange = (setting, e)=>{
 		const value =
@@ -38,7 +36,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 	};
 
 	return (
-		<div className='settingsEditor ui-editor'>
+		<div className='settingsEditor uiEditor'>
 			<h1>Editor Settings</h1>
 
 			<div className='field'>
@@ -119,17 +117,23 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 				</label>
 
 				<div className='value'>
-					<small style={{ fontSize: `${settings.fontSize || 1}em` }}>from 9px to 30px</small>
+					<small style={{ fontSize: `${settings.fontSize || 1}em` }}>from 7px to 26px</small>
 					<input
 						id='fontSize'
 						type='range'
-						min={.6}
+						min={.5}
 						step={.1}
 						max={2}
+						list='font-sizes'
 						name='fontSize'
-						value={settings.fontSize}
+						title={`${Math.round(settings.fontSize * 13)}px`}
+						value={settings.fontSize || 1}
 						onChange={(e)=>handleFieldChange('fontSize', e)}
 					/>
+					<datalist id='font-sizes'>
+					<option value='1' />
+					</datalist>
+
 				</div>
 			</div>
 		</div>

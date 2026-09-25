@@ -2,6 +2,7 @@
 import './editor.less';
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import dedent from 'dedent';
+import { EditorView } from '@codemirror/view';
 
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
@@ -86,6 +87,7 @@ const Editor = forwardRef(
 	)=>{
 		const [view, setView] = useState('text'); // 'text', 'style', 'meta', 'snippet'
 		const [snippetBarHeight, setSnippetBarHeight] = useState(26);
+		const [isDark, setIsDark] = useState(false);
 		const [editorSettings, setEditorSettings] = useState({
 			autoCloseBrackets : true,
 			showImagePreviews : true,
@@ -261,6 +263,7 @@ const Editor = forwardRef(
 							onCursorChange={(page)=>updateCurrentCursorPage(page)}
 							onViewChange={(page)=>updateCurrentViewPage(page)}
 							editorTheme={editorSettings.editorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 							settings={editorSettings}
@@ -280,6 +283,7 @@ const Editor = forwardRef(
 							value={brew.style ?? DEFAULT_STYLE_TEXT}
 							onChange={onBrewChange('style')}
 							editorTheme={editorSettings.editorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - ${snippetBarHeight}px)` }}
 							settings={editorSettings}
@@ -303,6 +307,7 @@ const Editor = forwardRef(
 							onChange={onBrewChange('snippets')}
 							enableFolding={true}
 							editorTheme={editorSettings.editorTheme}
+							onThemeChange={setIsDark}
 							renderer={brew.renderer}
 							style={{ height: `calc(100% - 25px)` }}
 							settings={editorSettings}
@@ -313,7 +318,7 @@ const Editor = forwardRef(
 			if(isMeta()) {
 				return (
 					<>
-						<CodeEditor key='codeEditor' tab='brewMetadata' view={view} style={{ display: 'none' }} settings={editorSettings} />
+						<CodeEditor key='codeEditor' tab='brewMetadata' editorTheme={editorSettings.editorTheme} onThemeChange={setIsDark} view={view} style={{ display: 'none' }} settings={editorSettings} />
 						<MetadataEditor
 							metadata={brew}
 							themeBundle={themeBundle}
@@ -332,6 +337,8 @@ const Editor = forwardRef(
 							tab='brewSettings' //necessary or the brew object loses its contents, culprit possibly on the tab dependent useEffect in codeEditor.jsx
 							view={view}
 							style={{ display: 'none' }}
+							editorTheme={editorSettings.editorTheme}
+							onThemeChange={setIsDark} 
 							settings={editorSettings}
 						/>
 						<SettingsEditor
@@ -362,7 +369,7 @@ const Editor = forwardRef(
 			historySize,
 		}));
 		return (
-			<div className='editor' ref={editor}>
+			<div className={`editor${isDark ? ' darkMode' : ''}`} ref={editor}>
 				<SnippetBar
 					brew={brew}
 					view={view}

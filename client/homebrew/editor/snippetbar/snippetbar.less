@@ -3,21 +3,23 @@
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	--activeTriggerColor : inherit;
-	--menuColor          : #DDDDDD;
+	--menuColor      : #DDDDDD;
+	--textColor      : black;
+	--hoverMenuColor : #999;
+
 	@menuHeight      : 25px;
-	position             : relative;
-	display              : flex;
-	flex-wrap            : wrap-reverse;
-	justify-content      : space-between;
-	height               : auto;
-	font-family          : 'Open Sans', sans-serif;
-	font-size            : 0.65rem;
-	font-weight          : 800;
-	color                : black;
-	text-transform       : uppercase;
-	background-color     : #DDDDDD;
-	reading-flow         : flex-visual;
+	position         : relative;
+	display          : flex;
+	flex-wrap        : wrap-reverse;
+	reading-flow     : flex-visual;
+	justify-content  : space-between;
+	height           : auto;
+	color            : var(--textColor);
+	background-color : var(--menuColor);
+	font-size        : .65rem;
+	font-family: 'Open Sans', sans-serif;
+	text-transform: uppercase;
+	font-weight: 800;
 
 	.editors {
 		display         : flex;
@@ -44,7 +46,7 @@
 
 				&.editorTool:not(.active) { cursor : not-allowed; }
 
-				&:hover,&.selected { background-color : #999999; }
+				&:hover,&.selected { background-color : var(--hoverMenuColor) }
 				&.text {
 					.tooltipLeft('Brew Editor');
 				}
@@ -100,11 +102,6 @@
 						position         : relative;
 						background-color : #999999;
 					}
-				}
-				&.divider {
-					width      : 5px;
-					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-					&:hover { background-color : inherit; }
 				}
 			}
 			.themeSelector {
@@ -202,7 +199,9 @@
 			background    : grey;
 			border-radius : 12px;
 		}
-		&:hover { background-color : #999999; }
+		&:hover {
+			background-color : var(--hoverMenuColor);
+		}
 		&:disabled {
 			color  : gray;
 			cursor : not-allowed;
@@ -225,4 +224,10 @@
 		}
 		.editors > div.history > .dropdown { right : unset; }
 	}
+}
+
+.editor.darkMode .snippetBar {
+	--menuColor      : #666;
+	--textColor      : #eee;
+	--hoverMenuColor : #444;
 }
