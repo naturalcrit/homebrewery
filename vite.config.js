@@ -8,12 +8,12 @@ export default defineConfig({
 	plugins : [react(), generateAssetsPlugin()],
 	resolve : {
 		alias : {
-			'@vitreum'      : path.resolve(__dirname, './vitreum'),
-			'@shared'       : path.resolve(__dirname, './shared'),
-			'@sharedStyles' : path.resolve(__dirname, './shared/naturalcrit/styles'),
-			'@navbar'       : path.resolve(__dirname, './client/homebrew/navbar'),
-			'@themes'       : path.resolve(__dirname, './themes'),
-			'@components'   : path.resolve(__dirname, './client/components')
+			'@vitreum'      : path.resolve(import.meta.dirname, './vitreum'),
+			'@shared'       : path.resolve(import.meta.dirname, './shared'),
+			'@sharedStyles' : path.resolve(import.meta.dirname, './shared/naturalcrit/styles'),
+			'@navbar'       : path.resolve(import.meta.dirname, './client/homebrew/navbar'),
+			'@themes'       : path.resolve(import.meta.dirname, './themes'),
+			'@components'   : path.resolve(import.meta.dirname, './client/components')
 		},
 	},
 	build : {

@@ -103,6 +103,7 @@ const CodeEditor = forwardRef(
 			onChange = ()=>{},
 			onCursorChange = ()=>{},
 			onViewChange = ()=>{},
+			onThemeChange = ()=>{},
 			editorTheme = 'default',
 			style,
 			renderer,
@@ -327,6 +328,9 @@ const CodeEditor = forwardRef(
 			view.dispatch({
 				effects : themeCompartment.reconfigure(themeExtension),
 			});
+
+			const isDark = view.state.facet(EditorView.darkTheme);
+			onThemeChange(isDark);
 		}, [editorTheme, tab]);
 
 		useEffect(()=>{
