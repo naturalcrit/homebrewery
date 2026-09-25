@@ -337,6 +337,8 @@ const Editor = forwardRef(
 							tab='brewSettings' //necessary or the brew object loses its contents, culprit possibly on the tab dependent useEffect in codeEditor.jsx
 							view={view}
 							style={{ display: 'none' }}
+							editorTheme={editorSettings.editorTheme}
+							onThemeChange={setIsDark} 
 							settings={editorSettings}
 						/>
 						<SettingsEditor
