@@ -90,19 +90,23 @@
 				font-style    : italic;
 				line-height   : 1.4em;
 			}
-
-			input[type='checkbox'], input[type='number'] {
-				float      : right;
-				text-align : end;
-			}
-			input[type='text'], textarea {
-				color            : var(--input-text-clr);
-				background-color : var(--input-bg);
-				border           : 1px solid var(--input-placeholder-clr);
-				&:hover, :focus { outline          : 1px solid var(--input-placeholder-clr); background-color : var(--input-bg-hover); }
-				&::placeholder { color : var(--input-placeholder-clr); }
-			}
 		
+		}
+
+		input[type='checkbox'], input[type='number'] {
+			float      : right;
+			text-align : end;
+		}
+		input[type='text'], textarea, select {
+			color            : var(--input-text-clr);
+			background-color : var(--input-bg);
+			border           : 1px solid var(--input-placeholder-clr);
+			&:hover, :focus { outline          : 1px solid var(--input-placeholder-clr); background-color : var(--input-bg-hover); }
+			&::placeholder { color : var(--input-placeholder-clr); }
+		}
+
+		input[type='range'] {
+			color: var(--input-text-clr);
 		}
 
 		&.description {
@@ -161,6 +165,7 @@
 				color            : dimgray;
 				background-color : darkgray;
 			}
+			.item.dropdown-input { border:none;}
 			.item {
 				position          : relative;
 				overflow          : visible;
