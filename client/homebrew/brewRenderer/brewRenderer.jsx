@@ -41,7 +41,6 @@ const BrewPage = (props)=>{
 	props = {
 		contents : '',
 		index    : 0,
-		hoisted  : false,
 		...props
 	};
 	const pageRef   = useRef(null);
@@ -96,7 +95,6 @@ const BrewRenderer = (props)=>{
 		lang                       : '',
 		errors                     : [],
 		currentEditorCursorPageNum : 1,
-		currentBrewRendererPageNum : 1,
 		themeBundle                : {},
 		onPageChange               : ()=>{},
 		...props
@@ -154,17 +152,16 @@ const BrewRenderer = (props)=>{
 		if(index == props.currentEditorCursorPageNum - 1)	//Already rendered before this step
 			return false;
 
-		if(Math.abs(index - props.currentBrewRendererPageNum - 1) <= 3)
+		if(Math.abs(index - centerPage - 1) <= 3)
 			return true;
 
 		return false;
 	};
 
-	const renderDummyPage = (index)=>{
-		return <div className='phb page' id={`p${index + 1}`} key={index}>
+	const renderDummyPage = (index)=>
+		<div className='phb page' id={`p${index + 1}`} key={index}>
 			<i className='fas fa-spinner fa-spin' />
 		</div>;
-	};
 
 	const renderStyle = ()=>{
 		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';
@@ -222,9 +219,8 @@ const BrewRenderer = (props)=>{
 		}
 	};
 
-	const renderPages = (checkHoists = false)=>{
-
-		if(props.errors && props.errors.length)
+	const renderPages = ()=>{
+		if(props.errors?.length)
 			return renderedPages;
 
 		if(rawPages.length != renderedPages.length) { // Re-render all pages when page count changes
@@ -237,16 +233,10 @@ const BrewRenderer = (props)=>{
 			renderedPages[props.currentEditorCursorPageNum - 1] = renderPage(rawPages[props.currentEditorCursorPageNum - 1], props.currentEditorCursorPageNum - 1);
 
 		_.forEach(rawPages, (page, index)=>{
-			const varsOnPageRegex = /([!$]?)\[((?!\s*\])(?:\\.|[^\[\]\\])+)\]/g; // Find out if there are any vars on the page.
-			const forceRender = checkHoists &&
-				!props.hoisted &&
-				(page.match(varsOnPageRegex));  // forceRender forces pages outside of the PPR range to render if true.
-			                                    // This is necessary on the first load to fully populate the variable table.
-			if((isInView(index) || !renderedPages[index] || forceRender) && typeof window !== 'undefined'){
+			if((isInView(index) || !renderedPages[index]) && typeof window !== 'undefined'){
 				renderedPages[index] = renderPage(page, index); // Render any page not yet rendered, but only re-render those in PPR range
 			}
 		});
-		if(!props.hoisted) { props.hoisted = true; } // Only fully hoist once.
 		return renderedPages;
 	};
 
@@ -285,8 +275,8 @@ const BrewRenderer = (props)=>{
 
 		window.addEventListener('hashchange', ()=>scrollToHash(window.location.hash));
 
-		setTimeout(()=>{	//We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
-			renderPages(true); //Make sure page is renderable before showing
+		setTimeout(()=>{   //We still see a flicker where the style isn't applied yet, so wait 100ms before showing iFrame
+			renderPages(); //Make sure page is renderable before showing
 			setState((prevState)=>({
 				...prevState,
 				isMounted  : true,
@@ -337,7 +327,7 @@ const BrewRenderer = (props)=>{
 			<Frame id='BrewRenderer'  title='Rendered Brew Content' initialContent={INITIAL_CONTENT}
 				style={{ width: '100%', height: '100%', visibility: state.visibility }}
 				contentDidMount={frameDidMount}
-				onClick={()=>{emitClick();}}
+				onClick={emitClick}
 				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
 				<div className='brewRenderer'
