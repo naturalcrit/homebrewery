@@ -354,7 +354,7 @@ const MetadataEditor = createReactClass({
 	},
 
 	render : function(){
-		return <div className='metadataEditor ui-editor'>
+		return <div className='metadataEditor uiEditor'>
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>

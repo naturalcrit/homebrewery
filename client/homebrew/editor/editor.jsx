@@ -318,7 +318,7 @@ const Editor = forwardRef(
 			if(isMeta()) {
 				return (
 					<>
-						<CodeEditor key='codeEditor' tab='brewMetadata' editorTheme={currentEditorTheme} onThemeChange={setIsDark} view={view} style={{ display: 'none' }} settings={editorSettings} />
+						<CodeEditor key='codeEditor' tab='brewMetadata' editorTheme={editorSettings.editorTheme} onThemeChange={setIsDark} view={view} style={{ display: 'none' }} settings={editorSettings} />
 						<MetadataEditor
 							metadata={brew}
 							themeBundle={themeBundle}
