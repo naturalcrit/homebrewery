@@ -25,7 +25,7 @@
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-		font-size: .85rem;
+		font-size       : 0.85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 		reading-order   : 2;
 
@@ -135,36 +135,32 @@
 	}
 
 	// removed caret for top level items, by request (makes buttons too wide).
-	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display: none; }
+	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display : none; }
 
 	.menu-item {
-		position    : relative;
-		display     : flex;
-		justify-content: space-between;
-		align-items : center; 
-		min-width   : max-content;
-		padding     : 5px;
-		cursor      : pointer;
-		width: 100%;
-		&:is(.menu-list .menu-item) [class*="name"] {
-			padding-inline: 8px;   // additional space between icon and name (helpful in Fonts menu especially).
+		position        : relative;
+		display         : flex;
+		align-items     : center;
+		justify-content : space-between;
+		width           : 100%; 
+		min-width       : max-content;
+		padding         : 5px;
+		cursor          : pointer;
+		&:is(.menu-list .menu-item) [class*='name'] {
+			padding-inline : 8px;   // additional space between icon and name (helpful in Fonts menu especially).
 		}
 		.menu-name {
-			flex: 1;
-			text-align: left;
-			text-box-trim: trim-end;
+			flex          : 1;
+			text-align    : left;
+			text-box-trim : trim-end;
 		}
 		i {
 			min-width    : 25px;
-			height       : .85rem;
+			height       : 0.85rem;
 			font-size    : 1.2em;
 			text-align   : center;
-			&.caret {
-				margin-right: 0;
-			}
-			&.caret:is(.menu-wrapper .menu-wrapper * ) {
-				text-align: right;
-			}
+			&.caret { margin-right : 0; }
+			&.caret:is(.menu-wrapper .menu-wrapper *) { text-align : right; }
 			/* Fonts */
 			&.font {
 				height : auto;
@@ -207,14 +203,14 @@
 			background-color : var(--hoverMenuColor);
 		}
 		&:disabled {
-			color: gray;
-			cursor: not-allowed;
-			&:hover { background-color: unset; }
+			color  : gray;
+			cursor : not-allowed;
+			&:hover { background-color : unset; }
 		}
 	}
 }
 @container editor (width < 841px) {
- 	.snippetBar {
+	.snippetBar {
 		.editors { 
 			flex            : 1;
 			justify-content : space-between;

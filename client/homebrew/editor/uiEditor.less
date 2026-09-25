@@ -6,7 +6,7 @@
 	padding-left  : 10px;
 }
 
-.metadataEditor {
+.uiEditor {
 	--bg-clr                : white;
 	--bg-image              : @backgroundImageAlt;
 	--h1-clr                : black;
@@ -82,10 +82,17 @@
 			&[data-tooltip-right] { max-width : 380px; }
 			&:invalid { background : #FFB9B9; }
 			small {
-				display     : block;
-				font-size   : 0.9em;
-				font-style  : italic;
-				line-height : 1.4em;
+				display       : block;
+				width         : fit-content;
+				margin-inline : 5px;
+				font-size     : 0.9em;
+				font-style    : italic;
+				line-height   : 1.4em;
+			}
+
+			input[type='checkbox'], input[type='number'] {
+				float      : right;
+				text-align : end;
 			}
 		}
 		input[type='text'], textarea {
@@ -237,6 +244,7 @@
 
 			button { color : @red; }
 
+		
 		}
 		a { text-underline-offset : 0.2em; }
 	}
@@ -384,6 +392,24 @@
 				}
 			}
 		}
+	}
+
+	
+}
+
+.settingsEditor .field {
+	padding-bottom : 10px;
+	border-bottom  : 1px solid black;
+
+	.value {
+		
+		display         : flex;
+		justify-content : end;
+	}
+
+	> label {
+		width     : fit-content;
+		max-width : calc(100% - 200px);
 	}
 }
 
