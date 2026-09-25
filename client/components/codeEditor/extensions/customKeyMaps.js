@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 300 }] */
+/* eslint max-lines: ["error", { "max": 400 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
 import { EditorSelection } from '@codemirror/state';
@@ -92,25 +92,67 @@ const insertTab = (view)=>{
 	return true;
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>{
-	const changes = [];
+const wrapSelection = (prefix, suffix) => (view) => {
+	view.dispatch(
+		view.state.changeByRange((range) => {
+			const { from, to } = range;
+			const doc = view.state.doc;
 
-	for (const range of view.state.selection.ranges) {
-		const { from, to } = range;
-		const selected = view.state.doc.sliceString(from, to);
+			if (from === to) {
+				return {
+					changes: {
+						from,
+						to,
+						insert: prefix + suffix
+					},
+					range: EditorSelection.cursor(from + prefix.length)
+				};
+			}
 
-		let text;
+			const before = doc.sliceString(
+				Math.max(0, from - prefix.length),
+				from
+			);
 
-		if(from === to) { text = prefix + suffix; } else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
-			text = selected.slice(prefix.length, -suffix.length);
-		} else {text = `${prefix}${selected}${suffix}`;}
+			const after = doc.sliceString(
+				to,
+				to + suffix.length
+			);
 
-		changes.push({ from, to, insert: text });
-	}
+			if (before === prefix && after === suffix) {
+				return {
+					changes: [
+						{
+							from: from - prefix.length,
+							to,
+							insert: ""
+						},
+						{
+							from: to,
+							to: to + suffix.length,
+							insert: ""
+						}
+					],
+					range: EditorSelection.range(
+						from - prefix.length,
+						to - prefix.length
+					)
+				};
+			}
 
-	view.dispatch({
-		changes
-	});
+			return {
+				changes: {
+					from,
+					to,
+					insert: prefix + doc.sliceString(from, to) + suffix
+				},
+				range: EditorSelection.range(
+					from + prefix.length,
+					to + prefix.length
+				)
+			};
+		})
+	);
 
 	return true;
 };
@@ -197,18 +239,31 @@ const makeLink = (view)=>{
 	return true;
 };
 
-const makeList = (type)=>(view)=>{
+const makeList = (type) => (view) => {
 	const { from, to } = view.state.selection.main;
+	const startLine = view.state.doc.lineAt(from);
+	const endLine = view.state.doc.lineAt(to);
 	const lines = [];
-	for (let l = from; l <= to; l++) {
-		const lineText = view.state.doc.line(l + 1).text;
-		lines.push(lineText);
+
+	for (let lineNo = startLine.number; lineNo <= endLine.number; lineNo++) {
+		lines.push(view.state.doc.line(lineNo).text);
 	}
 	const joined = lines.join('\n');
-	let newText;
-	if(type === 'UL') newText = joined.replace(/^/gm, '- ');
-	else newText = joined.replace(/^/gm, (m, i)=>`${i + 1}. `);
-	view.dispatch({ changes: { from, to, insert: newText } });
+
+	const newText = type === 'UL'
+		? joined.replace(/^/gm, '- ')
+		: joined.replace(/^/gm, (_, offset) => {
+			const lineNumber = joined.slice(0, offset).split('\n').length;
+			return `${lineNumber}. `;
+		});
+
+	view.dispatch({
+		changes: {
+			from: startLine.from,
+			to: endLine.to,
+			insert: newText
+		}
+	});
 	return true;
 };
 
@@ -222,13 +277,21 @@ const makeHeader = (level)=>(view)=>{
 
 const newColumn = (view)=>{
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\column\n\n' } });
+	const insert = '\n\\column\n\n' ;
+	view.dispatch({ 
+		changes: { from, to, insert }, 
+		selection: { anchor: from + insert.length }
+	});
 	return true;
 };
 
-const newPage = (view)=>{
+const newPage = (view) => {
 	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\page\n\n' } });
+	const insert = '\n\\page\n\n';
+	view.dispatch({
+		changes: { from, to, insert },
+		selection: { anchor: from + insert.length }
+	});
 	return true;
 };
 
@@ -260,8 +323,8 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-m',     run: makeDiv },
 	{ key: 'Mod-/',           run: makeComment },
 	{ key: 'Mod-k',           run: makeLink },
-	{ key: 'Mod-l',           run: makeList('UL') },
-	{ key: 'Shift-Mod-l',     run: makeList('OL') },
+	{ key: 'Mod-Shift-u',     run: makeList('UL') },
+	{ key: 'Mod-Shift-o',     run: makeList('OL') },
 	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
 	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
 	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
