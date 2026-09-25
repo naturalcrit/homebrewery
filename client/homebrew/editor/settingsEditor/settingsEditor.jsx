@@ -3,9 +3,7 @@ import React from 'react';
 
 const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList })=>{
 
-	const validations = {
-
-	};
+	const validations = {};
 
 	const handleFieldChange = (setting, e)=>{
 		const value =
