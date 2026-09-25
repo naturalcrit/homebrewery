@@ -4,7 +4,7 @@ import './homePage.less';
 // Common imports
 import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -141,7 +141,6 @@ const HomePage =(props)=>{
 						themeBundle={themeBundle}
 						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						currentBrewRendererPageNum={currentBrewRendererPageNum}
 					/>
 				</SplitPane>
 			</div>

@@ -4,7 +4,7 @@ import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
 import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
-import { hbfm }   from 'hbmarkedwrapper';
+import { hbfm }   from 'marked-hbfm';
 import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
@@ -577,9 +577,9 @@ const api = {
 router.use(dbCheck);
 
 router.post('/api', checkClientVersion, asyncHandler(api.newBrew));
-router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
+router.put('/api/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew)); //alt endpoint, unused
 router.put('/api/update/:id', checkClientVersion, asyncHandler(api.getBrew('edit', false)), asyncHandler(api.updateBrew));
-router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew));
+router.delete('/api/:id', checkClientVersion, asyncHandler(api.deleteBrew)); //alt endpoint, unused
 router.get('/api/remove/:id', checkClientVersion, asyncHandler(api.deleteBrew));
 router.get('/api/theme/:renderer/:id', asyncHandler(api.getThemeBundle));
 

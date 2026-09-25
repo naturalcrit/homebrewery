@@ -14,6 +14,7 @@ import express from 'express';
 import config  from './config.js';
 import path from 'path';
 import fs      from 'fs-extra';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getCSS } = api;
@@ -135,6 +136,15 @@ export default async function createApp(vite) {
 	app.get('/robots.txt', (req, res)=>{
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
 	});
+	//serve brew for sharepage rerender
+	app.get('/api/fetch/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res) => {
+		const { brew } = req;
+		brew.authors.includes(req.account?.username)
+			? sanitizeBrew(brew, 'shareAuthor')
+			: sanitizeBrew(brew, 'share');
+		splitTextStyleAndMetadata(brew);
+		res.json({ brew });
+	}));
 
 	//Serve brew metadata
 	app.get('/metadata/:id', asyncHandler(getBrew('share')), (req, res)=>{
@@ -235,11 +245,12 @@ export default async function createApp(vite) {
 
 		// Create configuration object
 		const configuration = {
-			local       : isLocalEnvironment,
-			publicUrl   : config.get('publicUrl') ?? '',
-			baseUrl     : `${req.protocol}://${req.get('host')}`,
-			environment : nodeEnv,
-			deployment  : config.get('heroku_app_name') ?? ''
+			local            : isLocalEnvironment,
+			publicUrl        : config.get('publicUrl') ?? '',
+			baseUrl          : `${req.protocol}://${req.get('host')}`,
+			environment      : nodeEnv,
+			deployment       : config.get('heroku_app_name') ?? '',
+			developmentStyle : config.get('development_style')
 		};
 		const props = {
 			version     : version,
@@ -269,9 +280,14 @@ export default async function createApp(vite) {
 			html = await vite.transformIndexHtml(req.originalUrl, html);
 		}
 
+		const safeProps = JSON.stringify(props).replace(/<(?=\/?script)/ig, '\\u003c');
 		html = html.replace(
 			'<head>',
-			()=>{ return `<head>\n<script id="props" >window.__INITIAL_PROPS__ = ${JSON.stringify(props)}</script>\n${ogMetaTags}`; }
+			`<head>\n`
+			+ `<script id="props">`
+			+  `window.__INITIAL_PROPS__ = ` + safeProps
+			+ `</script>\n`
+			+ ogMetaTags
 		);
 
 		return html;

@@ -1,6 +1,6 @@
 
 
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 
 describe('Justification', ()=>{
 	test('Left Justify', function() {

@@ -4,7 +4,7 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
@@ -294,7 +294,6 @@ const EditPage = (props)=>{
 						lang={currentBrew.lang}
 						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						allowPrint={true}
 					/>
 				</SplitPane>
