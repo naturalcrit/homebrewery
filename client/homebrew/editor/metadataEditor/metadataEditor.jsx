@@ -363,7 +363,7 @@ const MetadataEditor = createReactClass({
 					defaultValue={this.props.metadata.title}
 					onChange={(e)=>this.handleFieldChange('title', e)} />
 			</div>
-			<div className='field-group'>
+			<fieldset className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
 						<label htmlFor='description_field'>description</label>
@@ -385,7 +385,7 @@ const MetadataEditor = createReactClass({
 					</div>
 				</div>
 				{this.renderThumbnail()}
-			</div>
+			</fieldset>
 
 			<div className='field tags'>
 				<label htmlFor='combobox-tags'>Tags</label>
