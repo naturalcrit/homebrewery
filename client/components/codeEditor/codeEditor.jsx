@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 405 }] */
+/* eslint max-lines: ["error", { "max": 455 }] */
 import './codeEditor.less';
 import React, { useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 
@@ -42,6 +42,7 @@ import cm5Themes from 'codemirror-5-themes';
 const themes = { default: defaultCM5Theme, ...cm5Themes, darkbrewery };
 const themeCompartment = new Compartment();
 const highlightCompartment = new Compartment();
+const settingsCompartment = new Compartment();
 
 import { generalKeymap, markdownKeymap, cssKeymap, formatCSS } from './extensions/customKeyMaps.js';
 import foldOnPages from './extensions/customFolding.js';
@@ -78,6 +79,20 @@ const programmaticCursorLineField = StateField.define({
 	provide : (decorationSet)=>EditorView.decorations.from(decorationSet)
 });
 
+const createSettingsExtensions = (settings)=>[
+	...(settings.autoCloseBrackets ? [autoCloseBrackets] : []),
+	...(settings.lineNumbers ? [lineNumbers()] : []),
+	...(settings.activeLineShading ? [highlightActiveLine(),
+		highlightActiveLineGutter()] : []),
+	...(settings.fontSize
+		? [EditorView.theme({
+			'&, .cm-content' : {
+				fontSize : `${settings.fontSize || 1}em`,
+			},
+		})]
+		: []),
+];
+
 const CodeEditor = forwardRef(
 	(
 		{
@@ -88,9 +103,11 @@ const CodeEditor = forwardRef(
 			onChange = ()=>{},
 			onCursorChange = ()=>{},
 			onViewChange = ()=>{},
+			onThemeChange = ()=>{},
 			editorTheme = 'default',
 			style,
 			renderer,
+			settings = {},
 			...props
 		},
 		ref,
@@ -163,8 +180,7 @@ const CodeEditor = forwardRef(
 				EditorView.lineWrapping,
 				setEventListeners,
 				languageExtension,
-				autoCloseBrackets,
-				lineNumbers(),
+				settingsCompartment.of(createSettingsExtensions(settings)),
 				scrollPastEnd(),
 				search(),
 				history(), //allows for undo and redo
@@ -178,10 +194,8 @@ const CodeEditor = forwardRef(
 				}),
 
 				//highlights
-				highlightCompartment.of([customHighlightPlugin(renderer, tab), highlightExtension]),
+				highlightCompartment.of([customHighlightPlugin(renderer, tab, settings), highlightExtension]),
 				themeCompartment.of(themeExtension),
-				highlightActiveLine(),
-				highlightActiveLineGutter(),
 
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
@@ -271,6 +285,12 @@ const CodeEditor = forwardRef(
 				}
 
 				view.setState(nextState);
+				view.dispatch({
+					effects : settingsCompartment.reconfigure(
+						createSettingsExtensions(settings)
+					),
+				});
+
 				restoreFolds(view, foldsRef.current[tab]);
 
 				const savedScroll = scrollRef.current[tab];
@@ -308,6 +328,9 @@ const CodeEditor = forwardRef(
 			view.dispatch({
 				effects : themeCompartment.reconfigure(themeExtension),
 			});
+
+			const isDark = view.state.facet(EditorView.darkTheme);
+			onThemeChange(isDark);
 		}, [editorTheme, tab]);
 
 		useEffect(()=>{
@@ -320,9 +343,20 @@ const CodeEditor = forwardRef(
     		: syntaxHighlighting(legacyCustomHighlightStyle);
 
 			view.dispatch({
-				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab), highlightExtension]),
+				effects : highlightCompartment.reconfigure([customHighlightPlugin(renderer, tab, settings), highlightExtension])
 			});
 		}, [renderer, tab]);
+
+		useEffect(()=>{
+    		const view = viewRef.current;
+    		if(!view) return;
+
+    		view.dispatch({
+        		effects : settingsCompartment.reconfigure(
+           		createSettingsExtensions(settings)
+        		),
+    		});
+		}, [settings]);
 
 		useImperativeHandle(ref, ()=>({
 

@@ -2,15 +2,14 @@
 import './homePage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.js'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -32,11 +31,6 @@ const { both: RecentNavItem } = RecentNavItems;
 import Headtags   from '@vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
-const SAVE_TIMEOUT = 10000;
-const UNSAVED_WARNING_TIMEOUT = 900000; //Warn user afer 15 minutes of unsaved changes
-const UNSAVED_WARNING_POPUP_TIMEOUT = 4000; //Show the warning for 4 seconds
-
-const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -52,142 +46,30 @@ const HomePage =(props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew]                = useState(props.brew);
+	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError]                      = useState(undefined);
 	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(props.brew.text));
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum]   = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 	const [themeBundle, setThemeBundle]                = useState({});
-	const [unsavedChanges, setUnsavedChanges]             = useState(false);
-	const [isSaving, setIsSaving]                   = useState(false);
-	const [lastSavedTime, setLastSavedTime] = useState(new Date());
-	const [autoSaveEnabled, setAutoSaveEnabled]             = useState(false);
-	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
 
-	const editorRef         = useRef(null);
-	const lastSavedBrew     = useRef(_.cloneDeep(props.brew));
-	const warnUnsavedTimeout = useRef(null);
-	const unsavedChangesRef = useRef(unsavedChanges);
+	const editorRef          = useRef(null);
+	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
-	const {
-		handleBrewChange
-	} = useCommonEditPageFunctions({
-		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
-		setCurrentBrew,
-		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		fetchThemeBundle,
-		hbfm	
-	});
-
-	useEffect(()=>{
-		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
-
-		setAutoSaveEnabled(autoSavePref);
-		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(hbfm.validate(currentBrew.text));
-		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
-
-		const handleControlKeys = (e)=>{
-			if(!(e.ctrlKey || e.metaKey)) return;
-			if(e.keyCode === 83) trySaveRef.current(true);
-			if(e.keyCode === 80) printCurrentBrew();
-			if([83, 80].includes(e.keyCode)) {
-				e.stopPropagation();
-				e.preventDefault();
-			}
-		};
-
-		document.addEventListener('keydown', handleControlKeys);
-		window.onbeforeunload = ()=>{
-			if(unsavedChangesRef.current)
-				return 'You have unsaved changes!';
-		};
-
-		return ()=>{
-			document.removeEventListener('keydown', handleControlKeys);
-			window.onbeforeunload = null;
-		};
-	}, []);
-
-	useEffect(()=>{
-		unsavedChangesRef.current = unsavedChanges;
-	}, [unsavedChanges]);
-
-	const save = ()=>{
-		request.post('/api')
-			.send(currentBrew)
-			.end((err, res)=>{
-				if(err) {
-					setError(err);
-					return;
-				}
-				const saved = res.body;
-				window.location = `/edit/${saved.editId}`;
+	const save = async (brew, saveToGoogle)=>{
+		const res = await request
+			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.send(brew)
+			.catch((err)=>{
+				console.error('Error Updating Local Brew');
+				setError(err);
 			});
-	};
+		if(!res) return;
 
-	useEffect(()=>{
-		const hasChange = !_.isEqual(currentBrew, lastSavedBrew.current);
-		setUnsavedChanges(hasChange);
-
-		if(autoSaveEnabled) trySave(false, hasChange);
-	}, [currentBrew]);
-
-	const handleSplitMove = ()=>{
-		editorRef.current.update();
-	};
-
-	const resetWarnUnsavedTimer = ()=>{
-		setTimeout(()=>setWarnUnsavedChanges(false), UNSAVED_WARNING_POPUP_TIMEOUT); // Hide the warning after 4 seconds
-		clearTimeout(warnUnsavedTimeout.current);
-		warnUnsavedTimeout.current = setTimeout(()=>setWarnUnsavedChanges(true), UNSAVED_WARNING_TIMEOUT); // 15 minutes between unsaved work warnings
-	};
-
-	const renderSaveButton = ()=>{
-		// #1 - Currently saving, show SAVING
-		if(isSaving)
-			return <Nav.item className='save' icon='fas fa-spinner fa-spin'>saving...</Nav.item>;
-
-		// #2 - Unsaved changes exist, autosave is OFF and warning timer has expired, show AUTOSAVE WARNING
-		if(unsavedChanges && warnUnsavedChanges) {
-			resetWarnUnsavedTimer();
-			const elapsedTime = Math.round((new Date() - lastSavedTime) / 1000 / 60);
-			const text = elapsedTime === 0
-				? `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}.`
-				: `Autosave is OFF${sandbox ? ' for this sandbox page' : ''}, and you haven't saved for ${elapsedTime} minutes.`;
-
-			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
-						Reminder...
-						<div className='errorContainer'>{text}</div>
-			</Nav.item>;
-		}
-
-		// #3 - Unsaved changes exist, click to save, show SAVE NOW
-		if(unsavedChanges)
-			return <Nav.item className='save' onClick={save} color='blue' icon='fas fa-save'>save now</Nav.item>;
-
-		// #4 - No unsaved changes, autosave is ON, show AUTO-SAVED
-		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
-
-		// #5 - Sandbox with no unsaved changes, and has never been saved, hide the button
-		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
-
-		// DEFAULT - No unsaved changes, show SAVED
-		return <Nav.item className='save saved'>saved</Nav.item>;
-	};
-
-	const clearError = ()=>{
-		setError(null);
-		setIsSaving(false);
+		const saved = res.body;
+		window.onbeforeunload = null;
+		window.location = `/edit/${saved.editId}`;
 	};
 
 	const renderNavbar = ()=>{
@@ -205,6 +87,33 @@ const HomePage =(props)=>{
 			</Nav.section>
 		</Navbar>;
 	};
+
+	const {
+		handleSplitMove,
+		handleBrewChange,
+		clearError,
+		renderSaveButton,
+		unsavedChanges,
+		trySave
+	} = useCommonEditPageFunctions({
+		saveGoogle,
+		setError,
+		setThemeBundle,
+		HTMLErrors,
+		setHTMLErrors,
+		currentBrew,
+		setCurrentBrew,
+		useLocalStorage,
+		BREWKEY,
+		STYLEKEY,
+		SNIPKEY,
+		METAKEY,
+		hbfm,
+		sandbox,
+		lastSavedBrew,
+		editorRef,
+		save,
+	});
 
 	return (
 		<div className='homePage sitePage'>
@@ -229,15 +138,13 @@ const HomePage =(props)=>{
 						text={currentBrew.text}
 						style={currentBrew.style}
 						renderer={currentBrew.renderer}
-						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
-						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						currentBrewRendererPageNum={currentBrewRendererPageNum}
 						themeBundle={themeBundle}
+						onPageChange={setCurrentBrewRendererPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
 					/>
 				</SplitPane>
 			</div>
-			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={save}>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={()=>trySave(true, true, saveGoogle)}>
 				Save current <i className='fas fa-save' />
 			</div>
 
