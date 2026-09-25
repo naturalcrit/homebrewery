@@ -166,6 +166,16 @@ export default async function createApp(vite) {
 	//Serve brew styling
 	app.get('/css/:id', asyncHandler(getBrew('share')), (req, res)=>{getCSS(req, res);});
 
+	// Set Pinned state for brew and user
+	app.put('/pin', dbCheck, async(req, res)=>{
+		const { username, shareId, pinState } = req.body;
+		try {
+			await HomebrewModel.setPin(username, shareId, pinState);
+		} catch (err) {
+			console.log(err);
+		}
+	});
+
 	//Change author name on brews
 	app.put('/api/user/rename', dbCheck, async (req, res)=>{
 		const { username, newUsername } = req.body;
@@ -186,6 +196,17 @@ export default async function createApp(vite) {
 				);
 			});
 			await Promise.all(renamePromises);
+
+			const pinnedBrews = await HomebrewModel.getUserPinnedThemes(username);
+			const pinRenamePromises = pinnedBrews.map(async (brew)=>{
+				const updatedPinnedByUsers = brew.pinnedByUser.map((pinUser)=>pinUser === username ? newUsername : pinUser
+				);
+				return HomebrewModel.updateOne(
+					{ _id: brew._id },
+					{ $set: { pinnedByUsers: updatedPinnedByUsers } }
+				);
+			});
+			await Promise.all(pinRenamePromises);
 
 			return res.json({ success: true, message: `Brews for ${username} renamed to ${newUsername}.` });
 		} catch (error) {
