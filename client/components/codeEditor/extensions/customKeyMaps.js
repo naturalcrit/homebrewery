@@ -97,72 +97,58 @@ const insertTab = (view)=>{
 	return true;
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>{
-	view.dispatch(
-		view.state.changeByRange((range)=>{
-			const { from, to } = range;
-			const noSelection = from === to;
+const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
+	view,
+	(state, range)=>{
+		const { from, to } = range;
+		const noSelection = from === to;
+		const selected = state.doc.sliceString(from, to);
 
-			const doc = view.state.doc;
-
-			if(noSelection) {
-				return {
-					changes : {
-						from,
-						to,
-						insert : prefix + suffix
-					},
-					range : EditorSelection.cursor(from + prefix.length)
-				};
-			}
-
-			const before = doc.sliceString(
-				Math.max(0, from),
-				from + prefix.length
-			);
-
-			const after = doc.sliceString(
-				to - suffix.length,
-				to
-			);
-			const alreadyWrapped = before === prefix && after === suffix;
-			if(alreadyWrapped) {
-				return {
-					changes : [
-						{
-							from   : from,
-							to     : from + prefix.length,
-							insert : ''
-						},
-						{
-							from   : to - suffix.length,
-							to     : to,
-							insert : ''
-						}
-					],
-					range : EditorSelection.range(
-						from,
-						to - prefix.length - suffix.length,
-					)
-				};
-			}
+		if(noSelection) {
+			const insert = prefix + suffix;
 
 			return {
-				changes : {
-					from,
-					to,
-					insert : prefix + doc.sliceString(from, to) + suffix
-				},
-				range : EditorSelection.range(
-					from,
-					to + suffix.length + prefix.length
-				)
+				changes : { from, to, insert },
+				range   : EditorSelection.cursor(from + prefix.length)
 			};
-		})
-	);
+		}
 
-	return true;
-};
+		const hasWrapper =
+			selected.startsWith(prefix) &&
+			selected.endsWith(suffix);
+
+		if(hasWrapper) {
+			return {
+				changes : [
+					{
+						from : to - suffix.length,
+						to,
+						insert : ''
+					},
+					{
+						from,
+						to : from + prefix.length,
+						insert : ''
+					}
+				],
+				range : EditorSelection.range(from, to - prefix.length - suffix.length)
+			};
+		}
+
+		return {
+			changes : {
+				from,
+				to,
+				insert : prefix + selected + suffix
+			},
+			range : EditorSelection.range(
+				from,
+				to + prefix.length + suffix.length
+			)
+		};
+	}
+);
+
 
 const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
