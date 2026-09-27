@@ -1,13 +1,10 @@
 /* eslint max-lines: ["error", { "max": 400 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
-import { EditorSelection } from '@codemirror/state';
+import { EditorSelection, ChangeSet } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import * as prettier from 'prettier/standalone';
 import * as postcssPlugin from 'prettier/plugins/postcss';
-
-
-import { ChangeSet } from '@codemirror/state';
 
 export async function formatCSS(view) {
 	try {
@@ -76,7 +73,6 @@ const insertTab = (view)=>{
 
 	return forEachSelection(view, (state, range)=>{
 		const { from, to } = range;
-
 		return {
 			changes : {
 				from,
@@ -88,13 +84,11 @@ const insertTab = (view)=>{
 	});
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
-	view,
-	(state, range)=>{
+const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view,(state, range)=>{
 		const { from, to } = range;
-		const noSelection = from === to;
 		const selected = state.doc.sliceString(from, to);
 
+		const noSelection = from === to;
 		if(noSelection) {
 			const insert = prefix + suffix;
 
@@ -104,9 +98,7 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
 			};
 		}
 
-		const hasWrapper =
-			selected.startsWith(prefix) &&
-			selected.endsWith(suffix);
+		const hasWrapper = selected.startsWith(prefix) && selected.endsWith(suffix);
 
 		if(hasWrapper) {
 			return {
@@ -140,7 +132,6 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
 	}
 );
 
-
 const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 
@@ -156,15 +147,13 @@ const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 	const selected = state.doc.sliceString(from, to);
-	const match = selected.match(/^{{width:(\d+)% }}$/);
-
+	
 	let insert = '{{width:10% }}';
-
+	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
 		const percent = Math.min(parseInt(match[1], 10) + 10, 100);
 		insert = `{{width:${percent}% }}`;
 	}
-
 	return {
 		changes : { from, to, insert },
 		range   : EditorSelection.range(from, from + insert.length)
@@ -192,13 +181,8 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 	if(existingLink) {
 		const [, text, url] = existingLink;
 		const insert = `${text} ${url}`;
-
 		return {
-			changes : {
-				from,
-				to,
-				insert,
-			},
+			changes : { from, to, insert },
 			range : EditorSelection.range(
 				from,
 				from + insert.length
@@ -218,9 +202,7 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 				.split(/[/?#]/)[0];
 
 		const name = domain.split('.')[0];
-
 		const insert = `[${name}](${selected})`;
-
 		return {
 			changes : { from, to, insert },
 			range   : EditorSelection.range(from, from + insert.length),
@@ -229,7 +211,6 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 
 	// If the selection is just text, use it as alt text and set url as placeholder
 	const insert = `[${selected || 'alt text'}](url)`;
-
 	return {
 		changes : { from, to, insert },
 		range   : EditorSelection.range(from, from + insert.length),
@@ -242,16 +223,9 @@ const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange
 
 	const startLine = state.doc.lineAt(from);
 	const endLine = state.doc.lineAt(to);
-
 	const selectedLines = [];
 
-	for (
-		let lineNumber = startLine.number;
-		lineNumber <= endLine.number;
-		lineNumber++
-	) {
-		selectedLines.push(state.doc.line(lineNumber));
-	}
+	for ( let lineNumber = startLine.number; lineNumber <= endLine.number; lineNumber++ ) { selectedLines.push(state.doc.line(lineNumber)) }
 
 	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix));
 
@@ -283,25 +257,15 @@ const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
 	const selected = state.doc.sliceString(from, to);
 	const insert = `${'#'.repeat(level)} ${selected}`;
 	if(selected.length === 0) {
-		return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from + insert.length) };
+		return { changes: { from, to, insert: insert },range: EditorSelection.cursor(from + insert.length) };
 	} else {
 		return { changes: { from, to, insert: insert }, range };
 	}
 });
 
-const newColumn = (view)=>forEachSelection(view, (state, range)=>{
+const newBreak = (type)=>(view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
-	const insert = '\n\\column\n\n' ;
-	return {
-		changes : { from, to, insert },
-		range   : EditorSelection.cursor(from + insert.length)
-	};
-});
-
-const newPage = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const insert = '\n\\page\n\n';
-
+	const insert = `\n\\${type}\n\n`;
 	return {
 		changes : { from, to, insert },
 		range   : EditorSelection.cursor(from + insert.length)
@@ -344,6 +308,6 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-4',     run: makeHeader(4) },
 	{ key: 'Shift-Mod-5',     run: makeHeader(5) },
 	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
-	{ key: 'Mod-Enter',       run: newPage },
-	{ key: 'Shift-Mod-Enter', run: newColumn },
+	{ key: 'Mod-Enter',       run: newBreak('page') },
+	{ key: 'Shift-Mod-Enter', run: newBreak('column') },
 ]));
