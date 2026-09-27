@@ -259,7 +259,7 @@ const newBreak = (type)=>(view)=>forEachSelection(view, (state, range)=>{
 });
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: insertTab }, //runs indentMore if multiple lines selected in a single selection
+	{ key: 'Tab', run: insertTab },
 	{ key: 'Shift-Tab', run: indentLess },
 	{ key: 'Mod-z', run: undo }, //it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
@@ -273,7 +273,6 @@ export const cssKeymap = Prec.highest(keymap.of([
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
-
 	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
 	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
 	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline
@@ -285,7 +284,7 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Mod-m',           run: wrapSelection('{{', '}}') },
 	{ key: 'Shift-Mod-m',     run: wrapSelection('{{\n', '\n}}') },
 	{ key: 'Mod-/',           run: wrapSelection('<!-- ', ' -->') },
-	{ key: 'Mod-Shift-k',           run: makeLink },
+	{ key: 'Mod-Shift-k',     run: makeLink },
 	{ key: 'Mod-Shift-u',     run: makeList('- ') },
 	{ key: 'Mod-Shift-o',     run: makeList('1. ') },
 	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
