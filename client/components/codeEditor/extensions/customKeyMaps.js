@@ -57,11 +57,10 @@ export async function formatCSS(view) {
 	return true;
 }
 
-const forEachSelection = (view, fn) => {
-	view.dispatch(view.state.changeByRange((range) => fn(view.state, range)));
+const forEachSelection = (view, fn)=>{
+	view.dispatch(view.state.changeByRange((range)=>fn(view.state, range)));
 	return true;
 };
-
 
 const insertTab = (view)=>{
 	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
@@ -165,7 +164,7 @@ const wrapSelection = (prefix, suffix)=>(view)=>{
 	return true;
 };
 
-const makeNbsp = (view) => forEachSelection(view, (state, range) => {
+const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 
 	const prev2 = from >= 2 ? state.doc.sliceString(from - 2, from)	: '';
@@ -177,7 +176,7 @@ const makeNbsp = (view) => forEachSelection(view, (state, range) => {
 	};
 });
 
-const makeSpace = (view) => forEachSelection(view, (state, range) => {
+const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 	const selected = state.doc.sliceString(from, to);
 	const match = selected.match(/^{{width:(\d+)% }}$/);
@@ -195,23 +194,23 @@ const makeSpace = (view) => forEachSelection(view, (state, range) => {
 	};
 });
 
-const removeSpace = (view) => forEachSelection(view, (state, range) => {
+const removeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
 		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
-		return{ changes: { from, to, insert: newText } };
+		return { changes: { from, to, insert: newText } };
 	}
 	return true;
 });
 
-const makeLink = (view) => {
+const makeLink = (view)=>{
 	const ranges = view.state.selection.ranges;
 
 	// Multiple selections: pair them as alt text + URL
-	if (ranges.length > 1) {
+	if(ranges.length > 1) {
 		const changes = [];
 
 		for (let i = 0; i < ranges.length - 1; i += 2) {
@@ -226,9 +225,9 @@ const makeLink = (view) => {
 			).trim();
 
 			changes.push({
-				from: ranges[i].from,
-				to: ranges[i + 1].to,
-				insert: `[${alt}](${url})`
+				from   : ranges[i].from,
+				to     : ranges[i + 1].to,
+				insert : `[${alt}](${url})`
 			});
 		}
 
@@ -244,14 +243,14 @@ const makeLink = (view) => {
 
 	let text;
 
-	if (isLink) {
+	if(isLink) {
 		text = `${isLink[1]} ${isLink[2]}`;
 	} else {
 		const isUrl =
 			/^(https?:\/\/|www\.)\S+$/i.test(selected) ||
 			/^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]\S*)?$/i.test(selected);
 
-		if (isUrl) {
+		if(isUrl) {
 			const url = selected;
 			const domain = url
 				.replace(/^https?:\/\//i, '')
@@ -267,7 +266,7 @@ const makeLink = (view) => {
 	}
 
 	view.dispatch({
-		changes: { from, to, insert: text }
+		changes : { from, to, insert: text }
 	});
 
 	return true;
@@ -301,38 +300,35 @@ const makeList = (type)=>(view)=>{
 	return true;
 };
 
-const makeHeader = (level)=>(view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-	const text = `${'#'.repeat(level)} ${selected}`;
+const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
+	const { from, to } = range;
+	const selected = state.doc.sliceString(from, to);
+	const insert = `${'#'.repeat(level)} ${selected}`;
 	if(selected.length === 0) {
-		view.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + text.length } });
+		return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from + insert.length) };
 	} else {
-		view.dispatch({ changes: { from, to, insert: text } });
+		return { changes: { from, to, insert: insert }, range};
 	}
+});
 
-	return true;
-};
-
-const newColumn = (view)=>{
-	const { from, to } = view.state.selection.main;
+const newColumn = (view)=>forEachSelection(view, (state, range)=>{
+	const { from, to } = range;
 	const insert = '\n\\column\n\n' ;
-	view.dispatch({
+	return {
 		changes   : { from, to, insert },
-		selection : { anchor: from + insert.length }
-	});
-	return true;
-};
+		range: EditorSelection.cursor(from + insert.length)
+	};
+});
 
-const newPage = (view)=>{
-	const { from, to } = view.state.selection.main;
+const newPage = (view)=>forEachSelection(view, (state, range)=>{
+	const { from, to } = range;
 	const insert = '\n\\page\n\n';
-	view.dispatch({
-		changes   : { from, to, insert },
-		selection : { anchor: from + insert.length }
-	});
-	return true;
-};
+
+	return {
+		changes: { from, to, insert },
+		range: EditorSelection.cursor(from + insert.length)
+	};
+});
 
 export const generalKeymap = Prec.high(keymap.of([
 	{ key: 'Tab', run: insertTab }, //runs indentMore if multiple lines selected in a single selection
