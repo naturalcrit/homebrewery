@@ -6,6 +6,9 @@ import { Prec } from '@codemirror/state';
 import * as prettier from 'prettier/standalone';
 import * as postcssPlugin from 'prettier/plugins/postcss';
 
+
+import { ChangeSet } from '@codemirror/state';
+
 export async function formatCSS(view) {
 	try {
 		const { from, to, empty } = view.state.selection.main;
@@ -65,8 +68,7 @@ const forEachSelection = (view, fn)=>{
 const insertTab = (view)=>{
 	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
 	// Otherwise inserts two spaces at each cursor/selection
-	const shouldIndent = view.state.selection.ranges.some((range)=>
-		view.state.doc.lineAt(range.from).number !==
+	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
 		view.state.doc.lineAt(range.to).number
 	);
 
@@ -110,13 +112,13 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
 			return {
 				changes : [
 					{
-						from : to - suffix.length,
+						from   : to - suffix.length,
 						to,
 						insert : ''
 					},
 					{
 						from,
-						to : from + prefix.length,
+						to     : from + prefix.length,
 						insert : ''
 					}
 				],
@@ -246,33 +248,49 @@ const makeLink = (view)=>{
 	return true;
 };
 
-const makeList = (type)=>(view)=>{
-	const { from, to } = view.state.selection.main;
-	const startLine = view.state.doc.lineAt(from);
-	const endLine = view.state.doc.lineAt(to);
-	const lines = [];
 
-	for (let lineNo = startLine.number; lineNo <= endLine.number; lineNo++) {
-		lines.push(view.state.doc.line(lineNo).text);
+const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
+	const { from, to } = selectionRange;
+
+	const startLine = state.doc.lineAt(from);
+	const endLine = state.doc.lineAt(to);
+
+	const selectedLines = [];
+
+	for (
+		let lineNumber = startLine.number;
+		lineNumber <= endLine.number;
+		lineNumber++
+	) {
+		selectedLines.push(state.doc.line(lineNumber));
 	}
-	const joined = lines.join('\n');
 
-	const newText = type === 'UL'
-		? joined.replace(/^/gm, '- ')
-		: joined.replace(/^/gm, (_, offset)=>{
-			const lineNumber = joined.slice(0, offset).split('\n').length;
-			return `${lineNumber}. `;
-		});
+	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix)
+	);
 
-	view.dispatch({
-		changes : {
-			from   : startLine.from,
-			to     : endLine.to,
-			insert : newText
-		}
+	const changes = selectedLines.map((line)=>{
+		const shouldRemovePrefix =
+				allLinesHavePrefix && line.text.startsWith(prefix);
+
+		return {
+			from : line.from,
+			to   : shouldRemovePrefix
+				? line.from + prefix.length
+				: line.from,
+			insert : shouldRemovePrefix ? '' : prefix,
+		};
 	});
-	return true;
-};
+
+	const changeSet = ChangeSet.of(changes, state.doc.length);
+
+	return {
+		changes,
+		range : EditorSelection.range(
+			changeSet.mapPos(from, -1),
+			changeSet.mapPos(to, 1)
+		),
+	};
+});
 
 const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
@@ -281,7 +299,7 @@ const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
 	if(selected.length === 0) {
 		return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from + insert.length) };
 	} else {
-		return { changes: { from, to, insert: insert }, range};
+		return { changes: { from, to, insert: insert }, range };
 	}
 });
 
@@ -289,8 +307,8 @@ const newColumn = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 	const insert = '\n\\column\n\n' ;
 	return {
-		changes   : { from, to, insert },
-		range: EditorSelection.cursor(from + insert.length)
+		changes : { from, to, insert },
+		range   : EditorSelection.cursor(from + insert.length)
 	};
 });
 
@@ -299,8 +317,8 @@ const newPage = (view)=>forEachSelection(view, (state, range)=>{
 	const insert = '\n\\page\n\n';
 
 	return {
-		changes: { from, to, insert },
-		range: EditorSelection.cursor(from + insert.length)
+		changes : { from, to, insert },
+		range   : EditorSelection.cursor(from + insert.length)
 	};
 });
 
@@ -332,8 +350,8 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-m',     run: wrapSelection('{{\n', '\n}}') },
 	{ key: 'Mod-/',           run: wrapSelection('<!-- ', ' -->') },
 	{ key: 'Mod-k',           run: makeLink },
-	{ key: 'Mod-Shift-u',     run: makeList('UL') },
-	{ key: 'Mod-Shift-o',     run: makeList('OL') },
+	{ key: 'Mod-Shift-u',     run: makeList('- ') },
+	{ key: 'Mod-Shift-o',     run: makeList('1. ') },
 	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
 	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
 	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
