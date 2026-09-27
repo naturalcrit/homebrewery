@@ -182,72 +182,60 @@ const removeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	}
 });
 
-const makeLink = (view)=>{
-	const ranges = view.state.selection.ranges;
+const makeLink = (view)=>forEachSelection(view, (state, range)=>{
+	const { from, to } = range;
+	const selected = state.doc.sliceString(from, to).trim();
 
-	// Multiple selections: pair them as alt text + URL
-	if(ranges.length > 1) {
-		const changes = [];
+	// If the selection is already a Markdown link, unwrap it
+	const existingLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
 
-		for (let i = 0; i < ranges.length - 1; i += 2) {
-			const alt = view.state.doc.sliceString(
-				ranges[i].from,
-				ranges[i].to
-			).trim();
+	if(existingLink) {
+		const [, text, url] = existingLink;
+		const insert = `${text} ${url}`;
 
-			const url = view.state.doc.sliceString(
-				ranges[i + 1].from,
-				ranges[i + 1].to
-			).trim();
-
-			changes.push({
-				from   : ranges[i].from,
-				to     : ranges[i + 1].to,
-				insert : `[${alt}](${url})`
-			});
-		}
-
-		view.dispatch({ changes });
-		return true;
+		return {
+			changes : {
+				from,
+				to,
+				insert,
+			},
+			range : EditorSelection.range(
+				from,
+				from + insert.length
+			),
+		};
 	}
 
-	// Single selection: existing behavior
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to).trim();
-
-	const isLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
-
-	let text;
-
-	if(isLink) {
-		text = `${isLink[1]} ${isLink[2]}`;
-	} else {
-		const isUrl =
+	// If the selection is a URL, use its domain as the link text.
+	const isUrl =
 			/^(https?:\/\/|www\.)\S+$/i.test(selected) ||
 			/^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]\S*)?$/i.test(selected);
 
-		if(isUrl) {
-			const url = selected;
-			const domain = url
+	if(isUrl) {
+		const domain = selected
 				.replace(/^https?:\/\//i, '')
 				.replace(/^www\./i, '')
 				.split(/[/?#]/)[0];
 
-			const name = domain.split('.')[0];
+		const name = domain.split('.')[0];
 
-			text = `[${name}](${url})`;
-		} else {
-			text = `[${selected || 'alt text'}](url)`;
-		}
+		const insert = `[${name}](${selected})`;
+
+		return {
+			changes : { from, to, insert },
+			range   : EditorSelection.range(from, from + insert.length),
+		};
 	}
 
-	view.dispatch({
-		changes : { from, to, insert: text }
-	});
+	// If the selection is just text, use it as alt text and set url as placeholder
+	const insert = `[${selected || 'alt text'}](url)`;
 
-	return true;
-};
-
+	return {
+		changes : { from, to, insert },
+		range   : EditorSelection.range(from, from + insert.length),
+	};
+}
+);
 
 const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
 	const { from, to } = selectionRange;
@@ -265,12 +253,10 @@ const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange
 		selectedLines.push(state.doc.line(lineNumber));
 	}
 
-	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix)
-	);
+	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix));
 
 	const changes = selectedLines.map((line)=>{
-		const shouldRemovePrefix =
-				allLinesHavePrefix && line.text.startsWith(prefix);
+		const shouldRemovePrefix = allLinesHavePrefix && line.text.startsWith(prefix);
 
 		return {
 			from : line.from,
@@ -349,7 +335,7 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Mod-m',           run: wrapSelection('{{', '}}') },
 	{ key: 'Shift-Mod-m',     run: wrapSelection('{{\n', '\n}}') },
 	{ key: 'Mod-/',           run: wrapSelection('<!-- ', ' -->') },
-	{ key: 'Mod-k',           run: makeLink },
+	{ key: 'Mod-Shift-k',           run: makeLink },
 	{ key: 'Mod-Shift-u',     run: makeList('- ') },
 	{ key: 'Mod-Shift-o',     run: makeList('1. ') },
 	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
