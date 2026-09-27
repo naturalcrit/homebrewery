@@ -84,52 +84,52 @@ const insertTab = (view)=>{
 	});
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view,(state, range)=>{
-		const { from, to } = range;
-		const selected = state.doc.sliceString(from, to);
+const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, range)=>{
+	const { from, to } = range;
+	const selected = state.doc.sliceString(from, to);
 
-		const noSelection = from === to;
-		if(noSelection) {
-			const insert = prefix + suffix;
-
-			return {
-				changes : { from, to, insert },
-				range   : EditorSelection.cursor(from + prefix.length)
-			};
-		}
-
-		const hasWrapper = selected.startsWith(prefix) && selected.endsWith(suffix);
-
-		if(hasWrapper) {
-			return {
-				changes : [
-					{
-						from   : to - suffix.length,
-						to,
-						insert : ''
-					},
-					{
-						from,
-						to     : from + prefix.length,
-						insert : ''
-					}
-				],
-				range : EditorSelection.range(from, to - prefix.length - suffix.length)
-			};
-		}
+	const noSelection = from === to;
+	if(noSelection) {
+		const insert = prefix + suffix;
 
 		return {
-			changes : {
-				from,
-				to,
-				insert : prefix + selected + suffix
-			},
-			range : EditorSelection.range(
-				from,
-				to + prefix.length + suffix.length
-			)
+			changes : { from, to, insert },
+			range   : EditorSelection.cursor(from + prefix.length)
 		};
 	}
+
+	const hasWrapper = selected.startsWith(prefix) && selected.endsWith(suffix);
+
+	if(hasWrapper) {
+		return {
+			changes : [
+				{
+					from   : to - suffix.length,
+					to,
+					insert : ''
+				},
+				{
+					from,
+					to     : from + prefix.length,
+					insert : ''
+				}
+			],
+			range : EditorSelection.range(from, to - prefix.length - suffix.length)
+		};
+	}
+
+	return {
+		changes : {
+			from,
+			to,
+			insert : prefix + selected + suffix
+		},
+		range : EditorSelection.range(
+			from,
+			to + prefix.length + suffix.length
+		)
+	};
+}
 );
 
 const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
@@ -147,7 +147,7 @@ const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
 	const selected = state.doc.sliceString(from, to);
-	
+
 	let insert = '{{width:10% }}';
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
@@ -183,7 +183,7 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 		const insert = `${text} ${url}`;
 		return {
 			changes : { from, to, insert },
-			range : EditorSelection.range(
+			range   : EditorSelection.range(
 				from,
 				from + insert.length
 			),
@@ -225,7 +225,7 @@ const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange
 	const endLine = state.doc.lineAt(to);
 	const selectedLines = [];
 
-	for ( let lineNumber = startLine.number; lineNumber <= endLine.number; lineNumber++ ) { selectedLines.push(state.doc.line(lineNumber)) }
+	for (let lineNumber = startLine.number; lineNumber <= endLine.number; lineNumber++) { selectedLines.push(state.doc.line(lineNumber)); }
 
 	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix));
 
@@ -257,7 +257,7 @@ const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
 	const selected = state.doc.sliceString(from, to);
 	const insert = `${'#'.repeat(level)} ${selected}`;
 	if(selected.length === 0) {
-		return { changes: { from, to, insert: insert },range: EditorSelection.cursor(from + insert.length) };
+		return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from + insert.length) };
 	} else {
 		return { changes: { from, to, insert: insert }, range };
 	}
