@@ -170,15 +170,14 @@ const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
 });
 
 const removeSpace = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
+	const { from, to } = range;
+	const selected = state.doc.sliceString(from, to);
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
-		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
-		return { changes: { from, to, insert: newText } };
+		const insert = percent > 0 ? `{{width:${percent}% }}` : '';
+		return { changes: { from, to, insert: insert } };
 	}
-	return true;
 });
 
 const makeLink = (view)=>{
