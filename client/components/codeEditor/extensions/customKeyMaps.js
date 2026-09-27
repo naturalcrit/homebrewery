@@ -35,11 +35,9 @@ export async function formatCSS(view) {
 		);
 		if(formatted === code) return true;
 
-		const dom = view.dom;
-		dom.classList.add('cm-flash');
-
+		view.dom.classList.add('cm-flash');
 		setTimeout(()=>{
-			dom.classList.remove('cm-flash');
+			view.dom.classList.remove('cm-flash');
 
 			view.dispatch({
 				changes : {
@@ -67,17 +65,15 @@ const insertTab = (view)=>{
 	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
 		view.state.doc.lineAt(range.to).number
 	);
-
 	if(shouldIndent) return indentMore(view);
 
 	return forEachSelection(view, (state, range)=>{
 		const { from, to } = range;
 		return {
-			changes : { from, to, insert: '  ' },
+			changes : { from, to, insert: '  ' }, // Insert two spaces, not a tab char!
 			range   : EditorSelection.cursor(from + 2)
 		};
 	});
-	// Insert two spaces, not a tab char!
 };
 
 const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, range)=>{
