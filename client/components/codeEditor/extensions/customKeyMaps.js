@@ -53,7 +53,6 @@ export async function formatCSS(view) {
 	} catch (err) {
 		console.error('Error formatting css: ', err);
 	}
-
 	return true;
 }
 
@@ -99,7 +98,6 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, r
 	}
 
 	const hasWrapper = selected.startsWith(prefix) && selected.endsWith(suffix);
-
 	if(hasWrapper) {
 		return {
 			changes : [
@@ -119,18 +117,10 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, r
 	}
 
 	return {
-		changes : {
-			from,
-			to,
-			insert : prefix + selected + suffix
-		},
-		range : EditorSelection.range(
-			from,
-			to + prefix.length + suffix.length
-		)
+		changes : { from, to, insert: prefix + selected + suffix },
+		range   : EditorSelection.range(from, to + prefix.length + suffix.length)
 	};
-}
-);
+});
 
 const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 	const { from, to } = range;
@@ -177,7 +167,6 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 
 	// If the selection is already a Markdown link, unwrap it
 	const existingLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
-
 	if(existingLink) {
 		const [, text, url] = existingLink;
 		const insert = `${text} ${url}`;
@@ -194,7 +183,6 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 	const isUrl =
 			/^(https?:\/\/|www\.)\S+$/i.test(selected) ||
 			/^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]\S*)?$/i.test(selected);
-
 	if(isUrl) {
 		const domain = selected
 				.replace(/^https?:\/\//i, '')
@@ -215,8 +203,7 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 		changes : { from, to, insert },
 		range   : EditorSelection.range(from, from + insert.length),
 	};
-}
-);
+});
 
 const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
 	const { from, to } = selectionRange;
@@ -240,7 +227,6 @@ const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange
 			insert : shouldRemovePrefix ? '' : prefix,
 		};
 	});
-
 	const changeSet = ChangeSet.of(changes, state.doc.length);
 
 	return {
