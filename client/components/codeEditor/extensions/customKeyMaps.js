@@ -271,7 +271,12 @@ const makeHeader = (level)=>(view)=>{
 	const { from, to } = view.state.selection.main;
 	const selected = view.state.doc.sliceString(from, to);
 	const text = `${'#'.repeat(level)} ${selected}`;
-	view.dispatch({ changes: { from, to, insert: text } });
+	if(selected.length === 0) {
+		view.dispatch({ changes: { from, to, insert: text }, selection: { anchor: from + text.length } });
+	} else {
+		view.dispatch({ changes: { from, to, insert: text } });
+	}
+	
 	return true;
 };
 
