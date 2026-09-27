@@ -96,9 +96,11 @@ const wrapSelection = (prefix, suffix) => (view) => {
 	view.dispatch(
 		view.state.changeByRange((range) => {
 			const { from, to } = range;
+			const noSelection = from === to;
+			
 			const doc = view.state.doc;
 
-			if (from === to) {
+			if (noSelection) {
 				return {
 					changes: {
 						from,
@@ -110,32 +112,32 @@ const wrapSelection = (prefix, suffix) => (view) => {
 			}
 
 			const before = doc.sliceString(
-				Math.max(0, from - prefix.length),
-				from
+				Math.max(0, from),
+				from + prefix.length
 			);
 
 			const after = doc.sliceString(
-				to,
-				to + suffix.length
+				to - suffix.length,
+				to
 			);
-
-			if (before === prefix && after === suffix) {
+			const alreadyWrapped = before === prefix && after === suffix;
+			if (alreadyWrapped) {
 				return {
 					changes: [
 						{
-							from: from - prefix.length,
-							to,
+							from: from,
+							to: from + prefix.length,
 							insert: ""
 						},
 						{
-							from: to,
-							to: to + suffix.length,
+							from: to - suffix.length,
+							to: to,
 							insert: ""
 						}
 					],
 					range: EditorSelection.range(
-						from - prefix.length,
-						to - prefix.length
+						from,
+						to - prefix.length - suffix.length,
 					)
 				};
 			}
@@ -147,8 +149,8 @@ const wrapSelection = (prefix, suffix) => (view) => {
 					insert: prefix + doc.sliceString(from, to) + suffix
 				},
 				range: EditorSelection.range(
-					from + prefix.length,
-					to + prefix.length
+					from,
+					to + suffix.length*2
 				)
 			};
 		})
