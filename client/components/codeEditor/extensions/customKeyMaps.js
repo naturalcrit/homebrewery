@@ -205,7 +205,7 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 	};
 });
 
-const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
+const addPrefixAtLineStart = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
 	const { from, to } = selectionRange;
 
 	const startLine = state.doc.lineAt(from);
@@ -236,17 +236,6 @@ const makeList = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange
 			changeSet.mapPos(to, 1)
 		),
 	};
-});
-
-const makeHeader = (level)=>(view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const selected = state.doc.sliceString(from, to);
-	const insert = `${'#'.repeat(level)} ${selected}`;
-	if(selected.length === 0) {
-		return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from + insert.length) };
-	} else {
-		return { changes: { from, to, insert: insert }, range };
-	}
 });
 
 const newBreak = (type)=>(view)=>forEachSelection(view, (state, range)=>{
@@ -285,14 +274,14 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Shift-Mod-m',     run: wrapSelection('{{\n', '\n}}') },
 	{ key: 'Mod-/',           run: wrapSelection('<!-- ', ' -->') },
 	{ key: 'Mod-Shift-k',     run: makeLink },
-	{ key: 'Mod-Shift-u',     run: makeList('- ') },
-	{ key: 'Mod-Shift-o',     run: makeList('1. ') },
-	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
-	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
-	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
-	{ key: 'Shift-Mod-4',     run: makeHeader(4) },
-	{ key: 'Shift-Mod-5',     run: makeHeader(5) },
-	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
+	{ key: 'Mod-Shift-u',     run: addPrefixAtLineStart('- ') },
+	{ key: 'Mod-Shift-o',     run: addPrefixAtLineStart('1. ') },
+	{ key: 'Shift-Mod-1',     run: addPrefixAtLineStart('# ') },
+	{ key: 'Shift-Mod-2',     run: addPrefixAtLineStart('## ') },
+	{ key: 'Shift-Mod-3',     run: addPrefixAtLineStart('### ') },
+	{ key: 'Shift-Mod-4',     run: addPrefixAtLineStart('#### ') },
+	{ key: 'Shift-Mod-5',     run: addPrefixAtLineStart('##### ') },
+	{ key: 'Shift-Mod-6',     run: addPrefixAtLineStart('###### ') },
 	{ key: 'Mod-Enter',       run: newBreak('page') },
 	{ key: 'Shift-Mod-Enter', run: newBreak('column') },
 ]));
