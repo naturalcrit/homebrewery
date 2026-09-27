@@ -73,14 +73,11 @@ const insertTab = (view)=>{
 	return forEachSelection(view, (state, range)=>{
 		const { from, to } = range;
 		return {
-			changes : {
-				from,
-				to,
-				insert : '  ' // Insert two spaces, not a tab char!
-			},
-			range : EditorSelection.cursor(from + 2)
+			changes : { from, to, insert: '  ' },
+			range   : EditorSelection.cursor(from + 2)
 		};
 	});
+	// Insert two spaces, not a tab char!
 };
 
 const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, range)=>{
@@ -101,16 +98,8 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, r
 	if(hasWrapper) {
 		return {
 			changes : [
-				{
-					from   : to - suffix.length,
-					to,
-					insert : ''
-				},
-				{
-					from,
-					to     : from + prefix.length,
-					insert : ''
-				}
+				{ from: to - suffix.length, to, insert: '' },
+				{ from,	to: from + prefix.length, insert: '' }
 			],
 			range : EditorSelection.range(from, to - prefix.length - suffix.length)
 		};
