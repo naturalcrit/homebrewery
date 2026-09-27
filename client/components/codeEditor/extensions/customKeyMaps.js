@@ -64,37 +64,26 @@ const forEachSelection = (view, fn)=>{
 
 const insertTab = (view)=>{
 	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
- 	// Otherwise inserts two spaces at each cursor/selection
-	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
+	// Otherwise inserts two spaces at each cursor/selection
+	const shouldIndent = view.state.selection.ranges.some((range)=>
+		view.state.doc.lineAt(range.from).number !==
 		view.state.doc.lineAt(range.to).number
 	);
 
 	if(shouldIndent) return indentMore(view);
 
-	const changes = [];
+	return forEachSelection(view, (state, range)=>{
+		const { from, to } = range;
 
-	for (const range of view.state.selection.ranges) {
-		changes.push({
-			from   : range.from,
-			to     : range.to,
-			insert : '  ' // Insert two spaces, not a tab char!
-		});
-	}
-	// Create a transaction so we can map old positions to
-	// their new positions after the edits are applied
-	const  mappedChanges = view.state.update({ changes });
-
-	view.dispatch({
-		changes,
-		selection : EditorSelection.create(
-			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
-				mappedChanges.changes.mapPos(range.from, -1) + 2
-			)
-			)
-		)
+		return {
+			changes : {
+				from,
+				to,
+				insert : '  ' // Insert two spaces, not a tab char!
+			},
+			range : EditorSelection.cursor(from + 2)
+		};
 	});
-
-	return true;
 };
 
 const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(
