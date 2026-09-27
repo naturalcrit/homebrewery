@@ -1,4 +1,4 @@
-/* eslint max-lines: ["error", { "max": 400 }] */
+/* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
 import { EditorSelection, ChangeSet } from '@codemirror/state';
