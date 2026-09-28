@@ -42,7 +42,6 @@
 	transition-timing-function         : @easing;
 }
 
-
 .transition (@prop, @duration: @defaultDuration) {
 	-webkit-transition : @prop @duration, -webkit-transform @duration;
 	-moz-transition    : @prop @duration, -moz-transform @duration;
@@ -58,13 +57,13 @@
 	transform         : @transform;
 }
 
-
 .delay(@delay) {
 	-webkit-transition-delay : @delay;
 	transition-delay         : @delay;
 	-webkit-animation-delay  : @delay;
 	animation-delay          : @delay;
 }
+
 .keep() {
 	-webkit-animation-fill-mode : forwards;
 	-moz-animation-fill-mode    : forwards;
@@ -72,7 +71,6 @@
 	-o-animation-fill-mode      : forwards;
 	animation-fill-mode         : forwards;
 }
-
 
 .sequentialDelay(@delayInc : 0.2s, @initialDelay : 0s) {
 	&:nth-child(1) {.delay(0*@delayInc + @initialDelay); }
@@ -97,14 +95,12 @@
 	&:nth-child(20) {.delay(19*@delayInc + @initialDelay); }
 }
 
-
-
 .createFrames(@name, @from, @to) {
 	@frames: {
 		from { @from(); }
 		to { @to(); }
 	};
-	@-webkit-keyframes				 @name {@frames();}
+	@-webkit-keyframes @name {@frames();}
 	@-moz-keyframes @name {@frames();}
 	@-ms-keyframes @name {@frames();}
 	@-o-keyframes @name {@frames();}
@@ -125,8 +121,6 @@
 	-ms-animation-timing-function     : @easing;
 	animation-timing-function         : @easing;
 }
-
-
 
 /***************************
 	  Standard Animations
@@ -211,9 +205,6 @@
 	{ opacity : 0; .transform(translateX(20px));}
 	);
 }
-
-
-
 
 /***************************
 		Fun Animations
