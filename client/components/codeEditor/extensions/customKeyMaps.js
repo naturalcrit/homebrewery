@@ -55,7 +55,7 @@ export async function formatCSS(view) {
 }
 
 const forEachSelection = (view, fn)=>{
-	view.dispatch(view.state.changeByRange((range)=>fn(view.state, range)));
+	view.dispatch(view.state.changeByRange((range)=>fn(view.state, range.from, range.to, view.state.doc.sliceString(range.from, range.to))));
 	return true;
 };
 
@@ -67,8 +67,7 @@ const insertTab = (view)=>{
 	);
 	if(shouldIndent) return indentMore(view);
 
-	return forEachSelection(view, (state, range)=>{
-		const { from, to } = range;
+	return forEachSelection(view, (state, from, to, selected)=>{
 		return {
 			changes : { from, to, insert: '  ' }, // Insert two spaces, not a tab char!
 			range   : EditorSelection.cursor(from + 2)
@@ -76,10 +75,7 @@ const insertTab = (view)=>{
 	});
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const selected = state.doc.sliceString(from, to);
-
+const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const noSelection = from === to;
 	if(noSelection) {
 		const insert = prefix + suffix;
@@ -107,9 +103,7 @@ const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, r
 	};
 });
 
-const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-
+const makeNbsp = (view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const prev2 = from >= 2 ? state.doc.sliceString(from - 2, from)	: '';
 	const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
 
@@ -119,10 +113,7 @@ const makeNbsp = (view)=>forEachSelection(view, (state, range)=>{
 	};
 });
 
-const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const selected = state.doc.sliceString(from, to);
-
+const makeSpace = (view)=>forEachSelection(view, (state, from, to, selected)=>{
 	let insert = '{{width:10% }}';
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
@@ -135,21 +126,17 @@ const makeSpace = (view)=>forEachSelection(view, (state, range)=>{
 	};
 });
 
-const removeSpace = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const selected = state.doc.sliceString(from, to);
+const removeSpace = (view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
 		const insert = percent > 0 ? `{{width:${percent}% }}` : '';
-		return { changes: { from, to, insert: insert } };
+		if(insert.length === 0) return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from) };
+		else return { changes: { from, to, insert: insert }, range };
 	}
 });
 
-const makeLink = (view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
-	const selected = state.doc.sliceString(from, to).trim();
-
+const makeLink = (view)=>forEachSelection(view, (state, from, to, selected)=>{
 	// If the selection is already a Markdown link, unwrap it
 	const existingLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
 	if(existingLink) {
@@ -190,9 +177,7 @@ const makeLink = (view)=>forEachSelection(view, (state, range)=>{
 	};
 });
 
-const addPrefixAtLineStart = (prefix)=>(view)=>forEachSelection(view, (state, selectionRange)=>{
-	const { from, to } = selectionRange;
-
+const addPrefixAtLineStart = (prefix)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const startLine = state.doc.lineAt(from);
 	const endLine = state.doc.lineAt(to);
 	const selectedLines = [];
@@ -223,8 +208,7 @@ const addPrefixAtLineStart = (prefix)=>(view)=>forEachSelection(view, (state, se
 	};
 });
 
-const newBreak = (type)=>(view)=>forEachSelection(view, (state, range)=>{
-	const { from, to } = range;
+const newBreak = (type)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const insert = `\n\\${type}\n\n`;
 	return {
 		changes : { from, to, insert },
