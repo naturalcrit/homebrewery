@@ -131,8 +131,7 @@ const removeSpace = (view)=>forEachSelection(view, (state, from, to, selected)=>
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
 		const insert = percent > 0 ? `{{width:${percent}% }}` : '';
-		if(insert.length === 0) return { changes: { from, to, insert: insert }, range: EditorSelection.cursor(from) };
-		else return { changes: { from, to, insert: insert }, range };
+		return { changes: { from, to, insert: insert }, range: EditorSelection.range(from, from + insert.length) };
 	}
 });
 
