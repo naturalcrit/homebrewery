@@ -30,11 +30,11 @@ export default function useCommonEditPageFunctions(dependencies) {
 		save,
 	} = dependencies;
 
-	const [isSaving          , setIsSaving]           = useState(false);
-	const [lastSavedTime     , setLastSavedTime]      = useState(new Date());
-	const [autoSaveEnabled   , setAutoSaveEnabled]    = useState(!sandbox);
+	const [isSaving, setIsSaving]           = useState(false);
+	const [lastSavedTime, setLastSavedTime]      = useState(new Date());
+	const [autoSaveEnabled, setAutoSaveEnabled]    = useState(!sandbox);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
-	const [unsavedChanges    , setUnsavedChanges]     = useState(false);
+	const [unsavedChanges, setUnsavedChanges]     = useState(false);
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
@@ -105,7 +105,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
 				theme	   : value.theme,
-				lang	   : value.lang
+				lang 	   : value.lang
 			}));
 		}
 	};
@@ -155,7 +155,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 						Reminder...
-						<div className='errorContainer'>{text}</div>
+				<div className='errorContainer'>{text}</div>
 			</Nav.item>;
 		}
 
@@ -180,5 +180,5 @@ export default function useCommonEditPageFunctions(dependencies) {
 		renderSaveButton,
 		autoSaveEnabled,
 		unsavedChanges,
-	}
+	};
 }

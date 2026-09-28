@@ -37,14 +37,14 @@ export default function createAdminApi(vite) {
 			throw { HBErrorCode: '52', code: 401, message: 'Access denied' };
 		}
 	};
-	
+
 	// Search for up to 300 brews that have not been viewed or updated in 30 days and are shorter than 140 bytes
 	const junkBrewsPipeline = [
 		{	$match : {
 			updatedAt  : { $lt: Moment().subtract(30, 'days').toDate() },
 			lastViewed : { $lt: Moment().subtract(30, 'days').toDate() }
 		} },
-		{ $project: { _id: 1, textBinSize: { $binarySize: '$textBin' }, updatedAt: 1, lastViewed: 1} },
+		{ $project: { _id: 1, textBinSize: { $binarySize: '$textBin' }, updatedAt: 1, lastViewed: 1 } },
 		{ $match: { textBinSize: { $lt: 140 } } },
 		{ $limit: 300 }
 	];
@@ -52,14 +52,14 @@ export default function createAdminApi(vite) {
 	// Search for up to 500 unauthored brews that have not been viewed or updated in two years
 	const lostBrewsPipeline = [
 		{
-			$match: {
-				authors: [],
-				updatedAt:  { $lt: Moment().subtract(2, 'years').toDate() },
-				lastViewed: { $lt: Moment().subtract(2, 'years').toDate() }
+			$match : {
+				authors    : [],
+				updatedAt  : { $lt: Moment().subtract(2, 'years').toDate() },
+				lastViewed : { $lt: Moment().subtract(2, 'years').toDate() }
 			}
 		},
 		{
-			$limit: 500
+			$limit : 500
 		}
 	];
 
@@ -70,7 +70,7 @@ export default function createAdminApi(vite) {
 
 	router.get('/admin/cleanupJunk', mw.adminOnly, (req, res)=>{
 		HomebrewModel.aggregate(junkBrewsPipeline).option({ maxTimeMS: 60000 })
-		.then((objs)=>res.json({ count: objs.length, brewCollection : objs }))
+		.then((objs)=>res.json({ count: objs.length, brewCollection: objs }))
 		.catch((error)=>{
 			console.error(error);
 			res.status(500).json({ error: 'Internal Server Error' });
@@ -93,7 +93,7 @@ export default function createAdminApi(vite) {
 
 	router.get('/admin/cleanupLost', mw.adminOnly, (req, res)=>{
 		HomebrewModel.aggregate(lostBrewsPipeline).option({ maxTimeMS: 60000 })
-		.then((objs)=>res.json({ count: objs.length, brewCollection : objs }))
+		.then((objs)=>res.json({ count: objs.length, brewCollection: objs }))
 		.catch((error)=>{
 			console.error(error);
 			res.status(500).json({ error: 'Internal Server Error' });

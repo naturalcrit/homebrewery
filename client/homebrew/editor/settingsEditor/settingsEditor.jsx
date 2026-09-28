@@ -131,7 +131,7 @@ const SettingsEditor = ({ settings, updateSettings = ()=>{}, EditorThemeNameList
 						onChange={(e)=>handleFieldChange('fontSize', e)}
 					/>
 					<datalist id='font-sizes'>
-					<option value='1' />
+						<option value='1' />
 					</datalist>
 
 				</div>

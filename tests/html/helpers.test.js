@@ -47,19 +47,19 @@ describe(`brewSnippetsToJSON`, ()=>{
 						gen  : 'I am the first brew snippet!\n',
 						name : 'First Brew Snippet'
 					}, {
-						gen : 'I am the second brew Snippet!',
-						name: 'Second Brew Snippet'
+						gen  : 'I am the second brew Snippet!',
+						name : 'Second Brew Snippet'
 					}
-				]}]
+				] }]
 		};
 		const rendered = brewSnippetsToJSON(`Test Snippets JSON without theme snippets`, brewSnippetsBrewTest, null, true);
 		expect(rendered).toStrictEqual(testMenuObject);
 	});
 
-		it('converts raw brew snippets with theme snippets to JSON', function() {
+	it('converts raw brew snippets with theme snippets to JSON', function() {
 		const testMenuObject = {
 			groupName : 'Brew Snippets',
-			icon	    : 'fas fa-th-list',
+			icon 	    : 'fas fa-th-list',
 			view      : 'text',
 			snippets  : [{
 				gen         : '',
@@ -76,20 +76,20 @@ describe(`brewSnippetsToJSON`, ()=>{
 						icon : '',
 						name : 'Second Theme Snippet',
  					},
-  			]},
-				{
-					name        : 'Test Snippets JSON with theme snippets',
-					subsnippets : [
-						{
-							gen  : 'I am the first brew snippet!\n',
-							name : 'First Brew Snippet'
-						},
-						{
-							gen : 'I am the second brew Snippet!',
-							name: 'Second Brew Snippet'
-						}
-					]
-				}]};
+  			] },
+			{
+				name        : 'Test Snippets JSON with theme snippets',
+				subsnippets : [
+					{
+						gen  : 'I am the first brew snippet!\n',
+						name : 'First Brew Snippet'
+					},
+					{
+						gen  : 'I am the second brew Snippet!',
+						name : 'Second Brew Snippet'
+					}
+				]
+			}] };
 		const rendered = brewSnippetsToJSON(`Test Snippets JSON with theme snippets`, brewSnippetsBrewTest, brewSnippetsThemeTest, true);
 		expect(rendered).toStrictEqual(testMenuObject);
 	});
@@ -103,8 +103,8 @@ describe(`YAMLSnippetsToText`, ()=>{
 					gen  : 'I am the first brew snippet!\n',
 					name : 'First Brew Snippet'
 				}, {
-					gen : 'I am the second brew Snippet!',
-					name: 'Second Brew Snippet'
+					gen  : 'I am the second brew Snippet!',
+					name : 'Second Brew Snippet'
 				}
 			]
 		}];

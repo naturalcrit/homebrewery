@@ -137,7 +137,7 @@ export default async function createApp(vite) {
 		return res.sendFile(`robots.txt`, { root: process.cwd() });
 	});
 	//serve brew for sharepage rerender
-	app.get('/api/fetch/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res) => {
+	app.get('/api/fetch/:id', asyncHandler(getBrew('share')), asyncHandler(async (req, res)=>{
 		const { brew } = req;
 		brew.authors.includes(req.account?.username)
 			? sanitizeBrew(brew, 'shareAuthor')
@@ -285,9 +285,9 @@ export default async function createApp(vite) {
 			'<head>',
 			`<head>\n`
 			+ `<script id="props">`
-			+  `window.__INITIAL_PROPS__ = ` + safeProps
-			+ `</script>\n`
-			+ ogMetaTags
+			+  `window.__INITIAL_PROPS__ = ${safeProps
+			 }</script>\n${
+			 ogMetaTags}`
 		);
 
 		return html;
