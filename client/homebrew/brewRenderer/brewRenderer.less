@@ -61,9 +61,7 @@
 	}
 
 	@supports (break-after:always) {
-		.columnSplit {
-			margin-bottom: 100vh;
-		}
+		.columnSplit { margin-bottom : 100vh; }
 	}
 }
 
@@ -76,13 +74,11 @@
 		height     : 100%;
 		padding    : unset;
 		overflow-y : unset;
-		&:has(.facing, .flow) {
-			padding : unset;
-		}
+		&:has(.facing, .flow) { padding : unset; }
 		.pages {
+			display : block;
 			margin  : 0px;
 			zoom    : 100% !important;
-			display : block;
 			& > .page { box-shadow : unset; }
 		}
 	}
