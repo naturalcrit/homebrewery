@@ -14,25 +14,24 @@ export async function formatCSS(view) {
 		const code = empty ? fullDoc : selection;
 
 		let formatted = await prettier.format(code, {
-			parser: 'css',
-			plugins: [postcssPlugin],
+			parser  : 'css',
+			plugins : [postcssPlugin],
 
 			// formatting options
-			tabWidth: 2,
-			useTabs: false,
-			printWidth: 100,
-			singleQuote: false,
-			trailingComma: 'all',
-			bracketSpacing: true,
-			endOfLine: 'lf'
+			tabWidth       : 2,
+			useTabs        : false,
+			printWidth     : 100,
+			singleQuote    : false,
+			trailingComma  : 'all',
+			bracketSpacing : true,
+			endOfLine      : 'lf'
 		});
 
 		//format manually single declaration rules to span one line.
 		//Prettier can't do it by default, this is crude but it works
 		formatted = formatted.replace(
-		/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}(\s*)/g,
-		(_, selector, decl, whitespace) =>
-			`${selector} { ${decl.trim()} }${whitespace}`
+			/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}(\s*)/g,
+			(_, selector, decl, whitespace)=>`${selector} { ${decl.trim()} }${whitespace}`
 		);
 		if(formatted === code) return true;
 
