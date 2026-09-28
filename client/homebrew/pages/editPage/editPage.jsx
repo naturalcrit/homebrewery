@@ -9,7 +9,7 @@ import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';
@@ -163,7 +163,7 @@ const EditPage = (props)=>{
 
 			{alertOwnershipToTransfer && (
 				<div className='errorContainer'>
-					You must be the Owner to transfer between the Homebrewery and Google Drive! 
+					You must be the Owner to transfer between the Homebrewery and Google Drive!
 					The owner of this file is {currentBrew.authors[0]}.
 					<br></br>
 					<div className='confirm' onClick={closeAlerts}> Okay </div>

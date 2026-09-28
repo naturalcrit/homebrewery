@@ -338,7 +338,7 @@ const Editor = forwardRef(
 							view={view}
 							style={{ display: 'none' }}
 							editorTheme={editorSettings.editorTheme}
-							onThemeChange={setIsDark} 
+							onThemeChange={setIsDark}
 							settings={editorSettings}
 						/>
 						<SettingsEditor

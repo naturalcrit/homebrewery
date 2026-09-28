@@ -27,16 +27,16 @@
 	h5 + * { margin-top : 0.1cm; }
 }
 .useColumns(@multiplier : 1, @fillMode: auto) {
-	column-count         : 2;
-	column-fill          : @fillMode;
-	column-gap           : 0.9cm;
+	-webkit-column-width : 8cm * @multiplier;
+	-moz-column-width    : 8cm * @multiplier;
 	column-width         : 8cm * @multiplier;
 	-webkit-column-count : 2;
 	-moz-column-count    : 2;
-	-webkit-column-width : 8cm * @multiplier;
-	-moz-column-width    : 8cm * @multiplier;
+	column-count         : 2;
+	column-fill          : @fillMode;
 	-webkit-column-gap   : 0.9cm;
 	-moz-column-gap      : 0.9cm;
+	column-gap           : 0.9cm;
 }
 .page {
 	.useColumns();
@@ -79,12 +79,12 @@
 		color       : var(--HB_Color_HeaderText);
 	}
 	h1 {
-		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
-		column-span         : all;
-		font-size           : 0.89cm;
-		line-height         : 1em;
 		-webkit-column-span : all;
 		-moz-column-span    : all;
+		column-span         : all;
+		margin-bottom       : 0.18cm; //Margin-bottom only because this is WIDE
+		font-size           : 0.89cm;
+		line-height         : 1em;
 		& + p::first-line { font-variant : small-caps; }
 	}
 	p.first-letter::first-letter,
@@ -363,13 +363,13 @@
 
 		// Monster Ability table
 		hr + table:first-of-type {
-			margin              : 0;
+			-webkit-column-span : none;
 			column-span         : none;
+			margin              : 0;
 			color               : var(--HB_Color_HeaderText);
 			background-color    : transparent;
 			border-style        : none;
 			border-image        : none;
-			-webkit-column-span : none;
 			tr { background-color : transparent; }
 			td,th { padding : 0px; }
 		}
@@ -420,15 +420,15 @@
 		color       : var(--HB_Color_Footnotes);
 	}
 	.footnote {
-		text-transform: uppercase;
-		position   : absolute;
-		right      : 80px;
-		bottom     : 32px;
-		z-index    : 150;
-		width      : 200px;
-		font-size  : 0.8em;
-		color      : var(--HB_Color_Footnotes);
-		text-align : right;
+		position       : absolute;
+		right          : 80px;
+		bottom         : 32px;
+		z-index        : 150;
+		width          : 200px;
+		font-size      : 0.8em;
+		color          : var(--HB_Color_Footnotes);
+		text-align     : right;
+		text-transform : uppercase;
 	}
 	// ************************************
 	// *           CODE BLOCKS
@@ -488,7 +488,7 @@
 		text-indent                 : -1em;
 		list-style-type             : none;
 		-webkit-column-break-inside : auto;
-		page-break-inside           : auto;
+		break-inside           : auto;
 		break-inside                : auto;
 	}
 	&.wide { column-count : 4; }
@@ -615,9 +615,9 @@
 		font-size           : 0.496cm;
 		color               : white;
 		text-align          : center;
-		-webkit-text-stroke : 0.1cm black;
+		text-transform      : none;
 		paint-order         : stroke;
-		text-transform		: none;
+		-webkit-text-stroke : 0.1cm black;
 	}
 	.logo {
 		position   : absolute;
@@ -675,10 +675,10 @@
 // *      BACK COVER
 // *****************************/
 .page:has(.backCover) {
+	columns     : 1;
 	padding     : 2.25cm 1.3cm 2cm 1.3cm;
 	line-height : 1.4em;
 	color       : #FFFFFF;
-	columns     : 1;
 	&::after { display : none; }
 	.columnWrapper { width : 7.6cm; }
 	.backCover {
@@ -756,9 +756,9 @@
 // *      PART COVER
 // *****************************/
 .page:has(.partCover) {
+	columns     : 1;
 	padding-top : 0;
 	text-align  : center;
-	columns     : 1;
 
 	.partCover {
 		position          : absolute;
@@ -807,7 +807,7 @@
 	&:has(.toc)::after { display : none; }
 	.toc {
 		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
+		break-inside           : avoid;
 		break-inside                : avoid;
 		h1 {
 			margin-bottom : 0.3cm;

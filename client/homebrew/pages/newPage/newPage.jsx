@@ -1,4 +1,4 @@
-/* eslint-disable max-lines */
+
 import './newPage.less';
 
 // Common imports
@@ -10,7 +10,7 @@ import _                                      from 'lodash';
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@shared/helpers.js';
 
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
+import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import Editor       from '../../editor/editor.jsx';

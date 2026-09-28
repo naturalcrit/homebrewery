@@ -107,14 +107,14 @@ body {
 		}
         
 		th, td {
+			max-width      : 50ch;
 			padding        : 5px 10px;
+			overflow       : hidden;
+			text-overflow  : ellipsis;
 			vertical-align : middle;
 			text-align     : center;
+			white-space    : nowrap;
 			border-right   : 1px solid;
-			max-width:50ch;
-			overflow:hidden;
-			text-overflow: ellipsis;
-			white-space: nowrap;
 
 			&:last-child { border-right : none; }
 		}

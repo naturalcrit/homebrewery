@@ -1,11 +1,11 @@
 /**
  * A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
  * Anchor Positioning is now supported in all major browsers.  A polyfill is conditionally loaded for older browsers.
- * 
+ *
  * As-is, the menus will always open down aligned on left to trigger, submenus open to the right initially.
  * If no space, menus will still open down, but aligned to the right of the trigger.  Submenus will flip to the other side of the top menu.
  * This could be customized either in more specific CSS, or as a `direction` prop on the component (in future iterations).
- * 
+ *
  * @param {string} props.groupName - Name of the menu. Appears as the trigger text.
  * @param {string} [props.icon] - Icon to display in the trigger.
  * @param {string} [props.color] - Color class to add to the trigger.
