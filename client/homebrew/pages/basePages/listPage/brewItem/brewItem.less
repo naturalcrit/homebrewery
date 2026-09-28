@@ -18,7 +18,7 @@
 	box-shadow                  : 0px 4px 5px 0px #333333;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
-	page-break-inside           : avoid;
+	break-inside           : avoid;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -43,7 +43,7 @@
 	.info {
 		position    : initial;
 		bottom      : 2px;
-		font-family : "ScalySansRemake";
+		font-family : 'ScalySansRemake';
 		font-size   : 1.2em;
 		& > span {
 			margin-right : 12px;
@@ -106,26 +106,26 @@
 		a, button {
 			.animate(opacity);
 			display         : block;
+			width           : 100%;
 			margin          : 8px 0px;
 			font-size       : 1.3em;
 			color           : white;
 			text-decoration : unset;
 			opacity         : 0.6;
-			width           : 100%;
 			&:hover { opacity : 1; }
 			i { cursor : pointer; }
 		}
 	}
 	.googleDriveIcon {
+		height  : 18px;
 		padding : 0px;
 		margin  : -5px;
-		height  : 18px;
 	}
 	.homebreweryIcon {
 		position : relative;
-		padding  : 0px;
 		top      : 5px;
 		left     : -7.5px;
 		height   : 18px;
+		padding  : 0px;
 	}
 }

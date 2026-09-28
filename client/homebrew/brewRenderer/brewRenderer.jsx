@@ -103,8 +103,8 @@ const BrewRenderer = (props)=>{
 	const pagesRef = useRef(null);
 
 	const [visiblePages, setVisiblePages] = useState([]);
-	const [centerPage  , setCenterPage  ] = useState(1);
-	const [headerState , setHeaderState ] = useState(false);
+	const [centerPage, setCenterPage] = useState(1);
+	const [headerState, setHeaderState] = useState(false);
 
 	const [state, setState] = useState({
 		isMounted  : false,
@@ -158,10 +158,9 @@ const BrewRenderer = (props)=>{
 		return false;
 	};
 
-	const renderDummyPage = (index)=>
-		<div className='phb page' id={`p${index + 1}`} key={index}>
-			<i className='fas fa-spinner fa-spin' />
-		</div>;
+	const renderDummyPage = (index)=><div className='phb page' id={`p${index + 1}`} key={index}>
+		<i className='fas fa-spinner fa-spin' />
+	</div>;
 
 	const renderStyle = ()=>{
 		const themeStyles = props.themeBundle?.joinedStyles ?? '<style>@import url("/themes/V3/Blank/style.css");</style>';

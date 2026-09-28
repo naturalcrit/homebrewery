@@ -329,7 +329,7 @@ export default [
 			},
 			{
 				name        : 'DTRPG Community Content',
-				icon       : null,
+				icon        : null,
 				subsnippets : [
 					{
 						name : 'Chronicle System Guild Colophon',

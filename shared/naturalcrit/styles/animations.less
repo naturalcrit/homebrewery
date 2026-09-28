@@ -42,7 +42,6 @@
 	transition-timing-function         : @easing;
 }
 
-
 .transition (@prop, @duration: @defaultDuration) {
 	-webkit-transition : @prop @duration, -webkit-transform @duration;
 	-moz-transition    : @prop @duration, -moz-transform @duration;
@@ -58,13 +57,13 @@
 	transform         : @transform;
 }
 
-
 .delay(@delay) {
 	-webkit-transition-delay : @delay;
 	transition-delay         : @delay;
 	-webkit-animation-delay  : @delay;
 	animation-delay          : @delay;
 }
+
 .keep() {
 	-webkit-animation-fill-mode : forwards;
 	-moz-animation-fill-mode    : forwards;
@@ -72,7 +71,6 @@
 	-o-animation-fill-mode      : forwards;
 	animation-fill-mode         : forwards;
 }
-
 
 .sequentialDelay(@delayInc : 0.2s, @initialDelay : 0s) {
 	&:nth-child(1) {.delay(0*@delayInc + @initialDelay); }
@@ -97,14 +95,12 @@
 	&:nth-child(20) {.delay(19*@delayInc + @initialDelay); }
 }
 
-
-
 .createFrames(@name, @from, @to) {
 	@frames: {
 		from { @from(); }
 		to { @to(); }
 	};
-	@-webkit-keyframes		 @name {@frames();}
+	@-webkit-keyframes @name {@frames();}
 	@-moz-keyframes @name {@frames();}
 	@-ms-keyframes @name {@frames();}
 	@-o-keyframes @name {@frames();}
@@ -126,8 +122,6 @@
 	animation-timing-function         : @easing;
 }
 
-
-
 /***************************
 	  Standard Animations
 ****************************/
@@ -136,7 +130,7 @@
 	.createAnimation(fadeIn; @duration; @easing);
 	.createFrames(fadeIn,
 	{ opacity : 0; },
-		{ opacity : 1; }
+	{ opacity : 1; }
 	);
 }
 
@@ -144,7 +138,7 @@
 	.createAnimation(fadeInDown; @duration; @easing);
 	.createFrames(fadeInDown,
 	{ opacity : 0; .transform(translateY(20px));},
-		{ opacity : 1; .transform(translateY(0px));}
+	{ opacity : 1; .transform(translateY(0px));}
 	);
 }
 
@@ -152,7 +146,7 @@
 	.createAnimation(fadeInTop; @duration; @easing);
 	.createFrames(fadeInTop,
 	{ opacity : 0; .transform(translateY(-20px)); },
-		{ opacity : 1; .transform(translateY(0px));}
+	{ opacity : 1; .transform(translateY(0px));}
 	);
 }
 
@@ -160,7 +154,7 @@
 	.createAnimation(fadeInLeft; @duration; @easing);
 	.createFrames(fadeInLeft,
 	{ opacity: 0; .transform(translateX(-20px));},
-		{ opacity: 1; .transform(translateX(0));}
+	{ opacity: 1; .transform(translateX(0));}
 	);
 }
 
@@ -168,7 +162,7 @@
 	.createAnimation(fadeInRight; @duration; @easing);
 	.createFrames(fadeInRight,
 	{ opacity: 0; .transform(translateX(20px));},
-		{ opacity: 1; .transform(translateX(0));}
+	{ opacity: 1; .transform(translateX(0));}
 	);
 }
 
@@ -176,7 +170,7 @@
 	.createAnimation(fadeOut; @duration; @easing);
 	.createFrames(fadeOut,
 	{ opacity : 1; },
-		{ opacity : 0; }
+	{ opacity : 0; }
 	);
 }
 
@@ -184,7 +178,7 @@
 	.createAnimation(fadeOutDown; @duration; @easing);
 	.createFrames(fadeOutDown,
 	{ opacity : 1; .transform(translateY(0)); visibility: visible;},
-		{ opacity : 0; .transform(translateY(20px)); visibility: hidden;}
+	{ opacity : 0; .transform(translateY(20px)); visibility: hidden;}
 	);
 }
 
@@ -192,7 +186,7 @@
 	.createAnimation(fadeOutTop; @duration; @easing);
 	.createFrames(fadeOutTop,
 	{ opacity : 1; .transform(translateY(0)); },
-		{ opacity : 0; .transform(translateY(-20px)); }
+	{ opacity : 0; .transform(translateY(-20px)); }
 	);
 }
 
@@ -200,7 +194,7 @@
 	.createAnimation(fadeOutLeft; @duration; @easing);
 	.createFrames(fadeOutLeft,
 	{ opacity : 1; .transform(translateX(0));},
-		{ opacity : 0; .transform(translateX(-20px));}
+	{ opacity : 0; .transform(translateX(-20px));}
 	);
 }
 
@@ -208,12 +202,9 @@
 	.createAnimation(fadeOutRight; @duration; @easing);
 	.createFrames(fadeOutRight,
 	{ opacity : 1; .transform(translateX(0));},
-		{ opacity : 0; .transform(translateX(20px));}
+	{ opacity : 0; .transform(translateX(20px));}
 	);
 }
-
-
-
 
 /***************************
 		Fun Animations
