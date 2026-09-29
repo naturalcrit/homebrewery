@@ -93,6 +93,50 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 9/29/2026 - v3.24.0
+{{taskList
+##### calculuschild
+* [x] Add a periodic warning to /new page if work has never been saved
+* [x] Small fix to variable hoisting logic
+
+Fixes issue [#31](https://github.com/naturalcrit/marked-variables/issues/31)
+
+##### Ericscheid
+* [x] Enable "fancy drop caps" on any paragraph, by placing `{drop-cap}` on the line below.
+
+Fixes issue [#5024](https://github.com/naturalcrit/homebrewery/issues/5024)
+
+* [x] Prevent crash if `<script>` tag in brew text
+
+Fixes issue [#546](https://github.com/naturalcrit/homebrewery/issues/546)
+
+##### G-Ambatte
+* [x] Add compatibility with Markdeep Ascii art diagrams. See [example brew](https://homebrewery.naturalcrit.com/share/TsZ5Iak3bapb)
+
+* [x] Fix stray hyphens in PDF output titles
+
+Fixes issue [#5069](https://github.com/naturalcrit/homebrewery/issues/5069)
+
+##### 5e-Cleric
+* [x] Fix Google Drive files that can't be deleted
+
+Fixes issue [#5020](https://github.com/naturalcrit/homebrewery/issues/5020)
+
+* [x] Prevent co-authors moving brews between Google and Homebrewery storage.
+
+Fixes issue [#4862](https://github.com/naturalcrit/homebrewery/issues/4862)
+
+* [x] Fix cursor position for hotkeys, and other tweaks
+
+Fixes issues [#4758](https://github.com/naturalcrit/homebrewery/issues/4758), [#4790](https://github.com/naturalcrit/homebrewery/issues/4790), [#4809](https://github.com/naturalcrit/homebrewery/issues/4809)
+
+##### 5e-Cleric, G-Ambatte
+* [x] Share pages update live when file contents change
+
+##### Abquintic, Calculuschild, G-Ambatte, Gazook89, 5e-Cleric, Ericscheid
+* [x] Multiple background fixes and code cleanups
+}}
+
 ### Monday 9/07/2026 - v3.23.0
 {{taskList
 ##### firstmatekidd (new contributor!)
@@ -140,6 +184,8 @@ Fixes issue [#4904](https://github.com/naturalcrit/homebrewery/issues/4904)
 * [x] Multiple background fixes and code cleanups
 }}
 
+\page
+
 ### Wednesday 5/13/2026 - v3.22.1
 {{taskList
 ##### Frederlk (new Contributor!)
@@ -156,8 +202,6 @@ Fixes issue [#4904](https://github.com/naturalcrit/homebrewery/issues/4904)
 
 Fixes issues [#4771](https://github.com/naturalcrit/homebrewery/issues/4771), [#4783](https://github.com/naturalcrit/homebrewery/issues/4783)
 }}
-
-\page
 
 ### Saturday 4/04/2026 - v3.21.0
 
