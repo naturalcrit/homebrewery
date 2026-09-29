@@ -501,6 +501,11 @@ tags:
   - fun
 renderer: v3
 theme: phb
+snippets:
+  snippets:
+    snippets: []
+  styles:
+    snippets: []
 bleedSize:
   top: .125in
   bottom: .125in
@@ -564,6 +569,11 @@ tags:
   - fun
 renderer: v3
 theme: phb
+snippets:
+  snippets:
+    snippets: []
+  styles:
+    snippets: []
 bleedSize:
   top: .125in
   bottom: .125in
