@@ -366,7 +366,7 @@ class ImageWidget extends WidgetType {
 	}
 }
 
-export function customHighlightPlugin(renderer, tab) {
+export function customHighlightPlugin(renderer, tab, settings) {
 	//this function takes the custom tokens created in the tokenize function in customhighlight files
 	//takes the tokens defined by that function and assigns classes to them
 	//it also creates page number and snippet number widgets
@@ -398,7 +398,7 @@ export function customHighlightPlugin(renderer, tab) {
 				const tree = ensureSyntaxTree(view.state, view.state.doc.length, 50) || syntaxTree(view.state);
 				tree.iterate({
 					enter : (node)=>{
-						if(node.name === 'Image') {
+						if(node.name === 'Image' && settings.showImagePreviews) {
 							const url = getUrl(node, view.state.doc);
 
 							const widgetPosition = node.node.lastChild.from;
@@ -431,7 +431,7 @@ export function customHighlightPlugin(renderer, tab) {
 						const to = line.from + token.to;
 
 						const attrs = {};
-						if(token.type === 'Image' && token.url) {
+						if(token.type === 'Image' && token.url && settings.showImagePreviews) {
 
 							attrs['data-url'] = token.url;
 						}

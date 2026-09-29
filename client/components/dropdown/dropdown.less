@@ -1,33 +1,35 @@
 @property --menuColor {
-	syntax: '<color>';
-	inherits: true;
-	initial-value: #DDD;
+	syntax : '<color>';
+	inherits : true;
+	initial-value : #DDDDDD;
 }
 
 @property --activeTriggerColor {
-	syntax: '<color>';
-	inherits: true;
-	initial-value: #DDD;
+	syntax : '<color>';
+	inherits : true;
+	initial-value : #999999;
 }
 
-:root{
-	--activeTriggerColor : var(--activeTriggerColor);
-}
+:root { --activeTriggerColor : var(--activeTriggerColor); }
 .menu-list {
-	contain          : content;
 	position         : fixed;
 	top              : anchor(bottom);
 	left             : anchor(left);
-	position-try: flip-inline flip-block;
-	color: inherit;   // [popover] gets a `canvastext` color value from useragent.
-	background: var(--menuColor);
+	position-try     : flip-inline flip-block;
+	contain          : content;
+	color            : inherit;   // [popover] gets a `canvastext` color value from useragent.
+	background       : var(--menuColor);
 	li > .menu-list {
-			margin: 0 0px;
-			top  : anchor(top);
-			left : anchor(right);
-			position-try: flip-inline;
-		}
+		top          : anchor(top);
+		left         : anchor(right);
+		margin       : 0 0px;
+		position-try : flip-inline;
+	}
 }
 .menu-wrapper:has(:popover-open) > button {                        // if menu is open...
-	background-color: var(--activeTriggerColor, hsl(from var(--menuColor) h s calc(l * .85)));  // tint menu triggers based on menu color
+	background-color : var(--activeTriggerColor, hsl(from var(--menuColor) h s calc(l * 0.85)));  // tint menu triggers based on menu color
+}
+
+.darkMode .menu-wrapper:has(:popover-open) > button {                        // if menu is open...
+	--activeTriggerColor : #444444;  // tint menu triggers based on menu color
 }

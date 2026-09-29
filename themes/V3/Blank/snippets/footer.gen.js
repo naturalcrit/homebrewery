@@ -1,4 +1,4 @@
-import hbfm   from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 
 export default {
 	createFooterFunc : function(headerSize=1){
