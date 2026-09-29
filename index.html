@@ -21,6 +21,15 @@
 
   			let prefix = '';
 
+			// Default page title
+			let result ='The Homebrewery';
+
+			// Add brew title, if it exists
+			if (title) {
+  				result = `${title} - ${result}`;
+  			}
+
+			// Add prefix for Stage/PR Deployment/Local install
   			if (url && url?.includes('://homebrewery-stage.')) {
   				prefix = `Stage `;
   			} else if (url?.includes('://homebrewery-pr-')) {
@@ -30,11 +39,12 @@
   				prefix = 'Local ';
   			}
 
-  			if (title) {
-  				document.title = `${prefix} - ${title} - The Homebrewery`;
-  			} else if (prefix) {
-				document.title = `${prefix} - The Homebrewery`;
+			if (prefix) {
+				result = `${prefix} - ${result}`;
 			}
+
+			// Set page title
+			document.title = result;
 
 			if (window.location.pathname.startsWith('/admin')) {
 				import('/client/admin/main.jsx');
