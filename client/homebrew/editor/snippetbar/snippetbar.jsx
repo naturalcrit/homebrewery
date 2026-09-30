@@ -1,6 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 350, "skipBlankLines": true, "skipComments": true}]*/
 import './snippetbar.less';
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dropdown } from '@components/dropdown/dropdown.jsx';
 
 import _ from 'lodash';
@@ -49,7 +49,6 @@ const SnippetBar = ({
 	updateBrew      = ()=>{}
 })=>{
 	const [snippets, setSnippets] = useState([]);
-	const [showHistory, setShowHistory] = useState(false);
 	const [historyExists, setHistoryExists] = useState(false);
 	const [historyItems, setHistoryItems] = useState([]);
 
@@ -139,34 +138,68 @@ const SnippetBar = ({
 		return updateBrew(item);
 	};
 
-	const toggleHistoryMenu = ()=>setShowHistory(!showHistory);
+	const renderHistoryMenu = ()=>{
+		if(!historyExists) return <Dropdown 
+				groupName='History'
+				icon='fas fa-clock-rotate-left'
+				className='history'
+				customTrigger={
+					<>
+						<i className='fas fa-clock-rotate-left' />
+					</>
+				} disabled></Dropdown>;
 
-	const renderHistoryItems = ()=>{
-		if(!historyExists) return;
+		return (
+			<Dropdown
+				groupName='History'
+				icon='fas fa-clock-rotate-left'
+				className='history'
+				customTrigger={
+					<>
+						<i className='fas fa-clock-rotate-left' />
+					</>
+				}
 
-		return <div className='dropdown'>
-			{_.map(historyItems, (item, index)=>{
-				if(item.noData || !item.savedAt) return;
+			>
+				{_.map(historyItems, (item, index)=>{
+					if(item.noData || !item.savedAt) return null;
 
-				const saveTime = new Date(item.savedAt);
-				const diffMs = new Date() - saveTime;
-				const diffSecs = Math.floor(diffMs / 1000);
+					const saveTime = new Date(item.savedAt);
+					const diffMs = new Date() - saveTime;
+					const diffSecs = Math.floor(diffMs / 1000);
 
-				let diffString = `about ${diffSecs} seconds ago`;
+					let diffString = `about ${diffSecs} seconds ago`;
 
-				if(diffSecs > 60) diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
-				if(diffSecs > (60 * 60)) diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
-				if(diffSecs > (24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
-				if(diffSecs > (7 * 24 * 60 * 60)) diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
+					if(diffSecs > 60)
+						diffString = `about ${Math.floor(diffSecs / 60)} minutes ago`;
+					if(diffSecs > (60 * 60))
+						diffString = `about ${Math.floor(diffSecs / (60 * 60))} hours ago`;
+					if(diffSecs > (24 * 60 * 60))
+						diffString = `about ${Math.floor(diffSecs / (24 * 60 * 60))} days ago`;
+					if(diffSecs > (7 * 24 * 60 * 60))
+						diffString = `about ${Math.floor(diffSecs / (7 * 24 * 60 * 60))} weeks ago`;
 
-				return <div className='snippet' key={index} onClick={()=>{replaceContent(item);}} >
-					<i className={`fas fa-${index+1}`} />
-					<span className='name' title={saveTime.toISOString()}>v{item.version} : {diffString}</span>
-				</div>;
-			})}
-		</div>;
+					return (
+						<li key={index} role='none'>
+							<button
+								className='menu-item'
+								onClick={()=>replaceContent(item)}
+								role='menuitem'
+							>
+								<i className={`fas fa-${index + 1}`} />
+								<span
+									className='name'
+									title={saveTime.toISOString()}
+								>
+								v{item.version} : {diffString}
+								</span>
+							</button>
+						</li>
+					);
+				})}
+			</Dropdown>
+		);
 	};
-
 
 	const renderEditorButtons =()=>{
 		if(!showEditButtons) return;
@@ -174,11 +207,7 @@ const SnippetBar = ({
 		return (
 			<div className='editors'>
 				{view !== 'meta' && view !== 'settings' && <><div className='historyTools'>
-					<button className={`editorTool snippetGroup history ${historyExists ? 'active' : ''}`}
-						onClick={toggleHistoryMenu} >
-						<i className='fas fa-clock-rotate-left' />
-						{ showHistory && renderHistoryItems() }
-					</button>
+					{renderHistoryMenu()}
 					<button className={`editorTool undo ${historySize.done ? 'active' : ''}`}
 						onClick={undo} >
 						<i className='fas fa-undo' />
