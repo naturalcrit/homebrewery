@@ -11,7 +11,7 @@ export function generateAssetsPlugin(isDev = false) {
 
 			// Copy favicon
 			await fs.copy('./client/homebrew/favicon.ico', `${buildDir}/assets/favicon.ico`);
-			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/edit/client/icons/broken-image.jpg`);
 
 			// Copy shared styles/fonts
 			const assets = fs.readdirSync('./shared/naturalcrit/styles');
