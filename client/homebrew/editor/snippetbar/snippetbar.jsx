@@ -139,15 +139,15 @@ const SnippetBar = ({
 	};
 
 	const renderHistoryMenu = ()=>{
-		if(!historyExists) return <Dropdown 
-				groupName='History'
-				icon='fas fa-clock-rotate-left'
-				className='history'
-				customTrigger={
-					<>
-						<i className='fas fa-clock-rotate-left' />
-					</>
-				} disabled></Dropdown>;
+		if(!historyExists) return <Dropdown
+			groupName='History'
+			icon='fas fa-clock-rotate-left'
+			className='history'
+			customTrigger={
+				<>
+					<i className='fas fa-clock-rotate-left' />
+				</>
+			} disabled></Dropdown>;
 
 		return (
 			<Dropdown
