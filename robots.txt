@@ -5,42 +5,14 @@ Disallow: /edit/
 # AI / LLM training crawlers
 
 User-agent: GPTBot
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: ClaudeBot
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: CCBot
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: Google-Extended
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: Bytespider
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: Applebot-Extended
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: Meta-ExternalAgent
-Disallow: /share/
-Disallow: /download/
-Disallow: /print/
-
 User-agent: Amazonbot
 Disallow: /share/
 Disallow: /download/
 Disallow: /print/
-
+Disallow: /edit/
