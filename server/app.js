@@ -204,7 +204,7 @@ export default async function createApp(vite) {
 		});
 
 		Stream.on('sendUpdate', (event, data)=>{
-			console.log('Event:', event, '\nData:', data);
+			if(isLocalEnvironment) { console.log('Event:', event, '\nData:', data); }
 			res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
 		});
 	});
