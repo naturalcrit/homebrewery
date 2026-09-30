@@ -93,6 +93,12 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
+### Tuesday 9/29/2026 - v3.24.1
+{{taskList
+##### calculuschild
+* [x] Small hotfix for broken images thrashing the server
+}}
+
 ### Tuesday 9/29/2026 - v3.24.0
 {{taskList
 ##### calculuschild
