@@ -34,6 +34,7 @@ const METAKEY  = 'HB_newPage_meta';
 const useLocalStorage     = false;
 const sandbox             = true;
 const showFloatingButtons = true;
+const showEditorButtons   = false;
 const pageName            = "homePage";
 
 const HomePage =(props)=>{
@@ -107,6 +108,7 @@ const HomePage =(props)=>{
 		save,
 		renderNavbar,
 		pageName,
+		showEditorButtons,
 		userThemes: {}
 	});
 

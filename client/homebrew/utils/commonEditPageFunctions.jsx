@@ -36,6 +36,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		save,
 		renderNavbar,
 		pageName,
+		showEditorButtons,
 		userThemes = {}
 	} = dependencies;
 
@@ -221,7 +222,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 						reportError={setError}
 						renderer={currentBrew.renderer}
 						userThemes={userThemes}
-						showEditButtons={false}
+						showEditButtons={showEditorButtons}
 						themeBundle={themeBundle}
 						updateBrew={updateBrew}
 						onCursorPageChange={setCurrentEditorCursorPageNum}

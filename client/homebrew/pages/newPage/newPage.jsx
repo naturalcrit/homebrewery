@@ -34,6 +34,7 @@ const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 const useLocalStorage     = true;
 const sandbox             = true;
 const showFloatingButtons = false;
+const showEditorButtons   = true;
 const pageName            = "newPage";
 
 const NewPage = (props)=>{
@@ -154,6 +155,7 @@ const NewPage = (props)=>{
 		save,
 		renderNavbar,
 		pageName,
+		showEditorButtons,
 		userThemes: props.userThemes
 	});
 

@@ -37,8 +37,9 @@ const SNIPKEY  = 'HB_newPage_snippets';
 const METAKEY  = 'HB_newPage_meta';
 
 const useLocalStorage     = false;
-const sandbox	          = false;
+const sandbox	            = false;
 const showFloatingButtons = false;
+const showEditorButtons   = true;
 const pageName            = "editPage";
 
 const EditPage = (props)=>{
@@ -244,6 +245,7 @@ const EditPage = (props)=>{
 		save,
 		renderNavbar,
 		pageName,
+		showEditorButtons,
 		userThemes: props.userThemes
 	});
 
