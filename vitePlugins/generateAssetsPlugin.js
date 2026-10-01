@@ -15,6 +15,7 @@ export function generateAssetsPlugin(isDev = false) {
 			//hopefully temporary to fix 406 flood coming from editor
 			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/edit/client/icons/broken-image.jpg`);
 			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/new/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/client/icons/broken-image.jpg`);
 
 			// Copy shared styles/fonts
 			const assets = fs.readdirSync('./shared/naturalcrit/styles');
