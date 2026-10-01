@@ -51,7 +51,6 @@ const EditPage = (props)=>{
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
 	const [saveGoogle, setSaveGoogle] = useState(!!props.brew.googleId);
 	const [error, setError] = useState(null);
-	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
 	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
 	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
@@ -90,8 +89,6 @@ const EditPage = (props)=>{
 	};
 
 	const save = async (brew, saveToGoogle)=>{
-		setHTMLErrors(hbfm.validate(brew.text));
-
 		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
@@ -217,8 +214,6 @@ const EditPage = (props)=>{
 	};
 
 	const {
-		handleSplitMove,
-		handleBrewChange,
 		toggleAutoSave,
 		clearError,
 		renderSaveButton,
@@ -229,8 +224,6 @@ const EditPage = (props)=>{
 	} = useCommonEditPageFunctions({
 		saveGoogle,
 		setError,
-		HTMLErrors,
-		setHTMLErrors,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
