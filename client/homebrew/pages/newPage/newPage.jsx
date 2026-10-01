@@ -48,8 +48,10 @@ const NewPage = (props)=>{
 
 		setCurrentBrew((prevBrew)=>({
 			...prevBrew,
-			...updatedFields
+			...res.body
 		}));
+
+		return res.body;
 	};
 
 	const onSaveSuccess = (savedBrew)=>{

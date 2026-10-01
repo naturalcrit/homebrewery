@@ -202,13 +202,15 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			await save(currentBrew, saveToGoogle)
+			let savedBrew = await save(currentBrew, saveToGoogle)
 				.catch((err)=>{setError(err);});
+			if(savedBrew) {
+				if(useLocalStorage) clearLocalStorage();
+				onSaveSuccess(savedBrew);
+			}
 			setIsSaving(false);
 			setLastSavedTime(new Date());
 			if(!autoSaveEnabled) resetWarnUnsavedTimer();
-			if(useLocalStorage) clearLocalStorage();
-			onSaveSuccess();
 		}, newTimeout);
 	});
 

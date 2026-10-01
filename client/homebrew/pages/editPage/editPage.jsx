@@ -21,7 +21,7 @@ import { updateHistory, versionHistoryGarbageCollection } from '../../utils/vers
 import googleDriveIcon from '../../googleDrive.svg';
 
 const useLocalStorage     = false;
-const sandbox	          = false;
+const sandbox             = false;
 const showFloatingButtons = false;
 const showEditorButtons   = true;
 const pageName            = 'editPage';
@@ -118,6 +118,8 @@ const EditPage = (props)=>{
 			...prevBrew,
 			...updatedFields
 		}));
+
+		return res.body;
 	};
 
 	const onSaveSuccess = (savedBrew)=>{
