@@ -2,7 +2,6 @@
 import _                             from 'lodash';
 import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
-import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
 import { hbfm }   from 'marked-hbfm';
 import * as yaml                     from 'js-yaml';
@@ -303,13 +302,8 @@ const api = {
 			if(!googleId) return;
 			api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
-		} else {
-			// Compress brew text to binary before saving
-			newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			newHomebrew.text = undefined;
 		}
-
+		
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
@@ -464,11 +458,6 @@ const api = {
 		if(brew.googleId) {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
 			api.excludeStubProps(brew);
-		} else {
-			// Compress brew text to binary before saving
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			brew.text = undefined;
 		}
 		brew.updatedAt = new Date();
 		brew.version = (brew.version || 1) + 1;
@@ -549,8 +538,6 @@ const api = {
 				if(shouldDeleteGoogleBrew) {
 					// When there are still authors remaining, we delete the google brew but store the full brew in the Homebrewery database
 					brew.googleId = undefined;
-					brew.textBin = zlib.deflateRawSync(brew.text);
-					brew.text = undefined;
 				}
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
