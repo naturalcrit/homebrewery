@@ -3,7 +3,7 @@ import './editPage.less';
 // Common imports
 import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'marked-hbfm';
+
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
@@ -20,16 +20,11 @@ import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
-const BREWKEY  = 'HB_newPage_content';
-const STYLEKEY = 'HB_newPage_style';
-const SNIPKEY  = 'HB_newPage_snippets';
-const METAKEY  = 'HB_newPage_meta';
-
 const useLocalStorage     = false;
-const sandbox	            = false;
+const sandbox	          = false;
 const showFloatingButtons = false;
 const showEditorButtons   = true;
-const pageName            = "editPage";
+const pageName            = 'editPage';
 
 const EditPage = (props)=>{
 	props = {
@@ -123,8 +118,10 @@ const EditPage = (props)=>{
 			...prevBrew,
 			...updatedFields
 		}));
+	};
 
-		history.replaceState(null, null, `/edit/${res.body.editId}`);
+	const onSaveSuccess = (savedBrew)=>{
+		history.replaceState(null, null, `/edit/${savedBrew.editId}`);;
 	};
 
 	const renderGoogleDriveIcon = ()=>(
@@ -176,24 +173,21 @@ const EditPage = (props)=>{
 		trySave,
 	} = useCommonEditPageFunctions({
 		saveGoogle,
+		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
 		sandbox,
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
+		onSaveSuccess,
 		pageName,
 		showEditorButtons,
 		renderGoogleDriveIcon,
-		userThemes: props.userThemes
+		userThemes : props.userThemes
 	});
 
 	return renderPanels();

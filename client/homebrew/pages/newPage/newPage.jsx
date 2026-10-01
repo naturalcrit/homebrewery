@@ -3,7 +3,6 @@ import './newPage.less';
 // Common imports
 import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -11,18 +10,11 @@ import { DEFAULT_BREW }                       from '../../../../server/brewDefau
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
 // Page specific imports
-const BREWKEY  = 'HB_newPage_content';
-const STYLEKEY = 'HB_newPage_style';
-const SNIPKEY  = 'HB_newPage_snippets';
-const METAKEY  = 'HB_newPage_meta';
-
-const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
-
 const useLocalStorage     = true;
 const sandbox             = true;
 const showFloatingButtons = false;
 const showEditorButtons   = true;
-const pageName            = "newPage";
+const pageName            = 'newPage';
 
 const NewPage = (props)=>{
 	props = {
@@ -35,39 +27,6 @@ const NewPage = (props)=>{
 	const [error, setError] = useState(null);
 
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-
-	useEffect(()=>{
-		loadBrew();
-	}, []);
-
-	const loadBrew = ()=>{
-		const brew = { ...currentBrew };
-		if(!brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
-			const brewStorage  = localStorage.getItem(BREWKEY);
-			const styleStorage = localStorage.getItem(STYLEKEY);
-			const metaStorage  = JSON.parse(localStorage.getItem(METAKEY));
-
-			brew.text     = brewStorage           ?? brew.text;
-			brew.style    = styleStorage          ?? brew.style;
-			brew.renderer = metaStorage?.renderer ?? brew.renderer;
-			brew.theme    = metaStorage?.theme    ?? brew.theme;
-			brew.lang     = metaStorage?.lang     ?? brew.lang;
-		}
-
-		const SAVEKEY = `${SAVEKEYPREFIX}${global.account?.username}`;
-		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
-
-		setCurrentBrew(brew);
-		lastSavedBrew.current = brew;
-		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
-
-		localStorage.setItem(BREWKEY, brew.text);
-		if(brew.style)
-			localStorage.setItem(STYLEKEY, brew.style);
-		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
-		if(window.location.pathname !== '/new')
-			window.history.replaceState({}, window.location.title, '/new/');
-	};
 
 	const save = async (brew, saveToGoogle)=>{
 		//Prepare content to send to server
@@ -87,11 +46,13 @@ const NewPage = (props)=>{
 			});
 		if(!res) return;
 
-		const savedBrew = res.body;
+		setCurrentBrew((prevBrew)=>({
+			...prevBrew,
+			...updatedFields
+		}));
+	};
 
-		localStorage.removeItem(BREWKEY);
-		localStorage.removeItem(STYLEKEY);
-		localStorage.removeItem(METAKEY);
+	const onSaveSuccess = (savedBrew)=>{
 		window.onbeforeunload = null;
 		window.location = `/edit/${savedBrew.editId}`;
 	};
@@ -100,23 +61,20 @@ const NewPage = (props)=>{
 		renderPanels
 	} = useCommonEditPageFunctions({
 		saveGoogle,
+		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
 		sandbox,
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
+		onSaveSuccess,
 		pageName,
 		showEditorButtons,
-		userThemes: props.userThemes
+		userThemes : props.userThemes
 	});
 
 	return renderPanels();
