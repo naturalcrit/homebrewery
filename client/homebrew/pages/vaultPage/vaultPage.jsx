@@ -364,7 +364,7 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+			const errorText = ErrorIndex(error.HBErrorCode.toString()) || '';
 
 			return (
 				<div className='foundBrews noBrews'>
