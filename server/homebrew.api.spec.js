@@ -700,8 +700,16 @@ brew`);
 				shareId     : expect.any(String),
 				style       : undefined,
 				tags        : [],
-				text        : undefined,
-				textBin     : expect.objectContaining({}),
+				text        : '```metadata\n' +
+    							'title: asdf\n' +
+    							'bleedSize: {}\n' +
+    							'safetySpace: {}\n' +
+    							'trimSize: {}\n' +
+								'\n' +
+								'```\n' +
+								'\n' +
+    							'asdf',
+				textBin     : undefined,
 				theme       : '5ePHB',
 				thumbnail   : '',
 				title       : 'asdf',
@@ -1233,8 +1241,7 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 			expect(saved.googleId).toEqual(undefined);
-			expect(saved.text).toEqual(undefined);
-			expect(saved.textBin).not.toEqual(undefined);
+			expect(saved.text).not.toEqual(undefined);
 		});
 
 		it('should retain google brew and update stub when multiple authors and extra author requests deletion', async ()=>{
