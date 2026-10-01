@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import './editPage.less';
 
 // Common imports
@@ -12,22 +11,12 @@ import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefau
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
 import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
-import ErrorNavItem   from '@navbar/error-navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
-import VaultNavItem   from '@navbar/vault.navitem.jsx';
-import PrintNavItem   from '@navbar/print.navitem.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
-const { both: RecentNavItem } = RecentNavItems;
 
 // Page specific imports
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
 import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
-import ShareNavItem              from '@navbar/share.navitem.jsx';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
 
@@ -182,47 +171,12 @@ const EditPage = (props)=>{
 		</Nav.item>
 	);
 
-	const renderAutoSaveButton = ()=>(
-		<Nav.item onClick={toggleAutoSave}>
-			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
-		</Nav.item>
-	);
-
-	const renderNavbar = ()=>{
-		return <Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
-			</Nav.section>
-
-			<Nav.section>
-				{renderGoogleDriveIcon()}
-				{error
-					? <ErrorNavItem error={error} clearError={clearError} />
-					: <Nav.dropdown className='save-menu'>
-						{renderSaveButton()}
-						{renderAutoSaveButton()}
-					</Nav.dropdown>}
-				<NewBrewItem />
-				<PrintNavItem />
-				<HelpNavItem />
-				<VaultNavItem />
-				<ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />
-				<RecentNavItem brew={currentBrew} storageKey='edit' />
-				<AccountNavItem/>
-			</Nav.section>
-		</Navbar>;
-	};
-
 	const {
-		toggleAutoSave,
-		clearError,
-		renderSaveButton,
 		renderPanels,
-		autoSaveEnabled,
 		trySave,
-		currentBrewRendererPageNum
 	} = useCommonEditPageFunctions({
 		saveGoogle,
+		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
@@ -236,9 +190,9 @@ const EditPage = (props)=>{
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
-		renderNavbar,
 		pageName,
 		showEditorButtons,
+		renderGoogleDriveIcon,
 		userThemes: props.userThemes
 	});
 
