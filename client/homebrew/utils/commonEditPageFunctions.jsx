@@ -20,8 +20,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 	const {
 		saveGoogle,
 		setError,
-		HTMLErrors,
-		setHTMLErrors,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
@@ -40,12 +38,13 @@ export default function useCommonEditPageFunctions(dependencies) {
 		userThemes = {}
 	} = dependencies;
 
-	const [isSaving, setIsSaving]           = useState(false);
-	const [lastSavedTime, setLastSavedTime]      = useState(new Date());
-	const [autoSaveEnabled, setAutoSaveEnabled]    = useState(!sandbox);
+	const [isSaving, setIsSaving]                     = useState(false);
+	const [lastSavedTime, setLastSavedTime]           = useState(new Date());
+	const [autoSaveEnabled, setAutoSaveEnabled]       = useState(!sandbox);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
-	const [unsavedChanges, setUnsavedChanges]     = useState(false);
-	const [themeBundle, setThemeBundle]                = useState({});
+	const [unsavedChanges, setUnsavedChanges]         = useState(false);
+	const [themeBundle, setThemeBundle]               = useState({});
+	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(currentBrew.text));
 
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
@@ -61,7 +60,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		const handleControlKeys = (e)=>{
@@ -148,6 +146,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		saveTimeout.current = setTimeout(async ()=>{
 			setIsSaving(true);
 			setError(null);
+			setHTMLErrors(hbfm.validate(currentBrew.text));
 			await save(currentBrew, saveToGoogle)
 			.catch((err)=>{
 				setError(err);

@@ -46,7 +46,6 @@ const NewPage = (props)=>{
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
 	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError] = useState(null);
-	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
 
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
@@ -131,16 +130,12 @@ const NewPage = (props)=>{
 	);
 
 	const {
-		handleSplitMove,
-		handleBrewChange,
 		clearError,
 		renderSaveButton,
 		renderPanels
 	} = useCommonEditPageFunctions({
 		saveGoogle,
 		setError,
-		HTMLErrors,
-		setHTMLErrors,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
