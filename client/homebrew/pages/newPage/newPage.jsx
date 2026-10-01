@@ -12,10 +12,6 @@ import { printCurrentBrew, fetchThemeBundle, splitTextStyleAndMetadata } from '@
 
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
-import SplitPane    from '@components/splitPane/splitPane.jsx';
-import Editor       from '../../editor/editor.jsx';
-import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
-
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
 import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
@@ -35,8 +31,11 @@ const METAKEY  = 'HB_newPage_meta';
 
 const SAVEKEYPREFIX  = 'HB_editor_defaultSave_';
 
-const useLocalStorage = true;
-const sandbox         = true;
+const useLocalStorage     = true;
+const sandbox             = true;
+const showFloatingButtons = false;
+const showEditorButtons   = true;
+const pageName            = "newPage";
 
 const NewPage = (props)=>{
 	props = {
@@ -47,13 +46,7 @@ const NewPage = (props)=>{
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
 	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
 	const [error, setError] = useState(null);
-	const [HTMLErrors, setHTMLErrors] = useState(hbfm.validate(props.brew.text));
-	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
-	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
-	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
-	const [themeBundle, setThemeBundle] = useState({});
 
-	const editorRef          = useRef(null);
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
 	useEffect(()=>{
@@ -137,16 +130,12 @@ const NewPage = (props)=>{
 	);
 
 	const {
-		handleSplitMove,
-		handleBrewChange,
 		clearError,
-		renderSaveButton
+		renderSaveButton,
+		renderPanels
 	} = useCommonEditPageFunctions({
 		saveGoogle,
 		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
@@ -156,44 +145,16 @@ const NewPage = (props)=>{
 		METAKEY,
 		hbfm,
 		sandbox,
+		showFloatingButtons,
 		lastSavedBrew,
-		editorRef,
 		save,
+		renderNavbar,
+		pageName,
+		showEditorButtons,
+		userThemes: props.userThemes
 	});
 
-	return (
-		<div className='newPage sitePage'>
-			{renderNavbar()}
-			<div className='content'>
-				<SplitPane onDragFinish={handleSplitMove}>
-					<Editor
-						ref={editorRef}
-						brew={currentBrew}
-						onBrewChange={handleBrewChange}
-						renderer={currentBrew.renderer}
-						userThemes={props.userThemes}
-						themeBundle={themeBundle}
-						onCursorPageChange={setCurrentEditorCursorPageNum}
-						onViewPageChange={setCurrentEditorViewPageNum}
-						currentEditorViewPageNum={currentEditorViewPageNum}
-						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						currentBrewRendererPageNum={currentBrewRendererPageNum}
-					/>
-					<BrewRenderer
-						text={currentBrew.text}
-						style={currentBrew.style}
-						renderer={currentBrew.renderer}
-						themeBundle={themeBundle}
-						errors={HTMLErrors}
-						lang={currentBrew.lang}
-						onPageChange={setCurrentBrewRendererPageNum}
-						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						allowPrint={true}
-					/>
-				</SplitPane>
-			</div>
-		</div>
-	);
+	return renderPanels();
 };
 
 export default NewPage;
