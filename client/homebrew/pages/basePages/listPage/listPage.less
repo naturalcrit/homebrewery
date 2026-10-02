@@ -17,9 +17,25 @@
 	margin               : 20px auto;
 	contain              : unset;
 }
-.listPage {
+.sitePage.listPage {
+		--bg-clr: white;
 	.content {
 		padding : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
+		scrollbar-gutter:stable;
+		overflow-y : scroll;
+
+		&::-webkit-scrollbar {
+			width : 15px;
+			&:horizontal {
+				width  : auto;
+				height : 20px;
+			}
+			&-thumb {
+				background : linear-gradient(90deg, var(--bg-clr) 12px, #00000000 12px);
+				&:horizontal { background : linear-gradient(0deg, var(--bg-clr) 15px, #00000000 15px); }
+			}
+			&-corner { visibility : hidden; }
+		}
 
 		.noBrews {
 			margin      : 10px 0px;

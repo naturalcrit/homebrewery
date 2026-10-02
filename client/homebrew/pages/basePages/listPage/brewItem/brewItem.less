@@ -2,6 +2,17 @@
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 .brewItem {
+	--bg-clr                : #eee;
+	--bg-image              : @backgroundImageAlt;
+	--h1-clr                : black;
+	--h2-clr                : #000077;
+	--label-clr             : black;
+	--input-bg              : white;
+	--input-bg-hover        : #DDDDDD;
+	--input-text-clr        : black;
+	--input-placeholder-clr : grey;
+
+	background-color:var(--bg-clr);
 	position                    : relative;
 	display                     : flex;
 	flex-direction              : column;
@@ -110,7 +121,12 @@
 			text-decoration : unset;
 		
 			i { cursor : pointer; }
+			&:hover { background-color : hsl(from currentColor h 30% 90%); }
 		}
+		.shareLink { color : @yellow; }
+		.editLink { color : @green; }
+		.downloadLink { color : @blueLight; }
+		.deleteLink { color : @red; }
 	}
 }
 .grid > .brewItem {
@@ -119,10 +135,6 @@
 	min-height       : 125px;
 	padding          : 5px 15px 5px 6px;
 	padding-right    : 30px;
-	background-color : #CAB2802E;
-	background-image : url('https://ik.imagekit.io/5eCleric/background%20note.png');
-	background-size  : cover;
-	border           : 1px solid #C9AD6A;
 	border-radius    : 5px;
 	box-shadow       : 0px 4px 5px 0px #333333;
 	isolation        : isolate;
@@ -159,16 +171,11 @@
 		width            : 2em;
 		height           : 100%;
 		text-align       : center;
-		background-color : #555555;
 		a,
 		button {
 			display         : block;
 			width           : 100%;
 			font-size       : 1.1em;
-			color           : white;
-			text-decoration : unset;
-			opacity         : 0.6;
-			&:hover { opacity : 1; }
 			i { cursor : pointer; }
 		}
 	}
@@ -180,8 +187,6 @@
 	align-items           : center;
 	width                 : 100%;
 	height                : 50px;
-	color                 : white;
-	background            : #666666;
 	.thumbnail { display : none; }
 	.text {
 		padding-left : 10px;
@@ -209,11 +214,7 @@
 			grid-area : tags;
 			min-width : 100px;
 			span {
-				--tag-base   : #AE9913;
-				--tag-type   : #3D843D;
-				--tag-group  : #525252;
-				--tag-meta   : #5050B1;
-				--tag-system : #C55656;
+
 			}
 		}
 		.brewAuthors {
@@ -293,29 +294,24 @@
 			align-content : center;
 			height        : 100%;
 			text-align    : center;
-			&:hover { background-color : hsl(from currentColor h 30% 90%); }
 		}
-		.shareLink { color : @yellow; }
-		.editLink { color : @green; }
-		.downloadLink { color : @blueLight; }
-		.deleteLink { color : @red; }
 	}
 }
 .card > .brewItem {
+	--grad-clr: hsl(from var(--bg-clr) h s l / 0);
+
 	gap                   : 5px;
 	justify-content       : flex-end;
 	width                 : 300px;
 	height                : 400px;
 	padding               : 100px 10px 50px;
-	color                 : white;
-	background-color      : #555555;
 	background-image      : url('@themes/assets/naturalCritLogoBlack.svg');
 	background-repeat     : no-repeat;
 	background-position   : center 20%;
-	background-size       : 60%;
+	background-size       : 50%;
 	border                : 1px solid;
 	border-radius         : 10px;
-	background-blend-mode : soft-light;
+	background-blend-mode : normal;
 	&::before {
 		position         : absolute;
 		right            : 0;
@@ -325,13 +321,13 @@
 		display          : block;
 		height           : 50%;
 		content          : '';
-		background-image : linear-gradient(0deg, #555555FF 0, #55555500 90%);
+		background-image : linear-gradient(0deg, var(--bg-clr) 0, var(--grad-clr) 90%);
 		transition       : height 0.2s;
 	}
 	&:hover {
 		&::before {
 			height           : 100%;
-			background-image : linear-gradient(0deg, #555555FF 0, #555555FF 55%, #55555500 65%);
+			background-image : linear-gradient(0deg, var(--bg-clr) 0, var(--bg-clr) 55%, var(--grad-clr) 65%);
 		}
 		.text .description { height : fit-content; }
 	}
@@ -347,7 +343,7 @@
 		background-size     : cover;
 	}
 	.text {
-		filter : drop-shadow(0 1px 4px black);
+		filter:drop-shadow(0 1px 4px white);
 		h2 { font-weight : 900; }
 		.description {
 			height     : 0;
@@ -356,6 +352,7 @@
 		}
 	}
 	.info {
+		filter:drop-shadow(0 1px 2px white);
 		display               : grid;
 		grid-template-areas   : 'tags tags tags tags'
 			'authors authors authors authors'
@@ -363,11 +360,10 @@
 			'update update storage .';
 		grid-template-columns : 1fr 1fr 1fr 30px;
 		height                : 110px;
-		filter                : drop-shadow(0 1px 2px black);
 		.brewTags {
 			grid-area : tags;
-			color     : black;
-			i { color : white; }
+			color     : inherit;
+			i { color : inherit;}
 			> span { background : hsl(from currentColor h 20% 80%); }
 		}
 		.brewAuthors { grid-area : authors; }
