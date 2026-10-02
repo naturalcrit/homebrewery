@@ -4,15 +4,12 @@
 .brewItem {
 	--bg-clr                : #eee;
 	--bg-image              : @backgroundImageAlt;
-	--h1-clr                : black;
-	--h2-clr                : #000077;
-	--label-clr             : black;
-	--input-bg              : white;
-	--input-bg-hover        : #DDDDDD;
-	--input-text-clr        : black;
-	--input-placeholder-clr : grey;
+	--text-clr : black;
+	--text-shadow-clr: hsl(from var(--text-clr) h calc(100% - s) calc(100% - l));
 
 	background-color:var(--bg-clr);
+	background-image:var(--bg-image);
+	background-size:cover;
 	position                    : relative;
 	display                     : flex;
 	flex-direction              : column;
@@ -22,6 +19,7 @@
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
 	break-inside           : avoid;
+	color:var(--text-clr);
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -116,7 +114,6 @@
 			height          : 100%;
 			
 			font-size       : 1.3em;
-			color           : white;
 			text-align      : center;
 			text-decoration : unset;
 		
@@ -213,9 +210,6 @@
 			display   : inline-block;
 			grid-area : tags;
 			min-width : 100px;
-			span {
-
-			}
 		}
 		.brewAuthors {
 			display            : -webkit-box;
@@ -247,7 +241,7 @@
 		[title*='Storage'] {
 			display   : inline-block;
 			grid-area : storage;
-			filter    : drop-shadow(0 0 10px white);
+			filter    : drop-shadow(0 0 10px var(--text-shadow-clr));
 		}
 		.brewTags:has(span:nth-of-type(4)) {
 			position  : relative;
@@ -305,13 +299,12 @@
 	width                 : 300px;
 	height                : 400px;
 	padding               : 100px 10px 50px;
-	background-image      : url('@themes/assets/naturalCritLogoBlack.svg');
+	background-image      : url('@themes/assets/naturalCritLogoBlack.svg'), var(--bg-image);
 	background-repeat     : no-repeat;
-	background-position   : center 20%;
-	background-size       : 50%;
+	background-position   : center 20%, center;
+	background-size       : 50%, cover;
 	border                : 1px solid;
 	border-radius         : 10px;
-	background-blend-mode : normal;
 	&::before {
 		position         : absolute;
 		right            : 0;
@@ -454,7 +447,13 @@
 				.lastUpdated,
 				.storage { display : none; }
 			}
-			.brewItem { transition : height 0.2s; }
+			.brewItem { 
+				h2 {
+					font-size:1em;
+					width:200px;
+				}
+				transition : height 0.2s;
+			}
 			.detailsOpen {
 				display               : grid;
 				grid-template-columns : 3fr 3fr 30px;
@@ -497,7 +496,7 @@
 	.brewCollection .brewGroup {
 		&.list {
 			.brewItem:not(.detailsOpen) {
-				grid-template-columns : 3fr 1fr;
+				grid-template-columns : 3fr 2fr;
 				.info { display : none; }
 			}
 			.detailsOpen {
