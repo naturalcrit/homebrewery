@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Nav from './nav.jsx';
 import { printCurrentBrew } from '@shared/helpers.js';
 
-export default function(){
+const processShareId = (brew)=>{
+
+	return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
+};
+
+export default ({ currentBrew })=>{
 	const [printing, setPrinting] = useState(false);
 
 	// listen for print cycle events to display "loading" message since it can take some time.
@@ -18,8 +23,24 @@ export default function(){
 	const handlePrintStartPrep = ()=>{ setPrinting(true); };
 
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
+	console.log(currentBrew);
 
-	return <Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
-		{printing ? 'loading' : 'get PDF'}
-	</Nav.item>;
+	if(currentBrew.shareId) return <Nav.dropdown>
+		<Nav.item color='purple' icon='fas fa-code'>
+			export
+		</Nav.item>
+		<Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
+			{printing ? 'loading' : 'get PDF'}
+		</Nav.item>;
+		<Nav.section>
+			<Nav.item color='purple' icon='fas fa-code'>
+				Markdown
+			</Nav.item>
+			<Nav.item color='blue' icon='fas fa-download' href={`/download/hb/${processShareId(currentBrew)}`}>
+				Homebrewry
+			</Nav.item>
+		</Nav.section>
+
+	</Nav.dropdown>;
+	else return null;
 };

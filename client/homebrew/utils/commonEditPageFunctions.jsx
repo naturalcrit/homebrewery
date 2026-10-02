@@ -219,7 +219,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 						{pageName == "editPage" && renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
-				<PrintNavItem />
+				<PrintNavItem currentBrew={currentBrew}/>
 				<HelpNavItem />
 				<VaultNavItem />
 				{(pageName == "editPage") && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}

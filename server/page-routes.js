@@ -135,7 +135,7 @@ export default function pageRoutes({
 	});
 
 	//Download brew source page
-	app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	app.get('/download/:format/:id', asyncHandler(getBrew('share')), (req, res)=>{
 		const { brew } = req;
 		sanitizeBrew(brew, 'share');
 		const prefix = 'HB - ';
@@ -152,7 +152,7 @@ export default function pageRoutes({
 		res.set({
 			'Cache-Control'       : 'no-cache',
 			'Content-Type'        : 'text/plain',
-			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
+			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.md`
 		});
 		res.status(200).send(brew.text);
 	});
