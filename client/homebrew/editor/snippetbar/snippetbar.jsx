@@ -143,23 +143,17 @@ const SnippetBar = ({
 			groupName='History'
 			icon='fas fa-clock-rotate-left'
 			className='history'
-			customTrigger={
-				<>
-					<i className='fas fa-clock-rotate-left' />
-				</>
-			} disabled></Dropdown>;
+			customTrigger={<><i className='fas fa-clock-rotate-left' /></>}
+			disabled
+		>
+			</Dropdown>;
 
 		return (
 			<Dropdown
 				groupName='History'
 				icon='fas fa-clock-rotate-left'
 				className='history'
-				customTrigger={
-					<>
-						<i className='fas fa-clock-rotate-left' />
-					</>
-				}
-
+				customTrigger={<><i className='fas fa-clock-rotate-left' /></>}
 			>
 				{_.map(historyItems, (item, index)=>{
 					if(item.noData || !item.savedAt) return null;
