@@ -35,21 +35,6 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	const triggerRef = useRef(null);
 	const menuRef = useRef(null);
 
-	if(disabled){
-	return (
-		<li className={['menu-wrapper', className].filter(Boolean).join(' ')} role='none'>
-			<button
-				className={['menu-item', color].filter(Boolean).join(' ')}
-				aria-label={groupName}
-				role='menuitem'
-				disabled
-			>
-				{trigger(groupName, icon)}
-			</button>
-		</li>
-	);
-}
-
 	// use setAttribute instead of the React style prop because React strips unknown CSS
 	// properties (like anchor-name) from inline styles in browsers that don't support them.
 	// setAttribute writes raw CSS text that the anchor positioning polyfill can read
@@ -105,6 +90,21 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 
 		document.querySelectorAll('.menu-list:popover-open').forEach((openMenu)=>openMenu.hidePopover());
 	};
+
+	if(disabled){
+		return (
+			<li className={['menu-wrapper', className].filter(Boolean).join(' ')} role='none'>
+				<button
+					className={['menu-item', color].filter(Boolean).join(' ')}
+					aria-label={groupName}
+					role='menuitem'
+					disabled
+				>
+					{trigger(groupName, icon)}
+				</button>
+			</li>
+		);
+	}
 
 	return (
 		<li className={['menu-wrapper', className].filter(Boolean).join(' ')} role='none'>
