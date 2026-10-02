@@ -139,23 +139,15 @@ const SnippetBar = ({
 	};
 
 	const renderHistoryMenu = ()=>{
-		if(!historyExists) return <Dropdown
-			groupName='History'
-			icon='fas fa-clock-rotate-left'
-			className='history'
-			customTrigger={<><i className='fas fa-clock-rotate-left' /></>}
-			disabled
-		>
-			</Dropdown>;
-
 		return (
 			<Dropdown
 				groupName='History'
 				icon='fas fa-clock-rotate-left'
 				className='history'
 				customTrigger={<><i className='fas fa-clock-rotate-left' /></>}
+				disabled={!historyExists}
 			>
-				{_.map(historyItems, (item, index)=>{
+				{historyExists && _.map(historyItems, (item, index)=>{
 					if(item.noData || !item.savedAt) return null;
 
 					const saveTime = new Date(item.savedAt);
