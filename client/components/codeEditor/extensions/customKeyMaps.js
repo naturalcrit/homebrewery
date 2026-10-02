@@ -1,7 +1,7 @@
 /* eslint max-lines: ["error", { "max": 300 }] */
 import { keymap } from '@codemirror/view';
 import { undo, redo, indentMore, indentLess, deleteLine } from '@codemirror/commands';
-import { EditorSelection } from '@codemirror/state';
+import { EditorSelection, ChangeSet } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import * as prettier from 'prettier/standalone';
 import * as postcssPlugin from 'prettier/plugins/postcss';
@@ -14,33 +14,30 @@ export async function formatCSS(view) {
 		const code = empty ? fullDoc : selection;
 
 		let formatted = await prettier.format(code, {
-			parser: 'css',
-			plugins: [postcssPlugin],
+			parser  : 'css',
+			plugins : [postcssPlugin],
 
 			// formatting options
-			tabWidth: 2,
-			useTabs: false,
-			printWidth: 100,
-			singleQuote: false,
-			trailingComma: 'all',
-			bracketSpacing: true,
-			endOfLine: 'lf'
+			tabWidth       : 2,
+			useTabs        : false,
+			printWidth     : 100,
+			singleQuote    : false,
+			trailingComma  : 'all',
+			bracketSpacing : true,
+			endOfLine      : 'lf'
 		});
 
 		//format manually single declaration rules to span one line.
 		//Prettier can't do it by default, this is crude but it works
 		formatted = formatted.replace(
-		/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}(\s*)/g,
-		(_, selector, decl, whitespace) =>
-			`${selector} { ${decl.trim()} }${whitespace}`
+			/([^{]+)\{\s*\n\s*([^;\n]+:[^;\n]+;)\s*\n\s*\}(\s*)/g,
+			(_, selector, decl, whitespace)=>`${selector} { ${decl.trim()} }${whitespace}`
 		);
 		if(formatted === code) return true;
 
-		const dom = view.dom;
-		dom.classList.add('cm-flash');
-
+		view.dom.classList.add('cm-flash');
 		setTimeout(()=>{
-			dom.classList.remove('cm-flash');
+			view.dom.classList.remove('cm-flash');
 
 			view.dispatch({
 				changes : {
@@ -54,186 +51,172 @@ export async function formatCSS(view) {
 	} catch (err) {
 		console.error('Error formatting css: ', err);
 	}
-
 	return true;
 }
+
+const forEachSelection = (view, fn)=>{
+	view.dispatch(view.state.changeByRange((range)=>fn(view.state, range.from, range.to, view.state.doc.sliceString(range.from, range.to))));
+	return true;
+};
+
 const insertTab = (view)=>{
 	// If any selection spans multiple lines, delegates to CodeMirror's indentMore
- 	// Otherwise inserts two spaces at each cursor/selection
+	// Otherwise inserts two spaces at each cursor/selection
 	const shouldIndent = view.state.selection.ranges.some((range)=>view.state.doc.lineAt(range.from).number !==
 		view.state.doc.lineAt(range.to).number
 	);
-
 	if(shouldIndent) return indentMore(view);
 
-	const changes = [];
-
-	for (const range of view.state.selection.ranges) {
-		changes.push({
-			from   : range.from,
-			to     : range.to,
-			insert : '  ' // Insert two spaces, not a tab char!
-		});
-	}
-	// Create a transaction so we can map old positions to
-	// their new positions after the edits are applied
-	const  mappedChanges = view.state.update({ changes });
-
-	view.dispatch({
-		changes,
-		selection : EditorSelection.create(
-			view.state.selection.ranges.map((range)=>EditorSelection.cursor(
-				mappedChanges.changes.mapPos(range.from, -1) + 2
-			)
-			)
-		)
+	return forEachSelection(view, (state, from, to, selected)=>{
+		return {
+			changes : { from, to, insert: '  ' }, // Insert two spaces, not a tab char!
+			range   : EditorSelection.cursor(from + 2)
+		};
 	});
-
-	return true;
 };
 
-const wrapSelection = (prefix, suffix)=>(view)=>{
-	const changes = [];
+const wrapSelection = (prefix, suffix)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
+	const noSelection = from === to;
+	if(noSelection) {
+		const insert = prefix + suffix;
 
-	for (const range of view.state.selection.ranges) {
-		const { from, to } = range;
-		const selected = view.state.doc.sliceString(from, to);
-
-		let text;
-
-		if(from === to) { text = prefix + suffix; } else if(selected.startsWith(prefix) && selected.endsWith(suffix)) {
-			text = selected.slice(prefix.length, -suffix.length);
-		} else {text = `${prefix}${selected}${suffix}`;}
-
-		changes.push({ from, to, insert: text });
+		return {
+			changes : { from, to, insert },
+			range   : EditorSelection.cursor(from + prefix.length)
+		};
 	}
 
-	view.dispatch({
-		changes
-	});
+	const hasWrapper = selected.startsWith(prefix) && selected.endsWith(suffix);
+	if(hasWrapper) {
+		return {
+			changes : [
+				{ from: to - suffix.length, to, insert: '' },
+				{ from,	to: from + prefix.length, insert: '' }
+			],
+			range : EditorSelection.range(from, to - prefix.length - suffix.length)
+		};
+	}
 
-	return true;
-};
+	return {
+		changes : { from, to, insert: prefix + selected + suffix },
+		range   : EditorSelection.range(from, to + prefix.length + suffix.length)
+	};
+});
 
-const makeNbsp = (view)=>{
-	const { from } = view.state.selection.main;
-
-	const prev2 = from >= 2
-		? view.state.doc.sliceString(from - 2, from)
-		: '';
-
+const makeNbsp = (view)=>forEachSelection(view, (state, from, to, selected)=>{
+	const prev2 = from >= 2 ? state.doc.sliceString(from - 2, from)	: '';
 	const insert = (prev2 === ':>' || prev2 === '>>') ? '>' : ':>';
 
-	view.dispatch({
-		changes   : { from, to: from, insert },
-		selection : { anchor: from + insert.length },
-	});
+	return {
+		changes : { from, to, insert },
+		range   : EditorSelection.cursor(from + insert.length)
+	};
+});
 
-	return true;
-};
-
-const makeSpace = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
+const makeSpace = (view)=>forEachSelection(view, (state, from, to, selected)=>{
+	let insert = '{{width:10% }}';
 	const match = selected.match(/^{{width:(\d+)% }}$/);
-	let newText = '{{width:10% }}';
 	if(match) {
 		const percent = Math.min(parseInt(match[1], 10) + 10, 100);
-		newText = `{{width:${percent}% }}`;
+		insert = `{{width:${percent}% }}`;
 	}
-	view.dispatch({ changes: { from, to, insert: newText } });
-	return true;
-};
+	return {
+		changes : { from, to, insert },
+		range   : EditorSelection.range(from, from + insert.length)
+	};
+});
 
-const removeSpace = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
+const removeSpace = (view)=>forEachSelection(view, (state, from, to, selected)=>{
 	const match = selected.match(/^{{width:(\d+)% }}$/);
 	if(match) {
 		const percent = parseInt(match[1], 10) - 10;
-		const newText = percent > 0 ? `{{width:${percent}% }}` : '';
-		view.dispatch({ changes: { from, to, insert: newText } });
+		const insert = percent > 0 ? `{{width:${percent}% }}` : '';
+		return { changes: { from, to, insert: insert }, range: EditorSelection.range(from, from + insert.length) };
 	}
-	return true;
-};
+});
 
-const makeSpan = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
-		? selected.slice(2, -2)
-		: `{{${selected}}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
-	return true;
-};
-
-const makeDiv = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-	const text = selected.startsWith('{{') && selected.endsWith('}}')
-		? selected.slice(2, -2)
-		: `{{\n${selected}\n}}`;
-	view.dispatch({ changes: { from, to, insert: text } });
-	return true;
-};
-
-const makeComment = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-	const isHtmlComment = selected.startsWith('<!--') && selected.endsWith('-->');
-	const text = isHtmlComment
-		? selected.slice(4, -3)
-		: `<!-- ${selected} -->`;
-	view.dispatch({ changes: { from, to, insert: text } });
-	return true;
-};
-
-const makeLink = (view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to).trim();
-	const isLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
-	const text = isLink ? `${isLink[1]} ${isLink[2]}` : `[${selected || 'alt text'}](url)`;
-	view.dispatch({ changes: { from, to, insert: text } });
-	return true;
-};
-
-const makeList = (type)=>(view)=>{
-	const { from, to } = view.state.selection.main;
-	const lines = [];
-	for (let l = from; l <= to; l++) {
-		const lineText = view.state.doc.line(l + 1).text;
-		lines.push(lineText);
+const makeLink = (view)=>forEachSelection(view, (state, from, to, selected)=>{
+	// If the selection is already a Markdown link, unwrap it
+	const existingLink = /^\[(.*)\]\((.*)\)$/.exec(selected);
+	if(existingLink) {
+		const [, text, url] = existingLink;
+		const insert = `${text} ${url}`;
+		return {
+			changes : { from, to, insert },
+			range   : EditorSelection.range(
+				from,
+				from + insert.length
+			),
+		};
 	}
-	const joined = lines.join('\n');
-	let newText;
-	if(type === 'UL') newText = joined.replace(/^/gm, '- ');
-	else newText = joined.replace(/^/gm, (m, i)=>`${i + 1}. `);
-	view.dispatch({ changes: { from, to, insert: newText } });
-	return true;
-};
 
-const makeHeader = (level)=>(view)=>{
-	const { from, to } = view.state.selection.main;
-	const selected = view.state.doc.sliceString(from, to);
-	const text = `${'#'.repeat(level)} ${selected}`;
-	view.dispatch({ changes: { from, to, insert: text } });
-	return true;
-};
+	// If the selection is a URL, use its domain as the link text.
+	const isUrl =
+			/^(https?:\/\/|www\.)\S+$/i.test(selected) ||
+			/^[a-z0-9-]+(\.[a-z0-9-]+)+([/?#]\S*)?$/i.test(selected);
+	if(isUrl) {
+		const domain = selected
+				.replace(/^https?:\/\//i, '')
+				.replace(/^www\./i, '')
+				.split(/[/?#]/)[0];
 
-const newColumn = (view)=>{
-	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\column\n\n' } });
-	return true;
-};
+		const name = domain.split('.')[0];
+		const insert = `[${name}](${selected})`;
+		return {
+			changes : { from, to, insert },
+			range   : EditorSelection.range(from, from + insert.length),
+		};
+	}
 
-const newPage = (view)=>{
-	const { from, to } = view.state.selection.main;
-	view.dispatch({ changes: { from, to, insert: '\n\\page\n\n' } });
-	return true;
-};
+	// If the selection is just text, use it as alt text and set url as placeholder
+	const insert = `[${selected || 'alt text'}](url)`;
+	return {
+		changes : { from, to, insert },
+		range   : EditorSelection.range(from, from + insert.length),
+	};
+});
+
+const addPrefixAtLineStart = (prefix)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
+	const startLine = state.doc.lineAt(from);
+	const endLine = state.doc.lineAt(to);
+	const selectedLines = [];
+
+	for (let lineNumber = startLine.number; lineNumber <= endLine.number; lineNumber++) { selectedLines.push(state.doc.line(lineNumber)); }
+
+	const allLinesHavePrefix = selectedLines.every((line)=>line.text.startsWith(prefix));
+
+	const changes = selectedLines.map((line)=>{
+		const shouldRemovePrefix = allLinesHavePrefix && line.text.startsWith(prefix);
+
+		return {
+			from : line.from,
+			to   : shouldRemovePrefix
+				? line.from + prefix.length
+				: line.from,
+			insert : shouldRemovePrefix ? '' : prefix,
+		};
+	});
+	const changeSet = ChangeSet.of(changes, state.doc.length);
+
+	return {
+		changes,
+		range : EditorSelection.range(
+			changeSet.mapPos(from, -1),
+			changeSet.mapPos(to, 1)
+		),
+	};
+});
+
+const newBreak = (type)=>(view)=>forEachSelection(view, (state, from, to, selected)=>{
+	const insert = `\n\\${type}\n\n`;
+	return {
+		changes : { from, to, insert },
+		range   : EditorSelection.cursor(from + insert.length)
+	};
+});
 
 export const generalKeymap = Prec.high(keymap.of([
-	{ key: 'Tab', run: insertTab }, //runs indentMore if multiple lines selected in a single selection
+	{ key: 'Tab', run: insertTab },
 	{ key: 'Shift-Tab', run: indentLess },
 	{ key: 'Mod-z', run: undo }, //it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
@@ -247,7 +230,6 @@ export const cssKeymap = Prec.highest(keymap.of([
 ]));
 
 export const markdownKeymap = Prec.highest(keymap.of([
-
 	{ key: 'Mod-b',           run: wrapSelection('**', '**') },    // makeBold
 	{ key: 'Mod-i',           run: wrapSelection('*', '*') },      // makeItalic
 	{ key: 'Mod-u',           run: wrapSelection('<u>', '</u>') }, // makeUnderline
@@ -256,18 +238,18 @@ export const markdownKeymap = Prec.highest(keymap.of([
 	{ key: 'Mod-.',           run: makeNbsp },
 	{ key: 'Shift-Mod-.',     run: makeSpace },
 	{ key: 'Shift-Mod-,',     run: removeSpace },
-	{ key: 'Mod-m',           run: makeSpan },
-	{ key: 'Shift-Mod-m',     run: makeDiv },
-	{ key: 'Mod-/',           run: makeComment },
-	{ key: 'Mod-k',           run: makeLink },
-	{ key: 'Mod-l',           run: makeList('UL') },
-	{ key: 'Shift-Mod-l',     run: makeList('OL') },
-	{ key: 'Shift-Mod-1',     run: makeHeader(1) },
-	{ key: 'Shift-Mod-2',     run: makeHeader(2) },
-	{ key: 'Shift-Mod-3',     run: makeHeader(3) },
-	{ key: 'Shift-Mod-4',     run: makeHeader(4) },
-	{ key: 'Shift-Mod-5',     run: makeHeader(5) },
-	{ key: 'Shift-Mod-6',     run: makeHeader(6) },
-	{ key: 'Mod-Enter',       run: newPage },
-	{ key: 'Shift-Mod-Enter', run: newColumn },
+	{ key: 'Mod-m',           run: wrapSelection('{{', '}}') },
+	{ key: 'Shift-Mod-m',     run: wrapSelection('{{\n', '\n}}') },
+	{ key: 'Mod-/',           run: wrapSelection('<!-- ', ' -->') },
+	{ key: 'Mod-Shift-k',     run: makeLink },
+	{ key: 'Mod-Shift-u',     run: addPrefixAtLineStart('- ') },
+	{ key: 'Mod-Shift-o',     run: addPrefixAtLineStart('1. ') },
+	{ key: 'Shift-Mod-1',     run: addPrefixAtLineStart('# ') },
+	{ key: 'Shift-Mod-2',     run: addPrefixAtLineStart('## ') },
+	{ key: 'Shift-Mod-3',     run: addPrefixAtLineStart('### ') },
+	{ key: 'Shift-Mod-4',     run: addPrefixAtLineStart('#### ') },
+	{ key: 'Shift-Mod-5',     run: addPrefixAtLineStart('##### ') },
+	{ key: 'Shift-Mod-6',     run: addPrefixAtLineStart('###### ') },
+	{ key: 'Mod-Enter',       run: newBreak('page') },
+	{ key: 'Shift-Mod-Enter', run: newBreak('column') },
 ]));

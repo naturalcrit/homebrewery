@@ -1,6 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 @import '@sharedStyles/colors.less';
 
+.noColumns() {
+	-webkit-column-width : auto;
+	-moz-column-width    : auto;
+	column-width         : auto;
+	-webkit-column-count : auto;
+	-moz-column-count    : auto;
+	column-count         : auto;
+	column-fill          : auto;
+	-webkit-column-gap   : normal;
+	-moz-column-gap      : normal;
+	column-gap           : normal;
+	height               : auto;
+	min-height           : 279.4mm;
+	margin               : 20px auto;
+	contain              : unset;
+}
 .listPage {
 	.content {
 		padding : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);

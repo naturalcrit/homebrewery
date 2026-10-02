@@ -7,7 +7,7 @@ const Combobox = createReactClass({
 	displayName     : 'Combobox',
 	getDefaultProps : function() {
 		return {
-			id			: '',
+			id          : '',
 			className   : '',
 			trigger     : 'hover',
 			default     : '',

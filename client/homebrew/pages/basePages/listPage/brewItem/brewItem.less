@@ -10,6 +10,7 @@
 	isolation                   : isolate;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
+	break-inside           : avoid;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -28,9 +29,18 @@
 		}
 	}
 	.info {
-		font-size : 0.9em;
+		
 		& > span { line-height : 1.5em; }
 		a { color : inherit; }
+		position    : initial;
+		bottom      : 2px;
+		font-size : 0.9em;
+		& > span {
+			margin-right : 12px;
+			line-height  : 1.5em;
+
+			a { color : inherit; }
+		}
 	}
 	.brewTags span {
 		display          : inline-block;

@@ -1,7 +1,26 @@
 import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
-import Nav                                    from '@navbar/nav.jsx';
+
+import Headtags         from '@vitreum/headtags.js';
+import SplitPane        from '@components/splitPane/splitPane.jsx';
+import Editor           from '../editor/editor.jsx';
+import BrewRenderer     from '../brewRenderer/brewRenderer.jsx';
+import LockNotification from '../pages/editPage/lockNotification/lockNotification.jsx';
+const Meta = Headtags.Meta;
+
+//===---- Navbar
+import Nav            from '@navbar/nav.jsx';
+import Navbar         from '@navbar/navbar.jsx';
+import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
+import ErrorNavItem   from '@navbar/error-navitem.jsx';
+import HelpNavItem    from '@navbar/help.navitem.jsx';
+import VaultNavItem   from '@navbar/vault.navitem.jsx';
+import PrintNavItem   from '@navbar/print.navitem.jsx';
+import ShareNavItem   from '@navbar/share.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
@@ -12,10 +31,8 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
 		saveGoogle,
+		error,
 		setError,
-		setThemeBundle,
-		HTMLErrors,
-		setHTMLErrors,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
@@ -25,27 +42,37 @@ export default function useCommonEditPageFunctions(dependencies) {
 		METAKEY,
 		hbfm,
 		sandbox,
+		showFloatingButtons,
 		lastSavedBrew,
-		editorRef,
 		save,
+		pageName,
+		renderGoogleDriveIcon = ()=>{},
+		showEditorButtons,
+		userThemes = {}
 	} = dependencies;
 
-	const [isSaving          , setIsSaving]           = useState(false);
-	const [lastSavedTime     , setLastSavedTime]      = useState(new Date());
-	const [autoSaveEnabled   , setAutoSaveEnabled]    = useState(!sandbox);
+	const [isSaving, setIsSaving]                     = useState(false);
+	const [lastSavedTime, setLastSavedTime]           = useState(new Date());
+	const [autoSaveEnabled, setAutoSaveEnabled]       = useState(!sandbox);
 	const [warnUnsavedChanges, setWarnUnsavedChanges] = useState(true);
-	const [unsavedChanges    , setUnsavedChanges]     = useState(false);
+	const [unsavedChanges, setUnsavedChanges]         = useState(false);
+	const [themeBundle, setThemeBundle]               = useState({});
+	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(currentBrew.text));
+
+	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
+	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
+	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
 	const saveTimeout        = useRef(null);
+	const editorRef          = useRef(null);
 
 	//==--------- Page setup ----------==//
 	useEffect(()=>{
 		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
-		setHTMLErrors(hbfm.validate(currentBrew.text));
 		fetchThemeBundle(setError, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		const handleControlKeys = (e)=>{
@@ -64,7 +91,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.onBeforeUnload = null;
+			window.onbeforeunload = null;
 		};
 	}, []);
 
@@ -105,7 +132,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
 				theme	   : value.theme,
-				lang	   : value.lang
+				lang 	   : value.lang
 			}));
 		}
 	};
@@ -132,10 +159,9 @@ export default function useCommonEditPageFunctions(dependencies) {
 		saveTimeout.current = setTimeout(async ()=>{
 			setIsSaving(true);
 			setError(null);
+			setHTMLErrors(hbfm.validate(currentBrew.text));
 			await save(currentBrew, saveToGoogle)
-			.catch((err)=>{
-				setError(err);
-			});
+				.catch((err)=>{setError(err);});
 			setIsSaving(false);
 			setLastSavedTime(new Date());
 			if(!autoSaveEnabled) resetWarnUnsavedTimer();
@@ -155,7 +181,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 			return <Nav.item className='save error' icon='fas fa-exclamation-circle'>
 						Reminder...
-						<div className='errorContainer'>{text}</div>
+				<div className='errorContainer'>{text}</div>
 			</Nav.item>;
 		}
 
@@ -171,14 +197,98 @@ export default function useCommonEditPageFunctions(dependencies) {
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
+	//TODO: Candidate for refactor/rename; used with history tool to load previous verion; may overlap with snippet injection or handleBrewChange
+	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
+		...prevBrew,
+		style    : newData.style,
+		text     : newData.text,
+		snippets : newData.snippets
+	}));
+
+	const renderNavbar = ()=>(
+		<Navbar>
+			<Nav.section>
+				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
+			</Nav.section>
+			<Nav.section>
+				{renderGoogleDriveIcon()}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: <Nav.dropdown className='save-menu'>
+						{renderSaveButton()}
+						{pageName == "editPage" && renderAutoSaveButton()}
+					</Nav.dropdown>}
+				<NewBrewItem />
+				<PrintNavItem />
+				<HelpNavItem />
+				<VaultNavItem />
+				{(pageName == "editPage") && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
+				<RecentNavItem brew={currentBrew} storageKey={(pageName == "editPage") ? 'edit' : undefined} />
+				<AccountNavItem />
+			</Nav.section>
+		</Navbar>
+	);
+
+	const renderAutoSaveButton = ()=>(
+		<Nav.item onClick={toggleAutoSave}>
+			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>
+	);
+
+	const renderFloatingSaveButtons = ()=>(
+		<>
+			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={()=>trySave(true, true, saveGoogle)}>
+				Save current <i className='fas fa-save' />
+			</div>
+			<a href='/new' className='floatingNewButton'>
+				Create your own <i className='fas fa-magic' />
+			</a>
+		</>
+	);
+
+	const renderPanels = ()=>(
+		<div className= {`${pageName} sitePage`}>
+			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
+			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
+			{renderNavbar()}
+			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
+			<div className='content'>
+				<SplitPane onDragFinish={handleSplitMove}>
+					<Editor
+						ref={editorRef}
+						brew={currentBrew}
+						onBrewChange={handleBrewChange}
+						reportError={setError}
+						renderer={currentBrew.renderer}
+						userThemes={userThemes}
+						showEditButtons={showEditorButtons}
+						themeBundle={themeBundle}
+						updateBrew={updateBrew}
+						onCursorPageChange={setCurrentEditorCursorPageNum}
+						onViewPageChange={setCurrentEditorViewPageNum}
+						currentEditorViewPageNum={currentEditorViewPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						currentBrewRendererPageNum={currentBrewRendererPageNum}
+					/>
+					<BrewRenderer
+						lang={currentBrew.lang}
+						text={currentBrew.text}
+						style={currentBrew.style}
+						renderer={currentBrew.renderer}
+						themeBundle={themeBundle}
+						errors={HTMLErrors}
+						onPageChange={setCurrentBrewRendererPageNum}
+						currentEditorCursorPageNum={currentEditorCursorPageNum}
+						allowPrint={true} //TODO: candidate for cleanup in brewRenderer. Homepage only place where allowPrint = false. Vote OK to allow print everywhere
+					/>
+				</SplitPane>
+			</div>
+			{showFloatingButtons && renderFloatingSaveButtons()}
+		</div>
+	);
+
 	return {
-		handleSplitMove,
-		handleBrewChange,
-		toggleAutoSave,
-		clearError,
 		trySave,
-		renderSaveButton,
-		autoSaveEnabled,
-		unsavedChanges,
-	}
+		renderPanels
+	};
 }

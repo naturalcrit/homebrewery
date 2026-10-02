@@ -2,3 +2,17 @@
 User-agent: *
 Disallow: /edit/
 
+# AI / LLM training crawlers
+
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: Bytespider
+User-agent: Applebot-Extended
+User-agent: Meta-ExternalAgent
+User-agent: Amazonbot
+Disallow: /share/
+Disallow: /download/
+Disallow: /print/
+Disallow: /edit/
