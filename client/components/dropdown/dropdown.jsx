@@ -22,7 +22,7 @@ import _ from 'lodash';
 // use react context to keep track of the menu depth (menus in menus)
 const MenuDepthContext = React.createContext(0);
 
-const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, disabled, ...props })=>{
+const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, disabled = false, ...props })=>{
 	const reactId = useId();
 	const safeId = reactId.replace(/[^a-zA-Z0-9_-]/g, '');
 	const menuId = `${_.kebabCase(groupName)}-${safeId}-menu`;
@@ -41,7 +41,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	useEffect(()=>{
 		triggerRef.current?.setAttribute('style', `anchor-name: ${anchorName}`);
 		menuRef.current?.setAttribute('style', `position-anchor: ${anchorName}`);
-	}, [anchorName]);
+	}, [anchorName, disabled]);
 
 	// hide popover with click inside iframe (not supported by light dismiss)
 	useEffect(()=>{
