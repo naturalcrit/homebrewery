@@ -3,7 +3,6 @@ import './homePage.less';
 // Common imports
 import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
 import request                                from '../../utils/request-middleware.js';
-import { hbfm } from 'marked-hbfm';
 import _                                      from 'lodash';
 
 import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
@@ -11,16 +10,11 @@ import { DEFAULT_BREW }                       from '../../../../server/brewDefau
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
 // Page specific imports
-const BREWKEY  = 'HB_newPage_content';
-const STYLEKEY = 'HB_newPage_style';
-const SNIPKEY  = 'HB_newPage_snippets';
-const METAKEY  = 'HB_newPage_meta';
-
 const useLocalStorage     = false;
 const sandbox             = true;
 const showFloatingButtons = true;
 const showEditorButtons   = false;
-const pageName            = "homePage";
+const pageName            = 'homePage';
 
 const HomePage =(props)=>{
 	props = {
@@ -44,32 +38,37 @@ const HomePage =(props)=>{
 			});
 		if(!res) return;
 
-		const saved = res.body;
+		setCurrentBrew((prevBrew)=>({
+			...prevBrew,
+			...res.body
+		}));
+
+		return res.body;
+	};
+
+	const onSaveSuccess = (savedBrew)=>{
 		window.onbeforeunload = null;
-		window.location = `/edit/${saved.editId}`;
+		window.location = `/edit/${savedBrew.editId}`;
 	};
 
 	const {
 		renderPanels
 	} = useCommonEditPageFunctions({
 		saveGoogle,
+		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
 		sandbox,
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
+		onSaveSuccess,
 		pageName,
 		showEditorButtons,
-		userThemes: {}
+		userThemes : {}
 	});
 
 	return renderPanels();
