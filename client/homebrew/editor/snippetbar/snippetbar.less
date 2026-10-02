@@ -25,7 +25,7 @@
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-		font-size       : 0.85rem;
+		font-size:0.85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 		reading-order   : 2;
 
@@ -36,7 +36,7 @@
 
 			&:first-child { border-left : none; }
 
-			& > button {
+			& > button, & > li {
 				position    : relative;
 				width       : @menuHeight;
 				height      : @menuHeight;
@@ -44,7 +44,7 @@
 				text-align  : center;
 				cursor      : pointer;
 
-				&.editorTool:not(.active) { cursor : not-allowed; }
+				&.editorTool:not(.active),&.editorTool:disabled { cursor : not-allowed; }
 
 				&:hover,&.selected { background-color : var(--hoverMenuColor); }
 				&.text {
@@ -58,6 +58,9 @@
 				}
 				&.snippet {
 					.tooltipLeft('Snippets');
+				}
+				&.settings {
+					.tooltipLeft('Settings');
 				}
 				&.undo {
 					.tooltipLeft('Undo');
@@ -85,11 +88,16 @@
 					&.active { color : inherit; }
 				}
 				&.history {
+					font-size:.70rem;
+					
+					i {
+						min-width:auto;
+					}
 					.tooltipLeft('History');
 					position  : relative;
 					color     : grey;
 					border    : none;
-					&.active { color : inherit; }
+					&:not(:disabled) { color : inherit; }
 					& > .dropdown {
 						right : -1px;
 						& > .snippet { padding-right : 10px; }
