@@ -136,6 +136,13 @@ export default function pageRoutes({
 
 	//Download brew source page
 	app.get('/download/:format/:id', asyncHandler(getBrew('share')), (req, res)=>{
+		const markdownFormats = {
+			hb   : 'homebrewery',
+			cm   : 'commonmark',
+			toml : 'toml',
+			json : 'json'
+		};
+
 		const { brew } = req;
 		sanitizeBrew(brew, 'share');
 		const prefix = 'HB - ';
@@ -152,7 +159,7 @@ export default function pageRoutes({
 		res.set({
 			'Cache-Control'       : 'no-cache',
 			'Content-Type'        : 'text/plain',
-			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.md`
+			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.${markdownFormats[req.params.format]}.md`
 		});
 		res.status(200).send(brew.text);
 	});

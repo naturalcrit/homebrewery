@@ -23,7 +23,6 @@ export default ({ currentBrew })=>{
 	const handlePrintStartPrep = ()=>{ setPrinting(true); };
 
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
-	console.log(currentBrew);
 
 	if(currentBrew.shareId) return <Nav.dropdown>
 		<Nav.item color='purple' icon='fas fa-code'>
@@ -31,16 +30,19 @@ export default ({ currentBrew })=>{
 		</Nav.item>
 		<Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
 			{printing ? 'loading' : 'get PDF'}
-		</Nav.item>;
-		<Nav.section>
-			<Nav.item color='purple' icon='fas fa-code'>
-				Markdown
-			</Nav.item>
-			<Nav.item color='blue' icon='fas fa-download' href={`/download/hb/${processShareId(currentBrew)}`}>
-				Homebrewry
-			</Nav.item>
-		</Nav.section>
-
+		</Nav.item>
+		<Nav.item color='blue' icon='fas fa-download' href={`/download/cm/${processShareId(currentBrew)}`}>
+			Markdown
+		</Nav.item>
+		<Nav.item color='blue' icon='fas fa-download' href={`/download/toml/${processShareId(currentBrew)}`}>
+			Markdown (TOML)
+		</Nav.item>
+		<Nav.item color='blue' icon='fas fa-download' href={`/download/json/${processShareId(currentBrew)}`}>
+			Markdown (JSON)
+		</Nav.item>
+		<Nav.item color='blue' icon='fas fa-download' href={`/download/hb/${processShareId(currentBrew)}`}>
+			Markdown (Homebrewery)
+		</Nav.item>
 	</Nav.dropdown>;
 	else return null;
 };
