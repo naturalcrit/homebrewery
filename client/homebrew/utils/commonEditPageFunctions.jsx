@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
-import Nav                                    from '@navbar/nav.jsx';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
@@ -9,6 +8,19 @@ import Editor           from '../editor/editor.jsx';
 import BrewRenderer     from '../brewRenderer/brewRenderer.jsx';
 import LockNotification from '../pages/editPage/lockNotification/lockNotification.jsx';
 const Meta = Headtags.Meta;
+
+//===---- Navbar
+import Nav            from '@navbar/nav.jsx';
+import Navbar         from '@navbar/navbar.jsx';
+import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
+import AccountNavItem from '@navbar/account.navitem.jsx';
+import ErrorNavItem   from '@navbar/error-navitem.jsx';
+import HelpNavItem    from '@navbar/help.navitem.jsx';
+import VaultNavItem   from '@navbar/vault.navitem.jsx';
+import PrintNavItem   from '@navbar/print.navitem.jsx';
+import ShareNavItem   from '@navbar/share.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
+const { both: RecentNavItem } = RecentNavItems;
 
 const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
 
@@ -19,6 +31,7 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
 		saveGoogle,
+		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
@@ -32,8 +45,8 @@ export default function useCommonEditPageFunctions(dependencies) {
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
-		renderNavbar,
 		pageName,
+		renderGoogleDriveIcon = ()=>{},
 		showEditorButtons,
 		userThemes = {}
 	} = dependencies;
@@ -78,7 +91,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		};
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.onBeforeUnload = null;
+			window.onbeforeunload = null;
 		};
 	}, []);
 
@@ -148,9 +161,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
 			await save(currentBrew, saveToGoogle)
-			.catch((err)=>{
-				setError(err);
-			});
+				.catch((err)=>{setError(err);});
 			setIsSaving(false);
 			setLastSavedTime(new Date());
 			if(!autoSaveEnabled) resetWarnUnsavedTimer();
@@ -186,7 +197,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
 
-	//TODO: Candidate for removal; only used in editPage, so may not be necessary
+	//TODO: Candidate for refactor/rename; used with history tool to load previous verion; may overlap with snippet injection or handleBrewChange
 	const updateBrew = (newData)=>setCurrentBrew((prevBrew)=>({
 		...prevBrew,
 		style    : newData.style,
@@ -194,12 +205,41 @@ export default function useCommonEditPageFunctions(dependencies) {
 		snippets : newData.snippets
 	}));
 
+	const renderNavbar = ()=>(
+		<Navbar>
+			<Nav.section>
+				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
+			</Nav.section>
+			<Nav.section>
+				{renderGoogleDriveIcon()}
+				{error
+					? <ErrorNavItem error={error} clearError={clearError} />
+					: <Nav.dropdown className='save-menu'>
+						{renderSaveButton()}
+						{pageName == "editPage" && renderAutoSaveButton()}
+					</Nav.dropdown>}
+				<NewBrewItem />
+				<PrintNavItem />
+				<HelpNavItem />
+				<VaultNavItem />
+				{(pageName == "editPage") && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
+				<RecentNavItem brew={currentBrew} storageKey={(pageName == "editPage") ? 'edit' : undefined} />
+				<AccountNavItem />
+			</Nav.section>
+		</Navbar>
+	);
+
+	const renderAutoSaveButton = ()=>(
+		<Nav.item onClick={toggleAutoSave}>
+			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		</Nav.item>
+	);
+
 	const renderFloatingSaveButtons = ()=>(
 		<>
 			<div className={`floatingSaveButton${unsavedChanges ? ' show' : ''}`} onClick={()=>trySave(true, true, saveGoogle)}>
 				Save current <i className='fas fa-save' />
 			</div>
-
 			<a href='/new' className='floatingNewButton'>
 				Create your own <i className='fas fa-magic' />
 			</a>
@@ -239,7 +279,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 						errors={HTMLErrors}
 						onPageChange={setCurrentBrewRendererPageNum}
 						currentEditorCursorPageNum={currentEditorCursorPageNum}
-						allowPrint={true} //TODO: candidate for cleanup. Homepage only place where allowPrint = false. Vote OK to allow print everywhere
+						allowPrint={true} //TODO: candidate for cleanup in brewRenderer. Homepage only place where allowPrint = false. Vote OK to allow print everywhere
 					/>
 				</SplitPane>
 			</div>
@@ -248,15 +288,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 	);
 
 	return {
-		handleSplitMove,
-		handleBrewChange,
-		toggleAutoSave,
-		clearError,
 		trySave,
-		renderSaveButton,
-		renderPanels,
-		autoSaveEnabled,
-		unsavedChanges,
-		currentBrewRendererPageNum
+		renderPanels
 	};
 }

@@ -1,4 +1,3 @@
-
 import './homePage.less';
 
 // Common imports
@@ -11,21 +10,7 @@ import { DEFAULT_BREW }                       from '../../../../server/brewDefau
 
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-import Navbar         from '@navbar/navbar.jsx';
-import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
-import ErrorNavItem   from '@navbar/error-navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
-import VaultNavItem   from '@navbar/vault.navitem.jsx';
-import PrintNavItem   from '@navbar/print.navitem.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
-const { both: RecentNavItem } = RecentNavItems;
-
-
 // Page specific imports
-
-
 const BREWKEY  = 'HB_newPage_content';
 const STYLEKEY = 'HB_newPage_style';
 const SNIPKEY  = 'HB_newPage_snippets';
@@ -64,28 +49,11 @@ const HomePage =(props)=>{
 		window.location = `/edit/${saved.editId}`;
 	};
 
-	const renderNavbar = ()=>{
-		return <Navbar ver={props.ver}>
-			<Nav.section>
-				{error
-					? <ErrorNavItem error={error} clearError={clearError} />
-					: renderSaveButton()}
-				<NewBrewItem />
-				<PrintNavItem />
-				<HelpNavItem />
-				<VaultNavItem />
-				<RecentNavItem />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>;
-	};
-
 	const {
-		clearError,
-		renderSaveButton,
 		renderPanels
 	} = useCommonEditPageFunctions({
 		saveGoogle,
+		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
@@ -99,7 +67,6 @@ const HomePage =(props)=>{
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
-		renderNavbar,
 		pageName,
 		showEditorButtons,
 		userThemes: {}
