@@ -499,8 +499,6 @@ description: this is a description
 tags:
   - something
   - fun
-renderer: v3
-theme: phb
 bleedSize:
   top: .125in
   bottom: .125in
@@ -518,6 +516,8 @@ columns: '2'
 columnGutter: .125in
 license: None
 legalAuthors: ''
+renderer: v3
+theme: phb
 
 \`\`\`
 
@@ -554,7 +554,7 @@ brew`);
 					width  : '8.5in',
 					height : '11in',
 				},
-			});
+			}, 'hb');
 
 			expect(result).toEqual(`\`\`\`metadata
 title: some title
@@ -562,8 +562,6 @@ description: this is a description
 tags:
   - something
   - fun
-renderer: v3
-theme: phb
 bleedSize:
   top: .125in
   bottom: .125in
@@ -581,6 +579,8 @@ columns: '2'
 columnGutter: .125in
 license: None
 legalAuthors: ''
+renderer: v3
+theme: phb
 
 \`\`\`
 

@@ -24,7 +24,7 @@ export default ({ currentBrew })=>{
 
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
 
-	if(currentBrew.shareId) return <Nav.dropdown>
+	if(currentBrew?.shareId) return <Nav.dropdown>
 		<Nav.item color='purple' icon='fas fa-code'>
 			export
 		</Nav.item>
@@ -44,5 +44,7 @@ export default ({ currentBrew })=>{
 			Markdown (Homebrewery)
 		</Nav.item>
 	</Nav.dropdown>;
-	else return null;
+	else return <Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
+		{printing ? 'loading' : 'get PDF'}
+	</Nav.item>;
 };
