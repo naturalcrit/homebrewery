@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 @import '@sharedStyles/colors.less';
+@import '../../../../icons/customIcons.less';
 
 .noColumns() {
 	-webkit-column-width : auto;
@@ -21,6 +22,9 @@
 		--bg-clr: white;
 	.content {
 		padding : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
+		@media screen and (max-width : 1200px) {
+			padding : clamp(20px, 5vh, 200px) clamp(20px, 10vw, 200px);
+		}
 		@media screen and (max-width : 800px) {
 			padding : clamp(20px, 5vh, 200px) clamp(20px, 5vw, 200px);
 		}
