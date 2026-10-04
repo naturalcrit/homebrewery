@@ -74,6 +74,12 @@ const folderApiErrors = {
 // Folder utilities ..........................................................
 
 function slugify(str) {
+  if (str == null || str == undefined)  {
+    throw new TypeError("slugify() expects a value.");
+  }
+
+  str = String(str);
+
   return str
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")  // Remove accents
