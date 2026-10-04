@@ -19,6 +19,7 @@ const FolderSchema = mongoose.Schema({
   updatedAt:    { type: Date, default: Date.now },
 }, { versionKey: false });
 
+/*
 // Application code validates slug for syntax, and also sibling uniqueness
 
 // Folders reference brew shareIds.
@@ -33,6 +34,7 @@ const FolderSchema = mongoose.Schema({
 // isPrivate means non-authors cannot view the folder even if they have the url
 
 // updatedAt is managed in the app.
+*/
 
 // Error codes ...........................................................
 
@@ -90,20 +92,57 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");         // Trim hyphens
 }
 
+function throwFolderError(err, code) {
+  const error = new Error();
+  error.HBErrorCode = err.HBErrorCode || code;
+  error.name = 'FolderAccess Error';
+  error.message = folderApiErrors[error.HBErrorCode];
+  error.cause = err;
+  throw error;
+}
 
 // Folder operations .........................................................
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
-  const query = { author: username };
+  try {
+    // TODO: ?throw if username does not exist? HBEC = 120
 
-  if(!ownAccount)
-    query.isPrivate = false;
+    const query = { author: username };
 
-  return this.find(query)
-    .select(
-      'author folderId slug title shareIds subFolderIds isPublished isPrivate'
-    )
-    .lean();
+    if(!ownAccount)
+      query.isPrivate = false;
+
+    const folders = await this.find(query)
+      .select( 'author folderId slug title shareIds subFolderIds isPublished isPrivate' )
+      .lean();
+    // NOTE: null == empty set, not an error
+
+    return folders;
+  }
+  catch (err) {
+    throwFolderError(err, 110);
+  }
+};
+
+
+FolderSchema.statics.getById = async function(author, folderId) {
+  // returns folder document
+  try {
+    const folder = await this.findOne({ author, folderId }).lean();
+
+    // null is not normally an error
+    // here though it should be .. the caller has an id, it should exist
+    if (!folder) {
+      const err = new Error();
+      err.HBErrorCode = 104;
+      throw err;
+    }
+
+    return folder;
+  }
+  catch (err) {
+    throwFolderError(err, 117);
+  }
 };
 
 
@@ -111,101 +150,187 @@ FolderSchema.statics.createFolder = async function(
   author,
   { title, slug, isPublished, isPrivate }
 ) {
-  // TODO: enforce slug uniqueness within parent folders? [TRICKY]
-  // TODO: pass in parent folderId, add this folderId to parent.subFolderIds[]
-  const folder = new this({
-    author,
-    title,
-    slug,
-    isPublished,
-    isPrivate,
-  });
+  try {
+    // normalise user inputs
+    title = title.replace(/\s+/gu, ' ').trim() || 'untitled folder';
+    slug = slugify(slug || title);
+    isPublished = isPublished ?? false;
 
-  return folder.save();
+    // throw if slug invalid, e.g. ''
+    if (slug == '') {
+      const err = new Error();
+      err.HBErrorCode = 106;
+      throw err;
+    }
+
+    // TODO: ?throw if slug not valid (or normalise?)
+    // TODO: throw if slug not unique within parent folder [TRICKY]
+    // TODO: throw if parentId provided but folder not found - before or after creating folder?
+
+    const folder = new this(
+      { author, title, slug, isPublished, isPrivate, },
+      { strict: "throw" }
+    );
+
+    await folder.save();
+
+    // TODO: accept parent folderId, add folder.folderId to parent.subFolderIds[]
+
+    return folder;
+  }
+  catch(err) {
+    throwFolderError(err, 105);
+  }
 };
 
-FolderSchema.statics.getFolder = async function(author, folderId) {
-  // returns folder document, or null
-  return this.findOne({ author, folderId }).lean();
-  // NOTE: don't throw here if not found, different callers = different messaging
-};
 
 FolderSchema.statics.updateFolder = async function(
   author,
   folderId,
   { title, slug, isPublished, isPrivate }
 ) {
-  const updates = {
-    title,
-    slug,
-    isPublished,
-    isPrivate,
-    updatedAt: new Date()
-  };
+  try {
+    // normalise user inputs
+    title = title.replace(/\s+/gu, ' ').trim() || 'untitled folder';
+    slug = slugify(slug || title);
 
-  // Remove fields that weren't supplied.
-  Object.keys(updates).forEach(key => {
-    if(updates[key] === undefined)
-      delete updates[key];
-  });
+    // throw if slug invalid, e.g. ''
+    if (slug == '') {
+      const err = new Error();
+      err.HBErrorCode = 106;
+      throw err;
+    }
 
-  const folder = await this.findOneAndUpdate(
-    { author, folderId },
-    { $set: updates },
-    { new: true },
-  );
+    const updates = {
+      title,
+      slug,
+      isPublished,
+      isPrivate,
+      updatedAt: new Date()
+    };
 
-  return folder;
+    // Remove fields that weren't supplied.
+    Object.keys(updates).forEach(key => {
+      if(updates[key] === undefined)
+        delete updates[key];
+    });
+
+    const folder = await this.findOneAndUpdate(
+      { author, folderId },
+      { $set: updates },
+      { new: true },
+    );
+
+    // Folder doesn't exist?
+    // null indicates an error here
+    if (!folder) {
+      const err = new Error();
+      err.HBErrorCode = 106;
+      throw err;
+    }
+
+    return folder;
+  }
+  catch (err) {
+    throwFolderError(err, 108);
+  }
 };
 
+
 FolderSchema.statics.deleteFolder = async function(author, folderId) {
-  // TODO: remove dangling references to this folderId. not essential, just tidy.
-  return this.deleteOne({ author, folderId });
+  try {
+    // TODO: remove dangling references to this folderId?
+    // not essential, just tidy.
+    // not needed at all until we have nested folders.
+
+    const result = await this.deleteOne({ author, folderId });
+
+    if (result.deletedCount === 0) {
+      const err = new Error();
+      err.HBErrorCode = 107;
+      throw err;
+    }
+
+    return result;
+  }
+  catch (err) {
+    throwFolderError(err, 109);
+  }
 };
 
 
 FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId) {
+  try {
+    const brewExists = await BrewModel.exists({ brewId });
+    if(!brewExists) {
+      const err = new Error();
+      err.HBErrorCode = 112;
+      throw err;
+    }
 
-  const brewExists = await BrewModel.exists({ brewId });
-  if(!brewExists)
-    return { error: 'BREW_NOT_FOUND' };
+    const result = await this.findOneAndUpdate(
+      { author, folderId },
+      {
+        $addToSet: { shareIds: brewId },
+        $set: { updatedAt: new Date() },
+      },
+      { new: true },
+    );
 
-  const folderExists = await this.exists({ author, folderId });
-  if(!folderExists)
-    return { error: 'FOLDER_NOT_FOUND' };
+    // nothing updated == folder not found
+    if ( result === null ) {
+      const err = new Error();
+      err.HBErrorCode = 111;
+      throw err;
+    }
 
-  const result = await this.findOneAndUpdate(
-    { author, folderId },
-    {
-      $addToSet: { shareIds: brewId },
-      $set: { updatedAt: new Date() },
-    },
-    { new: true },
-  );
-
-  return result;
+    return result;
+  }
+  catch (err) {
+    throwFolderError(err, 115);
+  }
 };
 
+
 FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, brewId ) {
-  // returns null, or returns updated folder
+  // returns updated folder
+  try {
+    const brewExists = await BrewModel.exists({ brewId });
+    if(!brewExists) {
+      const err = new Error();
+      err.HBErrorCode = 112;
+      throw err;
 
-  const brewExists = await BrewModel.exists({ brewId });
-  if(!brewExists)
-    return { error: 'BREW_NOT_FOUND' };
+      // TODO: decision:
+      //
+      // Suppose the brew was deleted after someone put it in a
+      // folder. The folder now contains a dangling shareId.
+      //
+      // Trying to remove that dangling ID should arguably still
+      // succeed.
+    }
 
-  const result = await this.findOneAndUpdate(
-    { author, folderId },
-    {
-      $pull: { shareIds: brewId },
-      $set: { updatedAt: new Date() },
-    },
-    { new: true },
-  );
+    const result = await this.findOneAndUpdate(
+      { author, folderId },
+      {
+        $pull: { shareIds: brewId },
+        $set: { updatedAt: new Date() },
+      },
+      { new: true },
+    );
 
-  if (!result)
-    return { error: 'FOLDER_NOT_FOUND' };
+    // null == no folder updated because no folder found .. which is an error
+    if (!result) {
+      const err = new Error();
+      err.HBErrorCode = 113;
+      throw err;
+    }
 
-  return result;
+    return result;
+  }
+  catch (err) {
+    throwFolderError(err, 116);
+  }
 };
 
 
