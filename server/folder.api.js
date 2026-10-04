@@ -7,28 +7,6 @@ import dbCheck      from './middleware/dbCheck.js';
 
 const router = express.Router();
 
-// error codes ...........................................................
-
-const folderApiErrors = {
-  '100': `Folder operations require a logged in user.`,
-  '101': `A folder with this identifier already exists`,
-  '102': `A bookmarks folder already exists`,
-  '103': `A favorites folder already exists`,
-
-  '104': `Folder could not be found.`,
-  '105': `Folder could not be created.`,
-
-  '106': `Folder to update could not be found.`,
-  '107': `Folder to delete could not be found.`,
-
-  '111': `Folder to add brew to could not be found.`,
-  '112': `Brew to add to folder could not be found.`,
-  '113': `Folder to remove brew from could not be found.`,
-  '114': `Brew to remove from folder could not be found.`,
-
-  '121': `Folder slug is not valid`,
-};
-
 // utilities .............................................................
 
 const requireAccount = (req, res, next)=>{
@@ -60,6 +38,8 @@ const createFolderApi = async (req, res)=>{
   });
 
   if(!folder) {
+    // TODO throw 409 for slug conflict (HBErrorCode 101)
+    // TODO throw 422 if slug invalid (HBErrorCode 121)
     const error = {
       HBErrorCode: 105,
       name: 'FolderCreate Error',
@@ -74,6 +54,8 @@ const createFolderApi = async (req, res)=>{
 };
 
 const updateFolderApi = async (req, res)=>{
+  // TODO: throw 409 if slug already in this parent
+
   const folder = await FolderModel.updateFolder(
     req.account.username,
     req.params.folderId,

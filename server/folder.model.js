@@ -34,6 +34,42 @@ const FolderSchema = mongoose.Schema({
 
 // updatedAt is managed in the app.
 
+// Error codes ...........................................................
+
+const folderApiErrors = {
+// TODO: sanity these numbers
+
+  // constraints
+  '100': `Folder operations require a logged in user.`,
+  '101': `A folder with this identifier already exists`,
+  '102': `A bookmarks folder already exists`,
+  '103': `A favorites folder already exists`,
+
+  '110': `An error occurred trying to find folders for the user.`,
+  '120': `The author username could not be found`,  // ???
+
+  // crud
+  '105': `Folder could not be created.`,
+  '104': `Folder could not be found.`,
+  '108': `Folder could not be updated.`,
+  '109': `Folder could not be deleted.`,
+
+  '106': `Folder to update could not be found.`,    // do we need separate codes??
+  '107': `Folder to delete could not be found.`,    // do we need separate codes??
+
+  // graph integrity
+  '111': `Folder to add brew to could not be found.`,
+  '112': `Brew to add to folder could not be found.`,
+  '113': `Folder to remove brew from could not be found.`,
+  '114': `Brew to remove from folder could not be found.`,
+
+  '115': `An error occurred while adding brew to folder`,
+  '116': `An error occurred while removing brew from folder`,
+  '117': `An error occurred while retrieving the folder`,
+
+  // validation
+  '121': `Folder slug is not valid`,
+};
 
 // Folder utilities ..........................................................
 
