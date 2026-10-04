@@ -5,8 +5,8 @@
 jest.mock('./folder.model.js', ()=>({
   model: {
     getByUser             : jest.fn(),
+    getById               : jest.fn(),
     createFolder          : jest.fn(),
-    getFolder             : jest.fn(),
     updateFolder          : jest.fn(),
     deleteFolder          : jest.fn(),
     addBrewToFolder       : jest.fn(),

@@ -234,7 +234,7 @@ describe('Folder model', ()=>{
   });
 
 
-  describe('getFolder', ()=>{
+  describe('getById', ()=>{
 
     it('should find a folder belonging to the user', async ()=>{
       const folder = {
@@ -245,7 +245,7 @@ describe('Folder model', ()=>{
       const lean = jest.fn(async ()=>folder);
       jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
 
-      const result = await Folder.getFolder('testuser', 'abc123');
+      const result = await Folder.getById('testuser', 'abc123');
 
       expect(Folder.findOne).toHaveBeenCalledWith({
         author   : 'testuser',
@@ -260,7 +260,7 @@ describe('Folder model', ()=>{
       const lean = jest.fn(async ()=>null);
       jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
 
-      const result = await Folder.getFolder('testuser', 'missing');
+      const result = await Folder.getById('testuser', 'missing');
 
       expect(result).toBeNull();
     });
