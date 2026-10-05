@@ -23,8 +23,8 @@ const NewPage = (props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
-	const [error, setError] = useState(null);
+	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
+	const [error, setError]             = useState(null);
 
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
@@ -45,11 +45,6 @@ const NewPage = (props)=>{
 				setError(err);
 			});
 		if(!res) return;
-
-		setCurrentBrew((prevBrew)=>({
-			...prevBrew,
-			...res.body
-		}));
 
 		return res.body;
 	};
