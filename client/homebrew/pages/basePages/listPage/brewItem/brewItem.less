@@ -2,24 +2,23 @@
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 .brewItem {
-	--bg-clr                : #eee;
-	--bg-image              : @backgroundImageAlt;
-	--text-clr : black;
-	--text-shadow-clr: hsl(from var(--text-clr) h calc(100% - s) calc(100% - l));
-
-	background-color:var(--bg-clr);
-	background-image:var(--bg-image);
-	background-size:cover;
+	--bg-clr                    : #EEEEEE;
+	--bg-image                  : @backgroundImageAlt;
+	--text-clr                  : black;
+	--text-shadow-clr           : hsl(from var(--text-clr) h calc(100% - s) calc(100% - l)); //inverted text color
 	position                    : relative;
 	display                     : flex;
 	flex-direction              : column;
 	overflow                    : hidden;
 	font-size                   : 15px;
+	color                       : var(--text-clr);
+
+	background-color            : var(--bg-clr);
+	background-image            : var(--bg-image);
+	background-size             : cover;
 	isolation                   : isolate;
 	break-inside                : avoid;
 	-webkit-column-break-inside : avoid;
-	break-inside           : avoid;
-	color:var(--text-clr);
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -38,12 +37,8 @@
 		}
 	}
 	.info {
-		
-		& > span { line-height : 1.5em; }
 		a { color : inherit; }
-		position    : initial;
-		bottom      : 2px;
-		font-size : 0.9em;
+		font-size   : 0.9em;
 		& > span {
 			margin-right : 12px;
 			line-height  : 1.5em;
@@ -92,7 +87,7 @@
 			&::before { content : '\f518'; }
 		}
 	}
-	&:nth-child(2n + 1) { margin-right : 0px; }
+	&:nth-child(2n + 1) { margin-right : 0; }
 	.googleDriveIcon {
 		height  : 18px;
 		padding : 0px;
@@ -106,6 +101,10 @@
 		padding  : 0px;
 	}
 	.links {
+		position         : absolute;
+		right            : 0;
+		display          : flex;
+		height:100%;
 		a,
 		button {
 			display         : block;
@@ -133,8 +132,7 @@
 	padding          : 5px 15px 5px 6px;
 	padding-right    : 30px;
 	border-radius    : 5px;
-	box-shadow       : 0px 4px 5px 0px #333333;
-	isolation        : isolate;
+	box-shadow       : 0 4px 5px 0px #333333;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -154,20 +152,11 @@
 		h2 { margin-bottom : 5px; }
 		.description { padding-left : 5px; }
 	}
-	.info {
-		padding-left : 5px;
-		& > span { margin-right : 12px; }
-	}
+	.info { padding-left : 5px; }
 	.links {
-		position         : absolute;
-		top              : 0px;
-		right            : 0px;
-		display          : flex;
+		top              : 0;
 		flex-direction   : column;
-		justify-content  : space-evenly;
 		width            : 2em;
-		height           : 100%;
-		text-align       : center;
 		a,
 		button {
 			display         : block;
@@ -184,16 +173,13 @@
 	align-items           : center;
 	width                 : 100%;
 	height                : 50px;
-	.thumbnail { display : none; }
+	.thumbnail { display  : none; }
 	.text {
 		padding-left : 10px;
 		h2 {
+			.ellipsis();
 			align-content  : center;
 			min-height     : 1.4em;
-			overflow       : hidden;
-			text-overflow  : ellipsis;
-			vertical-align : middle;
-			white-space    : nowrap;
 		}
 		.description { display : none; }
 	}
@@ -212,13 +198,12 @@
 			min-width : 100px;
 		}
 		.brewAuthors {
+			.ellipsis();
 			display            : -webkit-box;
 			grid-area          : authors;
 			align-content      : center;
 			width              : 150px;
 			height             : 40px;
-			overflow           : hidden;
-			text-overflow      : ellipsis;
 			-webkit-line-clamp : 3;
 			line-clamp         : 3;
 			-webkit-box-orient : vertical;
@@ -280,10 +265,6 @@
 	}
 	.links {
 		position        : relative;
-		display         : flex;
-		align-items     : center;
-		justify-content : space-evenly;
-		height          : 100%;
 		a, button {
 			align-content : center;
 			height        : 100%;
@@ -292,7 +273,7 @@
 	}
 }
 .card > .brewItem {
-	--grad-clr: hsl(from var(--bg-clr) h s l / 0);
+	--grad-clr            : hsl(from var(--bg-clr) h s l / 0);
 
 	gap                   : 5px;
 	justify-content       : flex-end;
@@ -336,7 +317,7 @@
 		background-size     : cover;
 	}
 	.text {
-		filter:drop-shadow(0 1px 4px white);
+		filter : drop-shadow(0 1px 4px white);
 		h2 { font-weight : 900; }
 		.description {
 			height     : 0;
@@ -345,7 +326,6 @@
 		}
 	}
 	.info {
-		filter:drop-shadow(0 1px 2px white);
 		display               : grid;
 		grid-template-areas   : 'tags tags tags tags'
 			'authors authors authors authors'
@@ -353,6 +333,7 @@
 			'update update storage .';
 		grid-template-columns : 1fr 1fr 1fr 30px;
 		height                : 110px;
+		filter                : drop-shadow(0 1px 2px white);
 		.brewTags {
 			grid-area : tags;
 			color     : inherit;
@@ -366,11 +347,8 @@
 		.storage { grid-area : storage; }
 	}
 	.links {
-		position : absolute;
-		right    : 0;
 		bottom   : 0;
 		left     : 0;
-		display  : flex;
 		height   : 40px;
 	}
 }
@@ -404,7 +382,6 @@
 				.info {
 					grid-template-areas   : 'tags storage';
 					grid-template-columns : 1fr 20px;
-					width                 : clamp(200px, 100%, 650px);
 				}
 				.brewPages,
 				.lastViewed,
@@ -414,7 +391,6 @@
 			.detailsOpen {
 				height : 100px;
 				.info {
-					display               : grid;
 					grid-template-areas   : 'tags views pages .'
 						'authors update update storage';
 					grid-template-rows    : 1fr 1fr;
@@ -422,11 +398,8 @@
 					width                 : clamp(200px, 100%, 650px);
 				}
 				.lastUpdated {
+					.ellipsis();
 					max-width     : 120px;
-					overflow      : hidden;
-					text-overflow : ellipsis;
-					word-break    : break-all;
-					white-space   : nowrap;
 				}
 			}
 		}
@@ -449,14 +422,14 @@
 			}
 			.brewItem { 
 				h2 {
-					font-size:1em;
-					width:200px;
+					width     : 200px;
+					font-size : 1em;
 				}
 				transition : height 0.2s;
 			}
 			.detailsOpen {
 				display               : grid;
-				grid-template-columns : 3fr 3fr 30px;
+				grid-template-columns : 1fr 4fr 30px;
 				height                : 100px;
 				padding               : 5px;
 				.text {
@@ -500,15 +473,10 @@
 				.info { display : none; }
 			}
 			.detailsOpen {
-				grid-template-rows : 1fr 2fr;
 				.info {
-					display : grid;
 					.lastUpdated {
+						.ellipsis();
 						width         : 100px;
-						overflow      : hidden;
-						text-overflow : ellipsis;
-						word-break    : break-all;
-						white-space   : nowrap;
 					}
 				}
 			}
