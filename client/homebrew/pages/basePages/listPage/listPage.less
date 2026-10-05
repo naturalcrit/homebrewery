@@ -19,17 +19,17 @@
 	contain              : unset;
 }
 .sitePage.listPage {
-		--bg-clr: white;
+	--bg-clr : white;
 	.content {
-		padding : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
+		padding          : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
+		overflow-y       : scroll;
+		scrollbar-gutter : stable;
 		@media screen and (max-width : 1200px) {
 			padding : clamp(20px, 5vh, 200px) clamp(20px, 10vw, 200px);
 		}
 		@media screen and (max-width : 800px) {
 			padding : clamp(20px, 5vh, 200px) clamp(20px, 5vw, 200px);
 		}
-		scrollbar-gutter:stable;
-		overflow-y : scroll;
 
 		&::-webkit-scrollbar {
 			width : 15px;
