@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
+import { hbfm }                               from 'marked-hbfm';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
@@ -22,7 +23,12 @@ import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 
-const AUTOSAVE_KEY = 'HB_editor_autoSaveOn';
+const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
+const BREWKEY        = 'HB_newPage_content';
+const STYLEKEY       = 'HB_newPage_style';
+const SNIPKEY        = 'HB_newPage_snippets';
+const METAKEY        = 'HB_newPage_meta';
+const SAVEKEY_PREFIX = 'HB_editor_defaultSave_';
 
 const SAVE_TIMEOUT                  = 10000;  //Autosave 10 seconds after last change
 const UNSAVED_WARNING_TIMEOUT       = 900000; //Warn user afer 15 minutes of unsaved changes
@@ -31,20 +37,17 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
 		saveGoogle,
+		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
 		setCurrentBrew,
 		useLocalStorage,
-		BREWKEY,
-		STYLEKEY,
-		SNIPKEY,
-		METAKEY,
-		hbfm,
 		sandbox,
 		showFloatingButtons,
 		lastSavedBrew,
 		save,
+		onSaveSuccess,
 		pageName,
 		renderGoogleDriveIcon = ()=>{},
 		showEditorButtons,
@@ -70,6 +73,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 	//==--------- Page setup ----------==//
 	useEffect(()=>{
+		if(useLocalStorage) loadBrewFromLocalStorage();
 		const autoSavePref = !sandbox && JSON.parse(localStorage.getItem(AUTOSAVE_KEY) ?? true);
 		setAutoSaveEnabled(autoSavePref);
 		setWarnUnsavedChanges(!autoSavePref);
@@ -94,6 +98,44 @@ export default function useCommonEditPageFunctions(dependencies) {
 			window.onbeforeunload = null;
 		};
 	}, []);
+
+	const loadBrewFromLocalStorage = ()=>{
+		const brew = { ...currentBrew };
+		if(!brew.shareId && typeof window !== 'undefined') { //Load from localStorage if in client browser
+			const brewStorage  = localStorage.getItem(BREWKEY);
+			const styleStorage = localStorage.getItem(STYLEKEY);
+			const snipStorage  = localStorage.getItem(SNIPKEY);
+			const metaStorage  = JSON.parse(localStorage.getItem(METAKEY));
+
+			brew.text     = brewStorage           ?? brew.text;
+			brew.style    = styleStorage          ?? brew.style;
+			brew.snippets = snipStorage           ?? brew.snippets;
+			brew.renderer = metaStorage?.renderer ?? brew.renderer;
+			brew.theme    = metaStorage?.theme    ?? brew.theme;
+			brew.lang     = metaStorage?.lang     ?? brew.lang;
+		}
+
+		const SAVEKEY = `${SAVEKEY_PREFIX}${global.account?.username}`;
+		const saveStorage = localStorage.getItem(SAVEKEY) || 'HOMEBREWERY';
+
+		setCurrentBrew(brew);
+		lastSavedBrew.current = brew;
+		setSaveGoogle(saveStorage == 'GOOGLE-DRIVE' && saveGoogle);
+
+		                  localStorage.setItem(BREWKEY,  brew.text);
+		if(brew.style)    localStorage.setItem(STYLEKEY, brew.style);
+		if(brew.snippets) localStorage.setItem(SNIPKEY,  brew.snippets);
+		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
+		if(window.location.pathname !== '/new')
+			window.history.replaceState({}, window.location.title, '/new/');
+	};
+
+	const clearLocalStorage = ()=>{
+		localStorage.removeItem(BREWKEY);
+		localStorage.removeItem(STYLEKEY);
+		localStorage.removeItem(SNIPKEY);
+		localStorage.removeItem(METAKEY);
+	};
 
 	//======----- Check for unsaved changes and autosave if enabled -----======
 	useEffect(()=>{
@@ -127,12 +169,12 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 		if(useLocalStorage) {
 			if(field == 'text')	    localStorage.setItem(BREWKEY, value);
-			if(field == 'style')	  localStorage.setItem(STYLEKEY, value);
+			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
 			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
 				renderer : value.renderer,
-				theme	   : value.theme,
-				lang 	   : value.lang
+				theme    : value.theme,
+				lang     : value.lang
 			}));
 		}
 	};
@@ -160,8 +202,23 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			await save(currentBrew, saveToGoogle)
+			const brewToSave = currentBrew;
+			let savedBrew = await save(brewToSave, saveToGoogle)
 				.catch((err)=>{setError(err);});
+			if(savedBrew) {
+				lastSavedBrew.current = {
+					...brewToSave,
+					...savedBrew
+				};
+
+				setCurrentBrew((prevBrew)=>({
+					...prevBrew,
+					...savedBrew
+				}));
+
+				if(useLocalStorage) clearLocalStorage();
+				onSaveSuccess(savedBrew);
+			}
 			setIsSaving(false);
 			setLastSavedTime(new Date());
 			if(!autoSaveEnabled) resetWarnUnsavedTimer();
@@ -216,14 +273,14 @@ export default function useCommonEditPageFunctions(dependencies) {
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: <Nav.dropdown className='save-menu'>
 						{renderSaveButton()}
-						{pageName == "editPage" && renderAutoSaveButton()}
+						{pageName == 'editPage' && renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
 				<VaultNavItem />
-				{(pageName == "editPage") && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
-				<RecentNavItem brew={currentBrew} storageKey={(pageName == "editPage") ? 'edit' : undefined} />
+				{(pageName == 'editPage') && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
+				<RecentNavItem brew={currentBrew} storageKey={(pageName == 'editPage') ? 'edit' : undefined} />
 				<AccountNavItem />
 			</Nav.section>
 		</Navbar>
