@@ -202,9 +202,20 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			let savedBrew = await save(currentBrew, saveToGoogle)
+			const brewToSave = currentBrew;
+			let savedBrew = await save(brewToSave, saveToGoogle)
 				.catch((err)=>{setError(err);});
 			if(savedBrew) {
+				lastSavedBrew.current = {
+					...brewToSave,
+					...savedBrew
+				};
+
+				setCurrentBrew((prevBrew)=>({
+					...prevBrew,
+					...savedBrew
+				}));
+
 				if(useLocalStorage) clearLocalStorage();
 				onSaveSuccess(savedBrew);
 			}
