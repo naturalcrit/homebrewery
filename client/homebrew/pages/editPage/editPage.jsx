@@ -103,23 +103,13 @@ const EditPage = (props)=>{
 		if(!res) return;
 
 		const updatedFields = {
-			googleId : res.body.googleId ?? null,
-			editId   : res.body.editId,
+			googleId : res.body.googleId ?? null, //TODO: investigate if we can set googleId:null in server/update instead of undefined
+			editId   : res.body.editId,           //then, editPage can just apply res.body instead of breaking out these fields.
 			shareId  : res.body.shareId,
 			version  : res.body.version
 		};
 
-		lastSavedBrew.current = {
-			...brew,
-			...updatedFields
-		};
-
-		setCurrentBrew((prevBrew)=>({
-			...prevBrew,
-			...updatedFields
-		}));
-
-		return res.body;
+		return updatedFields;
 	};
 
 	const onSaveSuccess = (savedBrew)=>{

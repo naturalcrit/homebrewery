@@ -22,9 +22,9 @@ const HomePage =(props)=>{
 		...props
 	};
 
-	const [currentBrew, setCurrentBrew]                = useState(props.brew);
-	const [saveGoogle, setSaveGoogle] = useState(global.account?.googleId ? true : false);
-	const [error, setError]                      = useState(undefined);
+	const [currentBrew, setCurrentBrew] = useState(props.brew);
+	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
+	const [error, setError]             = useState(undefined);
 
 	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
@@ -37,11 +37,6 @@ const HomePage =(props)=>{
 				setError(err);
 			});
 		if(!res) return;
-
-		setCurrentBrew((prevBrew)=>({
-			...prevBrew,
-			...res.body
-		}));
 
 		return res.body;
 	};
