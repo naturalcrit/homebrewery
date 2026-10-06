@@ -68,6 +68,7 @@ const SharePage = (props)=>{
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			eventSource.close();
 		};
 	}, []);
 
