@@ -152,7 +152,7 @@ FolderSchema.statics.createFolder = async function(
 ) {
   try {
     // normalise user inputs
-    title = title.replace(/\s+/gu, ' ').trim() || 'untitled folder';
+    title = title.replace(/\s+/gu, ' ').trim() || 'Untitled Folder';
     slug = slugify(slug || title);
     isPublished = isPublished ?? false;
 
