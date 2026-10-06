@@ -54,12 +54,13 @@ const SharePage = (props)=>{
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		// listen for changes in the brew version
-		const eventSource = new EventSource('/stream');
+		const eventSource = new EventSource(`/stream/${props.brew.shareId}`);
 		eventSource.addEventListener('message', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
 			if(messageData.eventType == 'brewUpdated'){
-				if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
+				// Share ID check no longer required
+				if(messageData.version != currentBrew.version) {
 					console.log('should fetch brew');
 					fetchUpdatedBrew();
 				}
@@ -68,7 +69,8 @@ const SharePage = (props)=>{
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			eventSource.close();
+			eventSource.removeEventListener('message');
+			// eventSource.close();
 		};
 	}, []);
 
