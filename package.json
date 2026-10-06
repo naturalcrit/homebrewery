@@ -129,7 +129,7 @@
     "marked-hbfm": "^1.0.1",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.31.0",
-    "mongoose": "^9.10.2",
+    "mongoose": "^9.10.4",
     "nanoid": "6.0.1",
     "nconf": "^0.13.0",
     "node": "^26.10.0",
