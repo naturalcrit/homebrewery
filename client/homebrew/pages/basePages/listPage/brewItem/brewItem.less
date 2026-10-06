@@ -1,6 +1,7 @@
 @import '@sharedStyles/core.less';
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
+
 .brewItem {
 	--bg-clr                    : #EEE;
 	--bg-image                  : @backgroundImageAlt;
@@ -201,7 +202,7 @@
 		opacity:1;
 	}
 	.text {
-		filter : drop-shadow(0 1px 4px white);
+		filter : drop-shadow(0 1px 4px var(--text-shadow-clr));
 		h2 { font-weight : 900; }
 		.description {
 			height     : 0;
@@ -346,16 +347,13 @@
 	}
 }
 @media screen and (max-width : 1200px) {
-	.brewCollection .brewGroup {
-		&.list {
+	.brewCollection .brewGroup .list {
 			.brewItem:not(.detailsOpen) {
 				grid-template-columns : 35% 3fr 150px;
 				.info {
 					grid-template-areas   : 'tags storage';
 					grid-template-columns : 1fr 20px;
 				}
-				.brewPages,
-				.lastViewed,
 				.brewAuthors,
 				.lastUpdated { display : none; }
 			}
@@ -373,22 +371,16 @@
 					max-width     : 120px;
 				}
 			}
-		}
 	}
 }
 @media screen and (max-width : 800px) {
-	.brewCollection .brewGroup {
-		&.list {
+	.brewCollection .brewGroup  .list {
 			.brewItem:not(.detailsOpen) {
 				.info {
 					grid-template-areas   : 'tags';
 					grid-template-columns : 1fr;
 					width                 : clamp(200px, 100%, 650px);
 				}
-				.brewPages,
-				.lastViewed,
-				.brewAuthors,
-				.lastUpdated,
 				.storage { display : none; }
 			}
 			.brewItem { 
@@ -432,13 +424,11 @@
 					a,
 					button { margin : 0; }
 				}
-			}
-		}
+			}	
 	}
 }
 @media screen and (max-width : 650px) {
-	.brewCollection .brewGroup {
-		&.list {
+	.brewCollection .brewGroup  .list {
 			.brewItem:not(.detailsOpen) {
 				grid-template-columns : 3fr 2fr;
 				.info { display : none; }
@@ -451,6 +441,5 @@
 					}
 				}
 			}
-		}
 	}
 }
