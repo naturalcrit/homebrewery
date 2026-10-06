@@ -105,7 +105,7 @@ function throwFolderError(err, code) {
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
   try {
-    // TODO: ?throw if username does not exist? HBEC = 120
+    // TODO: ?throw if username does not exist? HBEC = '120'
 
     const query = { author: username };
 
@@ -120,7 +120,7 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
     return folders;
   }
   catch (err) {
-    throwFolderError(err, 110);
+    throwFolderError(err, '110');
   }
 };
 
@@ -134,14 +134,14 @@ FolderSchema.statics.getById = async function(author, folderId) {
     // here though it should be .. the caller has an id, it should exist
     if (!folder) {
       const err = new Error();
-      err.HBErrorCode = 104;
+      err.HBErrorCode = '104';
       throw err;
     }
 
     return folder;
   }
   catch (err) {
-    throwFolderError(err, 117);
+    throwFolderError(err, '117');
   }
 };
 
@@ -159,7 +159,7 @@ FolderSchema.statics.createFolder = async function(
     // throw if slug invalid, e.g. ''
     if (slug == '') {
       const err = new Error();
-      err.HBErrorCode = 106;
+      err.HBErrorCode = '106';
       throw err;
     }
 
@@ -179,7 +179,7 @@ FolderSchema.statics.createFolder = async function(
     return folder;
   }
   catch(err) {
-    throwFolderError(err, 105);
+    throwFolderError(err, '105');
   }
 };
 
@@ -197,7 +197,7 @@ FolderSchema.statics.updateFolder = async function(
     // throw if slug invalid, e.g. ''
     if (slug == '') {
       const err = new Error();
-      err.HBErrorCode = 106;
+      err.HBErrorCode = '106';
       throw err;
     }
 
@@ -225,14 +225,14 @@ FolderSchema.statics.updateFolder = async function(
     // null indicates an error here
     if (!folder) {
       const err = new Error();
-      err.HBErrorCode = 106;
+      err.HBErrorCode = '106';
       throw err;
     }
 
     return folder;
   }
   catch (err) {
-    throwFolderError(err, 108);
+    throwFolderError(err, '108');
   }
 };
 
@@ -247,14 +247,14 @@ FolderSchema.statics.deleteFolder = async function(author, folderId) {
 
     if (result.deletedCount === 0) {
       const err = new Error();
-      err.HBErrorCode = 107;
+      err.HBErrorCode = '107';
       throw err;
     }
 
     return result;
   }
   catch (err) {
-    throwFolderError(err, 109);
+    throwFolderError(err, '109');
   }
 };
 
@@ -264,7 +264,7 @@ FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId)
     const brewExists = await BrewModel.exists({ brewId });
     if(!brewExists) {
       const err = new Error();
-      err.HBErrorCode = 112;
+      err.HBErrorCode = '112';
       throw err;
     }
 
@@ -280,14 +280,14 @@ FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId)
     // nothing updated == folder not found
     if ( result === null ) {
       const err = new Error();
-      err.HBErrorCode = 111;
+      err.HBErrorCode = '111';
       throw err;
     }
 
     return result;
   }
   catch (err) {
-    throwFolderError(err, 115);
+    throwFolderError(err, '115');
   }
 };
 
@@ -298,7 +298,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
     const brewExists = await BrewModel.exists({ brewId });
     if(!brewExists) {
       const err = new Error();
-      err.HBErrorCode = 112;
+      err.HBErrorCode = '112';
       throw err;
 
       // TODO: decision:
@@ -322,14 +322,14 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
     // null == no folder updated because no folder found .. which is an error
     if (!result) {
       const err = new Error();
-      err.HBErrorCode = 113;
+      err.HBErrorCode = '113';
       throw err;
     }
 
     return result;
   }
   catch (err) {
-    throwFolderError(err, 116);
+    throwFolderError(err, '116');
   }
 };
 

@@ -12,7 +12,7 @@ const router = express.Router();
 const requireAccount = (req, res, next)=>{
   if(!req.account) {
     const error = {
-      HBErrorCode: 100,
+      HBErrorCode: '100',
       name: 'FolderAccess Error',
       status: 401,
     };
@@ -42,7 +42,7 @@ const getByUserApi = async (req, res)=>{
     // TODO throw 409 for slug conflict (HBErrorCode 101)
     // TODO throw 422 if slug invalid (HBErrorCode 121)
     const error = {
-      HBErrorCode: 105,
+      HBErrorCode: '105',
       name: 'Get User Folders Error',
       status: 500,
     };
@@ -67,7 +67,7 @@ const createFolderApi = async (req, res)=>{
     // TODO throw 409 for slug conflict (HBErrorCode 101)
     // TODO throw 422 if slug invalid (HBErrorCode 121)
     const error = {
-      HBErrorCode: 105,
+      HBErrorCode: '105',
       name: 'FolderCreate Error',
       status: 500,
     };
@@ -90,7 +90,7 @@ const updateFolderApi = async (req, res)=>{
 
   if(!folder) {
     const error = {
-      HBErrorCode: 106,
+      HBErrorCode: '106',
       name: 'FolderUpdate Error',
       status: 404,
     };
@@ -110,7 +110,7 @@ const deleteFolderApi = async (req, res)=>{
 
   if(!result.deletedCount) {
     const error = {
-      HBErrorCode: 107,
+      HBErrorCode: '107',
       name: 'FolderDelete Error',
       status: 404,
     };
@@ -131,7 +131,7 @@ const addBrewToFolderApi = async (req, res)=>{
 
   if (result?.error === 'FOLDER_NOT_FOUND') {
     const error = {
-      HBErrorCode: 111,
+      HBErrorCode: '111',
       name: 'FolderAddBrew Error',
       status: 404,
     };
@@ -141,7 +141,7 @@ const addBrewToFolderApi = async (req, res)=>{
 
   if (result?.error === 'BREW_NOT_FOUND') {
     const error = {
-      HBErrorCode: 112,
+      HBErrorCode: '112',
       name: 'FolderAddBrew Error',
       status: 404,
     };
@@ -161,7 +161,7 @@ const removeBrewFromFolderApi = async (req, res)=>{
 
   if (result?.error === 'FOLDER_NOT_FOUND') {
     const error = {
-      HBErrorCode: 113,
+      HBErrorCode: '113',
       name: 'FolderRemoveBrew Error',
       status: 404,
     };
@@ -171,7 +171,7 @@ const removeBrewFromFolderApi = async (req, res)=>{
 
   if (result?.error === 'BREW_NOT_FOUND') {
     const error = {
-      HBErrorCode: 114,
+      HBErrorCode: '114',
       name: 'FolderRemoveBrew Error',
       status: 404,
     };
