@@ -29,6 +29,11 @@ router.use(dbCheck);
 
 // handlers .............................................................
 
+// TODO: all handlers need to wrap FolderModel.* calls in try/catch
+// NOTE: expect non-success results to come via throws
+// NOTE: mostly just update error.status(x) and res.status(x) .. 500, 409, 422, etc
+// NOTE: shouldn't need to add/modify HBErrorCode here, use what was thrown
+
 const createFolderApi = async (req, res)=>{
 
   const folder = await FolderModel.createFolder(req.account.username, {
