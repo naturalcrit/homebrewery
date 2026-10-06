@@ -1,6 +1,6 @@
 // /server/folder.api.js
 
-import { model as FolderModel } from './folder.model.js';
+import { folderApiErrors, model as FolderModel } from './folder.model.js';
 import express      from 'express';
 import asyncHandler from 'express-async-handler';
 import dbCheck      from './middleware/dbCheck.js';
