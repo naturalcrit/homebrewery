@@ -38,7 +38,7 @@ const FolderSchema = mongoose.Schema({
 
 // Error codes ...........................................................
 
-const folderApiErrors = {
+export const folderApiErrors = {
 // TODO: sanity these numbers
 
   // constraints
