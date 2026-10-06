@@ -206,7 +206,7 @@ export default async function createApp(vite) {
 			'Content-Encoding' : 'none'
 		});
 
-		res.write(`data: ${JSON.stringify({ init: Date.now().toString(), shareId: id, eventType: 'message' })}\n\n`);
+		res.write(`data: ${JSON.stringify({ time: new Date, shareId: id, eventType: 'message' })}\n\n`);
 
 		if(!initStreamListener){
 			initStreamListener = true;
