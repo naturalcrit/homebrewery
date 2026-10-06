@@ -34,6 +34,27 @@ router.use(dbCheck);
 // NOTE: mostly just update error.status(x) and res.status(x) .. 500, 409, 422, etc
 // NOTE: shouldn't need to add/modify HBErrorCode here, use what was thrown
 
+const getByUserApi = async (req, res)=>{
+
+  const folder = await FolderModel.getById(req.account.username, /* ownAccount */);
+
+  if(!folder) {
+    // TODO throw 409 for slug conflict (HBErrorCode 101)
+    // TODO throw 422 if slug invalid (HBErrorCode 121)
+    const error = {
+      HBErrorCode: 105,
+      name: 'Get User Folders Error',
+      status: 500,
+    };
+    error.message = folderError(error.HBErrorCode);
+
+    throw error;
+  }
+
+  res.status(201).send(folder);
+};
+
+
 const createFolderApi = async (req, res)=>{
 
   const folder = await FolderModel.createFolder(req.account.username, {
