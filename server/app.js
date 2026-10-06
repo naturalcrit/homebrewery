@@ -195,6 +195,7 @@ export default async function createApp(vite) {
 	});
 
 	// Create Event Stream source for pages to listen to
+	let initStreamListener = false;
 	app.get('/stream', (req, res)=>{
 		res.writeHead(200, {
 			'Content-Type'     : 'text/event-stream',
@@ -203,10 +204,13 @@ export default async function createApp(vite) {
 			'Content-Encoding' : 'none'
 		});
 
-		Stream.on('sendUpdate', (event, data)=>{
-			if(isLocalEnvironment) { console.log('Event:', event, '\nData:', data); }
-			res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
-		});
+		if(!initStreamListener){
+			initStreamListener = true;
+			Stream.on('sendUpdate', (event, data)=>{
+				if(isLocalEnvironment) { console.log('Event:', event, '\nData:', data); }
+				res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
+			});
+		}
 	});
 
 	// After Stream starts, send initStream event
