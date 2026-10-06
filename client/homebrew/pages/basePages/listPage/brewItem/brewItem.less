@@ -2,7 +2,7 @@
 @import '@themes/assets/assets.less';
 @import url('https://fonts.googleapis.com/css2?family=Alata&display=swap');
 .brewItem {
-	--bg-clr                    : #EEEEEE;
+	--bg-clr                    : #EEE;
 	--bg-image                  : @backgroundImageAlt;
 	--text-clr                  : black;
 	--text-shadow-clr           : hsl(from var(--text-clr) h calc(100% - s) calc(100% - l)); //inverted text color
@@ -68,7 +68,7 @@
 		--tag-system     : #800000;
 		&.type {
 			color            : var(--tag-type);
-			background-color : rgba(from var(--tag-type) r g b / 0.231);
+			background-color : rgba(from var(--tag-type) r g b / 0.2);
 			&::before { content : '\f0ad'; }
 		}
 		&.group {
@@ -78,19 +78,19 @@
 		}
 		&.meta {
 			color            : var(--tag-meta);
-			background-color : rgba(from var(--tag-meta) r g b / 0.231);
+			background-color : rgba(from var(--tag-meta) r g b / 0.2);
 			&::before { content : '\f05a'; }
 		}
 		&.system {
 			color            : var(--tag-system);
-			background-color : rgba(from var(--tag-system) r g b / 0.231);
+			background-color : rgba(from var(--tag-system) r g b / 0.2);
 			&::before { content : '\f518'; }
 		}
 	}
 	&:nth-child(2n + 1) { margin-right : 0; }
 	.googleDriveIcon {
 		height  : 18px;
-		padding : 0px;
+		padding : 0;
 		margin  : -5px;
 	}
 	.homebreweryIcon {
@@ -98,7 +98,7 @@
 		top      : 5px;
 		left     : -7.5px;
 		height   : 18px;
-		padding  : 0px;
+		padding  : 0;
 	}
 	.links {
 		position         : absolute;
@@ -132,7 +132,7 @@
 	padding          : 5px 15px 5px 6px;
 	padding-right    : 30px;
 	border-radius    : 5px;
-	box-shadow       : 0 4px 5px 0px #333333;
+	box-shadow       : 0 4px 5px 0 #333;
 	.thumbnail {
 		position            : absolute;
 		top                 : 0;
@@ -144,8 +144,8 @@
 		background-position : right top;
 		background-size     : contain;
 		opacity             : 50%;
-		-webkit-mask-image  : linear-gradient(80deg, #00000000 20%, #005500 40%);
-		mask-image          : linear-gradient(80deg, #00000000 20%, #005500 40%);
+		-webkit-mask-image  : linear-gradient(80deg, #0000 20%, #050 40%);
+		mask-image          : linear-gradient(80deg, #0000 20%, #050 40%);
 	}
 	.text {
 		min-height : 54px;
@@ -193,9 +193,11 @@
 		width                 : clamp(400px, 100%, 650px);
 		br { display : none; }
 		.brewTags {
-			display   : inline-block;
+			display   : inline-flex;
+			align-items: center;
 			grid-area : tags;
-			min-width : 100px;
+			max-width : 100px;
+			width:fit-content;
 		}
 		.brewAuthors {
 			.ellipsis();
@@ -233,34 +235,7 @@
 			display   : flex;
 			flex-wrap : wrap;
 			overflow  : hidden;
-			span:nth-of-type(n + 2) { display : none; }
-			&:hover {
-				position   : absolute;
-				top        : 0;
-				z-index    : 100;
-				width      : min-content;
-				height     : max-content;
-				padding    : 10px;
-				overflow   : visible;
-				background : #707070;
-				span:nth-of-type(n + 4) { display : block; }
-				&::after {
-					position                   : absolute;
-					top                        : 48px;
-					right                      : 0;
-					bottom                     : 0;
-					left                       : 0;
-					z-index                    : -1;
-					display                    : block;
-					height                     : calc(100% - 48px);
-					content                    : '';
-					background                 : #707070;
-					border-inline              : 1px solid gold;
-					border-bottom              : 1px solid gold;
-					border-bottom-right-radius : 5px;
-					border-bottom-left-radius  : 5px;
-				}
-			}
+			span:nth-of-type(n + 4) { display : none; }
 		}
 	}
 	.links {
@@ -273,8 +248,6 @@
 	}
 }
 .card > .brewItem {
-	--grad-clr            : hsl(from var(--bg-clr) h s l / 0);
-
 	gap                   : 5px;
 	justify-content       : flex-end;
 	width                 : 300px;
@@ -286,7 +259,7 @@
 	background-size       : 50%, cover;
 	border                : 1px solid;
 	border-radius         : 10px;
-	box-shadow       : 0 4px 5px #222;
+	box-shadow            : 0 4px 5px #222;
 	&::before {
 		position         : absolute;
 		right            : 0;
@@ -296,13 +269,13 @@
 		display          : block;
 		height           : 50%;
 		content          : '';
-		background-image : linear-gradient(0deg, var(--bg-clr) 0, var(--grad-clr) 90%);
-		transition       : height 0.2s;
+		background-image : linear-gradient(0deg, var(--bg-clr) 0, hsl(from var(--bg-clr) h s l / 0) 90%);
+		transition       : height @defaultDuration;
 	}
 	&:hover {
 		&::before {
 			height           : 100%;
-			background-image : linear-gradient(0deg, var(--bg-clr) 0, var(--bg-clr) 55%, var(--grad-clr) 65%);
+			background-image : linear-gradient(0deg, var(--bg-clr) 0, var(--bg-clr) 55%, hsl(from var(--bg-clr) h s l / 0) 65%);
 		}
 		.text .description { height : fit-content; }
 	}
@@ -323,7 +296,7 @@
 		.description {
 			height     : 0;
 			overflow   : hidden;
-			transition : height 0.2s;
+			transition : height @defaultDuration;
 		}
 	}
 	.info {
@@ -357,7 +330,6 @@
 	.brewCollection .brewGroup {
 		&.list {
 			.brewItem:not(.detailsOpen) {
-				grid-template-columns : 35% 3fr 150px;
 				.info {
 					grid-template-areas   : 'tags update storage';
 					grid-template-columns : 2fr 1fr 20px;
@@ -368,10 +340,15 @@
 				.brewAuthors { display : none; }
 			}
 			.brewItem {
-				grid-template-columns : 25% 3fr 150px;
-				transition            : height 0.2s;
+				transition            : height @defaultDuration;
+				cursor:pointer;
+				&:hover {box-shadow: 0 0 5px var(--bg-clr);
+				filter:brightness(.97) }
 			}
-			.detailsOpen { height : 70px; }
+			.detailsOpen {
+				grid-template-columns : 25% 3fr 150px;
+				height : 70px;
+			}
 		}
 	}
 }
@@ -426,7 +403,7 @@
 					width     : 200px;
 					font-size : 1em;
 				}
-				transition : height 0.2s;
+				transition : height @defaultDuration;
 			}
 			.detailsOpen {
 				display               : grid;
