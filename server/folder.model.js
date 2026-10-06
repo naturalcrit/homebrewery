@@ -10,7 +10,7 @@ const FolderSchema = mongoose.Schema({
   folderId:     { type: String, required: true, index: true, unique: true, default: () => nanoid(12) },
   slug:         { type: String, required: true, trim: true, lowercase: true,
     match: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, },
-  title:        { type: String, required: true, trim: true, default: 'untitled folder', },
+  title:        { type: String, required: true, trim: true, default: 'Untitled folder', },
   shareIds:     { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, required: true, default: false },
@@ -152,7 +152,7 @@ FolderSchema.statics.createFolder = async function(
 ) {
   try {
     // normalise user inputs
-    title = title.replace(/\s+/gu, ' ').trim() || 'untitled folder';
+    title = title.replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slugify(slug || title);
     isPublished = isPublished ?? false;
 
@@ -191,7 +191,7 @@ FolderSchema.statics.updateFolder = async function(
 ) {
   try {
     // normalise user inputs
-    title = title.replace(/\s+/gu, ' ').trim() || 'untitled folder';
+    title = title.replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slugify(slug || title);
 
     // throw if slug invalid, e.g. ''
