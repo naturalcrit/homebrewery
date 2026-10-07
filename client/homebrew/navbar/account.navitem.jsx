@@ -63,13 +63,6 @@ const Account = createReactClass({
 		if(global.account){
 			return <div className='nav-section'>
 				<Nav.item
-					className='account username'
-					color='orange'
-					icon='fas fa-user'
-				>
-					{global.account.username}
-				</Nav.item>
-				<Nav.item
 					href={`/user/${encodeURIComponent(global.account.username)}`}
 					color='yellow'
 					icon='fas fa-beer'

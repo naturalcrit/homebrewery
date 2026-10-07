@@ -143,13 +143,15 @@ const RecentItems = createReactClass({
 		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
-			return _.map(brews, (brew, i)=>{
-				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
-					<span className='title'>{brew.title || '[ no title ]'}</span>
-					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
-				</a>;
-			});
+			return <div className="nav-section">
+				{_.map(brews, (brew, i)=>{
+					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+						<span className='title'>{brew.title || '[ no title ]'}</span>
+						<span className='time'>{Moment(brew.ts).fromNow()}</span>
+						<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
+					</a>
+				})};
+			</div>
 		};
 
 		return <>
@@ -166,9 +168,6 @@ const RecentItems = createReactClass({
 
 	render : function(){
 		return <div className='recent'>
-			<Nav.item icon='fas fa-history' color='grey' >
-				{this.props.text}
-			</Nav.item>
 			{this.renderDropdown()}
 		</div>;
 	}

@@ -25,7 +25,7 @@ const Nav = {
 		</div>;
 	},
 
-	item : ({ icon,	href,	newTab,	onClick, color, children, className, disabled, ...props })=>{
+	item : ({ icon, kbd,href, newTab, onClick, color, children, className, disabled, ...props })=>{
 		const classes = cx('navItem', color, className);
 		if(disabled) {
 			return <button className={classes} disabled>{children}{icon && <i className={icon}></i>}</button>
@@ -39,6 +39,7 @@ const Nav = {
 			return <button {...props} className={classes} onClick={onClick} >
 				{children}
 				{icon && <i className={icon}></i>}
+				{kbd && <kbd>{kbd}</kbd>}
 			</button>;
 		}
 	},

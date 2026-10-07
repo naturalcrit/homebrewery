@@ -14,6 +14,9 @@ import Nav from './nav.jsx';
 const Navbar = ({ account, brew, title, props }) => {
 	const version = global.version || '0.0.0';
 
+	const isMac = navigator.platform.toUpperCase().includes("MAC");
+	const mod = isMac ? "⌘" : "Ctrl";
+
 	const renderTitle = () => {
 		//if vault
 		const cleanTitle = title.replace(/^\/+|\/+$/g, '');
@@ -59,13 +62,12 @@ const Navbar = ({ account, brew, title, props }) => {
 				</Dropdown>
 				<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 					<div className='nav-section'>
-						<li className='navItem'>Undo</li>
-						<li className='navItem'>Redo</li>
-						<li className='navItem'>Cut</li>
-						<li className='navItem'>Copy</li>
-						<li className='navItem'>Paste</li>
-						<li className='navItem'>Find</li>
-						<li className='navItem'>Find and Replace</li>
+						<Nav.item kbd={mod + ' + z'}>Undo</Nav.item>
+						<Nav.item kbd={mod + ' + Shift + z'}>Redo</Nav.item>
+						<Nav.item kbd={mod + ' + x'}>cut</Nav.item>
+						<Nav.item kbd={mod + ' + c'}>copy</Nav.item>
+						<Nav.item kbd={mod + ' + v'}>paste</Nav.item>
+						<Nav.item kbd={mod + ' + f'}>Find / Replace</Nav.item>
 					</div>
 				</Dropdown>
 				<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>

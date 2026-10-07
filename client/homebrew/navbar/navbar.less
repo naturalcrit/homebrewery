@@ -299,7 +299,7 @@
 		place-items: center;
 		height: 100%;
 		width: 100%;
-		padding: 5px;
+		padding: 5px 10px;
 	}
 	a {
 		color: inherit;
@@ -309,11 +309,32 @@
 		&:hover {
 			background:#555;
 		}
+		&:has(> i, > kbd) {
+			display:flex;
+			gap:5px;
+			justify-content: space-between;
+		}
+
+		kbd {
+			font-size:.8em;
+			font-family: monospace;
+			color:#aaa;
+			background:#222;
+			padding:2px 5px;
+			border-radius:5px;
+		}
+	}
+
+	.navItem {
+		height:2em;
+
+		&.header {
+			justify-content: center;
+		}
 	}
 
 	> ul {
 		display: flex;
-		gap: 15px;
 		align-items: center;
 		height: 100%;
 
@@ -321,14 +342,11 @@
 			height: 100%;
 			text-wrap:nowrap;
 
-			&:not(:only-child) {
-				
-			&:first-child {
-				padding-left: 10px;
+			&:first-child :is(button, a) {
+				padding-left: 15px;
 			}
-			&:last-child {
-				padding-right: 10px;
-			}
+			&:last-child :is(button, a) {
+				padding-right: 15px;
 			}
 		}
 	}
