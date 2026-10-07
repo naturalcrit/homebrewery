@@ -2,6 +2,8 @@ import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
 import { hbfm }                               from 'marked-hbfm';
+import { md5 }                                from 'hash-wasm';
+import { makePatches, stringifyPatches }      from '@sanity/diff-match-patch';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
@@ -21,6 +23,7 @@ import PrintNavItem   from '@navbar/print.navitem.jsx';
 import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
+import googleDriveIcon from '../googleDrive.svg';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
 const BREWKEY        = 'HB_newPage_content';
@@ -35,24 +38,18 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
-		saveGoogle,
-		setSaveGoogle,
-		error,
-		setError,
-		currentBrew,
-		setCurrentBrew,
+		brew,
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,
-		renderGoogleDriveIcon = ()=>{},
 		showEditorButtons,
 		userThemes = {}
 	} = dependencies;
 
+	const [currentBrew, setCurrentBrew]               = useState(brew);
 	const [isSaving, setIsSaving]                     = useState(false);
 	const [lastSavedTime, setLastSavedTime]           = useState(new Date());
 	const [autoSaveEnabled, setAutoSaveEnabled]       = useState(!sandbox);
@@ -60,6 +57,13 @@ export default function useCommonEditPageFunctions(dependencies) {
 	const [unsavedChanges, setUnsavedChanges]         = useState(false);
 	const [themeBundle, setThemeBundle]               = useState({});
 	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(currentBrew.text));
+	const [saveGoogle, setSaveGoogle]                 = useState(currentBrew.googleId);
+	const [error, setError]                           = useState(null);
+
+	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew]     = useState(currentBrew.trashed);
+	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer]   = useState(false);
+	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
+	const [confirmGoogleTransfer, setConfirmGoogleTransfer]       = useState(false);
 
 	const [currentEditorViewPageNum, setCurrentEditorViewPageNum] = useState(1);
 	const [currentEditorCursorPageNum, setCurrentEditorCursorPageNum] = useState(1);
@@ -67,6 +71,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
+	const lastSavedBrew      = useRef(_.cloneDeep(currentBrew));
 	const saveTimeout        = useRef(null);
 	const editorRef          = useRef(null);
 
@@ -201,12 +206,27 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			const brewToSave = currentBrew;
-			let savedBrew = await save(brewToSave, saveToGoogle)
-				.catch((err)=>{setError(err);});
+
+			//Prepare content to send to server
+			const snapshotBrewBeforeSave = currentBrew;
+			const brewToSave = {
+				...currentBrew,
+				text      : currentBrew.text.normalize('NFC'),
+				pageCount : ((currentBrew.renderer === 'legacy' ? currentBrew.text.match(/\\page/g) : currentBrew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
+				patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(currentBrew.text.normalize('NFC')))),
+				hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
+				textBin   : undefined,
+				version   : lastSavedBrew.current.version
+			};
+
+			const savedBrew = await save(brewToSave, saveToGoogle)
+				.catch((err)=>{
+					console.error('Error Updating Local Brew');
+					setError(err);
+				});
 			if(savedBrew) {
 				lastSavedBrew.current = {
-					...brewToSave,
+					...snapshotBrewBeforeSave,
 					...savedBrew
 				};
 
@@ -216,11 +236,11 @@ export default function useCommonEditPageFunctions(dependencies) {
 				}));
 
 				if(useLocalStorage) clearLocalStorage();
+				setLastSavedTime(new Date());
+				if(!autoSaveEnabled) resetWarnUnsavedTimer();
 				onSaveSuccess(savedBrew);
 			}
 			setIsSaving(false);
-			setLastSavedTime(new Date());
-			if(!autoSaveEnabled) resetWarnUnsavedTimer();
 		}, newTimeout);
 	});
 
@@ -261,18 +281,94 @@ export default function useCommonEditPageFunctions(dependencies) {
 		snippets : newData.snippets
 	}));
 
+	//======----- Google Toggle Button -----======
+	const closeAlerts = (e)=>{
+		e.stopPropagation(); //Only handle click once so alert doesn't reopen
+		setAlertTrashedGoogleBrew(false);
+		setAlertNoGoogleToTransfer(false);
+		setConfirmGoogleTransfer(false);
+		setAlertOwnershipToTransfer(false);
+	};
+
+	const handleGoogleClick = ()=>{
+		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
+			setAlertOwnershipToTransfer(true);
+			return;
+		}
+		if(!global.account?.googleId) {
+			setAlertNoGoogleToTransfer(true);
+			return;
+		}
+
+		setConfirmGoogleTransfer((prev)=>!prev);
+		setError(null);
+	};
+
+	const toggleGoogleStorage = (e)=>{
+		closeAlerts(e);
+		const newSaveGoogle = !saveGoogle;
+		setSaveGoogle((prev)=>!prev);
+		setError(null);
+		trySave(true, true, newSaveGoogle);
+	};
+
+	const renderGoogleDriveIcon = ()=>(
+		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
+			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
+
+			{alertOwnershipToTransfer && (
+				<div className='errorContainer'>
+					You must be the Owner to transfer between the Homebrewery and Google Drive!
+					The owner of this file is {currentBrew.authors[0]}.
+					<br></br>
+					<div className='confirm' onClick={closeAlerts}> Okay </div>
+				</div>
+			)}
+
+			{alertNoGoogleToTransfer && (
+				<div className='errorContainer'>
+					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
+					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+						<div className='confirm' onClick={closeAlerts}> Sign In </div>
+					</a>
+					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
+				</div>
+			)}
+
+			{alertTrashedGoogleBrew && (
+				<div className='errorContainer'>
+					This brew is currently in your Trash folder on Google Drive!<br />
+					If you want to keep it, make sure to move it before it is deleted permanently!<br />
+					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
+				</div>
+			)}
+
+			{confirmGoogleTransfer && (
+				<div className='errorContainer'>
+					{saveGoogle
+						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
+						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
+					<br />
+					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
+					<div className='deny' onClick={closeAlerts}>                                  No  </div>
+				</div>
+			)}
+		</Nav.item>
+	);
+
+	//======----- Navbar -----======
 	const renderNavbar = ()=>(
 		<Navbar>
 			<Nav.section>
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
 			</Nav.section>
 			<Nav.section>
-				{renderGoogleDriveIcon()}
+				{(pageName == 'editPage') && renderGoogleDriveIcon()}
 				{error
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: <Nav.dropdown className='save-menu'>
 						{renderSaveButton()}
-						{pageName == 'editPage' && renderAutoSaveButton()}
+						{(pageName == 'editPage') && renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
 				<PrintNavItem />
