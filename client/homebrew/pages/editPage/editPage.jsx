@@ -10,13 +10,9 @@ import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefau
 
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-
 // Page specific imports
 import { gzipSync, strToU8 }             from 'fflate';
-
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
-import googleDriveIcon from '../../googleDrive.svg';
 
 const useLocalStorage     = false;
 const sandbox             = false;
@@ -31,42 +27,7 @@ const EditPage = (props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [saveGoogle, setSaveGoogle] = useState(!!props.brew.googleId);
 	const [error, setError] = useState(null);
-	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew] = useState(props.brew.trashed);
-	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
-	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
-	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
-
-	const handleGoogleClick = ()=>{
-		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
-			setAlertOwnershipToTransfer(true);
-			return;
-		}
-		if(!global.account?.googleId) {
-			setAlertNoGoogleToTransfer(true);
-			return;
-		}
-
-		setConfirmGoogleTransfer((prev)=>!prev);
-		setError(null);
-	};
-
-	const closeAlerts = (e)=>{
-		e.stopPropagation(); //Only handle click once so alert doesn't reopen
-		setAlertTrashedGoogleBrew(false);
-		setAlertNoGoogleToTransfer(false);
-		setConfirmGoogleTransfer(false);
-		setAlertOwnershipToTransfer(false);
-	};
-
-	const toggleGoogleStorage = (e)=>{
-		closeAlerts(e);
-		const newSaveGoogle = !saveGoogle;
-		setSaveGoogle((prev)=>!prev);
-		setError(null);
-		trySave(true, true, newSaveGoogle);
-	};
 
 	const save = async (brew, saveToGoogle)=>{
 		await updateHistory(brew).catch(console.error);
@@ -101,56 +62,9 @@ const EditPage = (props)=>{
 		history.replaceState(null, null, `/edit/${savedBrew.editId}`);;
 	};
 
-	const renderGoogleDriveIcon = ()=>(
-		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
-			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
-
-			{alertOwnershipToTransfer && (
-				<div className='errorContainer'>
-					You must be the Owner to transfer between the Homebrewery and Google Drive!
-					The owner of this file is {currentBrew.authors[0]}.
-					<br></br>
-					<div className='confirm' onClick={closeAlerts}> Okay </div>
-				</div>
-			)}
-
-			{alertNoGoogleToTransfer && (
-				<div className='errorContainer'>
-					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
-						<div className='confirm' onClick={closeAlerts}> Sign In </div>
-					</a>
-					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
-				</div>
-			)}
-
-			{alertTrashedGoogleBrew && (
-				<div className='errorContainer'>
-					This brew is currently in your Trash folder on Google Drive!<br />
-					If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
-				</div>
-			)}
-
-			{confirmGoogleTransfer && (
-				<div className='errorContainer'>
-					{saveGoogle
-						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
-						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
-					<br />
-					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
-					<div className='deny' onClick={closeAlerts}>                                  No  </div>
-				</div>
-			)}
-		</Nav.item>
-	);
-
 	const {
 		renderPanels,
-		trySave,
 	} = useCommonEditPageFunctions({
-		saveGoogle,
-		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
@@ -162,7 +76,6 @@ const EditPage = (props)=>{
 		onSaveSuccess,
 		pageName,
 		showEditorButtons,
-		renderGoogleDriveIcon,
 		userThemes : props.userThemes
 	});
 
