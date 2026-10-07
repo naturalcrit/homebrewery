@@ -113,12 +113,12 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const renderSortOption = (sortTitle, sortValue)=>{
 		return (
-			<div className={`sort-option ${sortType == sortValue ? 'active' : ''}`}>
+			<label className={`option ${sortType == sortValue ? 'active' : ''}`}>
 				<button value={`${sortValue}`} onClick={sortType == sortValue ? handleSortDirChange : handleSortOptionChange}>
 					{`${sortTitle}`}
 				</button>
 				{sortType == sortValue && <i className={`sortDir fas ${sortDir == 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>}
-			</div>
+			</label>
 		);
 	};
 
@@ -201,7 +201,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const renderSortOptions = ()=>{
 		return (
-			<div className='sort-container'>
+			<div className='radio-toggle sort-container'>
 				<h6>Sort by :</h6>
 				{renderSortOption('Title', 'alpha')}
 				{renderSortOption('Created Date', 'created')}
@@ -289,28 +289,37 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const renderLayoutModeOptions = ()=>{
 		return (
-			<div className='layout-container'>
-				View:
-				<div className='layout-option' title='grid'>
-					<label>
+			<div className='radio-toggle layout-container'>
+				<h6>View:</h6>
+				<label className='option' title='grid'>
 						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
 						<i className='fac compressed-grid'></i>
-					</label>
-				</div>
-				<div className='layout-option' title='list'>
-					<label>
-						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
-						<i className='fas fa-bars'></i>
-					</label>
-				</div>
-				<div className='layout-option' title='card'>
-					<label>
-						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'card')} checked={layoutMode === 'card'} />
-						<i className='fac format-card'></i>
-					</label>
-				</div>
-			</div>			
+				</label>
+				<label className='option' title='list'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
+					<i className='fas fa-bars'></i>
+				</label>
+				<label className='option' title='card'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'card')} checked={layoutMode === 'card'} />
+					<i className='fac format-card'></i>
+				</label>
+			</div>
 		);
+	};
+	const renderThemePicker = ()=>{
+		return (
+			<div className="radio-toggle theme-container">
+				<h6>Theme:</h6>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')}/>
+					<i className="fas fa-sun"/>
+				</label>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')}/>
+					<i className="fas fa-moon"/>
+				</label>
+			</div>
+		)
 	};
 
 	const renderNav = () =>{
@@ -321,6 +330,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderFilterOption()}
 				{renderTagsOptions()}
 				{renderLayoutModeOptions()}
+				{renderThemePicker()}
 			</div>
 		);
 			
