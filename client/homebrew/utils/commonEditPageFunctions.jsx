@@ -39,10 +39,7 @@ const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 
 export default function useCommonEditPageFunctions(dependencies) {
 	const {
-		error,
-		setError,
-		currentBrew,
-		setCurrentBrew,
+		brew,
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
@@ -53,6 +50,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		userThemes = {}
 	} = dependencies;
 
+	const [currentBrew, setCurrentBrew]               = useState(brew);
 	const [isSaving, setIsSaving]                     = useState(false);
 	const [lastSavedTime, setLastSavedTime]           = useState(new Date());
 	const [autoSaveEnabled, setAutoSaveEnabled]       = useState(!sandbox);
@@ -61,6 +59,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 	const [themeBundle, setThemeBundle]               = useState({});
 	const [HTMLErrors, setHTMLErrors]                 = useState(hbfm.validate(currentBrew.text));
 	const [saveGoogle, setSaveGoogle]                 = useState(currentBrew.googleId);
+	const [error, setError]                           = useState(null);
 
 	const [alertTrashedGoogleBrew, setAlertTrashedGoogleBrew]     = useState(currentBrew.trashed);
 	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer]   = useState(false);
@@ -222,7 +221,10 @@ export default function useCommonEditPageFunctions(dependencies) {
 			};
 
 			const savedBrew = await save(brewToSave, saveToGoogle)
-				.catch((err)=>{setError(err);});
+				.catch((err)=>{
+					console.error('Error Updating Local Brew');
+					setError(err);
+				});
 			if(savedBrew) {
 				lastSavedBrew.current = {
 					...snapshotBrewBeforeSave,
@@ -235,11 +237,11 @@ export default function useCommonEditPageFunctions(dependencies) {
 				}));
 
 				if(useLocalStorage) clearLocalStorage();
+				setLastSavedTime(new Date());
+				if(!autoSaveEnabled) resetWarnUnsavedTimer();
 				onSaveSuccess(savedBrew);
 			}
 			setIsSaving(false);
-			setLastSavedTime(new Date());
-			if(!autoSaveEnabled) resetWarnUnsavedTimer();
 		}, newTimeout);
 	});
 
