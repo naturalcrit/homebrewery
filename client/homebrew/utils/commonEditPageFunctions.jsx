@@ -362,12 +362,12 @@ export default function useCommonEditPageFunctions(dependencies) {
 				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
 			</Nav.section>
 			<Nav.section>
-				{(pageName = 'editPage') && renderGoogleDriveIcon()}
+				{(pageName == 'editPage') && renderGoogleDriveIcon()}
 				{error
 					? <ErrorNavItem error={error} clearError={clearError} />
 					: <Nav.dropdown className='save-menu'>
 						{renderSaveButton()}
-						{pageName == 'editPage' && renderAutoSaveButton()}
+						{(pageName == 'editPage') && renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
 				<PrintNavItem />
