@@ -12,6 +12,14 @@ export function generateAssetsPlugin(isDev = false) {
 			// Copy favicon
 			await fs.copy('./client/homebrew/favicon.ico', `${buildDir}/assets/favicon.ico`);
 
+			//Copy this image into multiple paths to avoid server spam where browser requests an image
+			//at the wrong path, gets a 406, then in response requests broken-image which also fails. Error handler
+			//used the wrong path for this image causing an infinite request loop. Should be able to remove
+			//in some time once all users haver refreshed their browser
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/edit/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/new/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/client/icons/broken-image.jpg`);
+
 			// Copy shared styles/fonts
 			const assets = fs.readdirSync('./shared/naturalcrit/styles');
 			for (const file of assets) {

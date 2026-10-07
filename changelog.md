@@ -93,30 +93,133 @@ pre {
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
 
-### Saturday 4/20/2026 - v3.22.0
-
+### Tuesday 9/29/2026 - v3.24.1
 {{taskList
-##### 5e-Cleric
-* [x] Major update to editor framework (Codemirror 6)
-Fixes issues [#3511](https://github.com/naturalcrit/homebrewery/issues/3511), [#4590](https://github.com/naturalcrit/homebrewery/issues/4590), [#4563](https://github.com/naturalcrit/homebrewery/issues/4653), [#4655](https://github.com/naturalcrit/homebrewery/issues/4655)
-* [x] Fix to Admin page tab names
+##### calculuschild
+* [x] Small hotfix for broken images thrashing the server
+}}
+
+### Tuesday 9/29/2026 - v3.24.0
+{{taskList
+##### calculuschild
+* [x] Add a periodic warning to /new page if work has never been saved
+* [x] Small fix to variable hoisting logic
+
+Fixes issue [#31](https://github.com/naturalcrit/marked-variables/issues/31)
+
+##### Ericscheid
+* [x] Enable "fancy drop caps" on any paragraph, by placing `{drop-cap}` on the line below.
+
+Fixes issue [#5024](https://github.com/naturalcrit/homebrewery/issues/5024)
+
+* [x] Prevent crash if `<script>` tag in brew text
+
+Fixes issue [#546](https://github.com/naturalcrit/homebrewery/issues/546)
 
 ##### G-Ambatte
-* [x] Fix white page crash on certain browsers
+* [x] Add compatibility with Markdeep Ascii art diagrams. See [example brew](https://homebrewery.naturalcrit.com/share/TsZ5Iak3bapb)
+
+* [x] Fix stray hyphens in PDF output titles
+
+Fixes issue [#5069](https://github.com/naturalcrit/homebrewery/issues/5069)
+
+##### 5e-Cleric
+* [x] Fix Google Drive files that can't be deleted
+
+Fixes issue [#5020](https://github.com/naturalcrit/homebrewery/issues/5020)
+
+* [x] Prevent co-authors moving brews between Google and Homebrewery storage.
+
+Fixes issue [#4862](https://github.com/naturalcrit/homebrewery/issues/4862)
+
+* [x] Fix cursor position for hotkeys, and other tweaks
+
+Fixes issues [#4758](https://github.com/naturalcrit/homebrewery/issues/4758), [#4790](https://github.com/naturalcrit/homebrewery/issues/4790), [#4809](https://github.com/naturalcrit/homebrewery/issues/4809)
+
+##### 5e-Cleric, G-Ambatte
+* [x] Share pages update live when file contents change
+
+##### Abquintic, Calculuschild, G-Ambatte, Gazook89, 5e-Cleric, Ericscheid
+* [x] Multiple background fixes and code cleanups
+}}
+
+### Monday 9/07/2026 - v3.23.0
+{{taskList
+##### firstmatekidd (new contributor!)
+* [x] Add nav buttons to tab order for accesibility
+* [x] Add title to brewRenderer iframe for accessibility
+* [x] Add aria labels to toolbars
+
+Partially fixes issue [#3032](https://github.com/naturalcrit/homebrewery/issues/3032)
+
+##### ReinaSweet (new contributor!)
+* [x] Added security to prevent scripts running in brews
+
+##### Gazook89
+* [x] Lazy load brew images for faster first load
+* [x] Fix snippet menus getting cut off behind divider bar
+
+Fixes issue [#3840](https://github.com/naturalcrit/homebrewery/issues/3840)
+
+##### Abquintic
+* [x] Fix variables not hoisting in later pages
+
+##### 5e-Cleric
+* [x] Add image preview when hovering over image syntax
+
+Fixes issue [#2037](https://github.com/naturalcrit/homebrewery/issues/2037)
+
+* [x] Remember editor theme across tabs
+
+Fixes issue [#4858](https://github.com/naturalcrit/homebrewery/issues/4858)
+
+* [x] Add ability to remove co-authors if you are the owner
+
+Fixes part of issue [#4101](https://github.com/naturalcrit/homebrewery/issues/4101)
+
+##### G-Ambatte
+* [x] Fix editor panel shrinking when opening dev tools
+
+Fixes issue [#4866](https://github.com/naturalcrit/homebrewery/issues/4866)
+
+* [x] Added security to prevent scripts running in brews
+
+Fixes issue [#4904](https://github.com/naturalcrit/homebrewery/issues/4904)
+
+##### Abquintic, G-Ambatte, Gazook89, 5e-Cleric
+* [x] Multiple background fixes and code cleanups
+}}
+
+\page
+
+### Wednesday 5/13/2026 - v3.22.1
+{{taskList
+##### Frederlk (new Contributor!)
+* [x] Add "share current page" to {{openSans **SHARE :fas_share_nodes:**}} menu
+
+##### Calculuschild, 5e-Cleric
+* [x] Fix brews triggering unneeded save when loaded
+
+##### G-Ambatte
+* [x] Fix brews with `$` in text getting out of sync on save
+
+##### 5e-Cleric, Gazook89
+* [x] Fix various issues with Codemirror 6
+
+Fixes issues [#4771](https://github.com/naturalcrit/homebrewery/issues/4771), [#4783](https://github.com/naturalcrit/homebrewery/issues/4783)
 }}
 
 ### Saturday 4/04/2026 - v3.21.0
 
 {{taskList
 ##### Gazook89
-* [x] Allow custom {{openSans **:fas_table_list: SNIPPETS**}} to be inserted mid-line
+* [x] Allow custom {{openSans **:fas_table_list: SNIPPETS**}} dropdown to be inserted mid-line
 
 ##### abquintic
 * [x] Move example snippet images out of imgur (for folks without imgur access)
 
 ##### 5e-Cleric
 * [x] Add auto-suggest to tag entry input box
-* [x] Replace all example artwork with
 * [x] Added tooltips to the {{openSans :fas_circle_info: **Properties**}} menu
 * [x] Removed {{openSans **SYSTEMS**}} checkboxes from {{openSans :fas_circle_info: **Properties**}} menu; instead {{openSans **TAGS**}} should be used for this purpose
 * [x] Replace all AI-generated art with public domain art
@@ -130,6 +233,7 @@ Fixes issues [#543](https://github.com/naturalcrit/homebrewery/issues/543), [#24
 ##### G-Ambatte, abquintic, 5e-Cleric
 * [x] Multiple other backend fixes and refactors
 }}
+
 
 ### Friday 1/11/2026 - v3.20.1
 
@@ -167,7 +271,7 @@ Fixes issue [#4559](https://github.com/naturalcrit/homebrewery/issues/4559)
 ##### G-Ambatte
 * [x] Fix default save location failing on new documents 
 
-Fixes issue [#4437](https://github.com/naturalcrit/homebrewery/issues/3175)
+Fixes issue [#4437](https://github.com/naturalcrit/homebrewery/issues/4437)
 * [x] Fix usernames with special symbols unable to open userpage
 
 Fixes issue [#807](https://github.com/naturalcrit/homebrewery/issues/807)
@@ -326,7 +430,7 @@ Fixes issue [#1729](https://github.com/naturalcrit/homebrewery/issues/1729)
 Fixes issue [#4079](https://github.com/naturalcrit/homebrewery/issues/4079)
 
 ##### Calculuschild
-* [x] `꞉꞉꞉꞉` now produces `<br>` instead of a `<div>`
+* [x] `꞉꞉꞉꞉` now produces `<br>` instead of a `&lt;div>`
 * [x] Fix typos in tables freezing the editor
 
 Fixes issue [#4059](https://github.com/naturalcrit/homebrewery/issues/4059)
