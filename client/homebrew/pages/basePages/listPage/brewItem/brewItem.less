@@ -7,6 +7,7 @@
 	--bg-image                  : @backgroundImageAlt;
 	--text-clr                  : black;
 	--text-shadow-clr           : white;
+	--hb-logo: url('@themes/assets/naturalCritLogoBlack.svg');
 
 	position                    : relative;
 	display                     : flex;
@@ -57,9 +58,11 @@
 		font-weight      : bold;
 		white-space      : nowrap;
 		cursor           : pointer;
-		background-color : rgba(from var(--tag-base) r g b / 0.1);
+		color:black;
+		background : hsl(from currentColor h 20% 80%);
 		border           : 1px solid currentColor;
 		border-radius    : 4px;
+
 		&::before {
 			margin-right : 3px;
 			font-family  : 'Font Awesome 6 Free';
@@ -72,22 +75,18 @@
 		--tag-system     : #800000;
 		&.type {
 			color            : var(--tag-type);
-			background-color : rgba(from var(--tag-type) r g b / 0.2);
 			&::before { content : '\f0ad'; }
 		}
 		&.group {
 			color            : var(--tag-group);
-			background-color : rgba(from var(--tag-group) r g b / 0.1);
 			&::before { content : '\f500'; }
 		}
 		&.meta {
 			color            : var(--tag-meta);
-			background-color : rgba(from var(--tag-meta) r g b / 0.2);
 			&::before { content : '\f05a'; }
 		}
 		&.system {
 			color            : var(--tag-system);
-			background-color : rgba(from var(--tag-system) r g b / 0.2);
 			&::before { content : '\f518'; }
 		}
 	}
@@ -127,11 +126,20 @@
 		.deleteLink { color : @red; }
 	}
 }
+
+.darkMode .brewItem {
+	--bg-clr                    : #444;
+	--bg-image                  : @backgroundImageAltDark;
+	--text-clr                  : #ddd;
+	--text-shadow-clr           : black;
+	--hb-logo: url('@themes/assets/naturalCritLogoWhite.svg');
+}
+
 .grid > .brewItem {
 	justify-content  : space-between;
 	width            : clamp(300px, 48%, 500px);
 	min-height       : 125px;
-	padding          : 5px 15px 5px 6px;
+	padding          : 7px 17px 7px 8px;
 	padding-right    : 30px;
 	border-radius    : 5px;
 	box-shadow       : 0 4px 5px 0 #333333;
@@ -160,7 +168,7 @@
 	width                 : 300px;
 	height                : 400px;
 	padding               : 100px 10px 50px;
-	background-image      : url('@themes/assets/naturalCritLogoBlack.svg'), var(--bg-image);
+	background-image      : var(--hb-logo), var(--bg-image);
 	background-repeat     : no-repeat;
 	background-position   : center 20%, center;
 	background-size       : 50%, cover;
@@ -221,7 +229,6 @@
 			grid-area : tags;
 			color     : inherit;
 			i { color : inherit;}
-			> span { background : hsl(from currentColor h 20% 80%); }
 		}
 		.brewAuthors { grid-area : authors; }
 		.brewPages { grid-area : pages; }
@@ -234,6 +241,9 @@
 		left     : 0;
 		height   : 40px;
 	}
+}
+.darkMode .card .brewItem {
+	border-width:2px;
 }
 .list > .brewItem {
 	display               : grid;

@@ -4,7 +4,8 @@ import moment from 'moment';
 import request from '../../../../utils/request-middleware.js';
 
 import googleDriveIcon from '../../../../googleDrive.svg';
-import homebreweryIcon from '../../../../thumbnail.svg';
+import homebreweryIconWhite from '@themes/assets/naturalCritLogoWhite.svg';
+import homebreweryIconBlack from '@themes/assets/naturalCritLogoBlack.svg';
 import dedent from 'dedent';
 
 const BrewItem = ({
@@ -16,6 +17,7 @@ const BrewItem = ({
 	},
 	updateListFilter = ()=>{},
 	reportError = ()=>{},
+	theme,
 	renderStorage = true,
 })=>{
 
@@ -101,10 +103,10 @@ const BrewItem = ({
 				</span>
 			);
 		}
-
+		console.log(theme);
 		return (
 			<span className='storage' title='Homebrewery Storage'>
-				<img className='homebreweryIcon' src={homebreweryIcon} alt='Homebrewery Storage' />
+				<img className='homebreweryIcon' src={theme === 'light' ? homebreweryIconBlack : homebreweryIconWhite} alt='Homebrewery Storage' />
 			</span>
 		);
 	};
