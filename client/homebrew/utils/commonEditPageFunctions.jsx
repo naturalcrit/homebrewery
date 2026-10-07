@@ -206,6 +206,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setHTMLErrors(hbfm.validate(currentBrew.text));
 
 			//Prepare content to send to server
+			const snapshotBrewBeforeSave = currentBrew;
 			const brewToSave = {
 				...currentBrew,
 				text      : currentBrew.text.normalize('NFC'),
@@ -220,7 +221,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 				.catch((err)=>{setError(err);});
 			if(savedBrew) {
 				lastSavedBrew.current = {
-					...brewToSave,
+					...snapshotBrewBeforeSave,
 					...savedBrew
 				};
 
