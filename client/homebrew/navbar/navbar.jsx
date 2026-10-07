@@ -47,7 +47,7 @@ const Navbar = ({ account, brew, title = '', props }) => {
 					<PrintNavitem disabled={!brew.shareId}/>
 					<Nav.item disabled={!brew.shareId}>Get txt</Nav.item>
 				</div>
-				<ShareNavitem />
+				<ShareNavitem brew={brew} disabled={!brew.shareId} currentPage={''/*how the hell do i get it here?*/}/>
 				<div className='nav-section'>
 					<Nav.item disabled={!brew.shareId}>Delete File</Nav.item>
 					<Nav.item disabled={!brew.shareId}>Publish File</Nav.item>
