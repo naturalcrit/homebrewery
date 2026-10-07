@@ -196,27 +196,19 @@ export default async function createApp(vite) {
 
 	// Create Event Stream source for pages to listen to
 	let initStreamListener = false;
-	app.get('/stream/:id', (req, res)=>{
-		const id = req.params.id;
-
+	app.get('/stream', (req, res)=>{
 		res.writeHead(200, {
 			'Content-Type'     : 'text/event-stream',
-			'Cache-Control'    : 'no-cache, no-transform',
+			'Cache-Control'    : 'no-cache',
 			'Connection'       : 'keep-alive',
 			'Content-Encoding' : 'none'
 		});
 
-		res.write(`data: ${JSON.stringify({ init: Date.now().toString(), shareId: id, eventType: 'message' })}\n\n`);
-
 		if(!initStreamListener){
 			initStreamListener = true;
 			Stream.on('sendUpdate', (event, data)=>{
-				if(isLocalEnvironment) {
-					console.log('Event:', event, '\nData:', data);
-				}
-				if(id == data.shareId) {
-					res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
-				};
+				if(isLocalEnvironment) { console.log('Event:', event, '\nData:', data); }
+				res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
 			});
 		}
 	});
