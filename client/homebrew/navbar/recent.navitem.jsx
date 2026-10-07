@@ -148,9 +148,9 @@ const RecentItems = createReactClass({
 					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 						<span className='title'>{brew.title || '[ no title ]'}</span>
 						<span className='time'>{Moment(brew.ts).fromNow()}</span>
-						<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
+						<button className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></button>
 					</a>
-				})};
+				})}
 			</div>
 		};
 
@@ -167,9 +167,7 @@ const RecentItems = createReactClass({
 	},
 
 	render : function(){
-		return <div className='recent'>
-			{this.renderDropdown()}
-		</div>;
+		return this.renderDropdown()
 	}
 
 });

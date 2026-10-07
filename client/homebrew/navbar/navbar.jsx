@@ -62,7 +62,7 @@ const Navbar = ({ account, brew, title, props }) => {
 				</Dropdown>
 				<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 					<div className='nav-section'>
-						<Nav.item kbd={mod + ' + z'}>Undo</Nav.item>
+						<Nav.item kbd={mod + ' + z'} disabled>Undo</Nav.item>
 						<Nav.item kbd={mod + ' + Shift + z'}>Redo</Nav.item>
 						<Nav.item kbd={mod + ' + x'}>cut</Nav.item>
 						<Nav.item kbd={mod + ' + c'}>copy</Nav.item>
@@ -90,7 +90,7 @@ const Navbar = ({ account, brew, title, props }) => {
 							account
 						</Nav.item>
 					</div>
-					<Dropdown className='navItem' groupName={'Recent Brews'} customTrigger={<>Recent Brews</>} icon={null} key={'recent'}>
+					<Dropdown className='navItem recent' groupName={'Recent Brews'} customTrigger={<>Recent Brews</>} icon={null} key={'recent'}>
 						<RecentNavItem />
 					</Dropdown>
 				</Dropdown>
