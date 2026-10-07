@@ -23,12 +23,11 @@ const NewPage = (props)=>{
 	};
 
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
 	const [error, setError]             = useState(null);
 
 	const save = async (brew, saveToGoogle)=>{
 		const res = await request
-			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
+			.post(`/api${saveToGoogle ? '?saveToGoogle=true' : ''}`)
 			.send(brew)
 			.catch((err)=>{
 				console.error('Error Updating Local Brew');
@@ -47,8 +46,6 @@ const NewPage = (props)=>{
 	const {
 		renderPanels
 	} = useCommonEditPageFunctions({
-		saveGoogle,
-		setSaveGoogle,
 		error,
 		setError,
 		currentBrew,
