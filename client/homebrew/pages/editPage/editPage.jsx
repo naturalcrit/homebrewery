@@ -1,33 +1,21 @@
 import './editPage.less';
 
 // Common imports
-import React, { useState } from 'react';
-import request                                from '../../utils/request-middleware.js';
-
-import _                                      from 'lodash';
-
-import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefaults.js';
-
+import React                      from 'react';
+import request                    from '../../utils/request-middleware.js';
+import _                          from 'lodash';
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
+import { DEFAULT_BREW_LOAD }      from '../../../../server/brewDefaults.js';
 
 // Page specific imports
 import { gzipSync, strToU8 }             from 'fflate';
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
-
-const useLocalStorage     = false;
-const sandbox             = false;
-const showFloatingButtons = false;
-const showEditorButtons   = true;
-const pageName            = 'editPage';
 
 const EditPage = (props)=>{
 	props = {
 		brew : DEFAULT_BREW_LOAD,
 		...props
 	};
-
-	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [error, setError] = useState(null);
 
 	const save = async (brew, saveToGoogle)=>{
 		await updateHistory(brew).catch(console.error);
@@ -41,12 +29,7 @@ const EditPage = (props)=>{
 			.put(`/api/update/${brew.editId}${params}`)
 			.set('Content-Encoding', 'gzip')
 			.set('Content-Type', 'application/json')
-			.send(compressedBrew)
-			.catch((err)=>{
-				console.error('Error Updating Local Brew');
-				setError(err);
-			});
-		if(!res) return;
+			.send(compressedBrew);
 
 		const updatedFields = {
 			googleId : res.body.googleId ?? null, //TODO: investigate if we can set googleId:null in server/update instead of undefined
@@ -65,18 +48,15 @@ const EditPage = (props)=>{
 	const {
 		renderPanels,
 	} = useCommonEditPageFunctions({
-		error,
-		setError,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		sandbox,
-		showFloatingButtons,
+		useLocalStorage     : false,
+		sandbox             : false,
+		showFloatingButtons : false,
+		showEditorButtons   : true,
+		pageName            : 'newPage',
+		brew                : props.brew,
+		userThemes          : props.userThemes,
 		save,
 		onSaveSuccess,
-		pageName,
-		showEditorButtons,
-		userThemes : props.userThemes
 	});
 
 	return renderPanels();
