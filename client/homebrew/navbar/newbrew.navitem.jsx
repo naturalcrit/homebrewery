@@ -65,13 +65,7 @@ const NewBrew = ()=>{
 
 
 	return (
-		<Nav.dropdown>
-			<Nav.item
-				className='new'
-				color='purple'
-				icon='fa-solid fa-plus-square'>
-					new
-			</Nav.item>
+		<div className='nav-section'>
 			<Nav.item
 				className='new'
 				href='/new'
@@ -96,7 +90,7 @@ const NewBrew = ()=>{
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
 					from file
 			</Nav.item>
-		</Nav.dropdown>
+		</div>
 	);
 };
 

@@ -25,8 +25,11 @@ const Nav = {
 		</div>;
 	},
 
-	item : ({ icon,	href,	newTab,	onClick, color, children, className, ...props })=>{
+	item : ({ icon,	href,	newTab,	onClick, color, children, className, disabled, ...props })=>{
 		const classes = cx('navItem', color, className);
+		if(disabled) {
+			return <button className={classes} disabled>{children}{icon && <i className={icon}></i>}</button>
+		}
 		if(href){
 			return <a className={classes} href={href} target={newTab ? '_blank' : '_self'} {...props}>
 				{children}

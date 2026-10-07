@@ -17,7 +17,6 @@ import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
 import AccountNavItem from '@navbar/account.navitem.jsx';
 import ErrorNavItem   from '@navbar/error-navitem.jsx';
 import HelpNavItem    from '@navbar/help.navitem.jsx';
-import VaultNavItem   from '@navbar/vault.navitem.jsx';
 import PrintNavItem   from '@navbar/print.navitem.jsx';
 import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
@@ -278,7 +277,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 				<NewBrewItem />
 				<PrintNavItem />
 				<HelpNavItem />
-				<VaultNavItem />
 				{(pageName == 'editPage') && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
 				<RecentNavItem brew={currentBrew} storageKey={(pageName == 'editPage') ? 'edit' : undefined} />
 				<AccountNavItem />

@@ -1,330 +1,270 @@
 @import '@sharedStyles/core.less';
 
-@navbarHeight : 28px;
-@viewerToolsHeight : 32px;
+@navbarHeight: 28px;
+@viewerToolsHeight: 32px;
 
 @keyframes pinkColoring {
-	0% { color : pink; }
-	50% { color : pink; }
-	75% { color : red; }
-	100% { color : pink; }
+	0% {
+		color: pink;
+	}
+	50% {
+		color: pink;
+	}
+	75% {
+		color: red;
+	}
+	100% {
+		color: pink;
+	}
 }
 
 @keyframes glideDropDown {
 	0% {
-		background-color : #333333;
-		opacity          : 0;
-		transform        : translate(0px, -100%);
+		background-color: #333333;
+		opacity: 0;
+		transform: translate(0px, -100%);
 	}
 	100% {
-		background-color : #333333;
-		opacity          : 1;
-		transform        : translate(0px, 0px);
+		background-color: #333333;
+		opacity: 1;
+		transform: translate(0px, 0px);
 	}
 }
 
 .homebrew nav {
-	position         : relative;
-	z-index          : 2;
-	display          : flex;
-	justify-content  : space-between;
-	background-color : #333333;
-	
-	.navSection {
-		display     : flex;
-		align-items : center;
-		&:last-child .navItem { border-left : 1px solid #666666; }
+	position: relative;
+	z-index: 2;
+	display: flex;
 
-		&:has(.brewTitle) {
-			flex-grow : 1;
-			min-width : 300px;
-		}
-		>.brewTitle { cursor : auto; }
-	}
-	// "NaturalCrit" logo
-	.navLogo {
-		display         : block;
-		margin-top      : 0px;
-		margin-right    : 8px;
-		margin-left     : 8px;
-		color           : white;
-		text-decoration : none;
-		&:hover {
-			.name { color : @orange; }
-			svg { fill : @orange; }
-		}
-		svg {
-			height       : 13px;
-			margin-right : 0.2em;
-			cursor       : pointer;
-			fill         : white;
-		}
-		span.name {
-			font-family : 'CodeLight';
-			font-size   : 15px;
-			span.crit { font-family : 'CodeBold'; }
-			small {
-				font-family    : 'Open Sans';
-				font-size      : 0.3em;
-				font-weight    : 800;
-				text-transform : uppercase;
-			}
-		}
-	}
+	justify-content: space-between;
+	background-color: #333333;
+
 	.navItem {
-		#backgroundColorsHover;
-		.animate(background-color);
-		display          : flex;
-		align-items      : center;
-		justify-content  : center;
-		height           : 100%;
-		padding          : 8px 12px;
-		font-size        : 10px;
-		font-weight      : 800;
-		line-height      : 13px;
-		color            : white;
-		text-transform   : uppercase;
-		text-decoration  : none;
-		cursor           : pointer;
-		background-color : #333333;
-		i {
-			float       : right;
-			margin-left : 5px;
-			font-size   : 13px;
+		display: flex;
+		align-items: center;
+		justify-content: start;
+		height: 100%;
+		padding: 5px;
+		cursor: pointer;
+
+		&:has(button, a) {
+			padding:0;
 		}
-		&.patreon {
-			border-right : 1px solid #666666;
-			border-left  : 1px solid #666666;
-			&:hover i { color : red; }
-			i {
-				color              : pink;
-				.animate(color);
-				animation-name     : pinkColoring;
-				animation-duration : 2s;
-			}
-		}
+
 		&.brewTitle {
-			display          : block;
-			width            : 100%;
-			overflow         : hidden;
-			text-overflow    : ellipsis;
-			font-size        : 12px;
-			font-weight      : 800;
-			color            : white;
-			text-align       : center;
-			text-transform   : initial;	
-			white-space      : nowrap;
-			background-color : transparent;		
+			display: block;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			font-size: 12px;
+			font-weight: 800;
+			color: white;
+			text-align: center;
+			text-transform: initial;
+			white-space: nowrap;
+			background-color: transparent;
 		}
 
 		// "The Homebrewery" logo
 		&.homebrewLogo {
 			.animate(color);
-			font-family : 'CodeBold';
-			font-size   : 12px;
-			color       : white;
+			font-family: 'CodeBold';
+			font-size: 12px;
+			color: white;
 			div {
-				margin-top    : 2px;
-				margin-bottom : -2px;
+				margin-top: 2px;
+				margin-bottom: -2px;
 			}
-			&:hover { color : @blue; }
+			&:hover {
+				color: @blue;
+			}
 		}
 		&.metadata {
-			position    : relative;
-			display     : flex;
-			flex-grow   : 1;
-			align-items : center;
-			height      : 100%;
-			padding     : 0;
-			i { margin-right : 10px;}
+			position: relative;
+			display: flex;
+			flex-grow: 1;
+			align-items: center;
+			height: 100%;
+			padding: 0;
+			i {
+				margin-right: 10px;
+			}
 			.window {
-				position         : absolute;
-				bottom           : 0;
-				left             : 50%;
-				z-index          : -1;
-				display          : flex;
-				flex-flow        : row wrap;
-				align-content    : baseline;
-				justify-content  : flex-start;
-				width            : 440px;
-				max-height       : ~'calc(100vh - 28px)';
-				padding          : 0 10px 5px;
-				margin           : 0 auto;
-				background-color : #333333;
-				border           : 3px solid #444444;
-				border-top       : unset;
-				border-radius    : 0 0 5px 5px;
-				box-shadow       : inset 0 7px 9px -7px #111111;
-				transition       : transform 0.4s, opacity 0.4s;
+				position: absolute;
+				bottom: 0;
+				left: 50%;
+				z-index: -1;
+				display: flex;
+				flex-flow: row wrap;
+				align-content: baseline;
+				justify-content: flex-start;
+				width: 440px;
+				max-height: ~'calc(100vh - 28px)';
+				padding: 0 10px 5px;
+				margin: 0 auto;
+				background-color: #333333;
+				border: 3px solid #444444;
+				border-top: unset;
+				border-radius: 0 0 5px 5px;
+				box-shadow: inset 0 7px 9px -7px #111111;
+				transition:
+					transform 0.4s,
+					opacity 0.4s;
 				&.active {
-					opacity   : 1;
-					transform : translateX(-50%) translateY(100%);
+					opacity: 1;
+					transform: translateX(-50%) translateY(100%);
 				}
 				&.inactive {
-					opacity   : 0;
-					transform : translateX(-50%) translateY(0%);
+					opacity: 0;
+					transform: translateX(-50%) translateY(0%);
 				}
 				.row {
-					display   : flex;
-					flex-flow : row wrap;
-					width     : 100%;
+					display: flex;
+					flex-flow: row wrap;
+					width: 100%;
 					h4 {
-						box-sizing : border-box;
-						display    : block;
-						flex-grow  : 1;
-						flex-basis : 20%;
-						min-width  : 76px;
-						padding    : 5px 0;
-						color      : #BBBBBB;
-						text-align : center;
+						box-sizing: border-box;
+						display: block;
+						flex-grow: 1;
+						flex-basis: 20%;
+						min-width: 76px;
+						padding: 5px 0;
+						color: #bbbbbb;
+						text-align: center;
 					}
 					p {
-						flex-grow      : 1;
-						flex-basis     : 80%;
-						padding        : 5px 0;
-						font-family    : 'Open Sans', sans-serif;
-						font-size      : 10px;
-						font-weight    : normal;
-						text-transform : initial;
+						flex-grow: 1;
+						flex-basis: 80%;
+						padding: 5px 0;
+						font-family: 'Open Sans', sans-serif;
+						font-size: 10px;
+						font-weight: normal;
+						text-transform: initial;
 						.tag {
-							display          : inline-block;
-							padding          : 2px;
-							margin           : 2px 2px;
-							background-color : #444444;
-							border           : 2px solid grey;
-							border-radius    : 5px;
+							display: inline-block;
+							padding: 2px;
+							margin: 2px 2px;
+							background-color: #444444;
+							border: 2px solid grey;
+							border-radius: 5px;
 						}
 						a.userPageLink {
-							color           : white;
-							text-decoration : none;
-							&:hover { text-decoration : underline; }
+							color: white;
+							text-decoration: none;
+							&:hover {
+								text-decoration: underline;
+							}
 						}
 					}
-					&:nth-of-type(even) { background-color : #555555; }
+					&:nth-of-type(even) {
+						background-color: #555555;
+					}
 				}
 			}
 		}
 		&.warning {
-			position         : relative;
-			color            : white;
-			background-color : @orange;
-			&:hover > .dropdown { visibility : visible; }
+			position: relative;
+			color: white;
+			background-color: @orange;
+			&:hover > .dropdown {
+				visibility: visible;
+			}
 			.dropdown {
-				position         : absolute;
-				top              : 28px;
-				left             : 0;
-				z-index          : 10000;
-				box-sizing       : border-box;
-				display          : block;
-				visibility       : hidden;
-				width            : 100%;
-				padding          : 13px 5px;
-				text-align       : center;
-				background-color : #333333;
+				position: absolute;
+				top: 28px;
+				left: 0;
+				z-index: 10000;
+				box-sizing: border-box;
+				display: block;
+				visibility: hidden;
+				width: 100%;
+				padding: 13px 5px;
+				text-align: center;
+				background-color: #333333;
 			}
 		}
 		&.account {
-			min-width : 100px;
-			&.username { text-transform : none;}
-		}
-	}
-	.navDropdownContainer {
-		position : relative;
-		height   : 100%;
-
-		.navDropdown {
-			position       : absolute;
-			//top: 28px;
-			right          : 0px;
-			z-index        : 10000;
-			display        : flex;
-			flex-direction : column;
-			align-items    : flex-end;
-			width          : max-content;
-			min-width      : 100%;
-			max-height     : calc(100vh - 28px);
-			overflow       : hidden auto;
-			.navItem {
-				position           : relative;
-				display            : flex;
-				align-items        : center;
-				justify-content    : space-between;
-				width              : 100%;
-				border             : 1px solid #888888;
-				border-bottom      : 0;
-				animation-name     : glideDropDown;
-				animation-duration : 0.4s;
+			min-width: 100px;
+			&.username {
+				text-transform: none;
 			}
 		}
+
 		&.recent {
-			position : relative;
+			position: relative;
 			.navDropdown .navItem {
 				#backgroundColorsHover;
 				.animate(background-color);
-				position         : relative;
-				box-sizing       : border-box;
-				display          : block;
-				max-width        : 15em;
-				max-height       : ~'calc(100vh - 28px)';			
-				padding          : 8px 5px 13px;
-				overflow         : hidden auto;
-				color            : white;
-				text-decoration  : none;
-				scrollbar-color  : #666666 #333333;
-				scrollbar-width  : thin;
-				background-color : #333333;
-				border-top       : 1px solid #888888;
+				position: relative;
+				box-sizing: border-box;
+				display: block;
+				max-width: 15em;
+				max-height: ~'calc(100vh - 28px)';
+				padding: 8px 5px 13px;
+				overflow: hidden auto;
+				color: white;
+				text-decoration: none;
+				scrollbar-color: #666666 #333333;
+				scrollbar-width: thin;
+				background-color: #333333;
+				border-top: 1px solid #888888;
 				.clear {
-					position         : absolute;
-					top              : 50%;
-					right            : 0;
-					display          : none;
-					width            : 20px;
-					height           : 100%;
-					background-color : #333333;
-					border-radius    : 3px;
-					opacity          : 70%;
-					transform        : translateY(-50%);
-					&:hover { opacity : 100%; }
+					position: absolute;
+					top: 50%;
+					right: 0;
+					display: none;
+					width: 20px;
+					height: 100%;
+					background-color: #333333;
+					border-radius: 3px;
+					opacity: 70%;
+					transform: translateY(-50%);
+					&:hover {
+						opacity: 100%;
+					}
 					i {
-						width      : 100%;
-						height     : 100%;
-						margin     : 0;
-						font-size  : 10px;
-						text-align : center;
+						width: 100%;
+						height: 100%;
+						margin: 0;
+						font-size: 10px;
+						text-align: center;
 					}
 				}
 				&:hover {
-					background-color : @blue;
+					background-color: @blue;
 					.clear {
-						display       : grid;
-						place-content : center;
+						display: grid;
+						place-content: center;
 					}
 				}
 				.title {
-					display       : inline-block;
-					width         : 100%;
-					overflow      : hidden auto;
-					text-overflow : ellipsis;
-					white-space   : nowrap;
+					display: inline-block;
+					width: 100%;
+					overflow: hidden auto;
+					text-overflow: ellipsis;
+					white-space: nowrap;
 				}
 				.time {
-					position  : absolute;
-					right     : 2px;
-					bottom    : 2px;
-					font-size : 0.7em;
-					color     : #888888;
+					position: absolute;
+					right: 2px;
+					bottom: 2px;
+					font-size: 0.7em;
+					color: #888888;
 				}
 				&.header {
-					box-sizing       : border-box;
-					display          : block;
-					padding          : 5px 0;
-					color            : #BBBBBB;
-					text-align       : center;
-					background-color : #333333;
-					border-top       : 1px solid #888888;
-					&:nth-of-type(1) { background-color : darken(@teal, 20%); }
-					&:nth-of-type(2) { background-color : darken(@purple, 30%); }
+					box-sizing: border-box;
+					display: block;
+					padding: 5px 0;
+					color: #bbbbbb;
+					text-align: center;
+					background-color: #333333;
+					border-top: 1px solid #888888;
+					&:nth-of-type(1) {
+						background-color: darken(@teal, 20%);
+					}
+					&:nth-of-type(2) {
+						background-color: darken(@purple, 30%);
+					}
 				}
 			}
 		}
@@ -333,12 +273,71 @@
 
 // this should likely be refactored into .navDropdownContainer
 .save-menu {
-	.dropdown { z-index : 1000; }
+	.dropdown {
+		z-index: 1000;
+	}
 	.navItem i.fa-power-off {
-		color : red;
+		color: red;
 		&.active {
-			color  : rgb(0, 182, 52);
-			filter : drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+			color: rgb(0, 182, 52);
+			filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+		}
+	}
+}
+
+.homebrew nav {
+	color: #ccc;
+	background: #333;
+	height: 30px;
+	font-size: 14px;
+	font-family:Alata;
+	button, a {
+		&:disabled {
+			color: #777;
+		}
+		display: grid;
+		place-items: center;
+		height: 100%;
+		width: 100%;
+		padding: 5px;
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+	.navItem, .menu-wrapper {
+		&:hover {
+			background:#555;
+		}
+	}
+
+	> ul {
+		display: flex;
+		gap: 15px;
+		align-items: center;
+		height: 100%;
+
+		> .menu-wrapper {
+			height: 100%;
+
+			&:first-child {
+				padding-left: 10px;
+			}
+		}
+	}
+
+	> ul ul {
+		background: #333;
+		font-size: 12px;
+		text-transform: capitalize;
+
+		.nav-section:not(:last-child) {
+			border-bottom: 1px solid;
+			margin-bottom: 10px;
+		}
+
+		li {
+			margin-block: 2px;
 		}
 	}
 }

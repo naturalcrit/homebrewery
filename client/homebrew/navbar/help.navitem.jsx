@@ -4,7 +4,7 @@ import dedent from 'dedent';
 import Nav from './nav.jsx';
 
 export default function(props){
-	return <Nav.dropdown>
+	return <div className='nav-section'>
 		<Nav.item color='grey' icon='fas fa-question-circle'>
 			need help?
 		</Nav.item>
@@ -30,5 +30,5 @@ export default function(props){
 			rel='noopener noreferrer'>
 			migrate
 		</Nav.item>
-	</Nav.dropdown>;
+	</div>;
 };

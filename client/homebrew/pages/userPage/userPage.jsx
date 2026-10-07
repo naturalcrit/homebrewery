@@ -11,7 +11,6 @@ import Account from '@navbar/account.navitem.jsx';
 import NewBrew from '@navbar/newbrew.navitem.jsx';
 import HelpNavItem from '@navbar/help.navitem.jsx';
 import ErrorNavItem from '@navbar/error-navitem.jsx';
-import VaultNavitem from '@navbar/vault.navitem.jsx';
 
 const UserPage = (props)=>{
 	props = {
@@ -49,7 +48,6 @@ const UserPage = (props)=>{
 				{error && (<ErrorNavItem error={error} clearError={clearError}></ErrorNavItem>)}
 				<NewBrew />
 				<HelpNavItem />
-				<VaultNavitem />
 				<RecentNavItem />
 				<Account />
 			</Nav.section>

@@ -165,12 +165,12 @@ const RecentItems = createReactClass({
 	},
 
 	render : function(){
-		return <Nav.dropdown className='recent'>
+		return <div className='recent'>
 			<Nav.item icon='fas fa-history' color='grey' >
 				{this.props.text}
 			</Nav.item>
 			{this.renderDropdown()}
-		</Nav.dropdown>;
+		</div>;
 	}
 
 });

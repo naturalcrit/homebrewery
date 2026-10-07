@@ -17,8 +17,25 @@ const getRedditLink = (brew)=>{
 	return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 };
 
-export default ({ brew, currentPage })=>(
-	<Nav.dropdown>
+export default ({ brew, currentPage })=> {
+	if(!brew) return (
+	<div className='nav-section'>
+		<Nav.item icon='fas fa-share-alt' disabled>
+			share
+		</Nav.item>
+		<Nav.item disabled>
+			view
+		</Nav.item>
+		<Nav.item disabled>
+			copy url
+		</Nav.item>
+		<Nav.item disabled>
+			post to reddit
+		</Nav.item>
+	</div>
+	)
+	return (
+	<div className='nav-section'>
 		<Nav.item color='teal' icon='fas fa-share-alt'>
 			share
 		</Nav.item>
@@ -37,5 +54,6 @@ export default ({ brew, currentPage })=>(
 		<Nav.item color='blue' href={getRedditLink(brew)} newTab rel='noopener noreferrer'>
 			post to reddit
 		</Nav.item>
-	</Nav.dropdown>
-);
+	</div>
+)
+};
