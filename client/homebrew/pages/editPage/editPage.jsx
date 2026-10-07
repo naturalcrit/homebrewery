@@ -10,8 +10,6 @@ import { DEFAULT_BREW_LOAD }                  from '../../../../server/brewDefau
 
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
 
-import Nav            from '@navbar/nav.jsx';
-
 // Page specific imports
 import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';

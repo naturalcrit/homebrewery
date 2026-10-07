@@ -319,9 +319,16 @@
 
 		> .menu-wrapper {
 			height: 100%;
+			text-wrap:nowrap;
 
+			&:not(:only-child) {
+				
 			&:first-child {
 				padding-left: 10px;
+			}
+			&:last-child {
+				padding-right: 10px;
+			}
 			}
 		}
 	}

@@ -61,7 +61,7 @@ const Account = createReactClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Nav.dropdown>
+			return <div className='nav-section'>
 				<Nav.item
 					className='account username'
 					color='orange'
@@ -92,7 +92,7 @@ const Account = createReactClass({
 				>
 					logout
 				</Nav.item>
-			</Nav.dropdown>;
+			</div>;
 		}
 
 		//  Logged out

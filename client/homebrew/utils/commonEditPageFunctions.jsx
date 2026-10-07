@@ -305,7 +305,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
-			{renderNavbar()}
+
 			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>

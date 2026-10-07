@@ -7,13 +7,35 @@ import PrintNavitem from './print.navitem.jsx';
 import ShareNavitem from './share.navitem.jsx';
 import HelpNavitem from './help.navitem.jsx';
 import RecentNavItems from './recent.navitem.jsx';
+import Account from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-import useCommonEditPageFunctions from '../../homebrew/utils/commonEditPageFunctions.jsx';
-
-const Navbar = ({ children }) => {
+const Navbar = ({ account, brew, title, props }) => {
 	const version = global.version || '0.0.0';
+
+	const renderTitle = () => {
+		//if vault
+		const cleanTitle = title.replace(/^\/+|\/+$/g, '');
+		if (!brew.shareId) return <Nav.item className='brewTitle'>{cleanTitle || 'Home'}</Nav.item>;
+		return (
+			<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
+				{brew.title}
+			</Nav.item>
+		);
+	};
+
+	const renderEdit = () => {
+		if (!brew.editId) return null;
+
+		const editLink = brew.googleId && !brew.stubbed ? brew.googleId + brew.editId : brew.editId;
+
+		return (
+			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
+				edit
+			</Nav.item>
+		);
+	};
 
 	return (
 		<nav>
@@ -58,9 +80,6 @@ const Navbar = ({ children }) => {
 							Changelog
 						</Nav.item>
 					</div>
-
-					<HelpNavitem />
-
 					<div className='nav-section'>
 						<Nav.item href={`/user/${encodeURIComponent(global.account.username)}`} color='yellow' icon='fas fa-beer'>
 							brews
@@ -73,8 +92,15 @@ const Navbar = ({ children }) => {
 						<RecentNavItem />
 					</Dropdown>
 				</Dropdown>
-				<li>Help</li>
-				<li>User</li>
+				<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+					<HelpNavitem />
+				</Dropdown>
+			</ul>
+			{renderTitle()}
+			<ul>
+				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>
+					<Account />
+				</Dropdown>
 			</ul>
 		</nav>
 	);
