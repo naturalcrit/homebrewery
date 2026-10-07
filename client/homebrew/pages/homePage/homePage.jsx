@@ -26,8 +26,6 @@ const HomePage =(props)=>{
 	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
 	const [error, setError]             = useState(undefined);
 
-	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-
 	const save = async (brew, saveToGoogle)=>{
 		const res = await request
 			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
@@ -58,7 +56,6 @@ const HomePage =(props)=>{
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,

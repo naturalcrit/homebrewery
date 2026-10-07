@@ -45,7 +45,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,
@@ -68,6 +67,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
+	const lastSavedBrew      = useRef(_.cloneDeep(currentBrew));
 	const saveTimeout        = useRef(null);
 	const editorRef          = useRef(null);
 
@@ -202,7 +202,18 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			const brewToSave = currentBrew;
+
+			//Prepare content to send to server
+			const brewToSave = {
+				...currentBrew,
+				text      : currentBrew.text.normalize('NFC'),
+				pageCount : ((currentBrew.renderer === 'legacy' ? currentBrew.text.match(/\\page/g) : currentBrew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
+				patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(currentBrew.text.normalize('NFC')))),
+				hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
+				textBin   : undefined,
+				version   : lastSavedBrew.current.version
+			};
+
 			let savedBrew = await save(brewToSave, saveToGoogle)
 				.catch((err)=>{setError(err);});
 			if(savedBrew) {
