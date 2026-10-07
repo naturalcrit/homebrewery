@@ -1,7 +1,7 @@
 import './editPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
+import React, { useState } from 'react';
 import request                                from '../../utils/request-middleware.js';
 
 import _                                      from 'lodash';
@@ -13,9 +13,7 @@ import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 import Nav            from '@navbar/nav.jsx';
 
 // Page specific imports
-import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
-import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';

@@ -2,6 +2,8 @@ import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
 import { hbfm }                               from 'marked-hbfm';
+import { md5 }                                from 'hash-wasm';
+import { makePatches, stringifyPatches }      from '@sanity/diff-match-patch';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
@@ -214,7 +216,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 				version   : lastSavedBrew.current.version
 			};
 
-			let savedBrew = await save(brewToSave, saveToGoogle)
+			const savedBrew = await save(brewToSave, saveToGoogle)
 				.catch((err)=>{setError(err);});
 			if(savedBrew) {
 				lastSavedBrew.current = {

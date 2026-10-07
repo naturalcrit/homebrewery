@@ -1,7 +1,7 @@
 import './newPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
+import React, { useState } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import _                                      from 'lodash';
 
