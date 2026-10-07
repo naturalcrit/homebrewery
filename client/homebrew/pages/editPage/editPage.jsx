@@ -1,7 +1,7 @@
 import './editPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
+import React, { useState } from 'react';
 import request                                from '../../utils/request-middleware.js';
 
 import _                                      from 'lodash';
@@ -13,9 +13,7 @@ import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx'
 import Nav            from '@navbar/nav.jsx';
 
 // Page specific imports
-import { md5 }                           from 'hash-wasm';
 import { gzipSync, strToU8 }             from 'fflate';
-import { makePatches, stringifyPatches } from '@sanity/diff-match-patch';
 
 import { updateHistory, versionHistoryGarbageCollection } from '../../utils/versionHistory.js';
 import googleDriveIcon from '../../googleDrive.svg';
@@ -39,8 +37,6 @@ const EditPage = (props)=>{
 	const [alertNoGoogleToTransfer, setAlertNoGoogleToTransfer] = useState(false);
 	const [alertOwnershipToTransfer, setAlertOwnershipToTransfer] = useState(false);
 	const [confirmGoogleTransfer, setConfirmGoogleTransfer] = useState(false);
-
-	const lastSavedBrew = useRef(_.cloneDeep(props.brew));
 
 	const handleGoogleClick = ()=>{
 		if(currentBrew.authors.length > 0 && global.account?.username !== currentBrew.authors[0]) {
@@ -76,23 +72,12 @@ const EditPage = (props)=>{
 		await updateHistory(brew).catch(console.error);
 		await versionHistoryGarbageCollection().catch(console.error);
 
-		//Prepare content to send to server
-		const brewToSave = {
-			...brew,
-			text      : brew.text.normalize('NFC'),
-			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
-			patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(brew.text.normalize('NFC')))),
-			hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
-			textBin   : undefined,
-			version   : lastSavedBrew.current.version
-		};
-
-		const compressedBrew = gzipSync(strToU8(JSON.stringify(brewToSave)));
+		const compressedBrew = gzipSync(strToU8(JSON.stringify(brew)));
 		const transfer = saveToGoogle === _.isNil(brew.googleId);
 		const params = transfer ? `?${saveToGoogle ? 'saveToGoogle' : 'removeFromGoogle'}=true` : '';
 
 		const res = await request
-			.put(`/api/update/${brewToSave.editId}${params}`)
+			.put(`/api/update/${brew.editId}${params}`)
 			.set('Content-Encoding', 'gzip')
 			.set('Content-Type', 'application/json')
 			.send(compressedBrew)
@@ -173,7 +158,6 @@ const EditPage = (props)=>{
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,

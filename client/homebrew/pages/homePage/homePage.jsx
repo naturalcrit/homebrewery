@@ -1,7 +1,7 @@
 import './homePage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
+import React, { useState } from 'react';
 import request                                from '../../utils/request-middleware.js';
 import _                                      from 'lodash';
 
@@ -25,8 +25,6 @@ const HomePage =(props)=>{
 	const [currentBrew, setCurrentBrew] = useState(props.brew);
 	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
 	const [error, setError]             = useState(undefined);
-
-	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
 
 	const save = async (brew, saveToGoogle)=>{
 		const res = await request
@@ -58,7 +56,6 @@ const HomePage =(props)=>{
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,

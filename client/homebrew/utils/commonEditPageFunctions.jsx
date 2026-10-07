@@ -2,6 +2,8 @@ import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 import _                                      from 'lodash';
 import { hbfm }                               from 'marked-hbfm';
+import { md5 }                                from 'hash-wasm';
+import { makePatches, stringifyPatches }      from '@sanity/diff-match-patch';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
@@ -45,7 +47,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 		useLocalStorage,
 		sandbox,
 		showFloatingButtons,
-		lastSavedBrew,
 		save,
 		onSaveSuccess,
 		pageName,
@@ -68,6 +69,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 
 	const unsavedChangesRef  = useRef(unsavedChanges); // onBeforeUnload lives outside React and needs ref to unsavedChanges
 	const warnUnsavedTimeout = useRef(null);           // timers live outside React and need ref to consistently track time
+	const lastSavedBrew      = useRef(_.cloneDeep(currentBrew));
 	const saveTimeout        = useRef(null);
 	const editorRef          = useRef(null);
 
@@ -202,12 +204,24 @@ export default function useCommonEditPageFunctions(dependencies) {
 			setIsSaving(true);
 			setError(null);
 			setHTMLErrors(hbfm.validate(currentBrew.text));
-			const brewToSave = currentBrew;
-			let savedBrew = await save(brewToSave, saveToGoogle)
+
+			//Prepare content to send to server
+			const snapshotBrewBeforeSave = currentBrew;
+			const brewToSave = {
+				...currentBrew,
+				text      : currentBrew.text.normalize('NFC'),
+				pageCount : ((currentBrew.renderer === 'legacy' ? currentBrew.text.match(/\\page/g) : currentBrew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
+				patches   : stringifyPatches(makePatches(encodeURI(lastSavedBrew.current.text.normalize('NFC')), encodeURI(currentBrew.text.normalize('NFC')))),
+				hash      : await md5(lastSavedBrew.current.text.normalize('NFC')),
+				textBin   : undefined,
+				version   : lastSavedBrew.current.version
+			};
+
+			const savedBrew = await save(brewToSave, saveToGoogle)
 				.catch((err)=>{setError(err);});
 			if(savedBrew) {
 				lastSavedBrew.current = {
-					...brewToSave,
+					...snapshotBrewBeforeSave,
 					...savedBrew
 				};
 
