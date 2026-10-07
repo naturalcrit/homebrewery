@@ -229,8 +229,13 @@
 	}
 	.navItem,
 	.menu-wrapper {
+		--activeTriggerColor: #666;
+
+		&:has(ul):not(:has(ul button:not(:disabled))) {
+			color:grey; //faux disabled if all buttons are disabled
+		}
 		&:hover {
-			background: #555;
+			background: #484848;
 		}
 		&:has(> i, > kbd) {
 			display: flex;
@@ -298,7 +303,6 @@
 	}
 
 	.navItem {
-		height: 2em;
 
 		&.header {
 			justify-content: center;
@@ -328,9 +332,14 @@
 			text-transform: capitalize;
 			padding-bottom: 5px;
 
-			.nav-section:not(:last-child, + .header) {
+			.navItem {
+				min-height:2.2em;
+			}
+
+			.nav-section:not(:last-child, :has(+ .header)) {
 				border-bottom: 1px solid;
-				margin-bottom: 10px;
+				padding-bottom:5px;
+				margin-bottom: 5px;
 			}
 
 			li {
