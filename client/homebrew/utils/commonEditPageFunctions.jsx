@@ -24,7 +24,7 @@ import PrintNavItem   from '@navbar/print.navitem.jsx';
 import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import googleDriveIcon from '../../googleDrive.svg';
+import googleDriveIcon from '../googleDrive.svg';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
 const BREWKEY        = 'HB_newPage_content';
