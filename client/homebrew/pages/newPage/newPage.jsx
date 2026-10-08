@@ -1,20 +1,11 @@
 import './newPage.less';
 
 // Common imports
-import React, { useState, useEffect, useRef, useEffectEvent } from 'react';
-import request                                from '../../utils/request-middleware.js';
-import _                                      from 'lodash';
-
-import { DEFAULT_BREW }                       from '../../../../server/brewDefaults.js';
-
+import React                      from 'react';
+import request                    from '../../utils/request-middleware.js';
+import _                          from 'lodash';
 import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
-
-// Page specific imports
-const useLocalStorage     = true;
-const sandbox             = true;
-const showFloatingButtons = false;
-const showEditorButtons   = true;
-const pageName            = 'newPage';
+import { DEFAULT_BREW }           from '../../../../server/brewDefaults.js';
 
 const NewPage = (props)=>{
 	props = {
@@ -22,29 +13,10 @@ const NewPage = (props)=>{
 		...props
 	};
 
-	const [currentBrew, setCurrentBrew] = useState(props.brew);
-	const [saveGoogle, setSaveGoogle]   = useState(global.account?.googleId ? true : false);
-	const [error, setError]             = useState(null);
-
-	const lastSavedBrew      = useRef(_.cloneDeep(props.brew));
-
 	const save = async (brew, saveToGoogle)=>{
-		//Prepare content to send to server
-		const brewToSave = {
-			...brew,
-			text      : brew.text.normalize('NFC'),
-			pageCount : ((brew.renderer === 'legacy' ? brew.text.match(/\\page/g) : brew.text.match(/^(?=\\page(?:break)?(?: *{[^\n{}]*})?$)/gm)) || []).length + 1,
-			textBin   : undefined
-		};
-
 		const res = await request
-			.post(`/api${saveGoogle ? '?saveToGoogle=true' : ''}`)
-			.send(brewToSave)
-			.catch((err)=>{
-				console.error('Error Updating Local Brew');
-				setError(err);
-			});
-		if(!res) return;
+			.post(`/api${saveToGoogle ? '?saveToGoogle=true' : ''}`)
+			.send(brew);
 
 		return res.body;
 	};
@@ -57,21 +29,15 @@ const NewPage = (props)=>{
 	const {
 		renderPanels
 	} = useCommonEditPageFunctions({
-		saveGoogle,
-		setSaveGoogle,
-		error,
-		setError,
-		currentBrew,
-		setCurrentBrew,
-		useLocalStorage,
-		sandbox,
-		showFloatingButtons,
-		lastSavedBrew,
+		useLocalStorage     : true,
+		sandbox             : true,
+		showFloatingButtons : false,
+		showEditorButtons   : true,
+		pageName            : 'newPage',
+		brew                : props.brew,
+		userThemes          : props.userThemes,
 		save,
 		onSaveSuccess,
-		pageName,
-		showEditorButtons,
-		userThemes : props.userThemes
 	});
 
 	return renderPanels();
