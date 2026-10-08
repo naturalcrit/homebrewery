@@ -338,11 +338,11 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		return (
 			<div className="listPageNav">
+				{renderLayoutModeOptions()}
+				{renderThemePicker()}
 				{renderSortOptions()}
 				{renderFilterOption()}
 				{renderTagsOptions()}
-				{renderLayoutModeOptions()}
-				{renderThemePicker()}
 			</div>
 		);
 			
