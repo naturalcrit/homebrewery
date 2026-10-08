@@ -20,14 +20,11 @@ const getRedditLink = (brew)=>{
 export default ({ brew, disabled, currentPage })=> {
 	return (
 	<div className='nav-section'>
-		<Nav.item color='teal' icon='fas fa-share-alt' disabled={disabled}>
-			share
-		</Nav.item>
 		<Nav.item color='blue' href={`/share/${getShareId(brew)}`} disabled={disabled}>
-			view
+			view share page
 		</Nav.item>
 		<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}`);}} disabled={disabled}>
-			copy url
+			copy share url
 		</Nav.item>
 		{currentPage > 1 &&
 			<Nav.item
@@ -35,7 +32,7 @@ export default ({ brew, disabled, currentPage })=> {
 				onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}#p${currentPage}`);}}>
 				copy url (page {currentPage})
 			</Nav.item>}
-		<Nav.item color='blue' href={getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled}>
+		<Nav.item color='blue' href={!disabled && getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled}>
 			post to reddit
 		</Nav.item>
 	</div>

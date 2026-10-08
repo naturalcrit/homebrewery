@@ -71,7 +71,6 @@ const Homebrew = (props)=>{
 		);
 	}
 
-
 	return (
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>

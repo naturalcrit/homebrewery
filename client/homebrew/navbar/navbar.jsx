@@ -38,20 +38,30 @@ const Navbar = ({ account, brew, title = '', props }) => {
 		);
 	};
 
+	const renderDownloadLink = () =>{
+		if(!brew.shareId) return <Nav.item disabled={!brew.shareId}>Get txt</Nav.item>
+		let shareLink = brew.shareId;
+		if(brew.googleId && !brew.stubbed) {
+			shareLink = brew.googleId + shareLink;
+		}
+
+		return <Nav.item href={`/download/${shareLink}`} disabled={!brew.shareId}>Get txt</Nav.item>
+	}
+
 	const renderFile = () => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrew />
-				<Nav.item  disabled={!brew.shareId}>Save document</Nav.item>
+				<Nav.item className='beta' disabled={!brew.shareId}>Save document</Nav.item>
 				<div className='nav-section'>
 					<PrintNavitem disabled={!brew.shareId}/>
-					<Nav.item disabled={!brew.shareId}>Get txt</Nav.item>
+					{renderDownloadLink()}
 				</div>
 				<ShareNavitem brew={brew} disabled={!brew.shareId} currentPage={''/*how the hell do i get it here?*/}/>
 				<div className='nav-section'>
-					<Nav.item disabled={!brew.shareId}>Delete File</Nav.item>
-					<Nav.item disabled={!brew.shareId}>Publish File</Nav.item>
-					<Nav.item disabled={!brew.shareId}>Transfer File</Nav.item>
+					<Nav.item className='beta' disabled={!brew.shareId}>Delete File</Nav.item>
+					<Nav.item className='beta' disabled={!brew.shareId}>Publish File</Nav.item>
+					<Nav.item className='beta' disabled={!brew.shareId}>Transfer File</Nav.item>
 				</div>
 			</Dropdown>
 		);
@@ -61,14 +71,14 @@ const Navbar = ({ account, brew, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					<Nav.item kbd={mod + ' + z'} disabled={!brew.shareId}>
+					<Nav.item className='beta' kbd={mod + ' + z'} disabled={!brew.shareId}>
 						Undo
 					</Nav.item>
-					<Nav.item kbd={mod + ' + Shift + z'} disabled={!brew.shareId}>Redo</Nav.item>
-					<Nav.item kbd={mod + ' + x'} disabled={!brew.shareId}>cut</Nav.item>
-					<Nav.item kbd={mod + ' + c'} disabled={!brew.shareId}>copy</Nav.item>
-					<Nav.item kbd={mod + ' + v'} disabled={!brew.shareId}>paste</Nav.item>
-					<Nav.item kbd={mod + ' + f'} disabled={!brew.shareId}>Find / Replace</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + Shift + z'} disabled={!brew.shareId}>Redo</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + x'} disabled={!brew.shareId}>cut</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + c'} disabled={!brew.shareId}>copy</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + v'} disabled={!brew.shareId}>paste</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + f'} disabled={!brew.shareId}>Find / Replace</Nav.item>
 				</div>
 			</Dropdown>
 		);
