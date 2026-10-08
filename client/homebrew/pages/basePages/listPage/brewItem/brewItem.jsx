@@ -103,7 +103,6 @@ const BrewItem = ({
 				</span>
 			);
 		}
-		console.log(theme);
 		return (
 			<span className='storage' title='Homebrewery Storage'>
 				<img className='homebreweryIcon' src={theme === 'light' ? homebreweryIconBlack : homebreweryIconWhite} alt='Homebrewery Storage' />
