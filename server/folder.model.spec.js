@@ -171,6 +171,40 @@ describe('Folder model', ()=>{
   });
 
 
+  describe('getById', ()=>{
+
+    it('should find a folder belonging to the user', async ()=>{
+      const folder = {
+        author   : 'testuser',
+        folderId : 'abc123',
+      };
+
+      const lean = jest.fn(async ()=>folder);
+      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
+
+      const result = await Folder.getById('testuser', 'abc123');
+
+      expect(Folder.findOne).toHaveBeenCalledWith({
+        author   : 'testuser',
+        folderId : 'abc123',
+      });
+
+      expect(lean).toHaveBeenCalled();
+      expect(result).toBe(folder);
+    });
+
+    it('should return null when the folder does not exist', async ()=>{
+      const lean = jest.fn(async ()=>null);
+      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
+
+      const result = await Folder.getById('testuser', 'missing');
+
+      expect(result).toBeNull();
+    });
+
+  });
+
+
   describe('createFolder', ()=>{
 
     it('should create and save a folder', async ()=>{
@@ -229,40 +263,6 @@ describe('Folder model', ()=>{
           slug        : 'my-folder',
         }),
       ).rejects.toBe(error);
-    });
-
-  });
-
-
-  describe('getById', ()=>{
-
-    it('should find a folder belonging to the user', async ()=>{
-      const folder = {
-        author   : 'testuser',
-        folderId : 'abc123',
-      };
-
-      const lean = jest.fn(async ()=>folder);
-      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
-
-      const result = await Folder.getById('testuser', 'abc123');
-
-      expect(Folder.findOne).toHaveBeenCalledWith({
-        author   : 'testuser',
-        folderId : 'abc123',
-      });
-
-      expect(lean).toHaveBeenCalled();
-      expect(result).toBe(folder);
-    });
-
-    it('should return null when the folder does not exist', async ()=>{
-      const lean = jest.fn(async ()=>null);
-      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
-
-      const result = await Folder.getById('testuser', 'missing');
-
-      expect(result).toBeNull();
     });
 
   });
