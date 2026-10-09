@@ -64,25 +64,11 @@ const SharePage = (props)=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
-	
-	const renderEditLink = () => {
-		if (!currentBrew.editId) return null;
-
-		const editLink = currentBrew.googleId && !currentBrew.stubbed ? currentBrew.googleId + currentBrew.editId : currentBrew.editId;
-
-		return (
-			<Navbar.File>
-				<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
-					edit
-				</Nav.item>
-			</Navbar.File>
-		);
-	};
 
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar>{renderEditLink()}</Navbar>
+			<Navbar brew={currentBrew} />
 			<div className='content'>
 				<BrewRenderer
 					text={currentBrew.text}

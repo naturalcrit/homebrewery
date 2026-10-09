@@ -17,7 +17,6 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 	const mod = isMac ? '⌘' : 'Ctrl';
 	const isBrew = !!brew && brew.shareId;
 	const account = global.account;
-	console.log(editor);
 
 	const slots = React.Children.toArray(children).reduce((acc, child) => {
 		if (React.isValidElement(child)) {
@@ -51,7 +50,16 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 			</Nav.item>
 		);
 	};
-	
+
+	const renderEditLink = () => {
+		const editLink = brew?.googleId && !brew?.stubbed ? brew?.googleId + brew?.editId : brew?.editId;
+		return (
+			<Nav.item href={`/edit/${editLink}`} disabled={!brew?.editId}>
+				edit this brew
+			</Nav.item>
+		);
+	};
+
 	const renderFile = () => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
@@ -63,7 +71,6 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 					<PrintNavitem disabled={!isBrew} />
 					{renderDownloadLink()}
 				</div>
-				<ShareNavitem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
 				<div className='nav-section'>
 					<Nav.item className='beta' disabled={!isBrew}>
 						Delete File
@@ -79,28 +86,28 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 			</Dropdown>
 		);
 	};
- 
+
 	const renderEdit = () => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					{slots.edit?.props.children}
-					<Nav.item onClick={()=>editor?.undo()} kbd={mod + ' + z'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.undo()} kbd={mod + ' + z'} disabled={!isBrew}>
 						Undo
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!isBrew}>
 						Redo
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.find()} kbd={mod + ' + f'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.find()} kbd={mod + ' + f'} disabled={!isBrew}>
 						Find / Replace
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.foldCode()} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.foldCode()} disabled={!isBrew}>
 						Fold all lines
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.unfoldCode()} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.unfoldCode()} disabled={!isBrew}>
 						Unfold all lines
 					</Nav.item>
 				</div>
+				{slots.edit?.props.children}
 				{/*
 				<div className="nav-section">
 					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!isBrew}>
@@ -113,7 +120,7 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 						paste
 					</Nav.item>
 				</div>
-				*/}				
+				*/}
 			</Dropdown>
 		);
 	};
@@ -121,6 +128,8 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 	const renderGo = () => {
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
+				{renderEditLink()}
+				<ShareNavitem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
 				<div className='nav-section'>
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' color='green' icon='fas fa-heart'>
 						Patreon
