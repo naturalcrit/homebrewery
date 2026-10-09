@@ -402,7 +402,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
-			<Navbar brew={currentBrew} account={global.account}>
+			<Navbar brew={currentBrew} editor={editorRef.current} account={global.account}>
 				<Navbar.File>
 					{error
 					? (<ErrorNavItem error={error} clearError={clearError} />) : (<Dropdown className='save-menu' customTrigger={<>Save</>}>

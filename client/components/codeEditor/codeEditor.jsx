@@ -394,6 +394,8 @@ const CodeEditor = forwardRef(
 
 			undo : ()=>undo(viewRef.current),
 			redo : ()=>redo(viewRef.current),
+			
+			find: () => openSearchPanel(viewRef.current),
 
 			historySize : ()=>{
 				const view = viewRef.current;

@@ -11,12 +11,13 @@ import Account from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-const Navbar = ({ children, brew, title = '', props }) => {
+const Navbar = ({ children, brew, editor, title = '', props }) => {
 	const version = global.version || '0.0.0';
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
 	const isBrew = !!brew && brew.shareId;
 	const account = global.account;
+	console.log(editor);
 
 	const slots = React.Children.toArray(children).reduce((acc, child) => {
 		if (React.isValidElement(child)) {
@@ -83,26 +84,36 @@ const Navbar = ({ children, brew, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					{slots.edit}
-					<Nav.item className='beta' kbd={mod + ' + z'} disabled={!isBrew}>
+					{slots.edit?.props.children}
+					<Nav.item onClick={()=>editor?.undo()} kbd={mod + ' + z'} disabled={!isBrew}>
 						Undo
 					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + Shift + z'} disabled={!isBrew}>
+					<Nav.item onClick={()=>editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!isBrew}>
 						Redo
 					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + x'} disabled={!isBrew}>
-						cut
-					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + c'} disabled={!isBrew}>
-						copy
-					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + v'} disabled={!isBrew}>
-						paste
-					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + f'} disabled={!isBrew}>
+					<Nav.item onClick={()=>editor?.find()} kbd={mod + ' + f'} disabled={!isBrew}>
 						Find / Replace
 					</Nav.item>
+					<Nav.item onClick={()=>editor?.foldCode()} disabled={!isBrew}>
+						Fold all lines
+					</Nav.item>
+					<Nav.item onClick={()=>editor?.unfoldCode()} disabled={!isBrew}>
+						Unfold all lines
+					</Nav.item>
 				</div>
+				{/*
+				<div className="nav-section">
+					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!isBrew}>
+						cut
+					</Nav.item>
+					<Nav.item onClick={()=>editor?.copy()} kbd={mod + ' + c'} disabled={!isBrew}>
+						copy
+					</Nav.item>
+					<Nav.item onClick={()=>editor?.paste()} kbd={mod + ' + v'} disabled={!isBrew}>
+						paste
+					</Nav.item>
+				</div>
+				*/}				
 			</Dropdown>
 		);
 	};
