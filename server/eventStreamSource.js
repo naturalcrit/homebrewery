@@ -3,11 +3,6 @@ import { nanoid } from 'nanoid';
 
 const Stream = new EventEmitter;
 
-// After Stream starts, send initStream event
-Stream.on('open', ()=>{
-	Stream.emit('sendUpdate', 'initStream', { time: new Date });
-});
-
 // Create array of stream subscribers
 const subscribers = [];
 
