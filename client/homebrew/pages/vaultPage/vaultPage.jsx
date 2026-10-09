@@ -8,6 +8,7 @@ import SplitPane    from '@components/splitPane/splitPane.jsx';
 import ErrorIndex   from '../errorPage/errors/errorIndex.js';
 
 import request from '../../utils/request-middleware.js';
+import Navbar from '../../navbar/navbar.jsx';
 
 const VaultPage = (props)=>{
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
@@ -392,6 +393,7 @@ const VaultPage = (props)=>{
 		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
+			<Navbar/>
 			<div className='content'>
 				<SplitPane showDividerButtons={false}>
 					<div className='form dataGroup'>{renderForm()}</div>

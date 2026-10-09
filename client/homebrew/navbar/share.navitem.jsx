@@ -2,11 +2,12 @@ import React from 'react';
 import dedent from 'dedent';
 import Nav from './nav.jsx';
 
-const getShareId = (brew)=>(
-	brew.googleId && !brew.stubbed
+const getShareId = (brew)=>{
+	if (!brew) return null;
+	return brew.googleId && !brew.stubbed
 		? brew.googleId + brew.shareId
 		: brew.shareId
-);
+};
 
 const getRedditLink = (brew)=>{
 	const text = dedent`

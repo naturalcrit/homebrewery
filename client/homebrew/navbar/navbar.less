@@ -197,7 +197,9 @@
 	background: #333;
 	min-height: 29px;
 	font-size: 14px;
-	font-family: Alata, open sans;
+	font-family:
+		Alata,
+		open sans;
 	button,
 	a {
 		&:disabled {
@@ -217,7 +219,7 @@
 	.menu-wrapper {
 		--activeTriggerColor: #666;
 		&:has(ul):not(:has(ul button:not(:disabled))) {
-			color:grey; //faux disabled if all buttons are disabled
+			color: grey; //faux disabled if all buttons are disabled
 		}
 		&:hover {
 			background: #484848;
@@ -288,13 +290,43 @@
 	}
 
 	.navItem {
-
 		&.header {
 			justify-content: center;
 		}
 
 		&.beta {
-			color:@red;
+			color: @red;
+		}
+
+		&.neverSaved {
+			background-color: @orange;
+			color: white;
+			transition: all 0.2s;
+			&:hover {
+				background-color: @green;
+			}
+		}
+
+		&.save {
+			position: relative;
+			width: 106px;
+			text-align: center;
+		}
+
+		&.saved {
+			color: #666666;
+			cursor: initial;
+		}
+
+		&.googleDriveStorage {
+			position : relative;
+
+			img {
+				height: 18px;
+				padding: 0px;
+				margin: -5px;
+				&.inactive { filter : grayscale(1); }
+			}
 		}
 	}
 
@@ -322,12 +354,12 @@
 			padding-bottom: 5px;
 
 			.navItem {
-				min-height:2.2em;
+				min-height: 2.2em;
 			}
 
 			.nav-section:not(:last-child, :has(+ .header)) {
 				border-bottom: 1px solid;
-				padding-bottom:5px;
+				padding-bottom: 5px;
 				margin-bottom: 5px;
 			}
 

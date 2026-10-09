@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import BrewItem from './brewItem/brewItem.jsx';
+import Navbar from '../../../navbar/navbar.jsx';
 
 const USERPAGE_SORT_DIR = 'HB_listPage_sortDir';
 const USERPAGE_SORT_TYPE = 'HB_listPage_sortType';
@@ -328,7 +329,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	return (
 		<div className='listPage sitePage'>
-			{navItems}
+			<Navbar>{navItems}</Navbar>
 
 			{renderNav()}
 

@@ -11,14 +11,25 @@ import Account from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-const Navbar = ({ account, brew, title = '', props }) => {
+const Navbar = ({ children, brew, title = '', props }) => {
 	const version = global.version || '0.0.0';
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
+	const isBrew = !!brew && brew.shareId;
+	const account = global.account;
+
+	const slots = React.Children.toArray(children).reduce((acc, child) => {
+		if (React.isValidElement(child)) {
+			if (child.type === Navbar.File) acc.file = child;
+			if (child.type === Navbar.Edit) acc.edit = child;
+			if (child.type === Navbar.Go) acc.go = child;
+		}
+		return acc;
+	}, {});
 
 	const renderTitle = () => {
 		const cleanTitle = title.replace(/^\/+|\/+$/g, '');
-		if (!brew.shareId) return <Nav.item className='brewTitle'>{cleanTitle || 'Home'}</Nav.item>;
+		if (!isBrew) return <Nav.item className='brewTitle'>{cleanTitle || 'Home'}</Nav.item>;
 		return (
 			<Nav.item className='brewTitle' style={title.includes('edit') ? { cursor: 'default' } : {}}>
 				{brew.title}
@@ -26,43 +37,44 @@ const Navbar = ({ account, brew, title = '', props }) => {
 		);
 	};
 
-	const renderEditLink = () => {
-		if (!brew.editId) return null;
-
-		const editLink = brew.googleId && !brew.stubbed ? brew.googleId + brew.editId : brew.editId;
-
-		return (
-			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
-				edit
-			</Nav.item>
-		);
-	};
-
-	const renderDownloadLink = () =>{
-		if(!brew.shareId) return <Nav.item disabled={!brew.shareId}>Get txt</Nav.item>
+	const renderDownloadLink = () => {
+		if (!isBrew) return <Nav.item disabled={!isBrew}>Get txt</Nav.item>;
 		let shareLink = brew.shareId;
-		if(brew.googleId && !brew.stubbed) {
+		if (brew.googleId && !brew.stubbed) {
 			shareLink = brew.googleId + shareLink;
 		}
 
-		return <Nav.item href={`/download/${shareLink}`} disabled={!brew.shareId}>Get txt</Nav.item>
-	}
+		return (
+			<Nav.item href={`/download/${shareLink}`} disabled={!isBrew}>
+				Get txt
+			</Nav.item>
+		);
+	};
 
 	const renderFile = () => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrew />
-				<Nav.item className='beta' disabled={!brew.shareId}>Save document</Nav.item>
+				<Nav.item className='beta' disabled={!isBrew}>
+					Save document
+				</Nav.item>
 				<div className='nav-section'>
-					<PrintNavitem disabled={!brew.shareId}/>
+					<PrintNavitem disabled={!isBrew} />
 					{renderDownloadLink()}
 				</div>
-				<ShareNavitem brew={brew} disabled={!brew.shareId} currentPage={''/*how the hell do i get it here?*/}/>
+				<ShareNavitem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
 				<div className='nav-section'>
-					<Nav.item className='beta' disabled={!brew.shareId}>Delete File</Nav.item>
-					<Nav.item className='beta' disabled={!brew.shareId}>Publish File</Nav.item>
-					<Nav.item className='beta' disabled={!brew.shareId}>Transfer File</Nav.item>
+					<Nav.item className='beta' disabled={!isBrew}>
+						Delete File
+					</Nav.item>
+					<Nav.item className='beta' disabled={!isBrew}>
+						Publish File
+					</Nav.item>
+					<Nav.item className='beta' disabled={!isBrew}>
+						Transfer File
+					</Nav.item>
 				</div>
+				{slots.file?.props.children}
 			</Dropdown>
 		);
 	};
@@ -71,14 +83,25 @@ const Navbar = ({ account, brew, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					<Nav.item className='beta' kbd={mod + ' + z'} disabled={!brew.shareId}>
+					{slots.edit}
+					<Nav.item className='beta' kbd={mod + ' + z'} disabled={!isBrew}>
 						Undo
 					</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + Shift + z'} disabled={!brew.shareId}>Redo</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + x'} disabled={!brew.shareId}>cut</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + c'} disabled={!brew.shareId}>copy</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + v'} disabled={!brew.shareId}>paste</Nav.item>
-					<Nav.item className='beta' kbd={mod + ' + f'} disabled={!brew.shareId}>Find / Replace</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + Shift + z'} disabled={!isBrew}>
+						Redo
+					</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + x'} disabled={!isBrew}>
+						cut
+					</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + c'} disabled={!isBrew}>
+						copy
+					</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + v'} disabled={!isBrew}>
+						paste
+					</Nav.item>
+					<Nav.item className='beta' kbd={mod + ' + f'} disabled={!isBrew}>
+						Find / Replace
+					</Nav.item>
 				</div>
 			</Dropdown>
 		);
@@ -127,5 +150,10 @@ const Navbar = ({ account, brew, title = '', props }) => {
 		</nav>
 	);
 };
+
+
+Navbar.File = () => null;
+Navbar.Edit = () => null;
+Navbar.Go = () => null;
 
 export default Navbar;

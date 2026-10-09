@@ -24,6 +24,7 @@ import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import googleDriveIcon from '../googleDrive.svg';
+import {Dropdown} from '../../components/dropdown/dropdown.jsx';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
 const BREWKEY        = 'HB_newPage_content';
@@ -401,6 +402,15 @@ export default function useCommonEditPageFunctions(dependencies) {
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
+			<Navbar brew={currentBrew} account={global.account}>
+				<Navbar.File>
+					{error
+					? (<ErrorNavItem error={error} clearError={clearError} />) : (<Dropdown className='save-menu' customTrigger={<>Save</>}>
+						{renderSaveButton()}
+						{(pageName == 'editPage') && renderAutoSaveButton()}
+					</Dropdown>)}
+				</Navbar.File>
+			</Navbar>
 
 			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
 			<div className='content'>

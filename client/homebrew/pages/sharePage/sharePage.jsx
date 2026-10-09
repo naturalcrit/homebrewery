@@ -4,7 +4,8 @@ import Headtags   from '../../../../vitreum/headtags.js';
 const Meta = Headtags.Meta;
 
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
-
+import Navbar from '../../navbar/navbar.jsx';
+import Nav from '../../navbar/nav.jsx';
 import request from '../../utils/request-middleware.js';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
@@ -63,12 +64,25 @@ const SharePage = (props)=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
+	
+	const renderEditLink = () => {
+		if (!currentBrew.editId) return null;
 
+		const editLink = currentBrew.googleId && !currentBrew.stubbed ? currentBrew.googleId + currentBrew.editId : currentBrew.editId;
+
+		return (
+			<Navbar.File>
+				<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
+					edit
+				</Nav.item>
+			</Navbar.File>
+		);
+	};
 
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-
+			<Navbar>{renderEditLink()}</Navbar>
 			<div className='content'>
 				<BrewRenderer
 					text={currentBrew.text}
