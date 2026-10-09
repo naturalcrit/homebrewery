@@ -51,7 +51,7 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 			</Nav.item>
 		);
 	};
-
+	
 	const renderFile = () => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
@@ -79,7 +79,7 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 			</Dropdown>
 		);
 	};
-
+ 
 	const renderEdit = () => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
@@ -161,10 +161,5 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 		</nav>
 	);
 };
-
-
-Navbar.File = () => null;
-Navbar.Edit = () => null;
-Navbar.Go = () => null;
 
 export default Navbar;
