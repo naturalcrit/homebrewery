@@ -1,10 +1,15 @@
 import { EventEmitter } from 'events';
+import _ from 'lodash';
 import { nanoid } from 'nanoid';
+
+const UNSUB_DELAY = 60000; //ms
 
 const Stream = new EventEmitter;
 
 // Create array of stream subscribers
-const subscribers = [];
+let subscribers = [];
+
+const debounceUnsub = _.debounce((id)=>{ unsubscribe(id); }, UNSUB_DELAY, { leading: false, trailing: true });
 
 // Listener functions
 const subscribe = function(res){
@@ -12,18 +17,29 @@ const subscribe = function(res){
 	subscribers.push({ id, 'stream': res });
 
 	res.write(`event: subscribe\ndata: { id: ${id} }\n\n`);
+
+	debounceUnsub(id);
 	return id;
 };
 
 const unsubscribe = function(id){
+	subscribers
+		.filter((sub)=>{return sub.id == id;})
+		.forEach((sub)=>{
+			sub.stream.write(`event: unsubscribe\ndata: { id: ${id} }\n\n`);
+		});
+
 	subscribers = subscribers.filter((sub)=>{ return sub.id != id; });
 };
 
 // Create global sendUpdate listener
 Stream.on('sendUpdate', (event, data)=>{
 	console.log('Event:', event, '\nData:', data);
-	subscribers.forEach((sub, idx)=>{
+	subscribers.forEach((sub)=>{
 		sub?.stream?.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+
+		// invoke debounced unsub to delay execution
+		debounceUnsub(sub.id);
 	});
 });
 
