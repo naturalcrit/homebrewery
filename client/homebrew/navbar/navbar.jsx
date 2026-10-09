@@ -2,16 +2,17 @@ import './navbar.less';
 import React from 'react';
 
 import { Dropdown } from '@components/dropdown/dropdown.jsx';
-import NewBrew from './newbrew.navitem';
-import PrintNavitem from './print.navitem.jsx';
-import ShareNavitem from './share.navitem.jsx';
-import HelpNavitem from './help.navitem.jsx';
+import NewBrewNavItem from './newbrew.navitem';
+import PrintNavItem from './print.navitem.jsx';
+import ShareNavItem from './share.navitem.jsx';
+import HelpNavItem from './help.navitem.jsx';
 import RecentNavItems from './recent.navitem.jsx';
-import Account from './account.navitem.jsx';
+import MetadataNavItem from './metadata.navitem.jsx'
+import AccountNavItem from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-const Navbar = ({ children, brew, editor, title = '', props }) => {
+const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 	const version = global.version || '0.0.0';
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
@@ -63,12 +64,12 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 	const renderFile = () => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
-				<NewBrew />
+				<NewBrewNavItem />
 				<Nav.item className='beta' disabled={!isBrew}>
 					Save document
 				</Nav.item>
 				<div className='nav-section'>
-					<PrintNavitem disabled={!isBrew} />
+					<PrintNavItem disabled={!isBrew} />
 					{renderDownloadLink()}
 				</div>
 				<div className='nav-section'>
@@ -129,7 +130,7 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
 				{renderEditLink()}
-				<ShareNavitem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
+				<ShareNavItem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
 				<div className='nav-section'>
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' color='green' icon='fas fa-heart'>
 						Patreon
@@ -158,13 +159,13 @@ const Navbar = ({ children, brew, editor, title = '', props }) => {
 				{renderEdit()}
 				{renderGo()}
 				<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
-					<HelpNavitem />
+					<HelpNavItem />
 				</Dropdown>
 			</ul>
-			{renderTitle()}
+			<MetadataNavItem brew={brew}></MetadataNavItem>
 			<ul>
 				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>
-					<Account />
+					<AccountNavItem />
 				</Dropdown>
 			</ul>
 		</nav>

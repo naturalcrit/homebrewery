@@ -68,7 +68,7 @@ const SharePage = (props)=>{
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar brew={currentBrew} />
+			<Navbar brew={currentBrew} pageName='sharePage' />
 			<div className='content'>
 				<BrewRenderer
 					text={currentBrew.text}

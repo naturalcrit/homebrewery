@@ -34,7 +34,7 @@ const UserPage = (props)=>{
 	};
 
 	return (
-		<ListPage brewCollection={brewCollection} query={props.query} reportError={(err)=>setError(err)} />
+		<ListPage pageName={pageName} brewCollection={brewCollection} query={props.query} reportError={(err)=>setError(err)} />
 	);
 };
 

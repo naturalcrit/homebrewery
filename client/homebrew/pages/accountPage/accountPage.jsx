@@ -74,7 +74,7 @@ const AccountPage = (props)=>{
 
 	// return the account page inside the base layout wrapper (with navbar etc).
 	return (
-		<UIPage brew={brew}>
+		<UIPage brew={brew} pageName={'accountPage'}>
 			{renderAccountPage()}
 		</UIPage>);
 };

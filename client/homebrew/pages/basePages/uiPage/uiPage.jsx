@@ -8,7 +8,7 @@ const UIPage = createReactClass({
 
 	render : function(){
 		return <div className='uiPage sitePage'>
-			<Navbar/>
+			<Navbar pageName={this.props.pageName} />
 			<div className='content'>
 				{this.props.children}
 			</div>

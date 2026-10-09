@@ -16,7 +16,7 @@ const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
 const DEFAULT_LAYOUT_MODE = 'grid';
 
-const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
+const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], pageName, navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
 	const [filterTags, setFilterTags] = useState([]);
 	const [sortType, setSortType] = useState(query?.sort || null);
@@ -329,7 +329,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	return (
 		<div className='listPage sitePage'>
-			<Navbar>{navItems}</Navbar>
+			<Navbar pageName={pageName} >{navItems}</Navbar>
 
 			{renderNav()}
 
