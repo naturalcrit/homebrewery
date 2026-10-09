@@ -12,12 +12,13 @@ import AccountNavItem from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
+const Navbar = ({ children, brew, pageName, editor, title, currentPage, props }) => {
 	const version = global.version || '0.0.0';
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
-	const isBrew = !!brew && brew.shareId;
+	const isBrew = !!brew &&(brew.shareId || pageName === 'homePage' || pageName === 'newPage');
 	const account = global.account;
+	const generalPage = pageName === 'vaultPage' || pageName === 'changelog' || pageName === 'faq' || pageName === 'migrate';
 
 	const slots = React.Children.toArray(children).reduce((acc, child) => {
 		if (React.isValidElement(child)) {
@@ -27,16 +28,6 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 		}
 		return acc;
 	}, {});
-
-	const renderTitle = () => {
-		const cleanTitle = title.replace(/^\/+|\/+$/g, '');
-		if (!isBrew) return <Nav.item className='brewTitle'>{cleanTitle || 'Home'}</Nav.item>;
-		return (
-			<Nav.item className='brewTitle' style={title.includes('edit') ? { cursor: 'default' } : {}}>
-				{brew.title}
-			</Nav.item>
-		);
-	};
 
 	const renderDownloadLink = () => {
 		if (!isBrew) return <Nav.item disabled={!isBrew}>Get txt</Nav.item>;
@@ -65,14 +56,15 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
-				<Nav.item className='beta' disabled={!isBrew}>
-					Save document
-				</Nav.item>
 				<div className='nav-section'>
 					<PrintNavItem disabled={!isBrew} />
 					{renderDownloadLink()}
 				</div>
 				<div className='nav-section'>
+					<Nav.item href={`/new/${brew?.shareId}`} disabled={!isBrew}>
+						Clone File
+					</Nav.item>
+					{/*
 					<Nav.item className='beta' disabled={!isBrew}>
 						Delete File
 					</Nav.item>
@@ -82,6 +74,7 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 					<Nav.item className='beta' disabled={!isBrew}>
 						Transfer File
 					</Nav.item>
+					*/}
 				</div>
 				{slots.file?.props.children}
 			</Dropdown>
@@ -92,32 +85,32 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					<Nav.item onClick={() => editor?.undo()} kbd={mod + ' + z'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.undo()} kbd={mod + ' + z'} disabled={!editor}>
 						Undo
 					</Nav.item>
-					<Nav.item onClick={() => editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!editor}>
 						Redo
 					</Nav.item>
-					<Nav.item onClick={() => editor?.find()} kbd={mod + ' + f'} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.find()} kbd={mod + ' + f'} disabled={!editor}>
 						Find / Replace
 					</Nav.item>
-					<Nav.item onClick={() => editor?.foldCode()} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.foldCode()} disabled={!editor}>
 						Fold all lines
 					</Nav.item>
-					<Nav.item onClick={() => editor?.unfoldCode()} disabled={!isBrew}>
+					<Nav.item onClick={() => editor?.unfoldCode()} disabled={!editor}>
 						Unfold all lines
 					</Nav.item>
 				</div>
 				{slots.edit?.props.children}
 				{/*
 				<div className="nav-section">
-					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!isBrew}>
+					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!editor}>
 						cut
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.copy()} kbd={mod + ' + c'} disabled={!isBrew}>
+					<Nav.item onClick={()=>editor?.copy()} kbd={mod + ' + c'} disabled={!editor}>
 						copy
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.paste()} kbd={mod + ' + v'} disabled={!isBrew}>
+					<Nav.item onClick={()=>editor?.paste()} kbd={mod + ' + v'} disabled={!editor}>
 						paste
 					</Nav.item>
 				</div>
@@ -130,15 +123,15 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
 				{renderEditLink()}
-				<ShareNavItem brew={brew} disabled={!isBrew} currentPage={'' /*how the hell do i get it here?*/} />
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={'' /*how the hell do i get it here?*/} />
 				<div className='nav-section'>
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' color='green' icon='fas fa-heart'>
 						Patreon
 					</Nav.item>
-					<Nav.item color='purple' icon='fas fa-dungeon' href='/vault' newTab={false} rel='noopener noreferrer'>
+					<Nav.item icon='fas fa-dungeon' href='/vault' newTab={false} rel='noopener noreferrer'>
 						Vault
 					</Nav.item>
-					<Nav.item color='purple' icon='fas fa-dungeon' href='/changelog' newTab={false} rel='noopener noreferrer'>
+					<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
 						Changelog
 					</Nav.item>
 				</div>
@@ -162,6 +155,7 @@ const Navbar = ({ children, brew, pageName, editor, title = '', props }) => {
 					<HelpNavItem />
 				</Dropdown>
 			</ul>
+			{generalPage && <Nav.item className='brewTitle'>{title}</Nav.item>}
 			<MetadataNavItem brew={brew}></MetadataNavItem>
 			<ul>
 				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>

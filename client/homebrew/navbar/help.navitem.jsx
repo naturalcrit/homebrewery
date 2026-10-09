@@ -5,9 +5,6 @@ import Nav from './nav.jsx';
 
 export default function(props){
 	return <div className='nav-section'>
-		<Nav.item color='grey' icon='fas fa-question-circle'>
-			need help?
-		</Nav.item>
 		<Nav.item color='red' icon='fas fa-fw fa-bug'
 			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=${encodeURIComponent(dedent`
 			- **Browser(s)** :

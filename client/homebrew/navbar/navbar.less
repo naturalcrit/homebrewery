@@ -1,6 +1,6 @@
 @import '@sharedStyles/core.less';
 
-@navbarHeight: 28px;
+@navbarHeight: 29px;
 @viewerToolsHeight: 32px;
 
 @keyframes glideDropDown {
@@ -203,7 +203,7 @@
 	.navItem,
 	.menu-wrapper {
 		--activeTriggerColor: #666;
-		&:has(ul):not(:has(ul button:not(:disabled))) {
+		&:has(ul):not(:has(ul :is(button, a):not(:disabled))) {
 			color: grey; //faux disabled if all buttons are disabled
 		}
 		&:hover {

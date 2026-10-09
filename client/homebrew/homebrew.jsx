@@ -80,7 +80,7 @@ const Homebrew = (props)=>{
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
 					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
 					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
+					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} pageName={'changelog'} title={'Changelog: version ' + version} disableMeta={true} />} />
 					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
 					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
 					<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />

@@ -393,7 +393,7 @@ const VaultPage = (props)=>{
 		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
-			<Navbar pageName={'vaultPage'}/>
+			<Navbar pageName={'vaultPage'} title='Vault: Search for brews'/>
 			<div className='content'>
 				<SplitPane showDividerButtons={false}>
 					<div className='form dataGroup'>{renderForm()}</div>

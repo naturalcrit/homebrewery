@@ -5,7 +5,6 @@ const Meta = Headtags.Meta;
 
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 import Navbar from '../../navbar/navbar.jsx';
-import Nav from '../../navbar/nav.jsx';
 import request from '../../utils/request-middleware.js';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
@@ -64,11 +63,11 @@ const SharePage = (props)=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
-
+	console.log('brew: ',currentBrew);
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
-			<Navbar brew={currentBrew} pageName='sharePage' />
+			<Navbar brew={currentBrew} pageName={props.pageName || 'sharePage'} title={props.title || 'sharePage'} />
 			<div className='content'>
 				<BrewRenderer
 					text={currentBrew.text}
