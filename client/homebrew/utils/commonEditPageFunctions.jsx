@@ -158,7 +158,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 	};
 
 	const handleSplitMove = ()=>{
-		editorRef.current.update();
+		editorRef.current?.update();
 	};
 
 	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
