@@ -185,19 +185,30 @@ export default function pageRoutes({
 			'tags'
 		];
 
-		let brews = await HomebrewModel.getByUser(req.params.username, ownAccount, fields)
-        .catch((err)=>{
-        	console.log(err);
-        });
+		// collect metadata of folders
+		let folders = await FolderModel
+			.getByUser(req.params.username, ownAccount)
+			.catch((err) => { console.log(err); });
 
+		// collate all unique brewIds filed into folders
+		const shareIds = [...new Set(
+			folders.flatMap(folder => folder.brewIds || [])
+		)];
+
+		// collect metadata of brews by username and filedIds
+		let brews = await HomebrewModel
+			.getByIdsUser({username: req.params.username, allowAccess: ownAccount, fields, shareIds})
+			.catch((err) => { console.log(err); });
+
+		// process & prep brews for sending
 		brews.forEach((brew)=>brew.stubbed = true); //All brews from MongoDB are "stubbed"
 
+		// prefer Google metadata over stub metadata
 		if(ownAccount && req?.account?.googleId){
 			const auth = await GoogleActions.authCheck(req.account, res);
-			let googleBrews = await GoogleActions.listGoogleBrews(auth)
-                .catch((err)=>{
-                	console.error(err);
-                });
+			let googleBrews = await GoogleActions
+				.listGoogleBrews(auth)
+				.catch((err) => { console.error(err); });
 
 			// If stub matches file from Google, use Google metadata over stub metadata
 			if(googleBrews && googleBrews.length > 0) {
@@ -219,12 +230,15 @@ export default function pageRoutes({
 			}
 		}
 
-		req.brews = _.map(brews, (brew)=>{
-			// Clean up brew data
+		// clean up brew data
+		brews = _.map(brews, (brew)=>{
 			brew.title = brew.title?.trim();
 			brew.description = brew.description?.trim();
 			return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
 		});
+
+		req.brews = brews;
+		req.folders = folders;
 
 		return next();
 	});

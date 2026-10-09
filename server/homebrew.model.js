@@ -65,6 +65,39 @@ HomebrewSchema.statics.getByUser = async function(username, allowAccess=false, f
 	return brews;
 };
 
+HomebrewSchema.statics.getByIdsUser = async function(
+	{ username=null, allowAccess=false, fields=null, filter=null, shareIds=[] }
+){
+	const queries = [];
+
+	if(username) {
+		const userQuery = {
+			authors: username,
+			published: true,
+			...filter
+		};
+
+		if(allowAccess)
+			delete userQuery.published;
+
+		queries.push(userQuery);
+	}
+
+	if(shareIds?.length)
+		queries.push({ shareId: { $in: shareIds } });
+
+	if(!queries.length)
+		return [];
+
+	const query = queries.length === 1 ? queries[0] : { $or: queries };
+
+	const brews = await Homebrew
+		.find(query, fields).lean().exec()
+		.catch((error)=>{throw 'Can not find brews';});
+
+	return brews;
+};
+
 // INDEXES
 
 HomebrewSchema.index({ updatedAt: -1, lastViewed: -1 });
