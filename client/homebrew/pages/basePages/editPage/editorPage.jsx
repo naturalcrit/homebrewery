@@ -306,49 +306,55 @@ const EditorPage = (props)=>{
 		trySave(true, true, newSaveGoogle);
 	};
 
-	const renderGoogleDriveIcon = ()=>(
-		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
-			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
-
+	const renderGoogleDriveIcon = ()=>{
+		const errorExists = alertNoGoogleToTransfer || alertOwnershipToTransfer || alertTrashedGoogleBrew || confirmGoogleTransfer;
+		return (<>
+		<Nav.header>This brew is in {saveGoogle ? 'Google Drive' : 'The Homebrewery'}</Nav.header>
+		<Nav.item className='googleDriveStorage' noDismiss={errorExists} onClick={handleGoogleClick}>
+			{saveGoogle ? 'Transfer to Homebrewery' : 'Transfer to Drive'}
+			{saveGoogle? '' : <img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' /> }
+		</Nav.item>
+		{errorExists && <Nav.item className='errorContainer' >
 			{alertOwnershipToTransfer && (
-				<div className='errorContainer'>
+				<>
 					You must be the Owner to transfer between the Homebrewery and Google Drive!
 					The owner of this file is {currentBrew.authors[0]}.
 					<br></br>
 					<div className='confirm' onClick={closeAlerts}> Okay </div>
-				</div>
+				</>
 			)}
 
 			{alertNoGoogleToTransfer && (
-				<div className='errorContainer'>
+				<>
 					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
 					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm' onClick={closeAlerts}> Sign In </div>
 					</a>
 					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
-				</div>
+				</>
 			)}
 
 			{alertTrashedGoogleBrew && (
-				<div className='errorContainer'>
+				<>
 					This brew is currently in your Trash folder on Google Drive!<br />
 					If you want to keep it, make sure to move it before it is deleted permanently!<br />
 					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
-				</div>
+				</>
 			)}
 
 			{confirmGoogleTransfer && (
-				<div className='errorContainer'>
+				<>
 					{saveGoogle
 						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
 						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
 					<br />
 					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
 					<div className='deny' onClick={closeAlerts}>                                  No  </div>
-				</div>
+				</>
 			)}
-		</Nav.item>
-	);
+		</Nav.item>}
+		</>
+	)};
 
 
 	const renderAutoSaveButton = ()=>(
@@ -381,6 +387,9 @@ const EditorPage = (props)=>{
 							save now
 					</Nav.item>
 					{(pageName == 'editPage') && renderAutoSaveButton()}
+					{pageName === 'editPage' && <div className="nav-section">
+						{renderGoogleDriveIcon()}
+					</div>}
 				</Navbar.File>
 				<Navbar.Menu>
 					{error? <ErrorNavItem error={error} clearError={clearError} /> : renderSaveButton()}

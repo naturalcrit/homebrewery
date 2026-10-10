@@ -146,7 +146,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 			</Dropdown>
 		);
 	};
-
+	console.log(navSlots);
 	return (
 		<nav>
 			<ul>

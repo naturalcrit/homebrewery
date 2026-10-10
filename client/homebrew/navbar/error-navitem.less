@@ -1,69 +1,30 @@
 @import '@sharedStyles/core.less';
 
-@keyframes glideDown {
-	0% {
-		opacity   : 0;transform : translate(-50% + 3px, 0px);}
-	100% {
-		opacity   : 1;transform : translate(-50% + 3px, 10px);}
-}
-
-
 .navItem.error {
 	position         : relative;
 	background-color : @red;
 }
 
 .errorContainer {
-	position           : absolute;
-	top                : 100%;
-	left               : 50%;
-	z-index            : 1000;
 	width              : 140px;
-	padding            : 3px;
+	padding            : 5px !important;
 	font-size          : 10px;
-	font-weight        : 800;
+	line-height: 1.5em;
 	color              : white;
-	text-align         : center;
 	text-transform     : uppercase;
-	background-color   : #333333;
-	border             : 3px solid #444444;
-	border-radius      : 5px;
-	transform          : translate(-50% + 3px, 10px);
-	animation-name     : glideDown;
-	animation-duration : 0.4s;
+	flex-direction: column;
+	outline:1px solid red;
+	border:1px solid red;
+	border-width: 1px 3px;
+	border-radius:5px;
 	.lowercase { text-transform : none; }
 	a { color : @teal; }
-	&::before {
-		position      : absolute;
-		top           : -23px;
-		left          : 53px;
-		width         : 0px;
-		height        : 0px;
-		content       : '';
-		border-top    : 10px solid transparent;
-		border-right  : 10px solid transparent;
-		border-bottom : 10px solid #444444;
-		border-left   : 10px solid transparent;
-	}
-	&::after {
-		position      : absolute;
-		top           : -19px;
-		left          : 53px;
-		width         : 0px;
-		height        : 0px;
-		content       : '';
-		border-top    : 10px solid transparent;
-		border-right  : 10px solid transparent;
-		border-bottom : 10px solid #333333;
-		border-left   : 10px solid transparent;
-	}
 	.deny {
 		display          : inline-block;
 		width            : 48%;
 		padding          : 5px;
 		margin           : 1px;
-		background-color : #333333;
-		border-left      : 1px solid #666666;
+		background:@orange;
 		.animate(background-color);
 		&:hover { background-color : red; }
 	}
@@ -73,7 +34,7 @@
 		padding          : 5px;
 		margin           : 1px;
 		color            : white;
-		background-color : #333333;
+		background:@orange;
 		.animate(background-color);
 		&:hover { background-color : teal; }
 	}

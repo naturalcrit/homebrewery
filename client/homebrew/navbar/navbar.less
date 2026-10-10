@@ -3,19 +3,6 @@
 @navbarHeight: 29px;
 @viewerToolsHeight: 32px;
 
-@keyframes glideDropDown {
-	0% {
-		background-color: #333333;
-		opacity: 0;
-		transform: translate(0px, -100%);
-	}
-	100% {
-		background-color: #333333;
-		opacity: 1;
-		transform: translate(0px, 0px);
-	}
-}
-
 .homebrew nav {
 	position: relative;
 	z-index: 2;
@@ -25,6 +12,7 @@
 	color: #ccc;
 	height: @navbarHeight;
 	font-size: 14px;
+
 	font-family:
 		Alata,
 		open sans;
@@ -36,11 +24,12 @@
 		height: 100%;
 		padding: 5px;
 		cursor: pointer;
+		max-width:140px;
+		text-wrap:wrap;
 
 		&:has(> button, > a) {
 			padding: 0;
 		}
-
 		&.brewTitle {
 			display: block;
 			width: 100%;
@@ -54,7 +43,6 @@
 			white-space: nowrap;
 			background-color: transparent;
 		}
-
 		&.metadata {
 			position: relative;
 			display: flex;
@@ -165,27 +153,9 @@
 				text-transform: none;
 			}
 		}
-
-		button,
-		a {
-			&:disabled {
-				color: #777;
-			}
-			display: grid;
-			place-items: center;
-			height: 100%;
-			width: 100%;
-			padding: 5px 10px;
-		}
-		a {
-			color: inherit;
-			text-decoration: none;
-		}
-
 		&.header {
 			justify-content: center;
 		}
-
 		&.save {
 			width: 90px;
 
@@ -204,17 +174,21 @@
 			}
 		}
 
-		&.googleDriveStorage {
-			position: relative;
 
-			img {
-				height: 18px;
-				padding: 0px;
-				margin: -5px;
-				&.inactive {
-					filter: grayscale(1);
-				}
+		button,
+		a {
+			&:disabled {
+				color: #777;
 			}
+			display: grid;
+			place-items: center;
+			height: 100%;
+			width: 100%;
+			padding: 5px 10px;
+		}
+		a {
+			color: inherit;
+			text-decoration: none;
 		}
 
 		i.fa-power-off {
@@ -235,7 +209,7 @@
 		&:hover {
 			background: #484848;
 		}
-		&:has(> i, > kbd) {
+		&:has(> i, > kbd, >img) {
 			display: flex;
 			gap: 5px;
 			justify-content: space-between;
@@ -295,6 +269,20 @@
 					&:nth-of-type(2) {
 						background-color: darken(@purple, 30%);
 					}
+				}
+			}
+		}
+
+		.googleDriveStorage {
+			position: relative;
+
+			img {
+				height: 18px;
+				padding: 0px;
+				margin: -5px;
+				translate:-5px;
+				&.inactive {
+					filter: grayscale(1);
 				}
 			}
 		}

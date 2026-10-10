@@ -1,5 +1,3 @@
-import './newPage.less';
-
 import React            from 'react';
 import request          from '../../utils/request-middleware.js';
 import _                from 'lodash';

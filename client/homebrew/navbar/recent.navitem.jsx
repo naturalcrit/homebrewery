@@ -156,11 +156,11 @@ const RecentItems = createReactClass({
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<Nav.header>edited</Nav.header> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<Nav.header>viewed</Nav.header>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
