@@ -36,7 +36,7 @@ const Nav = {
 				{icon && <i className={icon}></i>}
 			</a>;
 		} else {
-			return <button {...props} no-dismiss={noDismiss ? 'true' : 'false'} className={classes} onClick={onClick} >
+			return <button {...props} no-dismiss={noDismiss ? 'true' : undefined} className={classes} onClick={onClick} >
 				{children}
 				{icon && <i className={icon}></i>}
 				{kbd && <kbd>{kbd}</kbd>}

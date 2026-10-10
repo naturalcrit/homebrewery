@@ -277,7 +277,6 @@ const EditorPage = (props)=>{
 
 	//======----- Google Toggle Button -----======
 	const closeAlerts = (e)=>{
-		e.stopPropagation(); //Only handle click once so alert doesn't reopen
 		setAlertTrashedGoogleBrew(false);
 		setAlertNoGoogleToTransfer(false);
 		setConfirmGoogleTransfer(false);
@@ -310,16 +309,15 @@ const EditorPage = (props)=>{
 		const errorExists = alertNoGoogleToTransfer || alertOwnershipToTransfer || alertTrashedGoogleBrew || confirmGoogleTransfer;
 		return (<>
 		<Nav.header>This brew is in {saveGoogle ? 'Google Drive' : 'The Homebrewery'}</Nav.header>
-		<Nav.item className='googleDriveStorage' noDismiss={errorExists} onClick={handleGoogleClick}>
+		<Nav.item className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
 			{saveGoogle ? 'Transfer to Homebrewery' : 'Transfer to Drive'}
-			{saveGoogle? '' : <img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' /> }
+			{saveGoogle? '' : <img src={googleDriveIcon} alt='Google Drive icon' /> }
 		</Nav.item>
 		{errorExists && <Nav.item className='errorContainer' >
 			{alertOwnershipToTransfer && (
 				<>
 					You must be the Owner to transfer between the Homebrewery and Google Drive!
 					The owner of this file is {currentBrew.authors[0]}.
-					<br></br>
 					<div className='confirm' onClick={closeAlerts}> Okay </div>
 				</>
 			)}
@@ -330,7 +328,7 @@ const EditorPage = (props)=>{
 					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
 						<div className='confirm' onClick={closeAlerts}> Sign In </div>
 					</a>
-					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
+					<div className='deny'  onClick={closeAlerts}>       Not Now </div>
 				</>
 			)}
 
@@ -347,9 +345,8 @@ const EditorPage = (props)=>{
 					{saveGoogle
 						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
 						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
-					<br />
 					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
-					<div className='deny' onClick={closeAlerts}>                                  No  </div>
+					<div className='deny' onClick={closeAlerts}>            No  </div>
 				</>
 			)}
 		</Nav.item>}

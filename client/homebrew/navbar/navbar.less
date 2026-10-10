@@ -24,8 +24,8 @@
 		height: 100%;
 		padding: 5px;
 		cursor: pointer;
-		max-width:140px;
-		text-wrap:wrap;
+		max-width:150px;
+		text-wrap:pretty;
 
 		&:has(> button, > a) {
 			padding: 0;
@@ -157,8 +157,7 @@
 			justify-content: center;
 		}
 		&.save {
-			width: 90px;
-
+			width:90px;
 			&.neverSaved {
 				background-color: @orange;
 				color: white;
@@ -277,13 +276,10 @@
 			position: relative;
 
 			img {
-				height: 18px;
+				height: 15px;
 				padding: 0px;
 				margin: -5px;
 				translate:-5px;
-				&.inactive {
-					filter: grayscale(1);
-				}
 			}
 		}
 	}
@@ -297,12 +293,17 @@
 			height: 100%;
 			text-wrap: nowrap;
 
-			&:first-child :is(button, a) {
+			&:first-child >:is(button, a) {
 				padding-left: 15px;
 			}
-			&:last-child :is(button, a) {
+			&:last-child >:is(button, a) {
 				padding-right: 15px;
 			}
+		}
+
+		&:last-child ul {
+			padding-right:10px;
+			translate:-10px 0;
 		}
 
 		ul {
@@ -313,6 +314,10 @@
 
 			.navItem {
 				min-height: 2.2em;
+
+				&.save {
+					width:100%;
+				}
 			}
 
 			.nav-section:not(:last-child, :has(+ .header)) {
