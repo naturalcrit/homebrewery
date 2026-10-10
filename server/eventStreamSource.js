@@ -12,21 +12,27 @@ let subscribers = [];
 const debounceUnsub = _.debounce((id)=>{ unsubscribe(id); }, UNSUB_DELAY, { leading: false, trailing: true });
 
 // Listener functions
-const subscribe = function(res){
-	const id = nanoid();
-	subscribers.push({ id, 'stream': res });
+const subscribe = function(shareId, res){
+	const subscriber = {
+		id     : nanoid(), // NanoID is assumed globally unique
+		shareId,
+		stream : res,
+		time   : new Date
+	};
 
-	res.write(`event: subscribe\ndata: { id: ${id} }\n\n`);
+	subscribers.push(subscriber);
 
-	debounceUnsub(id);
-	return id;
+	Stream.emit('sendUpdate', 'subscribe', { id: subscriber.id, shareId: subscriber.shareId, time: subscriber.time });
+
+	debounceUnsub(subscriber.id);
+	return subscriber.id;
 };
 
 const unsubscribe = function(id){
 	subscribers
 		.filter((sub)=>{return sub.id == id;})
 		.forEach((sub)=>{
-			sub.stream.write(`event: unsubscribe\ndata: { id: ${id} }\n\n`);
+			Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId, time: new Date });
 		});
 
 	subscribers = subscribers.filter((sub)=>{ return sub.id != id; });
@@ -35,13 +41,21 @@ const unsubscribe = function(id){
 // Create global sendUpdate listener
 Stream.on('sendUpdate', (event, data)=>{
 	console.log('Event:', event, '\nData:', data);
-	subscribers.forEach((sub)=>{
-		sub?.stream?.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
+	subscribers
+		.filter((sub)=>{return data.shareId == sub.shareId; })
+		.forEach((sub)=>{
+			sub?.stream?.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 
-		// invoke debounced unsub to delay execution
-		debounceUnsub(sub.id);
-	});
+			// invoke debounced unsub to delay execution
+			debounceUnsub(sub.id);
+		});
 });
+
+// DEBUG: Report subscriber count periodically
+const REPORT_DELAY = 1000; //ms
+const reportIntervalId = setInterval(()=>{
+	console.log('Subscriber count:', subscribers.length);
+}, REPORT_DELAY);
 
 export default {
 	emit : function(event) {return Stream.emit(event, ...([...arguments].slice(1)));},    // Arguments doesn't work for arrow functions

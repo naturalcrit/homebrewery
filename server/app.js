@@ -203,7 +203,7 @@ export default async function createApp(vite) {
 			'Content-Encoding' : 'none'
 		});
 		;
-		Stream.subscribe(res);
+		Stream.subscribe(req.params.id, res);
 	});
 
 
