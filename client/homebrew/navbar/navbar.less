@@ -24,8 +24,8 @@
 		height: 100%;
 		padding: 5px;
 		cursor: pointer;
-		max-width:150px;
-		text-wrap:pretty;
+		max-width: 150px;
+		text-wrap: pretty;
 
 		&:has(> button, > a) {
 			padding: 0;
@@ -157,7 +157,7 @@
 			justify-content: center;
 		}
 		&.save {
-			width:90px;
+			width: 90px;
 			&.neverSaved {
 				background-color: @orange;
 				color: white;
@@ -172,30 +172,29 @@
 				cursor: initial;
 			}
 		}
+	}
 
-
-		button,
-		a {
-			&:disabled {
-				color: #777;
-			}
-			display: grid;
-			place-items: center;
-			height: 100%;
-			width: 100%;
-			padding: 5px 10px;
+	button,
+	a {
+		&:disabled {
+			color: #777;
 		}
-		a {
-			color: inherit;
-			text-decoration: none;
-		}
+		display: grid;
+		place-items: center;
+		height: 100%;
+		width: 100%;
+		padding: 5px 10px;
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
 
-		i.fa-power-off {
-			color: red;
-			&.active {
-				color: rgb(0, 182, 52);
-				filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
-			}
+	i.fa-power-off {
+		color: red;
+		&.active {
+			color: rgb(0, 182, 52);
+			filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
 		}
 	}
 
@@ -208,7 +207,7 @@
 		&:hover {
 			background: #484848;
 		}
-		&:has(> i, > kbd, >img) {
+		&:has(> i, > kbd, > img) {
 			display: flex;
 			gap: 5px;
 			justify-content: space-between;
@@ -279,7 +278,7 @@
 				height: 15px;
 				padding: 0px;
 				margin: -5px;
-				translate:-5px;
+				translate: -5px;
 			}
 		}
 	}
@@ -293,17 +292,17 @@
 			height: 100%;
 			text-wrap: nowrap;
 
-			&:first-child >:is(button, a) {
+			&:first-child > :is(button, a) {
 				padding-left: 15px;
 			}
-			&:last-child >:is(button, a) {
+			&:last-child > :is(button, a) {
 				padding-right: 15px;
 			}
 		}
 
 		&:last-child ul {
-			padding-right:10px;
-			translate:-10px 0;
+			padding-right: 10px;
+			translate: -10px 0;
 		}
 
 		ul {
@@ -316,7 +315,7 @@
 				min-height: 2.2em;
 
 				&.save {
-					width:100%;
+					width: 100%;
 				}
 			}
 
