@@ -20,9 +20,14 @@
 	position: relative;
 	z-index: 2;
 	display: flex;
-
 	justify-content: space-between;
-	background-color: #333333;
+	background-color: #333;
+	color: #ccc;
+	height: @navbarHeight;
+	font-size: 14px;
+	font-family:
+		Alata,
+		open sans;
 
 	.navItem {
 		display: flex;
@@ -160,46 +165,67 @@
 				text-transform: none;
 			}
 		}
-	}
-}
 
-// this should likely be refactored into .navDropdownContainer
-.save-menu {
-	.dropdown {
-		z-index: 1000;
-	}
-	.navItem i.fa-power-off {
-		color: red;
-		&.active {
-			color: rgb(0, 182, 52);
-			filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+		button,
+		a {
+			&:disabled {
+				color: #777;
+			}
+			display: grid;
+			place-items: center;
+			height: 100%;
+			width: 100%;
+			padding: 5px 10px;
+		}
+		a {
+			color: inherit;
+			text-decoration: none;
+		}
+
+		&.header {
+			justify-content: center;
+		}
+
+		&.save {
+			width: 90px;
+
+			&.neverSaved {
+				background-color: @orange;
+				color: white;
+				transition: all 0.2s;
+
+				&:hover {
+					background-color: @green;
+				}
+			}
+			&.saved {
+				color: #666666;
+				cursor: initial;
+			}
+		}
+
+		&.googleDriveStorage {
+			position: relative;
+
+			img {
+				height: 18px;
+				padding: 0px;
+				margin: -5px;
+				&.inactive {
+					filter: grayscale(1);
+				}
+			}
+		}
+
+		i.fa-power-off {
+			color: red;
+			&.active {
+				color: rgb(0, 182, 52);
+				filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+			}
 		}
 	}
-}
 
-.homebrew nav {
-	color: #ccc;
-	background: #333;
-	height: @navbarHeight;
-	font-size: 14px;
-	font-family:
-		Alata,
-		open sans;
-	button,
-	a {
-		&:disabled {
-			color: #777;
-		}
-		display: grid;
-		place-items: center;
-		height: 100%;
-		width: 100%;
-		padding: 5px 10px;
-	}
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
 	.navItem,
 	.menu-wrapper {
 		--activeTriggerColor: #666;
@@ -270,41 +296,6 @@
 						background-color: darken(@purple, 30%);
 					}
 				}
-			}
-		}
-	}
-
-	.navItem {
-		&.header {
-			justify-content: center;
-		}
-
-		&.neverSaved {
-			background-color: @orange;
-			color: white;
-			transition: all 0.2s;
-			
-			&:hover {
-				background-color: @green;
-			}
-		}
-		&.save {
-			width:90px;
-		}
-
-		&.saved {
-			color: #666666;
-			cursor: initial;
-		}
-
-		&.googleDriveStorage {
-			position : relative;
-
-			img {
-				height: 18px;
-				padding: 0px;
-				margin: -5px;
-				&.inactive { filter : grayscale(1); }
 			}
 		}
 	}
