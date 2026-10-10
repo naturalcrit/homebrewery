@@ -20,7 +20,7 @@ const Stream = new EventEmitter;
 let subscribers = [];
 
 // Listener functions
-const subscribe = function(shareId, res){
+const subscribe = function(shareId, res, clientFingerprint){
 	const id = nanoid(24); // NanoID is assumed globally unique;
 	const subscriber = {
 		id,
@@ -32,7 +32,7 @@ const subscribe = function(shareId, res){
 
 	subscribers.push(subscriber);
 
-	Stream.emit('sendUpdate', 'subscribe', { id: subscriber.id, shareId: subscriber.shareId, time: subscriber.time });
+	Stream.emit('sendUpdate', 'subscribe', { id: subscriber.id, shareId: subscriber.shareId, client: clientFingerprint, time: subscriber.time });
 
 	return subscriber.id;
 };
@@ -41,6 +41,7 @@ const unsubscribe = function(id){
 	subscribers
 		.filter((sub)=>{return sub.id == id;})
 		.forEach((sub)=>{
+			clearTimeout(sub.unsubTimer);
 			Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId, time: new Date });
 		});
 

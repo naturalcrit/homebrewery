@@ -13,7 +13,7 @@ app.get('/api/stream/:id', (req, res)=>{
 		'Content-Encoding' : 'none'
 	});
 	;
-	Stream.subscribe(req.params.id, res);
+	Stream.subscribe(req.params.id, res, req.query?.client);
 });
 
 app.get('/api/stream/unsubscribe/:id', (req, res)=>{

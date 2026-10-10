@@ -16,6 +16,7 @@ import request from '../../utils/request-middleware.js';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
+import { nanoid } from 'nanoid';
 
 const SharePage = (props)=>{
 	const { disableMeta = false } = props;
@@ -53,14 +54,19 @@ const SharePage = (props)=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
+		// generate unique fingerprint
+		const clientFingerprint = nanoid(24);
+
 		// listen for changes in the brew version
-		const eventSource = new EventSource(`/api/stream/${props.brew.shareId}`);
+		const eventSource = new EventSource(`/api/stream/${props.brew.shareId}?client=${clientFingerprint}`);
 
 		let subId = '';
 		eventSource.addEventListener('subscribe', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
-			subId = messageData.id;
+			if(messageData.client == clientFingerprint){
+				subId = messageData.id;
+			}
 		});
 
 		eventSource.addEventListener('brewUpdated', (evt)=>{
