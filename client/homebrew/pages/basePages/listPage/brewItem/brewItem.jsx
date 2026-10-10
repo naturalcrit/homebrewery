@@ -120,7 +120,7 @@ const BrewItem = ({
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 	return (
-		<div className={`brewItem${detailsOpen ? ' detailsOpen' : ''}`} onClick={() => setDetailsOpen(!detailsOpen)} >
+		<div className={`brewItem${detailsOpen ? ' detailsOpen' : ''}`} onClick={()=>setDetailsOpen(!detailsOpen)} >
 			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
 				<h2 title={brew.title}>{brew.title}</h2>

@@ -63,7 +63,7 @@ const SharePage = (props)=>{
 			document.removeEventListener('keydown', handleControlKeys);
 		};
 	}, []);
-	console.log('brew: ',currentBrew);
+	console.log('brew: ', currentBrew);
 	return (
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
