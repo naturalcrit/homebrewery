@@ -143,6 +143,7 @@ const RecentItems = createReactClass({
 		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
+			if(brews.length === 0) return <Nav.item>No recent brews</Nav.item>
 			return <div className='nav-section'>
 				{_.map(brews, (brew, i)=>{
 					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>

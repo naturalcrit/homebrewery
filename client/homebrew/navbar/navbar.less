@@ -1,7 +1,6 @@
 @import '@sharedStyles/core.less';
 
 @navbarHeight: 29px;
-@viewerToolsHeight: 32px;
 
 .homebrew nav {
 	position: relative;
@@ -173,34 +172,6 @@
 		}
 	}
 
-	button,
-	a {
-		&:disabled {
-			color: #777;
-		}
-		display: grid;
-		place-items: center;
-		height: 100%;
-		width: 100%;
-		padding: 5px 10px;
-
-		@media screen and (max-width: 800px) {
-			padding: 5px;
-		}
-	}
-	a {
-		color: inherit;
-		text-decoration: none;
-	}
-
-	i.fa-power-off {
-		color: red;
-		&.active {
-			color: #00b634;
-			filter: drop-shadow(0 0 2px #00b634c3);
-		}
-	}
-
 	.navItem,
 	.menu-wrapper {
 		--activeTriggerColor: #666;
@@ -216,14 +187,6 @@
 			justify-content: space-between;
 		}
 
-		kbd {
-			font-size: 0.8em;
-			font-family: monospace;
-			color: #aaa;
-			background: #222;
-			padding: 2px 5px;
-			border-radius: 5px;
-		}
 		&.header {
 			cursor: default;
 			place-content: center;
@@ -231,7 +194,6 @@
 
 		&.recent ul {
 			position: relative;
-
 			.navItem {
 				position: relative;
 				gap: 5px;
@@ -291,6 +253,7 @@
 		display: flex;
 		align-items: center;
 		height: 100%;
+		
 
 		> .menu-wrapper {
 			height: 100%;
@@ -304,16 +267,12 @@
 			}
 		}
 
-		&:last-child ul {
-			padding-right: 10px;
-			translate: -10px 0;
-		}
-
 		ul {
 			background: #333;
 			font-size: 12px;
 			text-transform: capitalize;
 			padding-bottom: 5px;
+			min-width: 80px;
 
 			.navItem {
 				min-height: 2.2em;
@@ -333,5 +292,48 @@
 				margin-block: 2px;
 			}
 		}
+
+		&:last-child ul {
+			padding-right: 10px;
+			translate: -10px 0;
+		}
 	}
+
+	button,
+	a {
+		&:disabled {
+			color: #777;
+		}
+		display: grid;
+		place-items: center;
+		height: 100%;
+		width: 100%;
+		padding: 5px 10px;
+
+		@media screen and (max-width: 800px) {
+			padding: 5px;
+		}
+	}
+	a {
+		color: inherit;
+		text-decoration: none;
+	}
+
+	i.fa-power-off {
+		color: red;
+		&.active {
+			color: #00b634;
+			filter: drop-shadow(0 0 2px #00b634c3);
+		}
+	}
+	kbd {
+		font-size: 0.8em;
+		font-family: monospace;
+		color: #aaa;
+		background: #222;
+		padding: 2px 5px;
+		border-radius: 5px;
+	}
+
+	
 }
