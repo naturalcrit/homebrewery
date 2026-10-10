@@ -20,6 +20,7 @@ import api from './homebrew.api.js';
 const { homebrewApi, getBrew, getCSS } = api;
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
+import streamApi                   from './stream.api.js';
 import pageRoutes from './page-routes.js';
 
 import serveCompressedStaticAssets from './static-assets.mv.js';
@@ -32,7 +33,6 @@ import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
 
-import Stream from './eventStreamSource.js';
 import dbCheck            from './middleware/dbCheck.js';
 
 import cors from 'cors';
@@ -115,6 +115,7 @@ export default async function createApp(vite) {
 	app.use(homebrewApi);
 	app.use(adminApi(vite));
 	app.use(vaultApi);
+	app.use(streamApi);
 
 	String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -192,18 +193,6 @@ export default async function createApp(vite) {
 			console.error('Error renaming brews:', error);
 			return res.status(500).json({ error: 'Failed to rename brews.' });
 		}
-	});
-
-	// Create Event Stream source for pages to listen to
-	app.get('/stream/:id', (req, res)=>{
-		res.writeHead(200, {
-			'Content-Type'     : 'text/event-stream',
-			'Cache-Control'    : 'no-cache',
-			'Connection'       : 'keep-alive',
-			'Content-Encoding' : 'none'
-		});
-		;
-		Stream.subscribe(req.params.id, res);
 	});
 
 
