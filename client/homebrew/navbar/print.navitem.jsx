@@ -19,7 +19,7 @@ export default function({ disabled }){
 
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
 
-	return <Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf' disabled={disabled}>
+	return <Nav.item onClick={printCurrentBrew} icon='far fa-file-pdf' disabled={disabled}>
 		{printing ? 'loading' : 'get PDF'}
 	</Nav.item>;
 };

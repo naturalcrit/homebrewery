@@ -5,7 +5,7 @@ import Nav from './nav.jsx';
 
 export default function(props){
 	return <div className='nav-section'>
-		<Nav.item color='red' icon='fas fa-fw fa-bug'
+		<Nav.item icon='fas fa-fw fa-bug'
 			href={`https://www.reddit.com/r/homebrewery/submit?selftext=true&text=${encodeURIComponent(dedent`
 			- **Browser(s)** :
 			- **Operating System** :  
@@ -15,13 +15,13 @@ export default function(props){
 			rel='noopener noreferrer'>
 			report issue
 		</Nav.item>
-		<Nav.item color='green' icon='fas fa-question-circle'
+		<Nav.item icon='fas fa-question-circle'
 			href='/faq'
 			newTab={true}
 			rel='noopener noreferrer'>
 			FAQ
 		</Nav.item>
-		<Nav.item color='blue' icon='fas fa-fw fa-file-import'
+		<Nav.item icon='fas fa-fw fa-file-import'
 			href='/migrate'
 			newTab={true}
 			rel='noopener noreferrer'>

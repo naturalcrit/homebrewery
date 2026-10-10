@@ -127,7 +127,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				{renderEditLink()}
 				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				<div className='nav-section'>
-					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' color='green' icon='fas fa-heart'>
+					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
 					</Nav.item>
 					<Nav.item icon='fas fa-dungeon' href='/vault' newTab={false} rel='noopener noreferrer'>
@@ -163,9 +163,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 			{pageName !== 'sharePage' && <Nav.header className='brewTitle'>{title}</Nav.header>}
 			<MetadataNavItem brew={brew} pageName={pageName}></MetadataNavItem>
 			<ul>
-				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>
-					<AccountNavItem />
-				</Dropdown>
+				<AccountNavItem />
 			</ul>
 		</nav>
 	);

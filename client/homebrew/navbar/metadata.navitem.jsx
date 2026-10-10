@@ -70,7 +70,7 @@ const MetadataNav = createReactClass({
 	render : function(){
 		if(!this.props.brew?.shareId || this.props.pageName !== 'sharePage') return <></>;
 
-		return <Nav.item icon='fas fa-info-circle' color='grey' className='metadata'
+		return <Nav.item icon='fas fa-info-circle' className='metadata'
 			onClick={()=>this.toggleMetaWindow()}>
 			{this.props.children}
 			{this.renderMetaWindow()}

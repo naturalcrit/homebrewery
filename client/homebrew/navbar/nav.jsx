@@ -24,8 +24,8 @@ const Nav = {
 		</div>;
 	},
 
-	item : ({ icon, kbd, href, newTab, onClick, color, children, className, disabled, noDismiss, ...props })=>{
-		const classes = cx('navItem', color, className);
+	item : ({ icon, kbd, href, newTab, onClick, children, className, disabled, noDismiss, ...props })=>{
+		const classes = cx('navItem', className);
 		if(disabled) {
 			return <button className={classes} disabled>{children}{icon && <i className={icon}></i>}</button>;
 		}
