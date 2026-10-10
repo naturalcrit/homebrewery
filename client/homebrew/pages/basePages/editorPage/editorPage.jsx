@@ -39,6 +39,7 @@ const EditorPage = (props)=>{
 		save,
 		onSaveSuccess,
 		pageName,
+		pageTitle,
 		showEditorButtons,
 		userThemes = {}
 	} = props;
@@ -375,7 +376,7 @@ const EditorPage = (props)=>{
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
-			<Navbar brew={currentBrew} editor={editorRef.current} pageName={pageName} account={global.account} currentPage={currentBrewRendererPageNum}>
+			<Navbar brew={currentBrew} editor={editorRef.current} pageName={pageName} title={pageTitle} account={global.account} currentPage={currentBrewRendererPageNum}>
 				<Navbar.File>
 					<Nav.item
 						className='save'

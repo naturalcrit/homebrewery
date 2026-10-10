@@ -44,9 +44,9 @@ const Nav = {
 		}
 	},
 	header: ({span, className, children, ...props})=>{
-		return <li className={cx([`navItem header`, className])} no-dismiss='true'>
+		return <span className={cx([`navItem header`, className])} no-dismiss='true'>
 			{children}
-		</li>;
+		</span>;
 	},
 
 };

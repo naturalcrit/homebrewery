@@ -31,17 +31,19 @@
 			padding: 0;
 		}
 		&.brewTitle {
-			display: block;
 			width: 100%;
+			max-width: none;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			font-size: 12px;
-			font-weight: 800;
 			color: white;
 			text-align: center;
 			text-transform: initial;
 			white-space: nowrap;
-			background-color: transparent;
+			letter-spacing: 1px;
+
+			@media screen and (max-width: 800px) {
+				display: none;
+			}
 		}
 		&.metadata {
 			position: relative;
@@ -184,6 +186,10 @@
 		height: 100%;
 		width: 100%;
 		padding: 5px 10px;
+
+		@media screen and (max-width: 800px) {
+			padding: 5px;
+		}
 	}
 	a {
 		color: inherit;
@@ -204,7 +210,7 @@
 		&:has(ul):not(:has(ul :is(button, a):not(:disabled))) {
 			color: grey; //faux disabled if all buttons are disabled
 		}
-		&:hover {
+		&:not(.header):hover {
 			background: #484848;
 		}
 		&:has(> i, > kbd, > img) {
@@ -221,6 +227,9 @@
 			padding: 2px 5px;
 			border-radius: 5px;
 		}
+		&.header {
+			cursor: default;
+		}
 
 		&.recent ul {
 			position: relative;
@@ -230,6 +239,19 @@
 				gap: 5px;
 				height: 2.7em;
 				isolation: isolate;
+
+				&.header {
+					display: block;
+					padding: 5px 0;
+					color: #bbbbbb;
+					border-top: 1px solid #888888;
+					&:nth-of-type(1) {
+						background-color: darken(@teal, 20%);
+					}
+					&:nth-of-type(2) {
+						background-color: darken(@purple, 30%);
+					}
+				}
 				.clear {
 					width: 55px;
 					padding: 0;
@@ -252,21 +274,6 @@
 					font-size: 0.8em;
 					color: #888888;
 					z-index: -1;
-				}
-				&.header {
-					box-sizing: border-box;
-					display: block;
-					padding: 5px 0;
-					color: #bbbbbb;
-					text-align: center;
-					background-color: #333333;
-					border-top: 1px solid #888888;
-					&:nth-of-type(1) {
-						background-color: darken(@teal, 20%);
-					}
-					&:nth-of-type(2) {
-						background-color: darken(@purple, 30%);
-					}
 				}
 			}
 		}

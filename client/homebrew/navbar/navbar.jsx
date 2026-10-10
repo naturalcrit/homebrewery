@@ -18,7 +18,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	const mod = isMac ? '⌘' : 'Ctrl';
 	const isBrew = !!brew && (brew.shareId || pageName === 'homePage' || pageName === 'newPage');
 	const account = global.account;
-	const generalPage = pageName === 'vaultPage' || pageName === 'changelog' || pageName === 'faq' || pageName === 'migrate';
 
 	const navSlots = React.Children.toArray(children).reduce((slots, child) => {
 		if (!React.isValidElement(child)) return slots;
@@ -162,7 +161,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				</Dropdown>
 				{navSlots.menu}
 			</ul>
-			{generalPage && <Nav.item className='brewTitle'>{title}</Nav.item>}
+			{pageName !== 'sharePage' && <Nav.header className='brewTitle'>{title}</Nav.header>}
 			<MetadataNavItem brew={brew} pageName={pageName}></MetadataNavItem>
 			<ul>
 				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>
