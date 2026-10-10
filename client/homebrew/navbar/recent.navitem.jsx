@@ -143,34 +143,32 @@ const RecentItems = createReactClass({
 		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
-			return _.map(brews, (brew, i)=>{
-				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
-					<span className='title'>{brew.title || '[ no title ]'}</span>
-					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
-				</a>;
-			});
+			if(brews.length === 0) return <Nav.item>No recent brews</Nav.item>
+			return <div className='nav-section'>
+				{_.map(brews, (brew, i)=>{
+					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+						<span className='title'>{brew.title || '[ no title ]'}</span>
+						<span className='time'>{Moment(brew.ts).fromNow()}</span>
+						<button className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></button>
+					</a>;
+				})}
+			</div>;
 		};
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<Nav.header>edited</Nav.header> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<Nav.header>viewed</Nav.header>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
 	},
 
 	render : function(){
-		return <Nav.dropdown className='recent'>
-			<Nav.item icon='fas fa-history' color='grey' >
-				{this.props.text}
-			</Nav.item>
-			{this.renderDropdown()}
-		</Nav.dropdown>;
+		return this.renderDropdown();
 	}
 
 });

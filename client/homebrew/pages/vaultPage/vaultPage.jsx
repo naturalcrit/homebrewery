@@ -3,18 +3,12 @@
 import './vaultPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 
-import Nav          from '@navbar/nav.jsx';
-import Navbar       from '@navbar/navbar.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
-const { both: RecentNavItem } = RecentNavItems;
-import Account      from '@navbar/account.navitem.jsx';
-import NewBrew      from '@navbar/newbrew.navitem.jsx';
-import HelpNavItem  from '@navbar/help.navitem.jsx';
 import BrewItem     from '../basePages/listPage/brewItem/brewItem.jsx';
 import SplitPane    from '@components/splitPane/splitPane.jsx';
 import ErrorIndex   from '../errorPage/errors/errorIndex.js';
 
 import request from '../../utils/request-middleware.js';
+import Navbar from '../../navbar/navbar.jsx';
 
 const VaultPage = (props)=>{
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
@@ -115,22 +109,6 @@ const VaultPage = (props)=>{
 		if(updateTotal)
 			loadTotal(title, author, v3, legacy);
 	};
-
-	const renderNavItems = ()=>(
-		<Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>
-					Vault: Search for brews
-				</Nav.item>
-			</Nav.section>
-			<Nav.section>
-				<NewBrew />
-				<HelpNavItem />
-				<RecentNavItem />
-				<Account />
-			</Nav.section>
-		</Navbar>
-	);
 
 	const validateForm = ()=>{
 		//form validity: title or author must be written, and at least one renderer set
@@ -415,7 +393,7 @@ const VaultPage = (props)=>{
 		<div className='sitePage vaultPage'>
 			<link href='/themes/V3/Blank/style.css' rel='stylesheet' />
 			<link href='/themes/V3/5ePHB/style.css' rel='stylesheet' />
-			{renderNavItems()}
+			<Navbar pageName={'vaultPage'} title='Vault: Search for brews'/>
 			<div className='content'>
 				<SplitPane showDividerButtons={false}>
 					<div className='form dataGroup'>{renderForm()}</div>

@@ -30,7 +30,7 @@ import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
 import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
-import { searchKeymap, search } from '@codemirror/search';
+import { searchKeymap, search, openSearchPanel } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
 
 const autoCloseBrackets = closeBrackets({ brackets: ['()', '[]', '{{}}'] });
@@ -394,7 +394,9 @@ const CodeEditor = forwardRef(
 
 			undo : ()=>undo(viewRef.current),
 			redo : ()=>redo(viewRef.current),
-
+			
+			find: () =>openSearchPanel(viewRef.current),
+			
 			historySize : ()=>{
 				const view = viewRef.current;
 				if(!view) return { done: 0, undone: 0 };

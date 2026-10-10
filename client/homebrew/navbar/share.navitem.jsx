@@ -2,11 +2,12 @@ import React from 'react';
 import dedent from 'dedent';
 import Nav from './nav.jsx';
 
-const getShareId = (brew)=>(
-	brew.googleId && !brew.stubbed
+const getShareId = (brew)=>{
+	if(!brew) return null;
+	return brew.googleId && !brew.stubbed
 		? brew.googleId + brew.shareId
-		: brew.shareId
-);
+		: brew.shareId;
+};
 
 const getRedditLink = (brew)=>{
 	const text = dedent`
@@ -17,25 +18,23 @@ const getRedditLink = (brew)=>{
 	return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 };
 
-export default ({ brew, currentPage })=>(
-	<Nav.dropdown>
-		<Nav.item color='teal' icon='fas fa-share-alt'>
-			share
-		</Nav.item>
-		<Nav.item color='blue' href={`/share/${getShareId(brew)}`}>
-			view
-		</Nav.item>
-		<Nav.item color='blue' onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}`);}}>
-			copy url
-		</Nav.item>
-		{currentPage > 1 &&
+export default ({ brew, disabled, currentPage })=>{
+	return (
+		<div className='nav-section'>
+			<Nav.item href={`/share/${getShareId(brew)}`} disabled={disabled}>
+			view share page
+			</Nav.item>
+			<Nav.item onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}`);}} disabled={disabled}>
+			copy share url
+			</Nav.item>
+			{currentPage > 1 &&
 			<Nav.item
-				color='blue'
 				onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}#p${currentPage}`);}}>
 				copy url (page {currentPage})
 			</Nav.item>}
-		<Nav.item color='blue' href={getRedditLink(brew)} newTab rel='noopener noreferrer'>
+			<Nav.item href={!disabled && getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled}>
 			post to reddit
-		</Nav.item>
-	</Nav.dropdown>
-);
+			</Nav.item>
+		</div>
+	);
+};

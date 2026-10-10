@@ -3,7 +3,7 @@ import './homePage.less';
 import React            from 'react';
 import request          from '../../utils/request-middleware.js';
 import _                from 'lodash';
-import EditorPage       from '../basePages/editPage/editorPage.jsx';
+import EditorPage       from '../basePages/editorPage/editorPage.jsx';
 import { DEFAULT_BREW } from '../../../../server/brewDefaults.js';
 
 const HomePage =(props)=>{
@@ -32,6 +32,7 @@ const HomePage =(props)=>{
 			showFloatingButtons = {true}
 			showEditorButtons   = {false}
 			pageName            = {'homePage'}
+			pageTitle           = {'The Homebrewery'}
 			brew                = {props.brew}
 			userThemes          = {{}}
 			save                = {save}

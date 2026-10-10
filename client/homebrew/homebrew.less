@@ -2,13 +2,13 @@
 .homebrew {
 	height           : 100%;
 	background-color : @steel;
+	display          : flex;
+	flex-direction   : column;
+	overflow-y       : hidden;
 	&.deployment { background-color : darkred; }
 
 	.sitePage {
-		display          : flex;
-		flex-direction   : column;
-		height           : 100%;
-		overflow-y       : hidden;
+		height:100%;
 		.content {
 			position   : relative;
 			flex       : auto;

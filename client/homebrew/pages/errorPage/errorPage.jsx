@@ -9,7 +9,7 @@ const ErrorPage = ({ brew })=>{
 	const errorText = ErrorIndex({ brew })[brew.HBErrorCode.toString()] || '';
 
 	return (
-		<UIPage brew={{ title: 'Crit Fail!' }}>
+		<UIPage brew={{ title: 'Crit Fail!' }} pageName='errorPage' title={`Error ${brew?.status || '000'}`}>
 			<div className='dataGroup'>
 				<div className='errorTitle'>
 					<h1>{`Error ${brew?.status || '000'}`}</h1>

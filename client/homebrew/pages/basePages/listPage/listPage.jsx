@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 import BrewItem from './brewItem/brewItem.jsx';
+import Navbar from '../../../navbar/navbar.jsx';
 
 const USERPAGE_SORT_DIR = 'HB_listPage_sortDir';
 const USERPAGE_SORT_TYPE = 'HB_listPage_sortType';
@@ -17,7 +18,7 @@ const DEFAULT_SORT_DIR = 'asc';
 const DEFAULT_LAYOUT_MODE = 'grid';
 const DEFAULT_THEME_MODE = 'light';
 
-const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
+const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], pageName, navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
 	const [filterTags, setFilterTags] = useState([]);
 	const [sortType, setSortType] = useState(query?.sort || null);
@@ -187,7 +188,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		if(filterTags?.length == 0) return;
 		return (
 			<div className='tags-container'>
-				Tags: 
+				Tags:
 				{_.map(filterTags, (tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
@@ -198,7 +199,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 								updateUrl(filterString, sortType, sortDir, tag);
 							}}>
 							{matches[2]}
-						</span>						
+						</span>
 					);
 				})}
 			</div>
@@ -298,8 +299,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			<div className='radio-toggle layout-container'>
 				<h6>View:</h6>
 				<label className='option' title='grid'>
-						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
-						<i className='fac compressed-grid'></i>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+					<i className='fac compressed-grid'></i>
 				</label>
 				<label className='option' title='list'>
 					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
@@ -320,24 +321,24 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	};
 	const renderThemePicker = ()=>{
 		return (
-			<div className="radio-toggle theme-container">
+			<div className='radio-toggle theme-container'>
 				<h6>Theme:</h6>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
-					<i className="fas fa-sun"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
+					<i className='fas fa-sun'/>
 				</label>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
-					<i className="fas fa-moon"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
+					<i className='fas fa-moon'/>
 				</label>
 			</div>
-		)
+		);
 	};
 
-	const renderNav = () =>{
+	const renderNav = ()=>{
 
 		return (
-			<div className="listPageNav">
+			<div className='listPageNav'>
 				{renderLayoutModeOptions()}
 				{renderThemePicker()}
 				{renderSortOptions()}
@@ -345,16 +346,16 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderTagsOptions()}
 			</div>
 		);
-			
-	} 
+
+	};
 
 	return (
 		<div className='sitePage listPage'>
-			{navItems}
+			<Navbar pageName={pageName} >{navItems}</Navbar>
 
 			{renderNav()}
 
-			<div className={`content V3 ${themeMode + 'Mode'}`}>
+			<div className={`content V3 ${`${themeMode}Mode`}`}>
 				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
 			</div>
 		</div>

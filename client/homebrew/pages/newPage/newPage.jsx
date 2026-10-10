@@ -1,9 +1,7 @@
-import './newPage.less';
-
 import React            from 'react';
 import request          from '../../utils/request-middleware.js';
 import _                from 'lodash';
-import EditorPage       from '../basePages/editPage/editorPage.jsx';
+import EditorPage       from '../basePages/editorPage/editorPage.jsx';
 import { DEFAULT_BREW } from '../../../../server/brewDefaults.js';
 
 const NewPage = (props)=>{
@@ -32,6 +30,7 @@ const NewPage = (props)=>{
 			showFloatingButtons = {false}
 			showEditorButtons   = {true}
 			pageName            = {'newPage'}
+			pageTitle           = {'Sandbox'}
 			brew                = {props.brew}
 			userThemes          = {props.userThemes}
 			save                = {save}

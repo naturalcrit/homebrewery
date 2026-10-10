@@ -15,15 +15,7 @@ const Meta = Headtags.Meta;
 //===---- Navbar
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
-import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
 import ErrorNavItem   from '@navbar/error-navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
-import VaultNavItem   from '@navbar/vault.navitem.jsx';
-import PrintNavItem   from '@navbar/print.navitem.jsx';
-import ShareNavItem   from '@navbar/share.navitem.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
-const { both: RecentNavItem } = RecentNavItems;
 import googleDriveIcon from '../../../googleDrive.svg';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
@@ -46,6 +38,7 @@ const EditorPage = (props)=>{
 		save,
 		onSaveSuccess,
 		pageName,
+		pageTitle,
 		showEditorButtons,
 		userThemes = {}
 	} = props;
@@ -158,7 +151,7 @@ const EditorPage = (props)=>{
 	};
 
 	const handleSplitMove = ()=>{
-		editorRef.current.update();
+		editorRef.current?.update();
 	};
 
 	const handleBrewChange = (field)=>(value, subfield)=>{	//'text', 'style', 'snippets', 'metadata'
@@ -263,13 +256,13 @@ const EditorPage = (props)=>{
 		}
 
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save neverSaved' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved</Nav.item>;
 
 		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
+			return <Nav.item className='save' disabled={true}>no changes</Nav.item>;
 
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
@@ -284,7 +277,6 @@ const EditorPage = (props)=>{
 
 	//======----- Google Toggle Button -----======
 	const closeAlerts = (e)=>{
-		e.stopPropagation(); //Only handle click once so alert doesn't reopen
 		setAlertTrashedGoogleBrew(false);
 		setAlertNoGoogleToTransfer(false);
 		setConfirmGoogleTransfer(false);
@@ -313,74 +305,55 @@ const EditorPage = (props)=>{
 		trySave(true, true, newSaveGoogle);
 	};
 
-	const renderGoogleDriveIcon = ()=>(
-		<Nav.item className='googleDriveStorage' onClick={handleGoogleClick}>
-			<img src={googleDriveIcon} className={saveGoogle ? '' : 'inactive'} alt='Google Drive icon' />
-
-			{alertOwnershipToTransfer && (
-				<div className='errorContainer'>
+	const renderGoogleDriveIcon = ()=>{
+		const errorExists = alertNoGoogleToTransfer || alertOwnershipToTransfer || alertTrashedGoogleBrew || confirmGoogleTransfer;
+		return (<>
+			<Nav.header>This brew is in {saveGoogle ? 'Google Drive' : 'The Homebrewery'}</Nav.header>
+			<Nav.item className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
+				{saveGoogle ? 'Transfer to Homebrewery' : 'Transfer to Drive'}
+				{saveGoogle? '' : <img src={googleDriveIcon} alt='Google Drive icon' /> }
+			</Nav.item>
+			{errorExists && <Nav.item className='errorContainer' >
+				{alertOwnershipToTransfer && (
+					<>
 					You must be the Owner to transfer between the Homebrewery and Google Drive!
 					The owner of this file is {currentBrew.authors[0]}.
-					<br></br>
-					<div className='confirm' onClick={closeAlerts}> Okay </div>
-				</div>
-			)}
+						<div className='confirm' onClick={closeAlerts}> Okay </div>
+					</>
+				)}
 
-			{alertNoGoogleToTransfer && (
-				<div className='errorContainer'>
+				{alertNoGoogleToTransfer && (
+					<>
 					You must be signed in to a Google account to transfer between the Homebrewery and Google Drive!
-					<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
-						<div className='confirm' onClick={closeAlerts}> Sign In </div>
-					</a>
-					<div className='deny'  onClick={closeAlerts}>      Not Now </div>
-				</div>
-			)}
+						<a target='_blank' rel='noopener noreferrer' href={`https://www.naturalcrit.com/login?redirect=${window.location.href}`}>
+							<div className='confirm' onClick={closeAlerts}> Sign In </div>
+						</a>
+						<div className='deny'  onClick={closeAlerts}>       Not Now </div>
+					</>
+				)}
 
-			{alertTrashedGoogleBrew && (
-				<div className='errorContainer'>
+				{alertTrashedGoogleBrew && (
+					<>
 					This brew is currently in your Trash folder on Google Drive!<br />
 					If you want to keep it, make sure to move it before it is deleted permanently!<br />
-					<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
-				</div>
-			)}
+						<div className='confirm' onClick={toggleGoogleStorage}> Save my brew </div>
+					</>
+				)}
 
-			{confirmGoogleTransfer && (
-				<div className='errorContainer'>
-					{saveGoogle
-						? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
-						: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
-					<br />
-					<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
-					<div className='deny' onClick={closeAlerts}>                                  No  </div>
-				</div>
-			)}
-		</Nav.item>
-	);
+				{confirmGoogleTransfer && (
+					<>
+						{saveGoogle
+							? 'Would you like to transfer this brew from your Google Drive storage back to the Homebrewery?'
+							: 'Would you like to transfer this brew from the Homebrewery to your personal Google Drive storage?'}
+						<div className='confirm' onClick={toggleGoogleStorage}> Yes </div>
+						<div className='deny' onClick={closeAlerts}>            No  </div>
+					</>
+				)}
+			</Nav.item>}
+		</>
+		);
+	};
 
-	//======----- Navbar -----======
-	const renderNavbar = ()=>(
-		<Navbar>
-			<Nav.section>
-				<Nav.item className='brewTitle'>{currentBrew.title}</Nav.item>
-			</Nav.section>
-			<Nav.section>
-				{(pageName == 'editPage') && renderGoogleDriveIcon()}
-				{error
-					? <ErrorNavItem error={error} clearError={clearError} />
-					: <Nav.dropdown className='save-menu'>
-						{renderSaveButton()}
-						{(pageName == 'editPage') && renderAutoSaveButton()}
-					</Nav.dropdown>}
-				<NewBrewItem />
-				<PrintNavItem />
-				<HelpNavItem />
-				<VaultNavItem />
-				{(pageName == 'editPage') && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
-				<RecentNavItem brew={currentBrew} storageKey={(pageName == 'editPage') ? 'edit' : undefined} />
-				<AccountNavItem />
-			</Nav.section>
-		</Navbar>
-	);
 
 	const renderAutoSaveButton = ()=>(
 		<Nav.item onClick={toggleAutoSave}>
@@ -403,7 +376,24 @@ const EditorPage = (props)=>{
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
-			{renderNavbar()}
+			<Navbar brew={currentBrew} editor={editorRef.current} pageName={pageName} title={pageTitle} account={global.account} currentPage={currentBrewRendererPageNum}>
+				<Navbar.File>
+					<Nav.item
+						className='save'
+						onClick={()=>trySave(true, true, saveGoogle)}
+						icon='fas fa-save'>
+							save now
+					</Nav.item>
+					{(pageName == 'editPage') && renderAutoSaveButton()}
+					{pageName === 'editPage' && <div className='nav-section'>
+						{renderGoogleDriveIcon()}
+					</div>}
+				</Navbar.File>
+				<Navbar.Menu>
+					{error? <ErrorNavItem error={error} clearError={clearError} /> : renderSaveButton()}
+				</Navbar.Menu>
+			</Navbar>
+
 			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}
 			<div className='content'>
 				<SplitPane onDragFinish={handleSplitMove}>
