@@ -54,7 +54,15 @@ const SharePage = (props)=>{
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
 		// listen for changes in the brew version
-		const eventSource = new EventSource(`/stream/${props.brew.shareId}`);
+		const eventSource = new EventSource(`/api/stream/${props.brew.shareId}`);
+
+		let subId = '';
+		eventSource.addEventListener('subscribe', (evt)=>{
+			const messageData = JSON.parse(evt.data);
+
+			subId = messageData.id;
+		});
+
 		eventSource.addEventListener('brewUpdated', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
@@ -64,7 +72,11 @@ const SharePage = (props)=>{
 			}
 		});
 
-		return ()=>{
+		window.addEventListener('beforeunload', async ()=>{
+			await request.get(`/api/stream/unsubscribe/${subId}`);
+		});
+
+		return async ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
 			eventSource.close();
 		};
