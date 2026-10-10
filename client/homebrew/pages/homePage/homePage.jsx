@@ -1,11 +1,10 @@
 import './homePage.less';
 
-// Common imports
-import React                      from 'react';
-import request                    from '../../utils/request-middleware.js';
-import _                          from 'lodash';
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
-import { DEFAULT_BREW }           from '../../../../server/brewDefaults.js';
+import React            from 'react';
+import request          from '../../utils/request-middleware.js';
+import _                from 'lodash';
+import EditorPage       from '../basePages/editPage/editorPage.jsx';
+import { DEFAULT_BREW } from '../../../../server/brewDefaults.js';
 
 const HomePage =(props)=>{
 	props = {
@@ -26,21 +25,18 @@ const HomePage =(props)=>{
 		window.location = `/edit/${savedBrew.editId}`;
 	};
 
-	const {
-		renderPanels
-	} = useCommonEditPageFunctions({
-		useLocalStorage     : false,
-		sandbox             : true,
-		showFloatingButtons : true,
-		showEditorButtons   : false,
-		pageName            : 'homePage',
-		brew                : props.brew,
-		userThemes          : {},
-		save,
-		onSaveSuccess,
-	});
-
-	return renderPanels();
+	return (
+		<EditorPage
+			useLocalStorage     = {false}
+			sandbox             = {true}
+			showFloatingButtons = {true}
+			showEditorButtons   = {false}
+			pageName            = {'homePage'}
+			brew                = {props.brew}
+			userThemes          = {{}}
+			save                = {save}
+			onSaveSuccess       = {onSaveSuccess}
+		></EditorPage>);
 };
 
 export default HomePage;

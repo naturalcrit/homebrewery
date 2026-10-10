@@ -7,9 +7,9 @@ import { makePatches, stringifyPatches }      from '@sanity/diff-match-patch';
 
 import Headtags         from '@vitreum/headtags.js';
 import SplitPane        from '@components/splitPane/splitPane.jsx';
-import Editor           from '../editor/editor.jsx';
-import BrewRenderer     from '../brewRenderer/brewRenderer.jsx';
-import LockNotification from '../pages/editPage/lockNotification/lockNotification.jsx';
+import Editor           from '../../../editor/editor.jsx';
+import BrewRenderer     from '../../../brewRenderer/brewRenderer.jsx';
+import LockNotification from '../../editPage/lockNotification/lockNotification.jsx';
 const Meta = Headtags.Meta;
 
 //===---- Navbar
@@ -24,7 +24,7 @@ import PrintNavItem   from '@navbar/print.navitem.jsx';
 import ShareNavItem   from '@navbar/share.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import googleDriveIcon from '../googleDrive.svg';
+import googleDriveIcon from '../../../googleDrive.svg';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
 const BREWKEY        = 'HB_newPage_content';
@@ -37,7 +37,7 @@ const SAVE_TIMEOUT                  = 10000;  //Autosave 10 seconds after last c
 const UNSAVED_WARNING_TIMEOUT       = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
 
-export default function useCommonEditPageFunctions(dependencies) {
+const EditorPage = (props)=>{
 	const {
 		brew,
 		useLocalStorage,
@@ -48,7 +48,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		pageName,
 		showEditorButtons,
 		userThemes = {}
-	} = dependencies;
+	} = props;
 
 	const [currentBrew, setCurrentBrew]               = useState(brew);
 	const [isSaving, setIsSaving]                     = useState(false);
@@ -399,7 +399,7 @@ export default function useCommonEditPageFunctions(dependencies) {
 		</>
 	);
 
-	const renderPanels = ()=>(
+	return (
 		<div className= {`${pageName} sitePage`}>
 			<Meta name='google-site-verification' content='NwnAQSSJZzAT7N-p5MY6ydQ7Njm67dtbu73ZSyE5Fy4' />
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
@@ -439,9 +439,6 @@ export default function useCommonEditPageFunctions(dependencies) {
 			{showFloatingButtons && renderFloatingSaveButtons()}
 		</div>
 	);
+};
 
-	return {
-		trySave,
-		renderPanels
-	};
-}
+export default EditorPage;
