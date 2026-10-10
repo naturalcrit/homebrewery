@@ -15,16 +15,9 @@ const Meta = Headtags.Meta;
 //===---- Navbar
 import Nav            from '@navbar/nav.jsx';
 import Navbar         from '@navbar/navbar.jsx';
-import NewBrewItem    from '@navbar/newbrew.navitem.jsx';
-import AccountNavItem from '@navbar/account.navitem.jsx';
 import ErrorNavItem   from '@navbar/error-navitem.jsx';
-import HelpNavItem    from '@navbar/help.navitem.jsx';
-import PrintNavItem   from '@navbar/print.navitem.jsx';
-import ShareNavItem   from '@navbar/share.navitem.jsx';
-import RecentNavItems from '@navbar/recent.navitem.jsx';
-const { both: RecentNavItem } = RecentNavItems;
 import googleDriveIcon from '../../../googleDrive.svg';
-import {Dropdown} from '../../components/dropdown/dropdown.jsx';
+import {Dropdown} from '../../../../components/dropdown/dropdown.jsx';
 
 const AUTOSAVE_KEY   = 'HB_editor_autoSaveOn';
 const BREWKEY        = 'HB_newPage_content';
@@ -263,13 +256,13 @@ const EditorPage = (props)=>{
 		}
 
 		if(unsavedChanges)
-			return <Nav.item className='save' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
+			return <Nav.item className='save neverSaved' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		if(autoSaveEnabled)
 			return <Nav.item className='save saved'>auto-saved</Nav.item>;
 
 		if(sandbox)
-			return <Nav.item className='save neverSaved' disabled={true}>save now</Nav.item>;
+			return <Nav.item className='save' disabled={true}>no changes</Nav.item>;
 
 		return <Nav.item className='save saved'>saved</Nav.item>;
 	};
@@ -381,12 +374,17 @@ const EditorPage = (props)=>{
 			{(pageName == 'editPage') && <Meta name='robots' content='noindex, nofollow' />}
 			<Navbar brew={currentBrew} editor={editorRef.current} pageName={pageName} account={global.account} currentPage={currentBrewRendererPageNum}>
 				<Navbar.File>
-					{error
-					? (<ErrorNavItem error={error} clearError={clearError} />) : (<Dropdown className='save-menu' customTrigger={<>Save</>}>
-						{renderSaveButton()}
-						{(pageName == 'editPage') && renderAutoSaveButton()}
-					</Dropdown>)}
+					<Nav.item
+						className='save'
+						onClick={()=>trySave(true, true, saveGoogle)}
+						icon='fas fa-save'>
+							save now
+					</Nav.item>
+					{(pageName == 'editPage') && renderAutoSaveButton()}
 				</Navbar.File>
+				<Navbar.Menu>
+					{error? <ErrorNavItem error={error} clearError={clearError} /> : renderSaveButton()}
+				</Navbar.Menu>
 			</Navbar>
 
 			{currentBrew.lock && <LockNotification shareId={currentBrew.shareId} message={currentBrew.lock.editMessage} reviewRequested={currentBrew.lock.reviewRequested}/>}

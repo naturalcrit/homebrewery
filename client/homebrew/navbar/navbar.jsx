@@ -7,7 +7,7 @@ import PrintNavItem from './print.navitem.jsx';
 import ShareNavItem from './share.navitem.jsx';
 import HelpNavItem from './help.navitem.jsx';
 import RecentNavItems from './recent.navitem.jsx';
-import MetadataNavItem from './metadata.navitem.jsx'
+import MetadataNavItem from './metadata.navitem.jsx';
 import AccountNavItem from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
@@ -16,17 +16,21 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	const version = global.version || '0.0.0';
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
-	const isBrew = !!brew &&(brew.shareId || pageName === 'homePage' || pageName === 'newPage');
+	const isBrew = !!brew && (brew.shareId || pageName === 'homePage' || pageName === 'newPage');
 	const account = global.account;
 	const generalPage = pageName === 'vaultPage' || pageName === 'changelog' || pageName === 'faq' || pageName === 'migrate';
 
-	const slots = React.Children.toArray(children).reduce((acc, child) => {
-		if (React.isValidElement(child)) {
-			if (child.type === Navbar.File) acc.file = child;
-			if (child.type === Navbar.Edit) acc.edit = child;
-			if (child.type === Navbar.Go) acc.go = child;
-		}
-		return acc;
+	const navSlots = React.Children.toArray(children).reduce((slots, child) => {
+		if (!React.isValidElement(child)) return slots;
+		const content = child.props.children;
+
+		if (child.type === Navbar.File) slots.file = content;
+		else if (child.type === Navbar.Edit) slots.edit = content;
+		else if (child.type === Navbar.Go) slots.go = content;
+		else if (child.type === Navbar.Help) slots.help = content;
+		else if (child.type === Navbar.Menu) slots.menu = content;
+
+		return slots;
 	}, {});
 
 	const renderDownloadLink = () => {
@@ -76,13 +80,12 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					</Nav.item>
 					*/}
 				</div>
-				{slots.file?.props.children}
+				{navSlots.file}
 			</Dropdown>
 		);
 	};
 
 	const renderEdit = () => {
-		console.log(editor);
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
@@ -102,7 +105,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 						Unfold all lines
 					</Nav.item>
 				</div>
-				{slots.edit?.props.children}
+				{navSlots.edit}
 				{/*
 				<div className="nav-section">
 					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!editor}>
@@ -136,6 +139,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 						Changelog
 					</Nav.item>
 				</div>
+				{navSlots.go}
 				<Dropdown className='navItem recent' groupName={'Recent Brews'} customTrigger={<>Recent Brews</>} icon={null} key={'recent'}>
 					<RecentNavItem />
 				</Dropdown>
@@ -154,10 +158,12 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				{renderGo()}
 				<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
 					<HelpNavItem />
+					{navSlots.help}
 				</Dropdown>
+				{navSlots.menu}
 			</ul>
 			{generalPage && <Nav.item className='brewTitle'>{title}</Nav.item>}
-			<MetadataNavItem brew={brew}></MetadataNavItem>
+			<MetadataNavItem brew={brew} pageName={pageName}></MetadataNavItem>
 			<ul>
 				<Dropdown groupName={account.username} customTrigger={<>{account.username}</>} icon={null} key={account.username}>
 					<AccountNavItem />
@@ -166,5 +172,11 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		</nav>
 	);
 };
+
+Navbar.File = ({ children }) => children;
+Navbar.Edit = ({ children }) => children;
+Navbar.Go = ({ children }) => children;
+Navbar.Help = ({ children }) => children;
+Navbar.Menu = ({ children }) => children;
 
 export default Navbar;
