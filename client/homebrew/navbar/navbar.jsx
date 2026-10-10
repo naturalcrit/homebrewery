@@ -12,30 +12,29 @@ import AccountNavItem from './account.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Nav from './nav.jsx';
 
-const Navbar = ({ children, brew, pageName, editor, title, currentPage, props }) => {
-	const version = global.version || '0.0.0';
+const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })=>{
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
 	const isBrew = !!brew && (brew.shareId || pageName === 'homePage' || pageName === 'newPage');
 	const account = global.account;
 
-	const navSlots = React.Children.toArray(children).reduce((slots, child) => {
-		if (!React.isValidElement(child)) return slots;
+	const navSlots = React.Children.toArray(children).reduce((slots, child)=>{
+		if(!React.isValidElement(child)) return slots;
 		const content = child.props.children;
 
-		if (child.type === Navbar.File) slots.file = content;
-		else if (child.type === Navbar.Edit) slots.edit = content;
-		else if (child.type === Navbar.Go) slots.go = content;
-		else if (child.type === Navbar.Help) slots.help = content;
-		else if (child.type === Navbar.Menu) slots.menu = content;
+		if(child.type === Navbar.File) slots.file = content;
+		else if(child.type === Navbar.Edit) slots.edit = content;
+		else if(child.type === Navbar.Go) slots.go = content;
+		else if(child.type === Navbar.Help) slots.help = content;
+		else if(child.type === Navbar.Menu) slots.menu = content;
 
 		return slots;
 	}, {});
 
-	const renderDownloadLink = () => {
-		if (!isBrew) return <Nav.item disabled={!isBrew}>Get txt</Nav.item>;
+	const renderDownloadLink = ()=>{
+		if(!isBrew) return <Nav.item disabled={!isBrew}>Get txt</Nav.item>;
 		let shareLink = brew.shareId;
-		if (brew.googleId && !brew.stubbed) {
+		if(brew.googleId && !brew.stubbed) {
 			shareLink = brew.googleId + shareLink;
 		}
 
@@ -46,7 +45,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		);
 	};
 
-	const renderEditLink = () => {
+	const renderEditLink = ()=>{
 		const editLink = brew?.googleId && !brew?.stubbed ? brew?.googleId + brew?.editId : brew?.editId;
 		return (
 			<Nav.item href={`/edit/${editLink}`} disabled={!brew?.editId}>
@@ -55,7 +54,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		);
 	};
 
-	const renderFile = () => {
+	const renderFile = ()=>{
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
@@ -84,23 +83,23 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		);
 	};
 
-	const renderEdit = () => {
+	const renderEdit = ()=>{
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					<Nav.item onClick={() => editor?.undo()} kbd={mod + ' + z'} disabled={!editor}>
+					<Nav.item onClick={()=>editor?.undo()} kbd={`${mod} + z`} disabled={!editor}>
 						Undo
 					</Nav.item>
-					<Nav.item onClick={() => editor?.redo()} kbd={mod + ' + Shift + z'} disabled={!editor}>
+					<Nav.item onClick={()=>editor?.redo()} kbd={`${mod} + Shift + z`} disabled={!editor}>
 						Redo
 					</Nav.item>
-					<Nav.item onClick={() => editor?.find()} kbd={mod + ' + f'} disabled={!editor}>
+					<Nav.item onClick={()=>editor?.find()} kbd={`${mod} + f`} disabled={!editor}>
 						Find / Replace
 					</Nav.item>
-					<Nav.item onClick={() => editor?.foldCode()} disabled={!editor}>
+					<Nav.item onClick={()=>editor?.foldCode()} disabled={!editor}>
 						Fold all lines
 					</Nav.item>
-					<Nav.item onClick={() => editor?.unfoldCode()} disabled={!editor}>
+					<Nav.item onClick={()=>editor?.unfoldCode()} disabled={!editor}>
 						Unfold all lines
 					</Nav.item>
 				</div>
@@ -122,11 +121,11 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		);
 	};
 
-	const renderGo = () => {
+	const renderGo = ()=>{
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
 				{renderEditLink()}
-				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={'' /*how the hell do i get it here?*/} />
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				<div className='nav-section'>
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' color='green' icon='fas fa-heart'>
 						Patreon
@@ -172,10 +171,10 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	);
 };
 
-Navbar.File = ({ children }) => children;
-Navbar.Edit = ({ children }) => children;
-Navbar.Go = ({ children }) => children;
-Navbar.Help = ({ children }) => children;
-Navbar.Menu = ({ children }) => children;
+Navbar.File = ({ children })=>children;
+Navbar.Edit = ({ children })=>children;
+Navbar.Go = ({ children })=>children;
+Navbar.Help = ({ children })=>children;
+Navbar.Menu = ({ children })=>children;
 
 export default Navbar;

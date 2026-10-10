@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Nav from './nav.jsx';
 import { printCurrentBrew } from '@shared/helpers.js';
 
-export default function({disabled}){
+export default function({ disabled }){
 	const [printing, setPrinting] = useState(false);
 
 	// listen for print cycle events to display "loading" message since it can take some time.

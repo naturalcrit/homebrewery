@@ -1,5 +1,5 @@
 import './navbar.less';
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import cx from 'classnames';
 
 import NaturalCritIcon from '@components/svg/naturalcrit-d20.svg.jsx';
@@ -25,10 +25,10 @@ const Nav = {
 		</div>;
 	},
 
-	item : ({ icon, kbd,href, newTab, onClick, color, children, className, disabled, noDismiss, ...props })=>{
+	item : ({ icon, kbd, href, newTab, onClick, color, children, className, disabled, noDismiss, ...props })=>{
 		const classes = cx('navItem', color, className);
 		if(disabled) {
-			return <button className={classes} disabled>{children}{icon && <i className={icon}></i>}</button>
+			return <button className={classes} disabled>{children}{icon && <i className={icon}></i>}</button>;
 		}
 		if(href){
 			return <a className={classes} href={href} target={newTab ? '_blank' : '_self'} {...props}>
@@ -43,7 +43,7 @@ const Nav = {
 			</button>;
 		}
 	},
-	header: ({span, className, children, ...props})=>{
+	header : ({ span, className, children, ...props })=>{
 		return <span className={cx([`navItem header`, className])} no-dismiss='true'>
 			{children}
 		</span>;

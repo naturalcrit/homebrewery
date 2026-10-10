@@ -143,15 +143,15 @@ const RecentItems = createReactClass({
 		// if(!this.state.showDropdown) return null;
 
 		const makeItems = (brews)=>{
-			return <div className="nav-section">
+			return <div className='nav-section'>
 				{_.map(brews, (brew, i)=>{
 					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
 						<span className='title'>{brew.title || '[ no title ]'}</span>
 						<span className='time'>{Moment(brew.ts).fromNow()}</span>
 						<button className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></button>
-					</a>
+					</a>;
 				})}
-			</div>
+			</div>;
 		};
 
 		return <>
@@ -167,7 +167,7 @@ const RecentItems = createReactClass({
 	},
 
 	render : function(){
-		return this.renderDropdown()
+		return this.renderDropdown();
 	}
 
 });
