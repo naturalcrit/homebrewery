@@ -1,11 +1,10 @@
 import './editPage.less';
 
-// Common imports
-import React                      from 'react';
-import request                    from '../../utils/request-middleware.js';
-import _                          from 'lodash';
-import useCommonEditPageFunctions from '../../utils/commonEditPageFunctions.jsx';
-import { DEFAULT_BREW_LOAD }      from '../../../../server/brewDefaults.js';
+import React                 from 'react';
+import request               from '../../utils/request-middleware.js';
+import _                     from 'lodash';
+import EditorPage            from '../basePages/editPage/editorPage.jsx';
+import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 
 // Page specific imports
 import { gzipSync, strToU8 }             from 'fflate';
@@ -45,21 +44,18 @@ const EditPage = (props)=>{
 		history.replaceState(null, null, `/edit/${savedBrew.editId}`);;
 	};
 
-	const {
-		renderPanels,
-	} = useCommonEditPageFunctions({
-		useLocalStorage     : false,
-		sandbox             : false,
-		showFloatingButtons : false,
-		showEditorButtons   : true,
-		pageName            : 'newPage',
-		brew                : props.brew,
-		userThemes          : props.userThemes,
-		save,
-		onSaveSuccess,
-	});
-
-	return renderPanels();
+	return (
+		<EditorPage
+			useLocalStorage     = {false}
+			sandbox             = {false}
+			showFloatingButtons = {false}
+			showEditorButtons   = {true}
+			pageName            = {'editPage'}
+			brew                = {props.brew}
+			userThemes          = {props.userThemes}
+			save                = {save}
+			onSaveSuccess       = {onSaveSuccess}
+		></EditorPage>);
 };
 
 export default EditPage;
