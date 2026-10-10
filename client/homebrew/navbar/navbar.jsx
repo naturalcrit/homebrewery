@@ -32,14 +32,14 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	}, {});
 
 	const renderDownloadLink = ()=>{
-		if(!isBrew) return <Nav.item disabled={!isBrew}>Get txt</Nav.item>;
+		if(!brew?.shareId) return <Nav.item disabled={!brew?.shareId}>Get txt</Nav.item>;
 		let shareLink = brew.shareId;
 		if(brew.googleId && !brew.stubbed) {
 			shareLink = brew.googleId + shareLink;
 		}
 
 		return (
-			<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!isBrew}>
+			<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
 				Get txt
 			</Nav.item>
 		);
