@@ -35,7 +35,7 @@
 			max-width: none;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			color: white;
+			color: #fff;
 			text-align: center;
 			text-transform: initial;
 			white-space: nowrap;
@@ -68,11 +68,11 @@
 				max-height: ~'calc(100vh - 28px)';
 				padding: 0 10px 5px;
 				margin: 0 auto;
-				background-color: #333333;
-				border: 3px solid #444444;
+				background-color: #333;
+				border: 3px solid #444;
 				border-top: unset;
 				border-radius: 0 0 5px 5px;
-				box-shadow: inset 0 7px 9px -7px #111111;
+				box-shadow: inset 0 7px 9px -7px #111;
 				transition:
 					transform 0.4s,
 					opacity 0.4s;
@@ -95,7 +95,7 @@
 						flex-basis: 20%;
 						min-width: 76px;
 						padding: 5px 0;
-						color: #bbbbbb;
+						color: #bbb;
 						text-align: center;
 					}
 					p {
@@ -110,12 +110,12 @@
 							display: inline-block;
 							padding: 2px;
 							margin: 2px 2px;
-							background-color: #444444;
+							background-color: #444;
 							border: 2px solid grey;
 							border-radius: 5px;
 						}
 						a.userPageLink {
-							color: white;
+							color: #fff;
 							text-decoration: none;
 							&:hover {
 								text-decoration: underline;
@@ -123,14 +123,14 @@
 						}
 					}
 					&:nth-of-type(even) {
-						background-color: #555555;
+						background-color: #555;
 					}
 				}
 			}
 		}
 		&.warning {
 			position: relative;
-			color: white;
+			color: #fff;
 			background-color: @orange;
 			&:hover > .dropdown {
 				visibility: visible;
@@ -146,7 +146,7 @@
 				width: 100%;
 				padding: 13px 5px;
 				text-align: center;
-				background-color: #333333;
+				background-color: #333;
 			}
 		}
 		&.account {
@@ -159,7 +159,7 @@
 			width: 90px;
 			&.neverSaved {
 				background-color: @orange;
-				color: white;
+				color: #fff;
 				transition: all 0.2s;
 
 				&:hover {
@@ -167,7 +167,7 @@
 				}
 			}
 			&.saved {
-				color: #666666;
+				color: #666;
 				cursor: initial;
 			}
 		}
@@ -196,8 +196,8 @@
 	i.fa-power-off {
 		color: red;
 		&.active {
-			color: rgb(0, 182, 52);
-			filter: drop-shadow(0 0 2px rgba(0, 182, 52, 0.765));
+			color: #00b634;
+			filter: drop-shadow(0 0 2px #00b634c3);
 		}
 	}
 
@@ -240,8 +240,8 @@
 
 				&.header {
 					padding: 5px 0;
-					color: #bbbbbb;
-					border-top: 1px solid #888888;
+					color: #bbb;
+					border-top: 1px solid #888;
 					&:nth-of-type(1) {
 						background-color: darken(@teal, 20%);
 					}
@@ -269,7 +269,7 @@
 					left: 5px;
 					bottom: 2px;
 					font-size: 0.8em;
-					color: #888888;
+					color: #888;
 					z-index: -1;
 				}
 			}
