@@ -10,6 +10,7 @@ const DEBUG = {
 
 // Delays
 const UNSUB_DELAY = 60 * 1000; //ms
+const REFRESH_DELAY = 60 * 1000; //ms
 const REPORT_DELAY = 5 * 1000; //ms
 
 
@@ -55,7 +56,7 @@ Stream.on('sendUpdate', (event, data)=>{
 			if(event == 'brewUpdated'){
 			// Reset the unsubscription timer
 				clearTimeout(sub.unsubTimer);
-				sub.unsubTimer = setTimeout(()=>{ unsubscribe(sub.id); }, UNSUB_DELAY);
+				sub.unsubTimer = setTimeout(()=>{ unsubscribe(sub.id); }, REFRESH_DELAY);
 			}
 
 			sub?.stream?.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
