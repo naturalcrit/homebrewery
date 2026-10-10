@@ -2,6 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import request from 'superagent';
 import Nav from './nav.jsx';
+import { Dropdown } from '../../components/dropdown/dropdown.jsx';
 
 const Account = createReactClass({
 	displayName     : 'AccountNavItem',
