@@ -63,7 +63,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					{renderDownloadLink()}
 				</div>
 				<div className='nav-section'>
-					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew.shareId}>
+					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
 						Clone File
 					</Nav.item>
 					{/*
