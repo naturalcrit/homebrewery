@@ -356,7 +356,7 @@ const Editor = forwardRef(
 		const undo = ()=>codeEditor.current?.undo();
 		const foldCode = ()=>codeEditor.current?.foldAll();
 		const unfoldCode = ()=>codeEditor.current?.unfoldAll();
-
+		const find = ()=>codeEditor.current?.find();
 		//Called when there are changes to the editor's dimensions
 		const update = ()=>{};
 
@@ -367,6 +367,7 @@ const Editor = forwardRef(
 			foldCode,
 			unfoldCode,
 			historySize,
+			find,
 		}));
 		return (
 			<div className={`editor${isDark ? ' darkMode' : ''}`} ref={editor}>
@@ -384,6 +385,7 @@ const Editor = forwardRef(
 					unfoldCode={unfoldCode}
 					formatCode={isStyle() ? handleFormatCode : null}
 					historySize={historySize()}
+					find={find}
 					currentEditorTheme={editorSettings.editorTheme}
 					updateEditorTheme={updateEditorTheme}
 					themeBundle={themeBundle}

@@ -82,6 +82,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	};
 
 	const renderEdit = () => {
+		console.log(editor);
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
