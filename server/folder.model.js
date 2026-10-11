@@ -195,9 +195,9 @@ FolderSchema.statics.updateFolder = async function(
     slug = slug === undefined ? undefined : slugify(slug || title);
 
     // throw if slug invalid, e.g. ''
-    if (slug == '') {
+    if (slug !== undefined && slug === '') {
       const err = new Error();
-      err.HBErrorCode = '106';
+      err.HBErrorCode = '121';
       throw err;
     }
 
