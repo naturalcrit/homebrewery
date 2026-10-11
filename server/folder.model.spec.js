@@ -36,15 +36,15 @@ describe('Folder model', ()=>{
       expect(folder.updatedAt).toBeInstanceOf(Date);
     });
 
-    it('should require owner', ()=>{
+    it('should require author', ()=>{
       const folder = new Folder({
         slug: 'my-folder',
       });
 
       const error = folder.validateSync();
 
-      expect(error.errors.owner).toBeDefined();
-      expect(error.errors.owner.kind).toBe('required');
+      expect(error.errors.author).toBeDefined();
+      expect(error.errors.author.kind).toBe('required');
     });
 
     it('should require slug', ()=>{
@@ -243,7 +243,7 @@ describe('Folder model', ()=>{
         isPrivate  : true,
       });
 
-      expect(result.owner).toBe('testuser');
+      expect(result.author).toBe('testuser');
       expect(result.title).toBe('My Folder');
       expect(result.slug).toBe('my-folder');
       expect(result.isPublished).toBe(true);
