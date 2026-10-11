@@ -105,7 +105,6 @@
 					&:not(:has(.brewItem:last-child:nth-child(3n))) {
 						.brewItem:last-child {
 							margin-right : auto;
-							background   : green;
 						}
 					}
 				}
@@ -136,52 +135,48 @@
 			padding-inline : 10px;
 		}
 
-		.sort-container {
+		.radio-toggle {
 			z-index         : 1;
 			display         : flex;
 			flex-wrap       : wrap;
 			row-gap         : 5px;
-			column-gap      : 15px;
-			align-items     : baseline;
+			align-items     : center;
 			justify-content : center;
-
 			text-align      : center;
-
 			h6 {
-				font-size      : 11px;
-				font-weight    : bold;
-				text-transform : uppercase;
+				font-size      : 14px;
+				margin-right:5px;
 			}
-			.sort-option {
+
+			.option {
 				display     : flex;
 				align-items : center;
 				height      : 100%;
 				padding     : 0 8px;
 				color       : #CCCCCC;
 
-				&:hover { background-color : #444444; }
+				input[type='radio'] { display : none; }
 
-				&.active {
+				button {
+					padding          : 0;
+					font-size        : 11px;
+					font-weight      : normal;
+					text-transform   : uppercase;
+					background-color : transparent;
+				}
+				&:hover { background-color : #444444; }
+				
+				&.active, &:has(input:checked) {
 					font-weight      : bold;
-					color            : #DDDDDD;
+					color            : white;
 					background-color : #333333;
 
 					button {
 						height      : 100%;
 						font-weight : 800;
-						color       : white;
 						& + .sortDir { padding-left : 5px; }
 					}
 				}
-			}
-
-			button {
-				padding          : 0;
-				font-size        : 11px;
-				font-weight      : normal;
-				color            : #CCCCCC;
-				text-transform   : uppercase;
-				background-color : transparent;
 			}
 		}
 
@@ -241,22 +236,6 @@
 					&::before { content : '\f518'; }
 				}
 			}
-		}
-		.layout-container {
-			z-index         : 1;
-			display         : flex;
-			flex-wrap       : wrap;
-			row-gap         : 5px;
-			column-gap      : 15px;
-			align-items     : center;
-			justify-content : center;
-			text-align      : center;
-
-			input[type='radio'] { display : none; }
-
-			i { transition : color 0.2s; }
-
-			input:checked + i { color : @blueLight; }
 		}
 	}
 }

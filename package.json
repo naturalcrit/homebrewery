@@ -102,7 +102,7 @@
     "@codemirror/search": "^6.6.0",
     "@codemirror/state": "^6.7.6",
     "@codemirror/view": "^6.43.13",
-    "@googleapis/drive": "^26.0.1",
+    "@googleapis/drive": "^26.0.2",
     "@lezer/highlight": "^1.2.4",
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.1",
