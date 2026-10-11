@@ -390,7 +390,7 @@ describe('Folder model', ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
 
-      jest.spyOn(Folder, 'exists')
+      const findOneAndUpdate = jest.spyOn(Folder, 'findOneAndUpdate')
         .mockResolvedValue(null);
 
       await expect(Folder.addBrewToFolder(
@@ -405,10 +405,11 @@ describe('Folder model', ()=>{
         brewId: 'brew123',
       });
 
-      expect(Folder.exists).toHaveBeenCalledWith({
-        author: 'testuser',
-        folderId: 'missing-folder',
-      });
+      expect(findOneAndUpdate).toHaveBeenCalledWith(
+        { author: 'testuser', folderId: 'missing-folder' },
+        expect.any(Object),
+        { new: true },
+      );
     });
 
     it('should add the brew to the folder', async ()=>{
