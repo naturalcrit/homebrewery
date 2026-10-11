@@ -193,17 +193,15 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
     });
 
-    it('should return null when the folder does not exist', async ()=>{
+    it('should throw HBErrorCode 104 when the folder does not exist', async () => {
       const lean = jest.fn(async ()=>null);
       jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
 
-      const result = await Folder.getById('testuser', 'missing');
-
-      expect(result).toBeNull();
+      await expect(Folder.getById('testuser', 'missing'))
+        .rejects.toMatchObject({ HBErrorCode: '104' });
     });
 
   });
-
 
   describe('createFolder', ()=>{
 
@@ -326,15 +324,14 @@ describe('Folder model', ()=>{
       expect(update.$set.updatedAt).toBeInstanceOf(Date);
     });
 
-    it('should return null when the folder does not exist', async ()=>{
+    it('should throw HBErrorCode 106 when the folder does not exist', async ()=>{
       jest.spyOn(Folder, 'findOneAndUpdate')
         .mockResolvedValue(null);
 
-      const result = await Folder.updateFolder('testuser', 'missing', {
-        title : 'Updated',
-      });
 
-      expect(result).toBeNull();
+      await expect(Folder.getById('testuser', 'missing'))
+        .rejects.toMatchObject({ HBErrorCode: '106' });
+
     });
 
   });
@@ -360,7 +357,7 @@ describe('Folder model', ()=>{
       expect(actual).toBe(result);
     });
 
-    it('should return zero deletedCount when the folder does not exist', async ()=>{
+    it('should throw with HBErrorCode 107 when the folder does not exist', async ()=>{
       const result = {
         acknowledged : true,
         deletedCount : 0,
@@ -368,9 +365,9 @@ describe('Folder model', ()=>{
 
       jest.spyOn(Folder, 'deleteOne').mockResolvedValue(result);
 
-      const actual = await Folder.deleteFolder('testuser', 'missing');
+      await expect(Folder.deleteFolder('testuser', 'missing'))
+        .rejects.toMatchObject({ HBErrorCode: '107' });
 
-      expect(actual).toBe(result);
     });
 
   });
@@ -378,36 +375,33 @@ describe('Folder model', ()=>{
 
   describe('addBrewToFolder', ()=>{
 
-    it('should return BREW_NOT_FOUND when the brew does not exist', async ()=>{
+    it('should throw with HBErrorCode 112 when the brew does not exist', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue(null);
 
-      const result = await Folder.addBrewToFolder(
-        'testuser',
-        'abc123',
-        'missing-brew',
-      );
+      await expect(
+        Folder.addBrewToFolder(
+          'testuser',
+          'abc123',
+          'missing-brew',
+        ),
+      ).rejects.toMatchObject({ HBErrorCode: '112' });
 
-      expect(result).toEqual({
-        error : 'BREW_NOT_FOUND',
-      });
     });
 
-    it('should return FOLDER_NOT_FOUND when the folder does not exist', async ()=>{
+    it('should throw HBErrorCode 111 when the folder does not exist', async () => {
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
 
       jest.spyOn(Folder, 'exists')
         .mockResolvedValue(null);
 
-      const result = await Folder.addBrewToFolder(
+      await expect(Folder.addBrewToFolder(
         'testuser',
         'missing-folder',
         'brew123',
-      );
-
-      expect(result).toEqual({
-        error : 'FOLDER_NOT_FOUND',
+      )).rejects.toMatchObject({
+        HBErrorCode: '111',
       });
 
       expect(BrewModel.exists).toHaveBeenCalledWith({
@@ -497,36 +491,32 @@ describe('Folder model', ()=>{
 
   describe('removeBrewFromFolder', ()=>{
 
-    it('should return BREW_NOT_FOUND when the brew does not exist', async ()=>{
+    it('should throw HBErrorCode 112 when the brew does not exist', async () => {
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue(null);
 
-      const result = await Folder.removeBrewFromFolder(
+      await expect(Folder.removeBrewFromFolder(
         'testuser',
         'abc123',
         'missing-brew',
-      );
-
-      expect(result).toEqual({
-        error : 'BREW_NOT_FOUND',
+      )).rejects.toMatchObject({
+        HBErrorCode: '112',
       });
     });
 
-    it('should return FOLDER_NOT_FOUND when the folder does not exist', async ()=>{
+    it('should throw HBErrorCode 113 when the folder does not exist', async () => {
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
 
       jest.spyOn(Folder, 'findOneAndUpdate')
         .mockResolvedValue(null);
 
-      const result = await Folder.removeBrewFromFolder(
+      await expect(Folder.removeBrewFromFolder(
         'testuser',
         'missing-folder',
         'brew123',
-      );
-
-      expect(result).toEqual({
-        error : 'FOLDER_NOT_FOUND',
+      )).rejects.toMatchObject({
+        HBErrorCode: '113',
       });
     });
 
