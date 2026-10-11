@@ -5,7 +5,7 @@ import { nanoid } from 'nanoid';
 // DEBUG
 const DEBUG = {
 	showEvents          : true,
-	showSubscriberCount : true
+	showSubscriberCount : false
 };
 
 // Delays
