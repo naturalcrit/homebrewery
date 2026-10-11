@@ -54,7 +54,10 @@ const unsubscribe = function(id){
 Stream.on('sendUpdate', (event, data)=>{
 	if(DEBUG.showEvents) console.log('Event:', event, '\nData:', data);
 	subscribers
-		.filter((sub)=>{return data.shareId == sub.shareId; })
+		.filter((sub)=>{
+			if(data?.id) return data.id == sub.id;
+			return data.shareId == sub.shareId;
+		})
 		.forEach((sub)=>{
 			if(event == 'brewUpdated'){
 			// Reset the unsubscription timer
