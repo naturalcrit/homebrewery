@@ -250,7 +250,7 @@ describe('Folder model', ()=>{
       expect(result.isPrivate).toBe(true);
     });
 
-    it('should propagate save errors', async ()=>{
+    it('should preserve save errors in cause', async ()=>{
       const error = new Error('database failure');
 
       jest.spyOn(Folder.prototype, 'save')
@@ -261,7 +261,7 @@ describe('Folder model', ()=>{
           title: 'My Folder',
           slug : 'my-folder',
         }),
-      ).rejects.toBe(error);
+      ).rejects.toHaveProperty('cause', error);
     });
 
   });
