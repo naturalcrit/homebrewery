@@ -78,12 +78,14 @@ const SharePage = (props)=>{
 			}
 		});
 
-		window.addEventListener('beforeunload', async ()=>{
+		async function unsub(){
 			await request.get(`/api/stream/unsubscribe/${subId}`);
-		});
+		};
+		window.addEventListener('beforeunload', unsub);
 
 		return async ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.addEventListener('beforeunload', unsub);
 			eventSource.close();
 		};
 	}, []);
