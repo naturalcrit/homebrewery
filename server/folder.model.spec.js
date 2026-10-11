@@ -329,7 +329,7 @@ describe('Folder model', ()=>{
       jest.spyOn(Folder, 'findOneAndUpdate')
         .mockResolvedValue(null);
 
-      await expect(Folder.updateFolder('testuser', 'missing'))
+      await expect(Folder.updateFolder('testuser', 'missing'), {})
         .rejects.toMatchObject({ HBErrorCode: '106' });
 
     });
