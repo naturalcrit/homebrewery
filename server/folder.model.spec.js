@@ -41,7 +41,7 @@ describe('Folder model', ()=>{
         slug: 'my-folder',
       });
 
-      const error = folder.validateSync();
+      const error = await folder.validate().catch(err => err);
 
       expect(error.errors.author).toBeDefined();
       expect(error.errors.author.kind).toBe('required');
@@ -52,7 +52,7 @@ describe('Folder model', ()=>{
         author: 'testuser',
       });
 
-      const error = folder.validateSync();
+      const error = await folder.validate().catch(err => err);
 
       expect(error.errors.slug).toBeDefined();
       expect(error.errors.slug.kind).toBe('required');
@@ -64,7 +64,7 @@ describe('Folder model', ()=>{
         slug  : '',
       });
 
-      const error = folder.validateSync();
+      const error = await folder.validate().catch(err => err);
 
       expect(error.errors.slug).toBeDefined();
       expect(error.errors.slug.message).toBe('Path `slug` is required.');
@@ -86,7 +86,7 @@ describe('Folder model', ()=>{
         title : '',
       });
 
-      const error = folder.validateSync();
+      const error = await folder.validate().catch(err => err);
 
       expect(error.errors.title).toBeDefined();
       expect(error.errors.title.message)

@@ -62,6 +62,7 @@ describe('Tests for folder api', ()=>{
       expect(res.send).toHaveBeenCalledWith(folder);
     });
 
+// TOFIX
     it('should use the default display name', async ()=>{
       const folder = { folderId: 'abc123' };
 
@@ -103,6 +104,7 @@ describe('Tests for folder api', ()=>{
       });
     });
 
+// TOFIX
     it('should throw when the folder could not be created', async ()=>{
       FolderModel.createFolder.mockResolvedValue(undefined);
 
@@ -112,7 +114,7 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.createFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 105,
+        HBErrorCode : '105',
         name        : 'FolderCreate Error',
         message     : 'Folder could not be created',
         status      : 500,
@@ -154,6 +156,7 @@ describe('Tests for folder api', ()=>{
       expect(res.send).toHaveBeenCalledWith(folder);
     });
 
+// TOFIX
     it('should throw when the folder does not exist', async ()=>{
       FolderModel.updateFolder.mockResolvedValue(undefined);
 
@@ -164,7 +167,7 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.updateFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 106,
+        HBErrorCode : '106',
         name        : 'FolderUpdate Error',
         message     : 'Folder to update could not be found',
         status      : 404,
@@ -176,6 +179,7 @@ describe('Tests for folder api', ()=>{
 
   describe('deleteFolderApi', ()=>{
 
+// TOFIX
     it('should delete a folder', async ()=>{
       const result = { deletedCount: 1 };
 
@@ -196,6 +200,7 @@ describe('Tests for folder api', ()=>{
       expect(res.send).toHaveBeenCalledWith();
     });
 
+// TOFIX
     it('should throw when the folder does not exist', async ()=>{
       const result = {
         deletedCount : 0,
@@ -209,7 +214,7 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.deleteFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 107,
+        HBErrorCode : '107',
         name        : 'FolderDelete Error',
         message     : 'Folder to delete could not be found',
         status      : 404,
@@ -247,6 +252,7 @@ describe('Tests for folder api', ()=>{
       expect(res.send).toHaveBeenCalledWith(result);
     });
 
+// TOFIX
     it('should throw when the folder does not exist', async ()=>{
       const result = { error : 'FOLDER_NOT_FOUND' };
 
@@ -259,13 +265,14 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.addBrewToFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 111,
+        HBErrorCode : '111',
         name        : 'FolderAddBrew Error',
         message     : 'Folder to add brew to could not be found.',
         status      : 404,
       });
     });
 
+// TOFIX
     it('should throw when the brew does not exist', async ()=>{
       const result = { error : 'BREW_NOT_FOUND' };
 
@@ -278,7 +285,7 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.addBrewToFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 112,
+        HBErrorCode : '112',
         name        : 'FolderAddBrew Error',
         message     : 'Brew to add to folder could not be found.',
         status      : 404,
@@ -347,6 +354,7 @@ describe('Tests for folder api', ()=>{
       expect(res.send).toHaveBeenCalledWith(result);
     });
 
+// TOFIX
     it('should throw when the folder does not exist', async ()=>{
       const result = { error : 'FOLDER_NOT_FOUND' };
 
@@ -361,13 +369,14 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.removeBrewFromFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 113,
+        HBErrorCode : '113',
         name        : 'FolderRemoveBrew Error',
         message     : 'Folder to remove brew from could not be found',
         status      : 404,
       });
     });
 
+// TOFIX
     it('should throw when the brew does not exist', async ()=>{
       const result = { error : 'BREW_NOT_FOUND' };
 
@@ -382,7 +391,7 @@ describe('Tests for folder api', ()=>{
       };
 
       await expect(api.removeBrewFromFolderApi(req, res)).rejects.toEqual({
-        HBErrorCode : 114,
+        HBErrorCode : '114',
         name        : 'FolderRemoveBrew Error',
         message     : 'Brew to remove from folder could not be found.',
         status      : 404,
