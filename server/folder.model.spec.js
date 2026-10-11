@@ -7,7 +7,7 @@ import { Folder } from './folder.model.js';
 import { model as BrewModel } from './homebrew.model.js';
 
 jest.mock('./homebrew.model.js', ()=>({
-  modex{
+  modex: {
     exists: jest.fn(),
   },
 }));
