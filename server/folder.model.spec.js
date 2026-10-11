@@ -205,19 +205,10 @@ describe('Folder model', ()=>{
 
   describe('createFolder', ()=>{
 
-// TOFIX: 9000+ line error ??
     it('should create and save a folder', async ()=>{
-      const folder = {
-        author     : 'testuser',
-        title      : 'My Folder',
-        slug       : 'my-folder',
-        isPublished: true,
-        isPrivate  : false,
-      };
-
-      const save = jest.fn(async ()=>folder);
-
-      jest.spyOn(Folder.prototype, 'save').mockImplementation(save);
+      const save = jest
+        .spyOn(Folder.prototype, 'save')
+        .mockResolvedValue(undefined);
 
       const result = await Folder.createFolder('testuser', {
         title      : 'My Folder',
@@ -227,7 +218,13 @@ describe('Folder model', ()=>{
       });
 
       expect(save).toHaveBeenCalled();
-      expect(result).toBe(folder);
+      expect(result).toMatchObject({
+        author     : 'testuser',
+        title      : 'My Folder',
+        slug       : 'my-folder',
+        isPublished: true,
+        isPrivate  : false,
+      });
     });
 
     it('should pass the supplied folder properties to the document', async ()=>{
