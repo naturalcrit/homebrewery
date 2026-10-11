@@ -163,9 +163,8 @@ FolderSchema.statics.createFolder = async function(
       throw err;
     }
 
-    // TODO: ?throw if slug not valid (or normalise?)
     // TODO: throw if slug not unique within parent folder [TRICKY]
-    // TODO: throw if parentId provided but folder not found - before or after creating folder?
+    // TODO: LATER: throw if parentId provided but folder not found - before or after creating folder?
 
     const folder = new this(
       { author, title, slug, isPublished, isPrivate, },
