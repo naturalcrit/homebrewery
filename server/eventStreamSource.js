@@ -2,10 +2,12 @@ import { EventEmitter } from 'events';
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
 
+import config from './config.js';
+
 // DEBUG
 const DEBUG = {
-	showEvents          : true,
-	showSubscriberCount : false
+	showEvents          : config.get('showStreamEvents'),
+	showSubscriberCount : config.get('showStreamSubscriberCount')
 };
 
 // Delays
