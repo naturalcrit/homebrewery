@@ -16,6 +16,7 @@ import request from '../../utils/request-middleware.js';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
+import { nanoid } from 'nanoid';
 
 const SharePage = (props)=>{
 	const { disableMeta = false } = props;
@@ -53,21 +54,39 @@ const SharePage = (props)=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
+		// generate unique fingerprint
+		const clientFingerprint = nanoid(24);
+
 		// listen for changes in the brew version
-		const eventSource = new EventSource('/stream');
-		eventSource.addEventListener('message', (evt)=>{
+		const eventSource = new EventSource(`/api/stream/${props.brew.shareId}?client=${clientFingerprint}`);
+
+		let subId = '';
+		eventSource.addEventListener('subscribe', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
-			if(messageData.eventType == 'brewUpdated'){
-				if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
-					console.log('should fetch brew');
-					fetchUpdatedBrew();
-				}
+			if(messageData.client == clientFingerprint){
+				subId = messageData.id;
 			}
 		});
 
-		return ()=>{
+		eventSource.addEventListener('brewUpdated', (evt)=>{
+			const messageData = JSON.parse(evt.data);
+
+			if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
+				console.log('should fetch brew');
+				fetchUpdatedBrew();
+			}
+		});
+
+		async function unsub(){
+			await request.get(`/api/stream/unsubscribe/${subId}`);
+		};
+		window.addEventListener('beforeunload', unsub);
+
+		return async ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			window.addEventListener('beforeunload', unsub);
+			eventSource.close();
 		};
 	}, []);
 
