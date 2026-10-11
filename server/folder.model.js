@@ -187,7 +187,7 @@ FolderSchema.statics.createFolder = async function(
 FolderSchema.statics.updateFolder = async function(
   author,
   folderId,
-  { title, slug, isPublished, isPrivate }
+  { title, slug, isPublished, isPrivate } = {}
 ) {
   try {
     // normalise user inputs
