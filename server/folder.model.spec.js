@@ -27,7 +27,7 @@ describe('Folder model', ()=>{
       });
 
       expect(folder.folderId).toHaveLength(12);
-      expect(folder.title).toBe('untitled folder');
+      expect(folder.title).toBe('Untitled folder');
       expect(folder.shareIds).toEqual([]);
       expect(folder.subFolderIds).toEqual([]);
       expect(folder.isPublished).toBe(false);
