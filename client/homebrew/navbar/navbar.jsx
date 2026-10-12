@@ -42,14 +42,14 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				<NewBrewNavItem />
 				<div className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
-						Clone File
+						Clone Brew
 					</Nav.item>
 				</div>
 				<div className='nav-section'>
-					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'editPage' && pageName !== 'editPage'} />
 					<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
-						Get txt
+						Download raw text
 					</Nav.item>
+					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'editPage' && pageName !== 'editPage'} />
 				</div>
 				{navSlots.file}
 			</Dropdown>
@@ -105,7 +105,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	};
 
 	const renderHelp = ()=>{
-		<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
 			<HelpNavItem />
 			{navSlots.help}
 		</Dropdown>;
