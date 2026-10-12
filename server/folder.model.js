@@ -72,6 +72,7 @@ export const folderApiErrors = {
 
   // validation
   '121': `Folder slug is not valid.`,
+  '123': `Folder slug is already in use in one or more locations containing this folder.`,
 };
 
 // Folder utilities ..........................................................
