@@ -54,39 +54,29 @@ const SharePage = (props)=>{
 		document.addEventListener('keydown', handleControlKeys);
 		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
 
-		// generate unique fingerprint
-		const clientFingerprint = nanoid(24);
+		let eventSource;
+		// Start a stream if the brew has been updated in the last month
+		if(Date.parse(props.brew?.updatedAt) > (new Date).setDate((new Date).getDate() - 30)){
+			// listen for changes in the brew version
+			eventSource = new EventSource(`/api/stream/${props.brew.shareId}`);
 
-		// listen for changes in the brew version
-		const eventSource = new EventSource(`/api/stream/${props.brew.shareId}?client=${clientFingerprint}`);
+			eventSource.addEventListener('brewUpdated', (evt)=>{
+				const messageData = JSON.parse(evt.data);
 
-		let subId = '';
-		eventSource.addEventListener('subscribe', (evt)=>{
-			const messageData = JSON.parse(evt.data);
+				if(messageData.version != currentBrew.version) {
+					console.log('should fetch brew');
+					fetchUpdatedBrew();
+				}
+			});
+		}
 
-			if(messageData.client == clientFingerprint){
-				subId = messageData.id;
-			}
-		});
-
-		eventSource.addEventListener('brewUpdated', (evt)=>{
-			const messageData = JSON.parse(evt.data);
-
-			if(messageData.version != currentBrew.version) {
-				console.log('should fetch brew');
-				fetchUpdatedBrew();
-			}
-		});
-
-		async function unsub(){
-			await request.get(`/api/stream/unsubscribe/${subId}`);
+		function unsub(){
+			eventSource?.close();
 		};
-		window.addEventListener('beforeunload', unsub);
 
 		return async ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
-			window.removeEventListener('beforeunload', unsub);
-			eventSource.close();
+			unsub();
 		};
 	}, []);
 

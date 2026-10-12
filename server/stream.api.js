@@ -12,13 +12,12 @@ app.get('/api/stream/:id', (req, res)=>{
 		'Connection'       : 'keep-alive',
 		'Content-Encoding' : 'none'
 	});
-	;
-	Stream.subscribe(req.params.id, res, req.query?.client);
-});
 
-app.get('/api/stream/unsubscribe/:id', (req, res)=>{
-	Stream.unsubscribe(req.params?.id);
-	res.status(200).send();
+	const subId = Stream.subscribe(req.params.id, res);
+
+	res.on('close', ()=>{
+		Stream.unsubscribe(subId);
+	});
 });
 
 export default app;

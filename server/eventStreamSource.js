@@ -11,9 +11,7 @@ const DEBUG = {
 };
 
 // Delays
-const UNSUB_DELAY = 60 * 1000; //ms
-const REFRESH_DELAY = 60 * 1000; //ms
-const REPORT_DELAY = 5 * 1000; //ms
+const REPORT_DELAY = config.get('REPORT_DELAY') || 30 * 60 * 1000; //ms
 
 
 const Stream = new EventEmitter;
@@ -22,19 +20,17 @@ const Stream = new EventEmitter;
 let subscribers = [];
 
 // Listener functions
-const subscribe = function(shareId, res, clientFingerprint){
+const subscribe = function(shareId, res){
 	const id = nanoid(24); // NanoID is assumed globally unique;
 	const subscriber = {
 		id,
 		shareId,
-		stream     : res,
-		time       : new Date,
-		unsubTimer : setTimeout(()=>{ unsubscribe(id); }, UNSUB_DELAY)
+		stream : res
 	};
 
 	subscribers.push(subscriber);
 
-	Stream.emit('sendUpdate', 'subscribe', { id: subscriber.id, shareId: subscriber.shareId, client: clientFingerprint, time: subscriber.time });
+	Stream.emit('sendUpdate', 'subscribe', { id: subscriber.id, shareId: subscriber.shareId });
 
 	return subscriber.id;
 };
@@ -44,7 +40,8 @@ const unsubscribe = function(id){
 		.filter((sub)=>{return sub.id == id;})
 		.forEach((sub)=>{
 			clearTimeout(sub.unsubTimer);
-			Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId, time: new Date });
+			Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId });
+			sub?.stream?.status(200).end();
 		});
 
 	subscribers = subscribers.filter((sub)=>{ return sub.id != id; });
@@ -59,12 +56,6 @@ Stream.on('sendUpdate', (event, data)=>{
 			return data.shareId == sub.shareId;
 		})
 		.forEach((sub)=>{
-			if(event == 'brewUpdated'){
-			// Reset the unsubscription timer
-				clearTimeout(sub.unsubTimer);
-				sub.unsubTimer = setTimeout(()=>{ unsubscribe(sub.id); }, REFRESH_DELAY);
-			}
-
 			sub?.stream?.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
 		});
 });
