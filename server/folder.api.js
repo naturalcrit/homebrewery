@@ -35,12 +35,10 @@ router.use(dbCheck);
 // NOTE: shouldn't need to add/modify HBErrorCode here, use what was thrown
 
 const getByUserApi = async (req, res)=>{
-
+try {
   const folder = await FolderModel.getById(req.account.username, /* ownAccount */);
 
   if(!folder) {
-    // TODO throw 409 for slug conflict (HBErrorCode 101)
-    // TODO throw 422 if slug invalid (HBErrorCode 121)
     const error = {
       HBErrorCode: '105',
       name: 'Get User Folders Error',
@@ -52,11 +50,24 @@ const getByUserApi = async (req, res)=>{
   }
 
   res.status(201).send(folder);
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '101' : httpstatus = 409; break;
+    case '120' : httpstatus = 404; break;
+    case '121' : httpstatus = 422; break;
+    case '110' : httpstatus = 500; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
-
 const createFolderApi = async (req, res)=>{
-
+try {
   const folder = await FolderModel.createFolder(req.account.username, {
     title: req.body.title,
     slug: req.body.slug,
@@ -77,9 +88,22 @@ const createFolderApi = async (req, res)=>{
   }
 
   res.status(201).send(folder);
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '121' : httpstatus = 422; break;
+    case '105' : httpstatus = 404; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
 const updateFolderApi = async (req, res)=>{
+try {
   // TODO: throw 409 if slug already in this parent
 
   const folder = await FolderModel.updateFolder(
@@ -99,10 +123,23 @@ const updateFolderApi = async (req, res)=>{
   }
 
   res.status(200).send(folder);
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '121' : httpstatus = 422; break;
+    case '106' : httpstatus = 404; break;
+    case '108' : httpstatus = 500; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
-
 const deleteFolderApi = async (req, res)=>{
+try {
   const result = await FolderModel.deleteFolder(
     req.account.username,
     req.params.folderId,
@@ -118,11 +155,24 @@ const deleteFolderApi = async (req, res)=>{
     throw error;
   }
 
-  res.sendStatus(204);
+  res.status(204).send(); // NOTE: do not send a body with 204
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '107' : httpstatus = 404; break;
+    case '109' : httpstatus = 500; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
 
 const addBrewToFolderApi = async (req, res)=>{
+try {
   const result = await FolderModel.addBrewToFolder(
     req.account.username,
     req.params.folderId,
@@ -150,9 +200,23 @@ const addBrewToFolderApi = async (req, res)=>{
   }
 
   res.status(200).send(result);
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '111' : httpstatus = 404; break;
+    case '112' : httpstatus = 404; break;
+    case '115' : httpstatus = 500; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
 const removeBrewFromFolderApi = async (req, res)=>{
+try {
   const result = await FolderModel.removeBrewFromFolder(
     req.account.username,
     req.params.folderId,
@@ -180,6 +244,19 @@ const removeBrewFromFolderApi = async (req, res)=>{
   }
 
   res.status(200).send(result);
+}
+catch (error) {
+  let httpstatus;
+  switch (error.HBErrorCode ?? '') {
+    case '113' : httpstatus = 404; break;
+    case '114' : httpstatus = 404; break;
+    case '116' : httpstatus = 500; break;
+    default:
+      httpstatus = 500;
+  }
+
+  res.status(httpstatus).send(error);
+}
 };
 
 
@@ -197,7 +274,6 @@ router.put('/api/folder/:folderId',
 
 router.delete('/api/folder/:folderId',
   requireAccount, asyncHandler(deleteFolderApi));
-
 
 router.post('/api/folder/:folderId/brews',
   requireAccount, asyncHandler(addBrewToFolderApi));
