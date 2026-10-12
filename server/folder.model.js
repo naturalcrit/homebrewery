@@ -173,7 +173,7 @@ FolderSchema.statics.createFolder = async function(
     // throw if slug invalid, e.g. ''
     if (slug == '') {
       const err = new Error();
-      err.HBErrorCode = '106';
+      err.HBErrorCode = '121';
       throw err;
     }
 
@@ -312,7 +312,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
     const brewExists = await BrewModel.exists({ brewId });
     if(!brewExists) {
       const err = new Error();
-      err.HBErrorCode = '112';
+      err.HBErrorCode = '114';
       throw err;
 
       // TODO: decision:
