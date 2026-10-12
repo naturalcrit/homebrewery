@@ -8,6 +8,10 @@ const getShareId = (brew)=>{
 		? brew.googleId + brew.shareId
 		: brew.shareId;
 };
+const getEditId = (brew)=>{
+	if(!brew) return null;
+	return brew.googleId && !brew.stubbed ? brew.googleId + brew.editId : brew.editId;
+};
 
 const getRedditLink = (brew)=>{
 	const text = dedent`
@@ -21,6 +25,9 @@ const getRedditLink = (brew)=>{
 export default ({ brew, disabled, currentPage })=>{
 	return (
 		<div className='nav-section'>
+			<Nav.item href={`/edit/${getEditId(brew)}`} disabled={disabled || !brew?.editId}>
+				edit this brew
+			</Nav.item>
 			<Nav.item href={`/share/${getShareId(brew)}`} disabled={disabled}>
 			view share page
 			</Nav.item>

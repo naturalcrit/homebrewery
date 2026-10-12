@@ -15,68 +15,41 @@ import Nav from './nav.jsx';
 const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })=>{
 	const isMac = navigator.platform.toUpperCase().includes('MAC');
 	const mod = isMac ? '⌘' : 'Ctrl';
-	const isBrew = !!brew && (brew.shareId || pageName === 'homePage' || pageName === 'newPage');
-	const account = global.account;
 
 	const navSlots = React.Children.toArray(children).reduce((slots, child)=>{
 		if(!React.isValidElement(child)) return slots;
 		const content = child.props.children;
 
+		//To create new items inside the dropdowns call them with Navbar.[DropdownName]
 		if(child.type === Navbar.File) slots.file = content;
 		else if(child.type === Navbar.Edit) slots.edit = content;
 		else if(child.type === Navbar.Go) slots.go = content;
 		else if(child.type === Navbar.Help) slots.help = content;
+		//create a new dropdown with Navbar.Menu
 		else if(child.type === Navbar.Menu) slots.menu = content;
 
 		return slots;
 	}, {});
 
-	const renderDownloadLink = ()=>{
-		if(!brew?.shareId) return <Nav.item disabled={!brew?.shareId}>Get txt</Nav.item>;
-		let shareLink = brew.shareId;
-		if(brew.googleId && !brew.stubbed) {
-			shareLink = brew.googleId + shareLink;
+	const renderFile = ()=>{
+		let shareLink = brew?.shareId;
+		if(brew?.googleId && !brew?.stubbed) {
+			shareLink = brew?.googleId + shareLink;
 		}
 
-		return (
-			<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
-				Get txt
-			</Nav.item>
-		);
-	};
-
-	const renderEditLink = ()=>{
-		const editLink = brew?.googleId && !brew?.stubbed ? brew?.googleId + brew?.editId : brew?.editId;
-		return (
-			<Nav.item href={`/edit/${editLink}`} disabled={!brew?.editId}>
-				edit this brew
-			</Nav.item>
-		);
-	};
-
-	const renderFile = ()=>{
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
 				<div className='nav-section'>
-					<PrintNavItem disabled={!isBrew} />
-					{renderDownloadLink()}
-				</div>
-				<div className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
 						Clone File
 					</Nav.item>
-					{/*
-					<Nav.item className='beta' disabled={!isBrew}>
-						Delete File
+				</div>
+				<div className='nav-section'>
+					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'editPage' && pageName !== 'editPage'} />
+					<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
+						Get txt
 					</Nav.item>
-					<Nav.item className='beta' disabled={!isBrew}>
-						Publish File
-					</Nav.item>
-					<Nav.item className='beta' disabled={!isBrew}>
-						Transfer File
-					</Nav.item>
-					*/}
 				</div>
 				{navSlots.file}
 			</Dropdown>
@@ -104,19 +77,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					</Nav.item>
 				</div>
 				{navSlots.edit}
-				{/*
-				<div className="nav-section">
-					<Nav.item onClick={()=>editor?.cut()} kbd={mod + ' + x'} disabled={!editor}>
-						cut
-					</Nav.item>
-					<Nav.item onClick={()=>editor?.copy()} kbd={mod + ' + c'} disabled={!editor}>
-						copy
-					</Nav.item>
-					<Nav.item onClick={()=>editor?.paste()} kbd={mod + ' + v'} disabled={!editor}>
-						paste
-					</Nav.item>
-				</div>
-				*/}
 			</Dropdown>
 		);
 	};
@@ -124,8 +84,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	const renderGo = ()=>{
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
-				{renderEditLink()}
-				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				<div className='nav-section'>
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
@@ -137,12 +95,20 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 						Changelog
 					</Nav.item>
 				</div>
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				{navSlots.go}
 				<Dropdown className='navItem recent' groupName={'Recent Brews'} customTrigger={<>Recent Brews</>} icon={null} key={'recent'}>
 					<RecentNavItem />
 				</Dropdown>
 			</Dropdown>
 		);
+	};
+
+	const renderHelp = ()=>{
+		<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+			<HelpNavItem />
+			{navSlots.help}
+		</Dropdown>;
 	};
 
 	return (
@@ -154,10 +120,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				{renderFile()}
 				{renderEdit()}
 				{renderGo()}
-				<Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
-					<HelpNavItem />
-					{navSlots.help}
-				</Dropdown>
+				{renderHelp()}
 				{navSlots.menu}
 			</ul>
 			{pageName !== 'sharePage' && <Nav.header className='brewTitle'>{title}</Nav.header>}
