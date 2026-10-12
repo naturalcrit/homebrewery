@@ -185,6 +185,10 @@ const removeBrewFromFolderApi = async (req, res)=>{
 
 // routes .............................................................
 
+
+router.get('/api/user/:username/folders',
+  requireAccount, asyncHandler(getByUserApi));
+
 router.post('/api/folder/',
   requireAccount, asyncHandler(createFolderApi));
 
@@ -205,6 +209,7 @@ router.delete('/api/folder/:folderId/brews/:brewId',
 // ....................................................................
 
 export {
+  getByUserApi,
   createFolderApi,
   updateFolderApi,
   deleteFolderApi,
