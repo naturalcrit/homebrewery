@@ -216,6 +216,15 @@ FolderSchema.statics.updateFolder = async function(
       throw err;
     }
 
+    // throw if slug already present in any parent folder
+    const slugCollision = false;
+    // TODO: actually test for collision
+    if (slug !== undefined && slugCollision) {
+      const err = new Error();
+      err.HBErrorCode = '123';
+      throw err;
+    }
+
     const updates = {
       title,
       slug,
