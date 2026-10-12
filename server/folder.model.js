@@ -124,8 +124,10 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
 
     const query = { author: username };
 
-    if(!ownAccount)
+    if(!ownAccount) {
+      query.isPublished = true;
       query.isPrivate = false;
+    }
 
     const folders = await this.find(query)
       .select( 'author folderId slug title shareIds subFolderIds isPublished isPrivate' )
