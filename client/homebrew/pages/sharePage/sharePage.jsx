@@ -72,7 +72,7 @@ const SharePage = (props)=>{
 		eventSource.addEventListener('brewUpdated', (evt)=>{
 			const messageData = JSON.parse(evt.data);
 
-			if(messageData.shareId == currentBrew.shareId && messageData.version != currentBrew.version) {
+			if(messageData.version != currentBrew.version) {
 				console.log('should fetch brew');
 				fetchUpdatedBrew();
 			}
