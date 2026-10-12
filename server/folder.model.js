@@ -43,12 +43,12 @@ export const folderApiErrors = {
 
   // constraints
   '100': `Folder operations require a logged in user.`,
-  '101': `A folder with this identifier already exists`,
-  '102': `A bookmarks folder already exists`,
-  '103': `A favorites folder already exists`,
+  '101': `A folder with this identifier already exists.`,
+  '102': `A bookmarks folder already exists.`,
+  '103': `A favorites folder already exists.`,
 
   '110': `An error occurred trying to find folders for the user.`,
-  '120': `The author username could not be found`,  // ???
+  '120': `The author username could not be found.`,
 
   // crud
   '105': `Folder could not be created.`,
@@ -65,12 +65,12 @@ export const folderApiErrors = {
   '113': `Folder to remove brew from could not be found.`,
   '114': `Brew to remove from folder could not be found.`,
 
-  '115': `An error occurred while adding brew to folder`,
-  '116': `An error occurred while removing brew from folder`,
-  '117': `An error occurred while retrieving the folder`,
+  '115': `An error occurred while adding brew to folder.`,
+  '116': `An error occurred while removing brew from folder.`,
+  '117': `An error occurred while retrieving the folder.`,
 
   // validation
-  '121': `Folder slug is not valid`,
+  '121': `Folder slug is not valid.`,
 };
 
 // Folder utilities ..........................................................
