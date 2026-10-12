@@ -49,6 +49,7 @@ export const folderApiErrors = {
 
   '110': `An error occurred trying to find folders for the user.`,
   '120': `The author username could not be found.`,
+  '122': `One or more required fields are missing from the request.`,
 
   // crud
   '105': `Folder could not be created.`,
@@ -92,12 +93,21 @@ function slugify(str) {
     .replace(/^-+|-+$/g, "");         // Trim hyphens
 }
 
-function throwFolderError(err, code) {
+function throwFolderError(err, code, fields = []) {
   const error = new Error();
   error.HBErrorCode = err.HBErrorCode || code;
   error.name = 'FolderAccess Error';
   error.message = folderApiErrors[error.HBErrorCode];
   error.cause = err;
+
+  const fieldNames = Array.isArray(fields) ? fields : fields.split();
+  if ( (fields?? []).length ) {
+    error['invalid-params'] = fields.map((name) => ({
+      name,
+      reason: 'Must not be null or blank',
+    }));
+  }
+
   throw error;
 }
 
@@ -105,7 +115,11 @@ function throwFolderError(err, code) {
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
   try {
-    // TODO: ?throw if username does not exist? HBEC = '120'
+    // TODO: ?throw if username does not exist? HBEC = '120' → 404 NOT FOUND
+    //   OR: ?return empty set to avoid user enumeration → 200 OK
+
+    // TODO: throw if username is null, undefined, or ''; HBEC '122' → 400 BAD REQUEST
+    // NOTE: pass field name(s) in to throwFolderError()
 
     const query = { author: username };
 
