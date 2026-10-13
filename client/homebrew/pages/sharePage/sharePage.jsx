@@ -16,7 +16,6 @@ import request from '../../utils/request-middleware.js';
 
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
-import { nanoid } from 'nanoid';
 
 const SharePage = (props)=>{
 	const { disableMeta = false } = props;
