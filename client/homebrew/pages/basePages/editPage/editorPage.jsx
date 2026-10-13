@@ -372,7 +372,7 @@ const EditorPage = (props)=>{
 						{(pageName == 'editPage') && renderAutoSaveButton()}
 					</Nav.dropdown>}
 				<NewBrewItem />
-				<PrintNavItem />
+				<PrintNavItem brew={currentBrew}/>
 				<HelpNavItem />
 				<VaultNavItem />
 				{(pageName == 'editPage') && <ShareNavItem brew={currentBrew} currentPage={currentBrewRendererPageNum} />}
