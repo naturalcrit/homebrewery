@@ -15,7 +15,7 @@ import fs from 'fs';
 import dbCheck                       from './middleware/dbCheck.js';
 import sanitizeFilename              from 'sanitize-filename';
 import { DEFAULT_BREW }              from './brewDefaults.js';
-import { splitTextStyleAndMetadata, transformFrontmatter } from '../shared/helpers.js';
+import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 import GoogleActions                 from './googleActions.js';
 
 import api from './homebrew.api.js';
@@ -135,19 +135,9 @@ export default function pageRoutes({
 	});
 
 	//Download brew source page
-	app.get('/download/:format/:id', asyncHandler(getBrew('share')), async (req, res)=>{
-		const markdownFormats = {
-			hb   : 'homebrewery',
-			cm   : 'commonmark',
-			toml : 'toml',
-			json : 'json'
-		};
-
+	app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
 		const { brew } = req;
-
-		const lastBrew = brew.text;
 		sanitizeBrew(brew, 'share');
-		brew.text = await transformFrontmatter(brew, req.params.format);
 		const prefix = 'HB - ';
 
 		const encodeRFC3986ValueChars = (str)=>{
@@ -162,7 +152,7 @@ export default function pageRoutes({
 		res.set({
 			'Cache-Control'       : 'no-cache',
 			'Content-Type'        : 'text/plain',
-			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.${markdownFormats[req.params.format]}.md`
+			'Content-Disposition' : `attachment; filename*=UTF-8''${encodeRFC3986ValueChars(fileName)}.txt`
 		});
 		res.status(200).send(brew.text);
 	});

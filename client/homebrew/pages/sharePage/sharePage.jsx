@@ -117,7 +117,7 @@ const SharePage = (props)=>{
 									view
 								</Nav.item>
 								{renderEditLink()}
-								<Nav.item color='blue' icon='fas fa-download' href={`/download/hb/${processShareId()}`}>
+								<Nav.item color='blue' icon='fas fa-download' href={`/download/${processShareId()}`}>
 									download
 								</Nav.item>
 								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
