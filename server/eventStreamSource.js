@@ -12,6 +12,7 @@ const DEBUG = {
 
 // Delays
 const REPORT_DELAY = config.get('REPORT_DELAY') || 30 * 60 * 1000; //ms
+const HEARTBEAT_DELAY = config.get('HEARTBEAT_DELAY') || 20 * 1000; //ms
 
 
 const Stream = new EventEmitter;
@@ -46,6 +47,20 @@ const unsubscribe = function(id){
 
 	subscribers = subscribers.filter((sub)=>{ return sub.id != id; });
 };
+
+// Create heartbeat
+const heartbeatId = setInterval(()=>{
+	if(DEBUG.showEvents){ console.log('STREAM HEARTBEAT @ ', new Date); };
+	subscribers
+		.forEach((sub)=>{
+			sub?.stream?.write(`:\n\n`);
+		});
+}, HEARTBEAT_DELAY);
+
+Stream.on('close', ()=>{
+	console.log('STREAM CLOSE');
+	clearInterval(heartbeatId);
+});
 
 // Create global sendUpdate listener
 Stream.on('sendUpdate', (event, data)=>{
