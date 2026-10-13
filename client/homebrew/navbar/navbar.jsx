@@ -23,7 +23,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		//To create new items inside the dropdowns call them with Navbar.[DropdownName]
 		if(child.type === Navbar.File) slots.file = content;
 		else if(child.type === Navbar.Edit) slots.edit = content;
-		else if(child.type === Navbar.Go) slots.go = content;
 		else if(child.type === Navbar.Help) slots.help = content;
 		//create a new dropdown with Navbar.Menu
 		else if(child.type === Navbar.Menu) slots.menu = content;
@@ -85,17 +84,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		);
 	};
 
-	const renderGo = ()=>{
-		return (
-			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
-				<div className='nav-section'>
-
-				</div>
-				{navSlots.go}
-			</Dropdown>
-		);
-	};
-
 	const renderHelp = ()=>{
 		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
 			<HelpNavItem />
@@ -143,7 +131,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 
 Navbar.File = ({ children })=>children;
 Navbar.Edit = ({ children })=>children;
-Navbar.Go = ({ children })=>children;
 Navbar.Help = ({ children })=>children;
 Navbar.Menu = ({ children })=>children;
 
