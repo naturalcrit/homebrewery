@@ -39,7 +39,8 @@ const unsubscribe = function(id){
 	subscribers
 		.filter((sub)=>{return sub.id == id;})
 		.forEach((sub)=>{
-			Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId });
+			// Unsubscribe event - not currently used
+			// Stream.emit('sendUpdate', 'unsubscribe', { id: sub.id, shareId: sub.shareId });
 			sub?.stream?.status(200).end();
 		});
 
