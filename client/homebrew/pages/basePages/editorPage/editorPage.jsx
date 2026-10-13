@@ -309,7 +309,7 @@ const EditorPage = (props)=>{
 		const errorExists = alertNoGoogleToTransfer || alertOwnershipToTransfer || alertTrashedGoogleBrew || confirmGoogleTransfer;
 		return (<>
 			<Nav.header>This brew is in {saveGoogle ? 'Google Drive' : 'The Homebrewery'}</Nav.header>
-			<Nav.item className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
+			<Nav.item icon={'fas fa-hard-drive'} className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
 				{saveGoogle ? 'Transfer to Homebrewery' : 'Transfer to Drive'}
 				{saveGoogle? '' : <img src={googleDriveIcon} alt='Google Drive icon' /> }
 			</Nav.item>
@@ -356,8 +356,8 @@ const EditorPage = (props)=>{
 
 
 	const renderAutoSaveButton = ()=>(
-		<Nav.item onClick={toggleAutoSave}>
-			Autosave <i className={autoSaveEnabled ? 'fas fa-power-off active' : 'fas fa-power-off'}></i>
+		<Nav.item icon={'fas fa-cloud-arrow-up'} onClick={toggleAutoSave} noDismiss={true}>
+			Autosave <input type="checkbox" name="autosave" checked={autoSaveEnabled}/>
 		</Nav.item>
 	);
 
