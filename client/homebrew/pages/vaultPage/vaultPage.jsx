@@ -99,7 +99,8 @@ const VaultPage = (props)=>{
 
 		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`)
 		.catch((error)=>{
-			console.log('error at loadTotal: ', error);
+			console.log('error at loadTotal: ');
+			console.error(error);
 			setError(error);
 			updateStateWithBrews([], 1);
 		});
@@ -441,7 +442,7 @@ const VaultPage = (props)=>{
 			if(error.HBErrorCode === undefined) { 
 				return (
 					<div className='foundBrews noBrews'>
-						<h3>{error.toString()}</h3>
+						<h3>Error: Unknown error</h3>
 					</div>
 				)
 			} else {
