@@ -76,9 +76,6 @@ const VaultPage = (props)=>{
 
 		if(response?.ok)
 			updateStateWithBrews(response.body.brews, page);
-		else {
-			console.log('response: ', response);
-		}
 	};
 
 	const loadTotal = async (title, author, v3, legacy)=>{
