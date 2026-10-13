@@ -49,13 +49,16 @@ const unsubscribe = function(id){
 };
 
 // Create heartbeat
-const heartbeatId = setInterval(()=>{
-	if(DEBUG.showEvents){ console.log('STREAM HEARTBEAT @ ', new Date); };
-	subscribers
-		.forEach((sub)=>{
-			sub?.stream?.write(`:\n\n`);
-		});
-}, HEARTBEAT_DELAY);
+const heartbeatId = config.get('node_env') != 'test' ?
+	setInterval(()=>{
+		if(DEBUG.showEvents){ console.log('STREAM HEARTBEAT @ ', new Date); };
+		subscribers
+			.forEach((sub)=>{
+				sub?.stream?.write(`:\n\n`);
+			});
+	}, HEARTBEAT_DELAY)
+	:
+	undefined;
 
 Stream.on('close', ()=>{
 	console.log('STREAM CLOSE');
