@@ -7,6 +7,7 @@ storage
 build/*
 config/local.*
 config/docker.*
+config/dev.*
 
 todo.md
 startDB.bat

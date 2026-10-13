@@ -68,7 +68,7 @@ const VaultPage = (props)=>{
 				updateStateWithBrews([], 1);
 			});
 
-		if(response.ok)
+		if(response?.ok)
 			updateStateWithBrews(response.body.brews, page);
 	};
 
@@ -342,13 +342,23 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+			if(error.HBErrorCode === undefined) { 
+				return (
+					<div className='foundBrews noBrews'>
+						<h3>{error.toString()}</h3>
+					</div>
+				)
+			} else {
 
-			return (
-				<div className='foundBrews noBrews'>
+				const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+
+				return (
+					<div className='foundBrews noBrews'>
 					<h3>Error: {errorText}</h3>
-				</div>
-			);
+					</div>
+				);
+			}
+
 		}
 
 		if(!brewCollection) {
