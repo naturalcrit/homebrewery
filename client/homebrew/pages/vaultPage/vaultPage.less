@@ -125,6 +125,9 @@
 				color       : white;
 			}
 			.foundBrews {
+				display:flex;
+				flex-direction: column;
+				gap:20px;
 				padding          : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
 				overflow-y       : scroll;
 				scrollbar-gutter : stable;
@@ -265,19 +268,14 @@
 				}
 
 				.paginationControls {
-					position              : absolute;
-					top                   : 35px;
-					left                  : 50%;
 					display               : grid;
 					grid-template-areas   : 'previousPage currentPage nextPage';
 					grid-template-columns : 50px 1fr 50px;
 					gap                   : 20px;
 					place-items           : center;
-					width                 : auto;
+					width                 : fit-content;
+					margin-inline:auto;
 					font-size             : 15px;
-					translate             : -50%;
-
-					&:last-child { top : unset; }
 
 					.pages {
 						display         : flex;
@@ -299,8 +297,11 @@
 							text-underline-position : under;
 							cursor                  : pointer;
 
-							&.currentPage {
+							&:hover {
 								color           : gold;
+							}
+							&.currentPage {
+								color:@yellow;
 								text-decoration : underline;
 								pointer-events  : none;
 							}
@@ -407,16 +408,4 @@
 
 	66%,
 	100% { content : ' ...'; }
-}
-
-@container (width < 670px) {
-	.vaultPage {
-
-		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
-
-		.dataGroup.resultsContainer .foundBrews .brewItem {
-			width         : 100%;
-			margin-inline : auto;
-		}
-	}
 }
