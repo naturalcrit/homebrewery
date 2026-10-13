@@ -21,15 +21,16 @@
 
 .sitePage.listPage {
 	--bg-clr : white;
+	container-type: inline-size;
 	.content {
-		padding          : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
+		padding          : clamp(20px, 5vh, 200px) clamp(20px, 20cqi, 200px);
 		overflow-y       : scroll;
 		scrollbar-gutter : stable;
-		@media screen and (max-width : 1200px) {
-			padding : clamp(20px, 5vh, 200px) clamp(20px, 10vw, 200px);
+		@container (max-width : 1200px) {
+			padding : clamp(20px, 5vh, 200px) clamp(20px, 10cqi, 200px);
 		}
-		@media screen and (max-width : 800px) {
-			padding : clamp(20px, 5vh, 200px) clamp(20px, 5vw, 200px);
+		@container (max-width : 800px) {
+			padding : clamp(20px, 5vh, 200px) clamp(20px, 5cqi, 200px);
 		}
 
 		&::-webkit-scrollbar {
@@ -53,6 +54,7 @@
 			color       : white;
 		}
 		.brewCollection {
+
 			h1 {
 				width         : fit-content;
 				margin-bottom : 20px;
@@ -97,9 +99,9 @@
 					gap                   : 20px;
 					justify-items         : center;
 
-					@media screen and (max-width : 1700px) {--columns : 3;}
-					@media screen and (max-width : 1400px) {--columns : 2;}
-					@media screen and (max-width : 900px) {--columns : 1;}
+					@container (max-width : 1700px) {--columns : 3;}
+					@container (max-width : 1400px) {--columns : 2;}
+					@container (max-width : 900px) {--columns : 1;}
 					h1 { position : absolute; }
 
 					&:not(:has(.brewItem:last-child:nth-child(3n))) {
