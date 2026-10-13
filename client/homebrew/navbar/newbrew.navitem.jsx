@@ -71,21 +71,21 @@ const NewBrew = ()=>{
 				href='/new'
 				newTab={true}
 				icon='fa-solid fa-file'>
-					resume draft
+					Resume draft
 			</Nav.item>
 			<Nav.item
 				className='fromBlank'
 				newTab={true}
 				icon='fa-solid fa-file-circle-plus'
 				onClick={()=>{ clearLocalStorage(); }}>
-					from blank
+					New from scratch
 			</Nav.item>
 			<Nav.item
 				className='fromFile'
 				icon='fa-solid fa-upload'
 				onClick={()=>{ document.getElementById('uploadTxt').click(); }}>
 				<input id='uploadTxt' className='newFromLocal' type='file' onChange={handleFileChange} style={{ display: 'none' }} />
-					from file
+					<span style={{textTransform:"none"}}>Import .txt  File</span>
 			</Nav.item>
 		</div>
 	);

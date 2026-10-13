@@ -40,6 +40,9 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
+				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
+					<RecentNavItem />
+				</Dropdown>
 				<div className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
 						Clone Brew
@@ -88,15 +91,9 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
 					</Nav.item>
-					<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
-						Changelog
-					</Nav.item>
 				</div>
 				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				{navSlots.go}
-				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
-					<RecentNavItem />
-				</Dropdown>
 			</Dropdown>
 		);
 	};
@@ -104,6 +101,14 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	const renderHelp = ()=>{
 		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
 			<HelpNavItem />
+			<div className="nav-section">
+				<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
+					Changelog
+				</Nav.item>
+				<Nav.item icon='fab fa-github' href='https://github.com/naturalcrit/homebrewery' newTab={true} rel='noopener noreferrer'>
+					Github
+				</Nav.item>
+			</div>
 			{navSlots.help}
 		</Dropdown>;
 	};
