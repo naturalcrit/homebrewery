@@ -66,10 +66,10 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['110', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [500, '110'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to get folders');
 
       if (code !== undefined) error.HBErrorCode = code;
@@ -112,11 +112,11 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['105', 404],
-      ['120', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [404, '105'],
+      [500, '120'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to create folder');
 
       if (code !== undefined) error.HBErrorCode = code;
@@ -156,13 +156,13 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['123', 409],
-      ['121', 422],
-      ['106', 404],
-      ['108', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [409, '123'],
+      [422, '121'],
+      [404, '106'],
+      [500, '108'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to update folder');
 
       if (code !== undefined) error.HBErrorCode = code;
@@ -196,11 +196,11 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['107', 404],
-      ['109', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [404, '107'],
+      [500, '109'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to delete folder');
 
       if (code !== undefined) error.HBErrorCode = code;
@@ -239,12 +239,12 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['111', 404],
-      ['112', 404],
-      ['115', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [404, '111'],
+      [404, '112'],
+      [500, '115'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to add brew');
 
       if (code !== undefined) error.HBErrorCode = code;
@@ -283,12 +283,12 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      ['113', 404],
-      ['114', 404],
-      ['116', 500],
-      ['999', 500],
-      [undefined, 500],
-    ])('should return HTTP %i for error code %s', async (code, status) => {
+      [404, '113'],
+      [404, '114'],
+      [500, '116'],
+      [500, '999'],
+      [500, undefined],
+    ])('should return HTTP %i for error code %s', async (status, code) => {
       const error = new Error('Failed to remove brew');
 
       if (code !== undefined) error.HBErrorCode = code;
