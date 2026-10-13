@@ -285,8 +285,7 @@ export default function pageRoutes({
 		return next();
 	}));
 
-	//Share Page
-	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	const shareEmbedCommon = async(req, res)=>{
 		const { brew } = req;
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
@@ -308,7 +307,18 @@ export default function pageRoutes({
 		};
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-		return next();
+	};
+
+	//Share Page
+	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	        await shareEmbedCommon(req, res);
+	        return next();
+	}));
+
+	//Embed Page - More work will be done on this later...
+	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+	        await shareEmbedCommon(req, res);
+	        return next();
 	}));
 
 	//Account Page

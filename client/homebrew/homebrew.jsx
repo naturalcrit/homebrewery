@@ -12,6 +12,7 @@ import NewPage     from './pages/newPage/newPage.jsx';
 import ErrorPage   from './pages/errorPage/errorPage.jsx';
 import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
+import EmbedPage   from './pages/embedPage/embedPage.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -75,7 +76,8 @@ const Homebrew = (props)=>{
 			<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
 					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
+					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} showToolbar={true} />} />
+					<Route path='/embed/:id' element={<WithRoute el={EmbedPage} brew={brew} showToolbar={false} />} />
 					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
 					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
