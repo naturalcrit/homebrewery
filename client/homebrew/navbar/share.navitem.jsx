@@ -29,9 +29,9 @@ export default ({ brew, disabled, currentPage, pageName })=>{
 				View Raw Text
 			</Nav.item>
 			<Nav.item icon={'fas fa-pencil'} href={`/edit/${getEditId(brew)}`} disabled={disabled || !brew?.editId || pageName === 'editPage'}>
-				edit this brew
+				View edit page
 			</Nav.item>
-			<Nav.item icon={'fas fa-share-alt'} href={`/share/${getShareId(brew)}`} disabled={disabled}>
+			<Nav.item icon={'fas fa-share-alt'} href={`/share/${getShareId(brew)}`} disabled={disabled || pageName === 'sharePage'}>
 				view share page
 			</Nav.item>
 			<Nav.item icon={'far fa-copy'} onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}`);}} disabled={disabled}>
@@ -42,7 +42,7 @@ export default ({ brew, disabled, currentPage, pageName })=>{
 				onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${getShareId(brew)}#p${currentPage}`);}}>
 				copy url (page {currentPage})
 			</Nav.item>}
-			<Nav.item icon={'fab fa-reddit-alien'} href={!disabled && getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled}>
+			<Nav.item icon={'fab fa-reddit-alien'} href={!disabled && getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled || pageName === 'sharePage'}>
 				post to reddit
 			</Nav.item>
 		</div>

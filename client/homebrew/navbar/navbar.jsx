@@ -40,6 +40,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		return (
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
 				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
 					<RecentNavItem brew={brew} pageName={pageName} />
 				</Dropdown>
@@ -52,7 +53,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
 						Download raw text
 					</Nav.item>
-					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'homePage' && pageName !== 'editPage'} />
+					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'homePage' && pageName !== 'editPage' && pageName !== 'sharePage'} />
 				</div>
 				{navSlots.file}
 			</Dropdown>
@@ -88,11 +89,8 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		return (
 			<Dropdown groupName={'Go'} customTrigger={<>Go</>} icon={null} key={'go'}>
 				<div className='nav-section'>
-					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
-						Patreon
-					</Nav.item>
+
 				</div>
-				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
 				{navSlots.go}
 			</Dropdown>
 		);
@@ -109,6 +107,13 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					Github
 				</Nav.item>
 			</div>
+			<div className="nav-section">
+				<Nav.header>Wanna help us?</Nav.header>
+				<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
+						Patreon
+				</Nav.item>
+			</div>
+
 			{navSlots.help}
 		</Dropdown>;
 	};
@@ -121,7 +126,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				</li>
 				{renderFile()}
 				{renderEdit()}
-				{renderGo()}
 				{renderHelp()}
 				<Nav.item href='/vault' newTab={false} rel='noopener noreferrer'>
 					Vault
