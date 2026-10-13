@@ -41,7 +41,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
 				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
-					<RecentNavItem />
+					<RecentNavItem brew={brew} pageName={pageName} />
 				</Dropdown>
 				<div className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>

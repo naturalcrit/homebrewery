@@ -200,6 +200,10 @@
 				left:unset;
 				right:5px;
 			}
+			&.fa-times {
+				position:relative;
+				left:unset;
+			}
 		}
 
 		&.header {
@@ -228,7 +232,8 @@
 					}
 				}
 				.clear {
-					width: 55px;
+					align-items: center;
+					width: 50px;
 					padding: 0;
 					cursor: pointer;
 					transition: background-color @defaultDuration;
@@ -296,9 +301,6 @@
 				min-height: 2.2em;
 				padding-left: 25px;
 				
-				&:last-child {
-					padding-bottom: 10px;
-				}
 				&.save {
 					width: 100%;
 				}
@@ -309,6 +311,13 @@
 				}
 			}
 
+			>.navItem:last-child, .nav-section:last-child .navItem:last-child {
+				padding-bottom: 10px;
+			}
+			.nav-section:has(+ .header) {
+				padding-bottom:5px;
+			}
+			
 			.nav-section:not(:last-child, :has(+ .header)) {
 				border-bottom: 1px solid;
 				padding-bottom: 5px;
