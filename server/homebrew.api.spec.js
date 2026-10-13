@@ -345,6 +345,7 @@ describe('Tests for api', ()=>{
 				description : '',
 				editId      : undefined,
 				pageCount   : 1,
+				pinnedByUsers: [],
 				published   : false,
 				renderer    : 'legacy',
 				lang        : 'en',
@@ -499,6 +500,8 @@ description: this is a description
 tags:
   - something
   - fun
+renderer: v3
+theme: phb
 bleedSize:
   top: .125in
   bottom: .125in
@@ -516,8 +519,6 @@ columns: '2'
 columnGutter: .125in
 license: None
 legalAuthors: ''
-renderer: v3
-theme: phb
 
 \`\`\`
 
@@ -554,7 +555,7 @@ brew`);
 					width  : '8.5in',
 					height : '11in',
 				},
-			}, 'hb');
+			});
 
 			expect(result).toEqual(`\`\`\`metadata
 title: some title
@@ -562,6 +563,8 @@ description: this is a description
 tags:
   - something
   - fun
+renderer: v3
+theme: phb
 bleedSize:
   top: .125in
   bottom: .125in
@@ -579,8 +582,6 @@ columns: '2'
 columnGutter: .125in
 license: None
 legalAuthors: ''
-renderer: v3
-theme: phb
 
 \`\`\`
 
@@ -687,16 +688,17 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
+				_id          : '1',
+				authors      : ['test user'],
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				pinnedByUsers: [],
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				tags        : [],
@@ -780,6 +782,7 @@ brew`);
 				editId       : expect.any(String),
 				gDrive       : false,
 				pageCount    : 1,
+				pinnedByUsers: [],
 				published    : false,
 				renderer     : 'V3',
 				lang         : 'en',
