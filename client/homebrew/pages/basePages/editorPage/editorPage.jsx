@@ -354,7 +354,6 @@ const EditorPage = (props)=>{
 		);
 	};
 
-
 	const renderAutoSaveButton = ()=>(
 		<Nav.item icon={'fas fa-cloud-arrow-up'} onClick={toggleAutoSave} noDismiss={true}>
 			Autosave <input type="checkbox" name="autosave" checked={autoSaveEnabled}/>

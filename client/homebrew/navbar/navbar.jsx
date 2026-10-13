@@ -88,9 +88,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
 					</Nav.item>
-					<Nav.item icon='fas fa-dungeon' href='/vault' newTab={false} rel='noopener noreferrer'>
-						Vault
-					</Nav.item>
 					<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
 						Changelog
 					</Nav.item>
@@ -121,6 +118,9 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				{renderEdit()}
 				{renderGo()}
 				{renderHelp()}
+				<Nav.item href='/vault' newTab={false} rel='noopener noreferrer'>
+					Vault
+				</Nav.item>
 				{navSlots.menu}
 			</ul>
 			{pageName !== 'sharePage' && <Nav.header className='brewTitle'>{title}</Nav.header>}
