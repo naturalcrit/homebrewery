@@ -16,10 +16,9 @@ export default function({ disabled }){
 	}, []);
 
 	const handlePrintStartPrep = ()=>{ setPrinting(true); };
-
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
 
 	return <Nav.item onClick={printCurrentBrew} icon='far fa-file-pdf' disabled={disabled}>
-		{printing ? 'loading' : 'get PDF'}
+		{printing ? 'loading' : <span style={{textTransform:'none'}}>Export As .pdf</span>}
 	</Nav.item>;
 };

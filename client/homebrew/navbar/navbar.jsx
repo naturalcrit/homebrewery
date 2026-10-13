@@ -49,8 +49,8 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					</Nav.item>
 				</div>
 				<div className='nav-section'>
-					<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
-						Download raw text
+					<Nav.item icon='far fa-file-lines' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
+						<span style={{textTransform:"none"}}>Export As .txt</span>
 					</Nav.item>
 					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'homePage' && pageName !== 'editPage' && pageName !== 'sharePage'} />
 				</div>
@@ -86,6 +86,10 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 
 	const renderHelp = ()=>{
 		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+			<div className="nav-section">
+				<Nav.item icon='fab fa-discord' href='https://discord.com/invite/by3deKx' newTab={true} rel='noopener noreferrer'>Our Discord Server</Nav.item>
+				<Nav.item icon='fab fa-reddit' href='https://www.reddit.com/r/homebrewery' newTab={true} rel='noopener noreferrer'>Our Subreddit</Nav.item>
+			</div>
 			<HelpNavItem />
 			<div className="nav-section">
 				<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
@@ -96,7 +100,6 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				</Nav.item>
 			</div>
 			<div className="nav-section">
-				<Nav.header>Wanna help us?</Nav.header>
 				<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
 				</Nav.item>
