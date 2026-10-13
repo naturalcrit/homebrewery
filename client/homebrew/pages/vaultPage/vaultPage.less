@@ -117,69 +117,40 @@
 			height         : 100%;
 			overflow-y     : auto;
 			font-size      : 0.34cm;
-				
-			h3 {
-				font-family : 'Open Sans';
-				font-weight : 900;
-				color       : white;
-			}
-
-			.sort-container {
-				display               : flex;
-				flex-wrap             : wrap;
-				column-gap            : 15px;
-				justify-content       : center;
-				height                : 30px;
-				color                 : white;
-				background-color      : #555555;
-				border-top            : 1px solid #666666;
-				border-bottom         : 1px solid #666666;
-					
-				.sort-option {
-					display     : flex;
-					align-items : center;
-					padding     : 0 8px;
-				
-					&:hover { background-color : #444444; }
-				
-					&.active {
-						background-color : #333333;
-				
-						button {
-							font-weight : 800;
-							color       : white;
-								
-							& + .sortDir { padding-left : 5px; }
-						}
-					}
-
-					button {
-						padding          : 0;
-						font-size        : 11px;
-						font-weight      : normal;
-						color            : #CCCCCC;
-						text-transform   : uppercase;
-						background-color : transparent;
-					
-						&:hover { background : none; }
-					}
-				}
-			}
+			container-type : inline-size;
 
 			.foundBrews {
-				position         : relative;
-				width            : 100%;
-				height           : 100%;
-				max-height       : 100%;
-				padding          : 70px 50px;
-				container-type   : inline-size;
+				display:flex;
+				flex-direction: column;
+				gap:20px;
+				padding          : clamp(20px, 5vh, 200px) clamp(20px, 20vw, 200px);
 				overflow-y       : scroll;
+				scrollbar-gutter : stable;
+				@container (max-width : 1200px) {
+					padding : clamp(20px, 5vh, 200px) clamp(20px, 10vw, 200px);
+				}
+				@container (max-width : 800px) {
+					padding : clamp(20px, 5vh, 200px) clamp(20px, 5vw, 200px);
+				}
 
-				h3 { font-size : 25px; }
+				&::-webkit-scrollbar {
+					width : 15px;
+					&:horizontal {
+						width  : auto;
+						height : 20px;
+					}
+					&-thumb {
+						background : linear-gradient(90deg, var(--bg-clr) 12px, #00000000 12px);
+						&:horizontal { background : linear-gradient(0deg, var(--bg-clr) 15px, #00000000 15px); }
+					}
+					&-corner { visibility : hidden; }
+				}
 
 				&.noBrews {
-					display     : grid;
-					place-items : center;
+					margin      : 10px 0px;
+					font-size   : 25px;
+					font-style  : italic;
+					font-weight : 900;
 					color       : white;
 				}
 
@@ -199,6 +170,64 @@
 						content   : '';
 						translate : calc(100% + 5px) -50%;
 						animation : trailingDots 2s ease infinite;
+					}
+				}
+
+
+				.brewCollection {
+					h1 {
+						width         : fit-content;
+						margin-bottom : 20px;
+						font-size     : 25px;
+						color         : #DDDDDD;
+
+						&.active::before,
+						&.inactive::before {
+							padding-right : 0.5em;
+							font-family   : 'Font Awesome 6 Free';
+							font-size     : 0.6cm;
+							font-weight   : 900;
+						}
+						&.active {
+							color : white;
+							&::before { content : '\f107'; }
+						}
+						&.inactive::before { content : '\f105'; }
+					}
+					h1:hover { cursor : pointer; }
+
+					.brewGroup {
+						margin-bottom : 20px;
+						&.grid {
+							display         : flex;
+							flex-wrap       : wrap;
+							gap             : 20px;
+							justify-content : center;
+							width           : fit-content;
+							min-width       : 200px;
+						}
+
+						&.list {
+							display        : flex;
+							flex-direction : column;
+							gap            : 2px;
+						}
+						&.card {
+							--columns             : 4;
+							display               : grid;
+							grid-template-columns : repeat(var(--columns), 1fr);
+							gap                   : 20px;
+							justify-items         : center;
+
+							@container (max-width : 1700px) {--columns : 3;}
+							@container (max-width : 1400px) {--columns : 2;}
+							@container (max-width : 900px) {--columns : 1;}
+							h1 { position : absolute; }
+
+							&:not(:has(.brewItem:last-child:nth-child(3n))) {
+								.brewItem:last-child { margin-right : auto; }
+							}
+						}
 					}
 				}
 
@@ -233,66 +262,15 @@
 					}
 				}
 
-				.brewItem {
-					width            : 47%;
-					margin-right     : 40px;
-					color            : black;
-					isolation        : isolate;
-					transition       : width 0.5s;
-						
-					&::after {
-						position         : absolute;
-						inset            : 0;
-						z-index          : -2;
-						display          : block;
-						content          : '';
-						background-image : url('/assets/parchmentBackground.jpg');
-					}
-
-					&:nth-child(even of .brewItem) { margin-right : 0; }
-
-					h2 {
-						font-family : 'MrEavesRemake';
-						font-size   : 0.75cm;
-						font-weight : 800;
-						line-height : 0.988em;
-						color       : var(--HB_Color_HeaderText);
-					}
-					.info {
-						position    : relative;
-						z-index     : 2;
-						font-family : 'ScalySansRemake';
-						font-size   : 1.2em;
-
-						>span {
-							margin-right : 12px;
-							line-height  : 1.5em;
-						}
-					}
-					.links { z-index : 2; }
-
-					hr {
-						visibility : hidden;
-						margin     : 0px;
-					}
-
-					.thumbnail { z-index : -1; }
-				}
-
 				.paginationControls {
-					position              : absolute;
-					top                   : 35px;
-					left                  : 50%;
 					display               : grid;
 					grid-template-areas   : 'previousPage currentPage nextPage';
 					grid-template-columns : 50px 1fr 50px;
 					gap                   : 20px;
 					place-items           : center;
-					width                 : auto;
+					width                 : fit-content;
+					margin-inline:auto;
 					font-size             : 15px;
-					translate             : -50%;
-
-					&:last-child { top : unset; }
 
 					.pages {
 						display         : flex;
@@ -314,8 +292,11 @@
 							text-underline-position : under;
 							cursor                  : pointer;
 
-							&.currentPage {
+							&:hover {
 								color           : gold;
+							}
+							&.currentPage {
+								color:@yellow;
 								text-decoration : underline;
 								pointer-events  : none;
 							}
@@ -339,6 +320,77 @@
 			}
 		}
 	}
+
+	.listPageNav {
+		position        : relative;
+		display         : flex;
+		flex-wrap       : wrap;
+		row-gap         : 10px;
+		column-gap      : 20px;
+		align-items     : center;
+		justify-content : center;
+		width           : 100%;
+		height          : fit-content;
+		font-family     : 'Open Sans', sans-serif;
+		color           : white;
+		background      : #555555;
+		border-top      : 1px solid #666666;
+		border-bottom   : 1px solid #666666;
+		row-rule        : 1px solid #666666;
+
+		> div {
+			width          : fit-content;
+			height         : 30px;
+			padding-inline : 10px;
+		}
+
+		.radio-toggle {
+			z-index         : 1;
+			display         : flex;
+			flex-wrap       : wrap;
+			row-gap         : 5px;
+			align-items     : center;
+			justify-content : center;
+			text-align      : center;
+			h6 {
+				margin-right   : 5px;
+				font-size      : 14px;
+			}
+
+			.option {
+				display     : flex;
+				align-items : center;
+				height      : 100%;
+				padding     : 0 8px;
+				color       : #CCCCCC;
+
+				input[type='radio'] { display : none; }
+
+				button {
+					padding          : 0;
+					font-size        : 11px;
+					font-weight      : normal;
+					text-transform   : uppercase;
+					background-color : transparent;
+				}
+				&:hover { background-color : #444444; }
+				
+				&.active, &:has(input:checked) {
+					font-weight      : bold;
+					color            : white;
+					background-color : #333333;
+
+					button {
+						height      : 100%;
+						font-weight : 800;
+						& + .sortDir { padding-left : 5px; }
+					}
+				}
+			}
+		}
+
+		
+	}
 }
 
 @keyframes trailingDots {
@@ -351,16 +403,4 @@
 
 	66%,
 	100% { content : ' ...'; }
-}
-
-@container (width < 670px) {
-	.vaultPage {
-
-		.dataGroup.form .brewLookup { padding : 1px 20px 20px 10px; }
-
-		.dataGroup.resultsContainer .foundBrews .brewItem {
-			width         : 100%;
-			margin-inline : auto;
-		}
-	}
 }
