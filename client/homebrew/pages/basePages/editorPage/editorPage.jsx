@@ -259,12 +259,12 @@ const EditorPage = (props)=>{
 			return <Nav.item className='save neverSaved' onClick={()=>trySave(true, true, saveGoogle)} color='blue' icon='fas fa-save'>save now</Nav.item>;
 
 		if(autoSaveEnabled)
-			return <Nav.item className='save saved'>auto-saved</Nav.item>;
+			return <Nav.item className='save saved' icon='fas fa-save'>auto-saved</Nav.item>;
 
 		if(sandbox)
-			return <Nav.item className='save' disabled={true}>no changes</Nav.item>;
+			return <Nav.item className='save' icon='fas fa-save' disabled={true}>no changes</Nav.item>;
 
-		return <Nav.item className='save saved'>saved</Nav.item>;
+		return <Nav.item className='save saved' icon='fas fa-save'>saved</Nav.item>;
 	};
 
 	//TODO: Candidate for refactor/rename; used with history tool to load previous verion; may overlap with snippet injection or handleBrewChange
@@ -309,9 +309,8 @@ const EditorPage = (props)=>{
 		const errorExists = alertNoGoogleToTransfer || alertOwnershipToTransfer || alertTrashedGoogleBrew || confirmGoogleTransfer;
 		return (<>
 			<Nav.header>This brew is in {saveGoogle ? 'Google Drive' : 'The Homebrewery'}</Nav.header>
-			<Nav.item icon={'fas fa-hard-drive'} className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
+			<Nav.item icon={saveGoogle ? 'fac homebrewery' : 'fab fa-google-drive'} className='googleDriveStorage' noDismiss='true' onClick={handleGoogleClick}>
 				{saveGoogle ? 'Transfer to Homebrewery' : 'Transfer to Drive'}
-				{saveGoogle? '' : <img src={googleDriveIcon} alt='Google Drive icon' /> }
 			</Nav.item>
 			{errorExists && <Nav.item className='errorContainer' >
 				{alertOwnershipToTransfer && (

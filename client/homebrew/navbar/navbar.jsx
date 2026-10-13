@@ -52,7 +52,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					<Nav.item icon='fas fa-download' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
 						Download raw text
 					</Nav.item>
-					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'editPage' && pageName !== 'editPage'} />
+					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'homePage' && pageName !== 'editPage'} />
 				</div>
 				{navSlots.file}
 			</Dropdown>
@@ -92,7 +92,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 						Patreon
 					</Nav.item>
 				</div>
-				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
 				{navSlots.go}
 			</Dropdown>
 		);

@@ -153,9 +153,16 @@
 			}
 		}
 		&.save {
-			width: 100px;
+			width: 130px;
+			padding-left:30px;
 			display:grid;
 			place-items: stretch;
+			align-items: stretch;
+
+			i {
+				place-self:center;
+				left:10px;
+			}
 			
 			&.neverSaved {
 				background-color: @orange;
@@ -176,6 +183,7 @@
 	.navItem,
 	.menu-wrapper {
 		--activeTriggerColor: #666;
+		text-transform: capitalize;
 
 		&:has(ul):not(:has(ul :is(button, a):not(:disabled))) {
 			color: grey; //faux disabled if all buttons are disabled
@@ -190,6 +198,11 @@
 			display: flex;
 			gap: 5px;
 			justify-content: space-between;
+		}
+
+		&:has( >i ){
+			padding-left: 25px;
+			position:relative;
 		}
 
 		i {

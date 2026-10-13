@@ -22,13 +22,13 @@ const getRedditLink = (brew)=>{
 	return `https://www.reddit.com/r/UnearthedArcana/submit?title=${encodeURIComponent(brew.title.toWellFormed())}&text=${encodeURIComponent(text)}`;
 };
 
-export default ({ brew, disabled, currentPage })=>{
+export default ({ brew, disabled, currentPage, pageName })=>{
 	return (
 		<div className='nav-section'>
-			<Nav.item icon='fas fa-code' href={`/source/${getShareId(brew)}`}>
+			<Nav.item icon='fas fa-code' href={`/source/${getShareId(brew)}`} disabled={disabled}>
 				View Raw Text
 			</Nav.item>
-			<Nav.item icon={'fas fa-pencil'} href={`/edit/${getEditId(brew)}`} disabled={disabled || !brew?.editId}>
+			<Nav.item icon={'fas fa-pencil'} href={`/edit/${getEditId(brew)}`} disabled={disabled || !brew?.editId || pageName === 'editPage'}>
 				edit this brew
 			</Nav.item>
 			<Nav.item icon={'fas fa-share-alt'} href={`/share/${getShareId(brew)}`} disabled={disabled}>
