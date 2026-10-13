@@ -140,9 +140,8 @@ const RecentItems = createReactClass({
 	},
 
 	renderDropdown : function(){
-		// if(!this.state.showDropdown) return null;
-
 		const makeItems = (brews)=>{
+			console.log(brews);
 			if(brews.length === 0) return <Nav.item>No recent brews</Nav.item>
 			return <div className='nav-section'>
 				{_.map(brews, (brew, i)=>{
