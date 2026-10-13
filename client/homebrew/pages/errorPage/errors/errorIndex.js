@@ -41,7 +41,7 @@ const errorIndex = (props)=>{
 			## We can't find this brew in Google Drive!
 			
 			This file was saved on Google Drive, but this link doesn't work anymore.
-			${props?.brew?.authors?.length > 0
+			${props.brew.authors?.length > 0
 		? `Note that this brew belongs to the Homebrewery account **${props.brew.authors[0]}**,
 				${props.brew.account
 		? `which is
