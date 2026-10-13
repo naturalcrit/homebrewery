@@ -116,11 +116,11 @@ function throwFolderError(err, code, fields = []) {
 
 FolderSchema.statics.getByUser = async function(username, ownAccount) {
   try {
-    // TODO: ?throw if username does not exist? HBEC = '120' → 404 NOT FOUND
-    //   OR: ?return empty set to avoid user enumeration → 200 OK
 
-    // TODO: throw if username is null, undefined, or ''; HBEC '122' → 400 BAD REQUEST
-    // NOTE: pass field name(s) in to throwFolderError()
+    if ( username === null || username.trim() === '')
+      throwFolderError(err, '122', 'username');
+
+    // NOTE: not testing if username exists to avoid enumeration
 
     const query = { author: username };
 

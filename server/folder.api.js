@@ -31,16 +31,14 @@ router.use(dbCheck);
 
 const getByUserApi = async (req, res)=>{
   try {
-    const folder = await FolderModel.getById(req.account.username);
+    const folder = await FolderModel.getByUser(req.params.username);
 
     res.status(200).send(folder);
   }
   catch (error) {
     let httpstatus;
     switch (error.HBErrorCode ?? '') {
-      case '101' : httpstatus = 409; break; // folder with this identifier already exists
       case '120' : httpstatus = 404; break; // author doesn't exist
-      case '121' : httpstatus = 422; break; // folder slug not valid
       case '110' : httpstatus = 500; break; // generic error
       default:
         httpstatus = 500;
