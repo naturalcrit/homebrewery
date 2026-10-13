@@ -60,19 +60,19 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		return (
 			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<div className='nav-section'>
-					<Nav.item onClick={()=>editor?.undo()} kbd={`${mod} + z`} disabled={!editor}>
+					<Nav.item icon={'fas fa-undo'} onClick={()=>editor?.undo()} kbd={`${mod} + z`} disabled={!editor}>
 						Undo
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.redo()} kbd={`${mod} + Shift + z`} disabled={!editor}>
+					<Nav.item icon={'fas fa-redo'} onClick={()=>editor?.redo()} kbd={`${mod} + Shift + z`} disabled={!editor}>
 						Redo
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.find()} kbd={`${mod} + f`} disabled={!editor}>
+					<Nav.item icon={'fas fa-search'} onClick={()=>editor?.find()} kbd={`${mod} + f`} disabled={!editor}>
 						Find / Replace
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.foldCode()} disabled={!editor}>
+					<Nav.item icon={'fas fa-compress-alt'} onClick={()=>editor?.foldCode()} disabled={!editor}>
 						Fold all lines
 					</Nav.item>
-					<Nav.item onClick={()=>editor?.unfoldCode()} disabled={!editor}>
+					<Nav.item icon={'fas fa-expand-alt'} onClick={()=>editor?.unfoldCode()} disabled={!editor}>
 						Unfold all lines
 					</Nav.item>
 				</div>
@@ -97,7 +97,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 				</div>
 				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} />
 				{navSlots.go}
-				<Dropdown className='navItem recent' groupName={'Recent Brews'} customTrigger={<>Recent Brews</>} icon={null} key={'recent'}>
+				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
 					<RecentNavItem />
 				</Dropdown>
 			</Dropdown>

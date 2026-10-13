@@ -21,7 +21,7 @@
 		height: 100%;
 		padding: 5px;
 		cursor: pointer;
-		max-width: 150px;
+		max-width: 220px;
 		text-wrap: pretty;
 
 		&:has(> button, > a) {
@@ -153,7 +153,10 @@
 			}
 		}
 		&.save {
-			width: 90px;
+			width: 100px;
+			display:grid;
+			place-items: stretch;
+			
 			&.neverSaved {
 				background-color: @orange;
 				color: #fff;
@@ -173,16 +176,30 @@
 	.navItem,
 	.menu-wrapper {
 		--activeTriggerColor: #666;
+
 		&:has(ul):not(:has(ul :is(button, a):not(:disabled))) {
 			color: grey; //faux disabled if all buttons are disabled
 		}
 		&:not(.header):hover {
 			background: #484848;
 		}
-		&:has(> i, > kbd, > img) {
+		&:not(.header):has(:popover-open) {
+			background: var(--activeTriggerColor);
+		}
+		&:has(> kbd) {
 			display: flex;
 			gap: 5px;
 			justify-content: space-between;
+		}
+
+		i {
+			position:absolute;
+			left:5px;
+
+			&.caret {
+				left:unset;
+				right:5px;
+			}
 		}
 
 		&.header {
@@ -197,6 +214,7 @@
 				gap: 5px;
 				height: 2.7em;
 				isolation: isolate;
+				padding-left:5px;
 
 				&.header {
 					padding: 5px 0;
@@ -245,6 +263,10 @@
 				translate: -5px;
 			}
 		}
+		span {
+			text-align: left;
+		}
+		
 	}
 
 	> ul {
@@ -269,10 +291,11 @@
 			font-size: 13px;
 			text-transform: capitalize;
 			padding-bottom: 5px;
-			min-width: 80px;
+			min-width: 130px;
 
 			.navItem {
 				min-height: 2.2em;
+				padding-left: 25px;
 
 				&.save {
 					width: 100%;
@@ -285,6 +308,9 @@
 				margin-bottom: 5px;
 			}
 
+			button.menu-item {
+				padding:0;
+			}
 			li {
 				margin-block: 2px;
 			}
@@ -302,7 +328,7 @@
 			color: #777;
 		}
 		display: grid;
-		place-items: center;
+		place-items: stretch;
 		height: 100%;
 		width: 100%;
 		padding: 5px 10px;

@@ -390,7 +390,9 @@ const EditorPage = (props)=>{
 					</div>}
 				</Navbar.File>
 				<Navbar.Menu>
-					{error? <ErrorNavItem error={error} clearError={clearError} /> : renderSaveButton()}
+					<li className='menu-wrapper'>
+						{error? <ErrorNavItem error={error} clearError={clearError} /> : renderSaveButton()}
+					</li>
 				</Navbar.Menu>
 			</Navbar>
 
