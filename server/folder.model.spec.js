@@ -191,6 +191,8 @@ describe('Folder model', ()=>{
       expect(Folder.findOne).toHaveBeenCalledWith({
         author  : 'testuser',
         folderId: 'abc123',
+        isPublished : true,
+        isPrivate   : false,
       });
 
       expect(lean).toHaveBeenCalled();
