@@ -197,7 +197,7 @@ describe('Folder model', ()=>{
       const lean = jest.fn().mockResolvedValue(null);
       const select = jest.fn().mockReturnValue({ lean });
 
-      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
+      jest.spyOn(Folder, 'findOne').mockReturnValue({ select});
 
       await expect(Folder.getById('testuser', 'missing'))
         .rejects.toMatchObject({ HBErrorCode: '104' });
