@@ -207,8 +207,7 @@ FolderSchema.statics.updateFolder = async function(
 ) {
   try {
     // normalise user inputs
-    if (title !== undefined)
-      title = title.replace(/\s+/gu, ' ').trim() || 'Untitled folder';
+    title = (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slug === undefined ? undefined : slugify(slug || title);
 
     // throw if slug invalid, e.g. ''
