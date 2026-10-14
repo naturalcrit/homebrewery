@@ -177,6 +177,8 @@ describe('Folder model', ()=>{
       const folder = {
         author  : 'testuser',
         folderId: 'abc123',
+        isPublished : true,
+        isPrivate   : false,
       };
 
       const lean = jest.fn(async ()=>folder);
