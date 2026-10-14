@@ -180,7 +180,9 @@ describe('Folder model', ()=>{
       };
 
       const lean = jest.fn(async ()=>folder);
-      jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
+      const select = jest.fn().mockReturnValue({ lean });
+
+      jest.spyOn(Folder, 'findOne').mockReturnValue({ select });
 
       const result = await Folder.getById('testuser', 'abc123');
 
