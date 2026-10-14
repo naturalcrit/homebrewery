@@ -41,7 +41,9 @@ describe('Tests for folder api', ()=>{
       account: {
         username: 'testuser',
       },
-      params: {},
+      params: {
+        username: 'testuser2',
+      },
       body: {},
     };
 
@@ -60,7 +62,7 @@ describe('Tests for folder api', ()=>{
 
       await getByUserApi(req, res);
 
-      expect(FolderModel.getByUser).toHaveBeenCalledWith('testuser');
+      expect(FolderModel.getByUser).toHaveBeenCalledWith('testuser2');
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith(folders);
     });
