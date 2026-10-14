@@ -56,7 +56,7 @@ describe('Tests for folder api', ()=>{
 
     it('should return the user folders', async () => {
       const folders = [{ title: 'My Folder' }];
-      FolderModel.getById.mockResolvedValue(folders);
+      FolderModel.getByUser.mockResolvedValue(folders);
 
       await getByUserApi(req, res);
 
@@ -67,6 +67,7 @@ describe('Tests for folder api', ()=>{
 
     it.each([
       [500, '110'],
+      [404, '120'],
       [500, '999'],
       [500, undefined],
     ])('should return HTTP %i for error code %s', async (status, code) => {
@@ -74,7 +75,7 @@ describe('Tests for folder api', ()=>{
 
       if (code !== undefined) error.HBErrorCode = code;
 
-      FolderModel.getById.mockRejectedValue(error);
+      FolderModel.getByUser.mockRejectedValue(error);
 
       await getByUserApi(req, res);
 
