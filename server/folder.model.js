@@ -249,11 +249,16 @@ FolderSchema.statics.updateFolder = async function(
         delete updates[key];
     });
 
-    const folder = await this.findOneAndUpdate(
-      { author, folderId },
-      { $set: updates },
-      { new: true },
-    );
+    if (Object.keys(updates).length === 0) {
+      const folder = this.findOne({ author, folderId });
+    }
+    else {
+      const folder = await this.findOneAndUpdate(
+        { author, folderId },
+        { $set: updates },
+        { new: true },
+      );
+    }
 
     // Folder doesn't exist?
     // null indicates an error here
