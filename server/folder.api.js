@@ -31,7 +31,8 @@ router.use(dbCheck);
 
 const getByUserApi = async (req, res)=>{
   try {
-    const folder = await FolderModel.getByUser(req.params.username);
+    const ownAccount = req.account && (req.account.username == req.params.username);
+    const folder = await FolderModel.getByUser(req.params.username, ownAccount);
 
     res.status(200).send(folder);
   }

@@ -142,10 +142,19 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
 };
 
 
-FolderSchema.statics.getById = async function(author, folderId) {
+FolderSchema.statics.getById = async function(author, folderId, ownAccount=false) {
   // returns folder document
   try {
-    const folder = await this.findOne({ author, folderId }).lean();
+    const query = { author: username.trim() };
+
+    if(!ownAccount) {
+      query.isPublished = true;
+      query.isPrivate = false;
+    }
+
+    const folder = await this.findOne(query)
+      .select( 'author folderId slug title shareIds subFolderIds isPublished isPrivate' )
+      .lean();
 
     // null is not normally an error
     // here though it should be .. the caller has an id, it should exist
