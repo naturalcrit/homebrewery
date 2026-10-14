@@ -145,7 +145,10 @@ FolderSchema.statics.getByUser = async function(author, ownAccount) {
 FolderSchema.statics.getById = async function(author, folderId, ownAccount=false) {
   // returns folder document
   try {
-    const query = { author: (author ?? '').trim() };
+    const query = {
+      author: (author ?? '').trim(),
+      folderId,
+    };
 
     if(!ownAccount) {
       query.isPublished = true;
