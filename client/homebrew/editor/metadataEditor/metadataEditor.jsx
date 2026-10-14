@@ -33,7 +33,8 @@ const MetadataEditor = createReactClass({
 				authors     : [],
 				renderer    : 'legacy',
 				theme       : '5ePHB',
-				lang        : 'en'
+				lang        : 'en',
+				style       : ''
 			},
 
 			onChange    : ()=>{},
@@ -150,6 +151,20 @@ const MetadataEditor = createReactClass({
     		...this.props.metadata,
     		authors : this.props.metadata.authors.filter((a)=>a !== author)
 		});
+	},
+
+	handleDownloadTheme : function(){
+		const here = this;
+		request.get(`/css/${this.props.metadata.theme}`)
+			.send()
+			.end((err, res)=>{
+				if(!err) {
+					here.props.metadata.style = `${res.text}\n\n${here.props.metadata.style}`;
+					here.props.onChange(here.props.metadata, 'style');
+					here.setThemeToParent();
+				}
+			});
+
 	},
 
 	renderPublish : function(){
@@ -284,6 +299,9 @@ const MetadataEditor = createReactClass({
 		return <div className='field themes'>
 			<label htmlFor='combobox-themes'>theme</label>
 			{dropdown}
+			<button id='theme-download-button' onClick={this.handleDownloadTheme} data-tooltip-top='Download this theme into your style editor'>
+				<i className='fas fa-download' /> Download Theme
+			</button>
 		</div>;
 	},
 
@@ -351,6 +369,16 @@ const MetadataEditor = createReactClass({
 				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
+	},
+
+	setThemeToParent : function() {
+		const mergedThemes = _.merge(Themes, this.props.userThemes);
+
+		this.handleTheme({
+			renderer : this.props.metadata?.renderer,
+			path     : mergedThemes[this.props.metadata.renderer][this.props.metadata.theme]?.useTheme ?? 'Blank'
+		});
+
 	},
 
 	render : function(){
