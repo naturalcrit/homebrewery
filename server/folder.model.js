@@ -114,15 +114,15 @@ function throwFolderError(err, code, fields = []) {
 
 // Folder operations .........................................................
 
-FolderSchema.statics.getByUser = async function(username, ownAccount) {
+FolderSchema.statics.getByUser = async function(author, ownAccount) {
   try {
 
-    if ( username === null || username.trim() === '')
-      throwFolderError(err, '122', 'username');
+    if ( author === null || author.trim() === '')
+      throwFolderError(err, '122', 'author');
 
-    // NOTE: not testing if username exists to avoid enumeration
+    // NOTE: not testing if author exists to avoid enumeration
 
-    const query = { author: username };
+    const query = { author: author };
 
     if(!ownAccount) {
       query.isPublished = true;
@@ -145,7 +145,7 @@ FolderSchema.statics.getByUser = async function(username, ownAccount) {
 FolderSchema.statics.getById = async function(author, folderId, ownAccount=false) {
   // returns folder document
   try {
-    const query = { author: username.trim() };
+    const query = { author: (author ?? '').trim() };
 
     if(!ownAccount) {
       query.isPublished = true;
