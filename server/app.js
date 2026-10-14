@@ -21,6 +21,7 @@ const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
 import folderApi                   from './folder.api.js';
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
+import streamApi                   from './stream.api.js';
 import pageRoutes from './page-routes.js';
 
 import serveCompressedStaticAssets from './static-assets.mv.js';
@@ -34,7 +35,6 @@ import bodyParser         from 'body-parser';
 import cookieParser       from 'cookie-parser';
 import forceSSL           from './forcessl.mw.js';
 
-import Stream from './eventStreamSource.js';
 import dbCheck            from './middleware/dbCheck.js';
 
 import cors from 'cors';
@@ -118,6 +118,7 @@ export default async function createApp(vite) {
 	app.use(folderApi);
 	app.use(adminApi(vite));
 	app.use(vaultApi);
+	app.use(streamApi);
 
 	String.prototype.replaceAll = function(s, r){return this.split(s).join(r);};
 
@@ -196,26 +197,6 @@ export default async function createApp(vite) {
 			return res.status(500).json({ error: 'Failed to rename brews.' });
 		}
 	});
-
-	// Create Event Stream source for pages to listen to
-	app.get('/stream', (req, res)=>{
-		res.writeHead(200, {
-			'Content-Type'     : 'text/event-stream',
-			'Cache-Control'    : 'no-cache',
-			'Connection'       : 'keep-alive',
-			'Content-Encoding' : 'none'
-		});
-
-		Stream.on('sendUpdate', (event, data)=>{
-			if(isLocalEnvironment) { console.log('Event:', event, '\nData:', data); }
-			res.write(`data: ${JSON.stringify({ ...data, eventType: event })}\n\n`);
-		});
-	});
-
-	// After Stream starts, send initStream event
-	setTimeout(()=>{
-		Stream.emit('sendUpdate', 'initStream', { time: new Date });
-	}, 1000);
 
 
 	// Local only

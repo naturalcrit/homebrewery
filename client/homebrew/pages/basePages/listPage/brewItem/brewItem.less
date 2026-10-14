@@ -335,7 +335,7 @@
 }
 
 //these media queries are just for the list layout and could be moved inside it, not sure it is a good idea
-@media screen and (max-width : 1400px) {
+@container (max-width : 1400px) {
 	.brewCollection .brewGroup.list {
 		.brewItem:not(.detailsOpen) {
 			.info {
@@ -361,7 +361,7 @@
 		}
 	}
 }
-@media screen and (max-width : 1200px) {
+@container (max-width : 1200px) {
 	.brewCollection .brewGroup.list {
 		.brewItem:not(.detailsOpen) {
 			grid-template-columns : 35% 3fr 150px;
@@ -388,7 +388,7 @@
 		}
 	}
 }
-@media screen and (max-width : 800px) {
+@container (max-width : 800px) {
 	.brewCollection .brewGroup.list {
 		.brewItem:not(.detailsOpen) {
 			.info {
@@ -443,7 +443,7 @@
 		}	
 	}
 }
-@media screen and (max-width : 650px) {
+@container (max-width : 650px) {
 	.brewCollection .brewGroup.list {
 		.brewItem:not(.detailsOpen) {
 			grid-template-columns : 3fr 2fr;
