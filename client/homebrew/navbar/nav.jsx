@@ -1,29 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
 
-import NaturalCritIcon from '@components/svg/naturalcrit-d20.svg.jsx';
-
 const Nav = {
-	base : ({ children, className, ...props })=>{
-		return <nav className={className}>
-			{children}
-		</nav>;
-	},
-	logo : ()=>{
-		return <a className='navLogo' href='https://www.naturalcrit.com'>
-			<NaturalCritIcon />
-			<span className='name'>
-				Natural<span className='crit'>Crit</span>
-			</span>
-		</a>;
-	},
-
-	section : ({ children, className, ...props })=>{
-		return <div className={cx([`navSection`, className])}>
-			{children}
-		</div>;
-	},
-
 	item : ({ icon, kbd, href, newTab, onClick, children, className, disabled, noDismiss, ...props })=>{
 		const classes = cx('navItem', className);
 		if(disabled) {

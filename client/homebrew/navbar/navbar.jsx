@@ -37,23 +37,23 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		}
 
 		return (
-			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
+			<Dropdown className='navItem' groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
 				<NewBrewNavItem />
-				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
 				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
 					<RecentNavItem brew={brew} pageName={pageName} />
 				</Dropdown>
-				<div className='nav-section'>
+				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
+				<li className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
 						Clone Brew
 					</Nav.item>
-				</div>
-				<div className='nav-section'>
+				</li>
+				<li className='nav-section'>
 					<Nav.item icon='far fa-file-lines' href={`/download/${shareLink}`} disabled={!brew?.shareId}>
 						<span style={{textTransform:"none"}}>Export As .txt</span>
 					</Nav.item>
 					<PrintNavItem disabled={pageName !== 'newPage' && pageName !== 'homePage' && pageName !== 'editPage' && pageName !== 'sharePage'} />
-				</div>
+				</li>
 				{navSlots.file}
 			</Dropdown>
 		);
@@ -61,8 +61,8 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 
 	const renderEdit = ()=>{
 		return (
-			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
-				<div className='nav-section'>
+			<Dropdown className='navItem' groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
+				<li className='nav-section'>
 					<Nav.item icon={'fas fa-undo'} onClick={()=>editor?.undo()} kbd={`${mod} + z`} disabled={!editor}>
 						Undo
 					</Nav.item>
@@ -78,32 +78,32 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 					<Nav.item icon={'fas fa-expand-alt'} onClick={()=>editor?.unfoldCode()} disabled={!editor}>
 						Unfold all lines
 					</Nav.item>
-				</div>
+				</li>
 				{navSlots.edit}
 			</Dropdown>
 		);
 	};
 
 	const renderHelp = ()=>{
-		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
-			<div className="nav-section">
+		return <Dropdown className='navItem' groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+			<li className="nav-section">
 				<Nav.item icon='fab fa-discord' href='https://discord.com/invite/by3deKx' newTab={true} rel='noopener noreferrer'>Our Discord Server</Nav.item>
 				<Nav.item icon='fab fa-reddit' href='https://www.reddit.com/r/homebrewery' newTab={true} rel='noopener noreferrer'>Our Subreddit</Nav.item>
-			</div>
+			</li>
 			<HelpNavItem />
-			<div className="nav-section">
+			<li className="nav-section">
 				<Nav.item icon='far fa-file-alt' href='/changelog' newTab={false} rel='noopener noreferrer'>
 					Changelog
 				</Nav.item>
 				<Nav.item icon='fab fa-github' href='https://github.com/naturalcrit/homebrewery' newTab={true} rel='noopener noreferrer'>
 					Github
 				</Nav.item>
-			</div>
-			<div className="nav-section">
+			</li>
+			<li className="nav-section">
 				<Nav.item className='patreon' newTab={true} href='https://www.patreon.com/NaturalCrit' icon='fas fa-heart'>
 						Patreon
 				</Nav.item>
-			</div>
+			</li>
 
 			{navSlots.help}
 		</Dropdown>;
@@ -112,18 +112,18 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	return (
 		<nav>
 			<ul>
-				<li className='menu-wrapper'>
+				<li className='menu-wrapper navItem'>
 					<a href='/'>Home</a>
 				</li>
 				{renderFile()}
 				{renderEdit()}
 				{renderHelp()}
-				<Nav.item href='/vault' newTab={false} rel='noopener noreferrer'>
-					Vault
-				</Nav.item>
+				<li className="menu-wrapper navItem">
+					<a  href='/vault'>Vault</a>
+				</li>
 				{navSlots.menu}
 			</ul>
-			{pageName !== 'sharePage' && <Nav.header className='brewTitle'>{title}</Nav.header>}
+			{pageName !== 'sharePage' && <Nav.header className='brewTitle navItem'>{title}</Nav.header>}
 			<MetadataNavItem brew={brew} pageName={pageName}></MetadataNavItem>
 			<ul>
 				<AccountNavItem />
