@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Nav from './nav.jsx';
 import { printCurrentBrew } from '@shared/helpers.js';
 
-export default function(){
+export default function({ disabled }){
 	const [printing, setPrinting] = useState(false);
 
 	// listen for print cycle events to display "loading" message since it can take some time.
@@ -16,10 +16,9 @@ export default function(){
 	}, []);
 
 	const handlePrintStartPrep = ()=>{ setPrinting(true); };
-
 	const handlePrintPrepFinished = ()=>{ setPrinting(false);	};
 
-	return <Nav.item onClick={printCurrentBrew} color='purple' icon='far fa-file-pdf'>
-		{printing ? 'loading' : 'get PDF'}
+	return <Nav.item onClick={printCurrentBrew} icon='far fa-file-pdf' disabled={disabled}>
+		{printing ? 'loading' : <span style={{textTransform:'none'}}>Export As .pdf</span>}
 	</Nav.item>;
 };

@@ -1,9 +1,7 @@
-import './editPage.less';
-
 import React                 from 'react';
 import request               from '../../utils/request-middleware.js';
 import _                     from 'lodash';
-import EditorPage            from '../basePages/editPage/editorPage.jsx';
+import EditorPage            from '../basePages/editorPage/editorPage.jsx';
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
 
 // Page specific imports
@@ -51,6 +49,7 @@ const EditPage = (props)=>{
 			showFloatingButtons = {false}
 			showEditorButtons   = {true}
 			pageName            = {'editPage'}
+			pageTitle           = {props.brew.title}
 			brew                = {props.brew}
 			userThemes          = {props.userThemes}
 			save                = {save}
