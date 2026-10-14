@@ -62,7 +62,7 @@ describe('Tests for folder api', ()=>{
 
       await getByUserApi(req, res);
 
-      expect(FolderModel.getByUser).toHaveBeenCalledWith('testuser2');
+      expect(FolderModel.getByUser).toHaveBeenCalledWith('testuser2', false);
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.send).toHaveBeenCalledWith(folders);
     });

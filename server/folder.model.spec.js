@@ -194,7 +194,9 @@ describe('Folder model', ()=>{
     });
 
     it('should throw HBErrorCode 104 when the folder does not exist', async () => {
-      const lean = jest.fn(async ()=>null);
+      const lean = jest.fn().mockResolvedValue(null);
+      const select = jest.fn().mockReturnValue({ lean });
+
       jest.spyOn(Folder, 'findOne').mockReturnValue({ lean });
 
       await expect(Folder.getById('testuser', 'missing'))
