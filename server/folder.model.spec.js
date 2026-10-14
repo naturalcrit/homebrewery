@@ -150,7 +150,7 @@ describe('Folder model', ()=>{
       expect(result).toBe(folders);
     });
 
-    it('should exclude private folders when ownAccount is false', async ()=>{
+    it('should exclude private and unpublished folders when ownAccount is false', async ()=>{
       const folders = [];
 
       const lean = jest.fn(async ()=>folders);
@@ -160,8 +160,9 @@ describe('Folder model', ()=>{
       const result = await Folder.getByUser('testuser', false);
 
       expect(Folder.find).toHaveBeenCalledWith({
-        author   : 'testuser',
-        isPrivate: false,
+        author     : 'testuser',
+        isPrivate  : false,
+        isPublished: true,
       });
 
       expect(result).toBe(folders);
@@ -488,7 +489,7 @@ describe('Folder model', ()=>{
 
   describe('removeBrewFromFolder', ()=>{
 
-    it('should throw HBErrorCode 112 when the brew does not exist', async () => {
+    it('should throw HBErrorCode 114 when the brew does not exist', async () => {
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue(null);
 
@@ -497,7 +498,7 @@ describe('Folder model', ()=>{
         'abc123',
         'missing-brew',
       )).rejects.toMatchObject({
-        HBErrorCode: '112',
+        HBErrorCode: '114',
       });
     });
 
