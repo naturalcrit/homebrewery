@@ -2,7 +2,6 @@
 
 /* eslint-disable max-lines */
 
-import mongoose from 'mongoose';
 import { Folder } from './folder.model.js';
 import { model as BrewModel } from './homebrew.model.js';
 
@@ -20,7 +19,7 @@ describe('Folder model', ()=>{
 
   describe('schema', ()=>{
 
-    it('should apply defaults', ()=>{
+    it('should apply defaults', async ()=>{
       const folder = new Folder({
         author: 'testuser',
         slug  : 'my-folder',
@@ -36,7 +35,7 @@ describe('Folder model', ()=>{
       expect(folder.updatedAt).toBeInstanceOf(Date);
     });
 
-    it('should require author', ()=>{
+    it('should require author', async ()=>{
       const folder = new Folder({
         slug: 'my-folder',
       });
@@ -47,7 +46,7 @@ describe('Folder model', ()=>{
       expect(error.errors.author.kind).toBe('required');
     });
 
-    it('should require slug', ()=>{
+    it('should require slug', async ()=>{
       const folder = new Folder({
         author: 'testuser',
       });
@@ -58,7 +57,7 @@ describe('Folder model', ()=>{
       expect(error.errors.slug.kind).toBe('required');
     });
 
-    it('should reject an empty slug', ()=>{
+    it('should reject an empty slug', async ()=>{
       const folder = new Folder({
         author: 'testuser',
         slug  : '',
@@ -70,7 +69,7 @@ describe('Folder model', ()=>{
       expect(error.errors.slug.message).toBe('Path `slug` is required.');
     });
 
-    it('should trim slug', ()=>{
+    it('should trim slug', async ()=>{
       const folder = new Folder({
         author: 'testuser',
         slug  : '  my-folder  ',
@@ -79,7 +78,7 @@ describe('Folder model', ()=>{
       expect(folder.slug).toBe('my-folder');
     });
 
-    it('should reject an empty title', ()=>{
+    it('should reject an empty title', async ()=>{
       const folder = new Folder({
         author: 'testuser',
         slug  : 'my-folder',
@@ -93,7 +92,7 @@ describe('Folder model', ()=>{
         .toBe('Path `title` is required.');
     });
 
-    it('should trim title', ()=>{
+    it('should trim title', async ()=>{
       const folder = new Folder({
         author: 'testuser',
         slug  : 'my-folder',
@@ -103,7 +102,7 @@ describe('Folder model', ()=>{
       expect(folder.title).toBe('My Folder');
     });
 
-    it('should generate unique folderIds', ()=>{
+    it('should generate unique folderIds', async ()=>{
       const folder1 = new Folder({
         author: 'testuser',
         slug  : 'one',
