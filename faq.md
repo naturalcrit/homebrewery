@@ -131,4 +131,8 @@ Your ad-blocking software is mistakenly assuming your text to be an ad. We recom
 
 ### My username appears as _hidden_ when checking my brews in the Vault, why is that?
 
-Your username is most likely your e-mail adress, and our code is picking that up and protecting your identity. This will remain as is, but you can ask for a name change by contacting the moderators on [the subreddit](https://www.reddit.com/r/homebrewery) with your Homebrewery username, and your desired new name. You will also be asked to provide details about some of your unpublished brews, to verify your identity. No information will be leaked or shared.
+Your username is most likely your e-mail adress, and our code is picking that up and protecting your identity. 
+
+### I would like to change my username. How do I do that?
+
+You can change your username on your [NaturalCrit Account](https://www.naturalcrit.com/account) page.
