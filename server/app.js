@@ -69,11 +69,16 @@ export default async function createApp(vite) {
 	const corsOptions = {
 		origin : (origin, callback)=>{
 
+			const localHostname = config.get('host').split(/\:/)[0];
+			const localPublicURL = config.get('publicUrl')?.replace('https://', '')?.replace('http://', '').split(/\:/)[0];
+
 			const allowedOrigins = [
 				'https://homebrewery.naturalcrit.com',
 				'https://www.naturalcrit.com',
 				'https://naturalcrit-stage.herokuapp.com',
 				'https://homebrewery-stage.herokuapp.com',
+				localHostname,
+				localPublicURL
 			];
 
 			const localNetworkRegex = /^http:\/\/(localhost|127\.0\.0\.1|10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+):\d+$/;
