@@ -12,15 +12,16 @@
 	height: @navbarHeight;
 	font-size: 15px;
 	user-select:none;
+	accent-color: white;
 
-	.navItem {
+	.navItem, .menu-wrapper > .menu-item {
 		display: flex;
 		align-items: center;
 		justify-content: start;
+		gap:5px;
 		height: 100%;
 		padding: 5px;
 		cursor: pointer;
-		max-width: 220px;
 		text-wrap: pretty;
 
 		&:has(> button, > a) {
@@ -153,16 +154,7 @@
 			}
 		}
 		&.save {
-			width: 130px;
-			padding-left:30px;
-			display:grid;
-			place-items: stretch;
-			align-items: stretch;
-
-			i {
-				place-self:center;
-				left:10px;
-			}
+			padding-left:10px;
 			
 			&.neverSaved {
 				background-color: @orange;
@@ -194,24 +186,16 @@
 		&:not(.header):has(:popover-open) {
 			background: var(--activeTriggerColor);
 		}
-		&:has(> kbd) {
-			display: flex;
-			gap: 5px;
-			justify-content: space-between;
-		}
-
-		&:has( >i ){
-			padding-left: 25px;
-			position:relative;
-		}
 
 		i {
-			position:absolute;
-			left:5px;
+			width:20px;
+			display:grid;
+			place-content: center;
 
 			&.caret {
 				left:unset;
 				right:5px;
+				margin-left: auto;
 			}
 			&.fa-times {
 				position:relative;
@@ -294,7 +278,10 @@
 		
 		> .menu-wrapper {
 			height: 100%;
-			text-wrap: nowrap;
+			
+			>.navItem {
+				white-space: nowrap;
+			}
 
 			&:first-child > :is(button, a) {
 				padding-left: 15px;
@@ -309,13 +296,18 @@
 			font-size: 13px;
 			text-transform: capitalize;
 			min-width: 130px;
-			border: 1px solid #666;
-			border-top:1px solid currentColor;
+			border: 1px solid currentColor;
 
-			.navItem {
+
+			.menu-wrapper {
 				min-height: 2.2em;
-				padding-left: 25px;
-				
+			}
+			.navItem, .menu-wrapper > .menu-item {
+				min-height: 2.2em;
+				display:flex;
+				justify-content: flex-start;
+				align-items: center;
+
 				&.save {
 					width: 100%;
 				}
@@ -323,12 +315,10 @@
 				&.header {
 					padding-left:5px;
 					text-align: center;
+					background:#00ff0037;
 				}
 			}
 
-			>.navItem:last-child, .nav-section:last-child .navItem:last-child {
-				padding-bottom: 10px;
-			}
 			.nav-section:has(+ .header) {
 				padding-bottom:5px;
 			}
@@ -353,9 +343,7 @@
 		&:disabled {
 			color: #777;
 		}
-		display: grid;
 		cursor: pointer;
-		place-items: stretch;
 		height: 100%;
 		width: 100%;
 		padding: 5px 10px;
@@ -383,5 +371,6 @@
 		background: #222;
 		padding: 2px 5px;
 		border-radius: 5px;
+		margin-left:auto;
 	}
 }

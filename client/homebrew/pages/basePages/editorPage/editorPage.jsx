@@ -28,6 +28,8 @@ const SAVEKEY_PREFIX = 'HB_editor_defaultSave_';
 const SAVE_TIMEOUT                  = 10000;  //Autosave 10 seconds after last change
 const UNSAVED_WARNING_TIMEOUT       = 900000; //Warn user afer 15 minutes of unsaved changes
 const UNSAVED_WARNING_POPUP_TIMEOUT = 4000;   //Show the warning for 4 seconds
+const isMac = navigator.platform.toUpperCase().includes('MAC');
+const mod = isMac ? '⌘' : 'Ctrl';
 
 const EditorPage = (props)=>{
 	const {
@@ -377,9 +379,8 @@ const EditorPage = (props)=>{
 			<Navbar brew={currentBrew} editor={editorRef.current} pageName={pageName} title={pageTitle} account={global.account} currentPage={currentBrewRendererPageNum}>
 				<Navbar.File>
 					<Nav.item
-						className='save'
 						onClick={()=>trySave(true, true, saveGoogle)}
-						icon='fas fa-save'>
+						icon='fas fa-save' kbd={`${mod} + S`}>
 							save now
 					</Nav.item>
 					{(pageName == 'editPage') && renderAutoSaveButton()}

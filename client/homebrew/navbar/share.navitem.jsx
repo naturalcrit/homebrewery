@@ -24,7 +24,7 @@ const getRedditLink = (brew)=>{
 
 export default ({ brew, disabled, currentPage, pageName })=>{
 	return (
-		<div className='nav-section'>
+		<li className='nav-section'>
 			<Nav.item icon='fas fa-code' href={`/source/${getShareId(brew)}`} disabled={disabled}>
 				View Raw Text
 			</Nav.item>
@@ -45,6 +45,6 @@ export default ({ brew, disabled, currentPage, pageName })=>{
 			<Nav.item icon={'fab fa-reddit-alien'} href={!disabled && getRedditLink(brew)} newTab rel='noopener noreferrer' disabled={disabled || pageName === 'sharePage'}>
 				post to reddit
 			</Nav.item>
-		</div>
+		</li>
 	);
 };

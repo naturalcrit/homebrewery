@@ -37,11 +37,16 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 		}
 
 		return (
-			<Dropdown className='navItem' groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
-				<NewBrewNavItem />
-				<Dropdown className='navItem recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
-					<RecentNavItem brew={brew} pageName={pageName} />
-				</Dropdown>
+			<Dropdown groupName={'File'} customTrigger={<>File</>} icon={null} key={'file'}>
+				<li className="nav-section">
+					<Dropdown className='new' groupName={'Create new brews'} icon={'fas fa-plus-square'} key={'new'}>
+						<NewBrewNavItem />
+					</Dropdown>
+					<Dropdown className='recent' groupName={'Recent Brews'} icon={'fas fa-history'} key={'recent'}>
+						<RecentNavItem brew={brew} pageName={pageName} />
+					</Dropdown>
+				</li>
+				
 				<ShareNavItem brew={brew} disabled={!brew?.shareId} currentPage={currentPage} pageName={pageName} />
 				<li className='nav-section'>
 					<Nav.item icon={'fas fa-clone'} href={`/new/${brew?.shareId}`} disabled={!brew?.shareId}>
@@ -61,7 +66,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 
 	const renderEdit = ()=>{
 		return (
-			<Dropdown className='navItem' groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
+			<Dropdown groupName={'Edit'} customTrigger={<>Edit</>} icon={null} key={'edit'}>
 				<li className='nav-section'>
 					<Nav.item icon={'fas fa-undo'} onClick={()=>editor?.undo()} kbd={`${mod} + z`} disabled={!editor}>
 						Undo
@@ -85,7 +90,7 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	};
 
 	const renderHelp = ()=>{
-		return <Dropdown className='navItem' groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
+		return <Dropdown groupName={'Help'} customTrigger={<>Help</>} icon={null} key={'help'}>
 			<li className="nav-section">
 				<Nav.item icon='fab fa-discord' href='https://discord.com/invite/by3deKx' newTab={true} rel='noopener noreferrer'>Our Discord Server</Nav.item>
 				<Nav.item icon='fab fa-reddit' href='https://www.reddit.com/r/homebrewery' newTab={true} rel='noopener noreferrer'>Our Subreddit</Nav.item>
@@ -112,14 +117,14 @@ const Navbar = ({ children, brew, pageName, editor, title, currentPage, props })
 	return (
 		<nav>
 			<ul>
-				<li className='menu-wrapper navItem'>
-					<a href='/'>Home</a>
+				<li className='menu-wrapper'>
+					<a className=' navItem' href='/'>Home</a>
 				</li>
 				{renderFile()}
 				{renderEdit()}
 				{renderHelp()}
-				<li className="menu-wrapper navItem">
-					<a  href='/vault'>Vault</a>
+				<li className="menu-wrapper">
+					<a className='navItem' href='/vault'>Vault</a>
 				</li>
 				{navSlots.menu}
 			</ul>
