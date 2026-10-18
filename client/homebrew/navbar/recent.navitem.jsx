@@ -13,7 +13,7 @@ const RecentItems = createReactClass({
 	DisplayName     : 'RecentItems',
 	getDefaultProps : function() {
 		return {
-			storageKey : '',
+			pageName : '',
 			showEdit   : false,
 			showView   : false
 		};
@@ -33,8 +33,8 @@ const RecentItems = createReactClass({
 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
 		let viewed = JSON.parse(localStorage.getItem(VIEW_KEY) || '[]');
 
-		//== Add current brew to appropriate recent items list (depending on storageKey) ==//
-		if(this.props.storageKey == 'edit'){
+		//== Add current brew to appropriate recent items list (depending on pageName) ==//
+		if(this.props.pageName == 'editPage'){
 			let editId = this.props.brew.editId;
 			if(this.props.brew.googleId && !this.props.brew.stubbed){
 				editId = `${this.props.brew.googleId}${this.props.brew.editId}`;
@@ -49,7 +49,7 @@ const RecentItems = createReactClass({
 				ts    : Date.now()
 			});
 		}
-		if(this.props.storageKey == 'view'){
+		if(this.props.pageName == 'sharePage'){
 			let shareId = this.props.brew.shareId;
 			if(this.props.brew.googleId && !this.props.brew.stubbed){
 				shareId = `${this.props.brew.googleId}${this.props.brew.shareId}`;
@@ -81,7 +81,7 @@ const RecentItems = createReactClass({
 	componentDidUpdate : function(prevProps) {
 		if(prevProps.brew && this.props.brew.editId !== prevProps.brew.editId) {
 	 		let edited = JSON.parse(localStorage.getItem(EDIT_KEY) || '[]');
-			if(this.props.storageKey == 'edit') {
+			if(this.props.pageName == 'editPage') {
 				let prevEditId = prevProps.brew.editId;
 				if(prevProps.brew.googleId && !this.props.brew.stubbed){
 					prevEditId = `${prevProps.brew.googleId}${prevProps.brew.editId}`;
@@ -140,37 +140,33 @@ const RecentItems = createReactClass({
 	},
 
 	renderDropdown : function(){
-		// if(!this.state.showDropdown) return null;
-
 		const makeItems = (brews)=>{
-			return _.map(brews, (brew, i)=>{
-				return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
-					<span className='title'>{brew.title || '[ no title ]'}</span>
-					<span className='time'>{Moment(brew.ts).fromNow()}</span>
-					<div className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></div>
-				</a>;
-			});
+			if(brews.length === 0) return <Nav.item>No recent brews</Nav.item>
+			return <div className='nav-section'>
+				{_.map(brews, (brew, i)=>{
+					return <a className='navItem' href={brew.url} key={`${brew.id}-${i}`} target='_blank' rel='noopener noreferrer' title={brew.title || '[ no title ]'}>
+						<span className='title'>{brew.title || '[ no title ]'}</span>
+						<span className='time'>{Moment(brew.ts).fromNow()}</span>
+						<button className='clear' title='Remove from Recents' onClick={(e)=>{this.removeItem(`${brew.url}`, e);}}><i className='fas fa-times'></i></button>
+					</a>;
+				})}
+			</div>;
 		};
 
 		return <>
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>edited</Nav.item> : null }
+				<Nav.header>edited</Nav.header> : null }
 			{this.props.showEdit ?
 				makeItems(this.state.edit) : null }
 			{(this.props.showEdit && this.props.showView) ?
-				<Nav.item className='header'>viewed</Nav.item>	: null }
+				<Nav.header>viewed</Nav.header>	: null }
 			{this.props.showView ?
 				makeItems(this.state.view) : null }
 		</>;
 	},
 
 	render : function(){
-		return <Nav.dropdown className='recent'>
-			<Nav.item icon='fas fa-history' color='grey' >
-				{this.props.text}
-			</Nav.item>
-			{this.renderDropdown()}
-		</Nav.dropdown>;
+		return this.renderDropdown();
 	}
 
 });
@@ -180,7 +176,7 @@ export default {
 	edited : (props)=>{
 		return <RecentItems
 			brew={props.brew}
-			storageKey={props.storageKey}
+			pageName={props.pageName}
 			text='recently edited'
 			showEdit={true}
 		/>;
@@ -189,7 +185,7 @@ export default {
 	viewed : (props)=>{
 		return <RecentItems
 			brew={props.brew}
-			storageKey={props.storageKey}
+			pageName={props.pageName}
 			text='recently viewed'
 			showView={true}
 		/>;
@@ -198,7 +194,7 @@ export default {
 	both : (props)=>{
 		return <RecentItems
 			brew={props.brew}
-			storageKey={props.storageKey}
+			pageName={props.pageName}
 			text='recent brews'
 			showEdit={true}
 			showView={true}

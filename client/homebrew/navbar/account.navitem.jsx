@@ -2,6 +2,7 @@ import React from 'react';
 import createReactClass from 'create-react-class';
 import request from 'superagent';
 import Nav from './nav.jsx';
+import { Dropdown } from '../../components/dropdown/dropdown.jsx';
 
 const Account = createReactClass({
 	displayName     : 'AccountNavItem',
@@ -61,24 +62,16 @@ const Account = createReactClass({
 	render : function(){
 		//  Logged in
 		if(global.account){
-			return <Nav.dropdown>
-				<Nav.item
-					className='account username'
-					color='orange'
-					icon='fas fa-user'
-				>
-					{global.account.username}
-				</Nav.item>
+			return <Dropdown groupName={global.account.username} customTrigger={<>{global.account.username}</>} icon={null} key={global.account.username}>
+				<div className='nav-section'>
 				<Nav.item
 					href={`/user/${encodeURIComponent(global.account.username)}`}
-					color='yellow'
 					icon='fas fa-beer'
 				>
 					brews
 				</Nav.item>
 				<Nav.item
 					className='account'
-					color='orange'
 					icon='fas fa-user'
 					href='/account'
 				>
@@ -86,26 +79,26 @@ const Account = createReactClass({
 				</Nav.item>
 				<Nav.item
 					className='logout'
-					color='red'
 					icon='fas fa-power-off'
 					onClick={this.handleLogout}
 				>
 					logout
 				</Nav.item>
-			</Nav.dropdown>;
+			</div>
+			</Dropdown>
 		}
 
 		//  Logged out
 		//  LOCAL ONLY
 		if(global.config?.local) {
-			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
+			return <Nav.item icon='fas fa-sign-in-alt' onClick={this.localLogin}>
 				login
 			</Nav.item>;
 		};
 
 		// Logged out
 		// Production site
-		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} color='teal' icon='fas fa-sign-in-alt'>
+		return <Nav.item href={`https://www.naturalcrit.com/login?redirect=${this.state.url}`} icon='fas fa-sign-in-alt'>
 			login
 		</Nav.item>;
 	}

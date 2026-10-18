@@ -12,6 +12,7 @@ import NewPage     from './pages/newPage/newPage.jsx';
 import ErrorPage   from './pages/errorPage/errorPage.jsx';
 import VaultPage   from './pages/vaultPage/vaultPage.jsx';
 import AccountPage from './pages/accountPage/accountPage.jsx';
+import Navbar from './navbar/navbar.jsx';
 
 const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
@@ -69,7 +70,6 @@ const Homebrew = (props)=>{
 		);
 	}
 
-
 	return (
 		<Router>
 			<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
@@ -80,9 +80,9 @@ const Homebrew = (props)=>{
 					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
 					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
 					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
+					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} pageName={'changelog'} title={'Changelog: version ' + version} disableMeta={true} />} />
+					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} pageName={'faq'} title={'Frequent Asked Questions'} disableMeta={true} />} />
+					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} pageName={'migrate'} title={'Converting Documents'}  disableMeta={true} />} />
 					<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
 					<Route path='/legacy' element={<WithRoute el={HomePage} brew={brew} />} />
 					<Route path='/error' element={<WithRoute el={ErrorPage} brew={brew} />} />
