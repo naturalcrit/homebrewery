@@ -370,6 +370,29 @@ const CodeEditor = forwardRef(
 			},
 			getCursorPosition : ()=>viewRef.current.state.selection.main.head,
 
+			setCursorToLine : (pageNumber, lineNumber)=>{
+				const pagePos = pageMap.current[pageNumber - 1] ?? 0;
+				const view = viewRef.current;
+				if(!view) return;
+
+				const pageStartLine = view.state.doc.lineAt(pagePos);
+				const newLocationLine = pageStartLine.number + lineNumber + 1;
+				const newLocation = view.state.doc.line(newLocationLine);
+
+				view.dispatch({
+					selection : { anchor: newLocation.from  },
+				});
+			},
+
+			setCursorPosition : (pos)=>{
+				const view = viewRef.current;
+				if(!view) return;
+
+				view.dispatch({
+					selection : { pos: pos },
+				});
+			},
+
 			scrollToPage : (pageNumber, smooth = true)=>{
 				const view = viewRef.current;
 				if(!view) return;
