@@ -34,8 +34,8 @@ const MetadataEditor = ({
 
 	onChange = ()=>{},
 	reportError = ()=>{},
-
-}, ...props)=>{
+	...props
+})=>{
 	const [isOwner, setIsOwner] = useState(global.account?.username && global.account?.username === metadata?.authors[0]);
 	const [showThumbnail, setShowThumbnail] = useState(true);
 
@@ -225,6 +225,7 @@ const MetadataEditor = ({
 		};
 
 		const currentRenderer = metadata.renderer;
+		console.log(props);
 		const currentThemeDisplay = props.themeBundle?.name ? `${props.themeBundle.author ?? currentRenderer} : ${props.themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
