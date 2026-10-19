@@ -69,8 +69,8 @@ export default async function createApp(vite) {
 	const corsOptions = {
 		origin : (origin, callback)=>{
 
-			const localHostname = config.get('host').split(/\:/)[0];
-			const localPublicURL = config.get('publicUrl')?.replace('https://', '')?.replace('http://', '').split(/\:/)[0];
+			const localHostname = `https://${config.get('host').split(/\:/)[0]}`;
+			const localPublicURL = config.get('publicUrl');
 
 			const allowedOrigins = [
 				'https://homebrewery.naturalcrit.com',
