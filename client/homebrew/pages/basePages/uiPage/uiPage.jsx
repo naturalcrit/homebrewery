@@ -7,26 +7,22 @@ import RecentNavItems from '../../../navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
 import Account from '../../../navbar/account.navitem.jsx';
 
-const UIPage = ({brew, children})=>{
+const UIPage = ({ brew, children })=><div className='sitePage uiPage'>
+	<Navbar>
+		<Nav.section>
+			<Nav.item className='brewTitle'>{brew?.title}</Nav.item>
+		</Nav.section>
+		<Nav.section>
+			<NewBrewItem />
+			<HelpNavItem />
+			<RecentNavItem />
+			<Account />
+		</Nav.section>
+	</Navbar>
 
-	return <div className='sitePage uiPage'>
-			<Navbar>
-				<Nav.section>
-					<Nav.item className='brewTitle'>{brew?.title}</Nav.item>
-				</Nav.section>
-
-				<Nav.section>
-					<NewBrewItem />
-					<HelpNavItem />
-					<RecentNavItem />
-					<Account />
-				</Nav.section>
-			</Navbar>
-
-			<div className='content'>
-				{children}
-			</div>
-		</div>;
-};
+	<div className='content'>
+		{children}
+	</div>
+</div>;
 
 export default UIPage;
