@@ -36,7 +36,6 @@ const MetadataEditor = ({
 	reportError = ()=>{},
 	...props
 })=>{
-	const [isOwner, setIsOwner] = useState(global.account?.username && global.account?.username === metadata?.authors[0]);
 	const [showThumbnail, setShowThumbnail] = useState(true);
 
 	const toggleThumbnailDisplay = ()=>{
@@ -156,6 +155,7 @@ const MetadataEditor = ({
 	};
 	const renderAuthors = ()=>{
 		const authors = metadata.authors;
+		const isOwner = global.account?.username && global.account?.username === authors[0];
 		if(!isOwner || authors.length < 2) return (
 			<div className='field authors'>
 				<label>authors</label>
@@ -225,7 +225,6 @@ const MetadataEditor = ({
 		};
 
 		const currentRenderer = metadata.renderer;
-		console.log(props);
 		const currentThemeDisplay = props.themeBundle?.name ? `${props.themeBundle.author ?? currentRenderer} : ${props.themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
