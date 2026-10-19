@@ -1,7 +1,6 @@
 /* eslint-disable max-lines */
 import '../uiEditor.less';
-import React, {useState, useEffect} from 'react';
-import createReactClass from 'create-react-class';
+import React, { useState } from 'react';
 import _ from 'lodash';
 import request from '../../utils/request-middleware.js';
 import Combobox from '@components/combobox.jsx';
@@ -20,26 +19,25 @@ const callIfExists = (val, fn, ...args)=>{
 
 const MetadataEditor = ({
 	metadata = {
-		editId: null,
-		shareId: null,
-		title: '',
-		description: '',
-		thumbnail: '',
-		tags: [],
-		published: false,
-		authors: [],
-		renderer: 'legacy',
-		theme: '5ePHB',
-		lang: 'en',
+		editId      : null,
+		shareId     : null,
+		title       : '',
+		description : '',
+		thumbnail   : '',
+		tags        : [],
+		published   : false,
+		authors     : [],
+		renderer    : 'legacy',
+		theme       : '5ePHB',
+		lang        : 'en',
 	},
 
-	onChange = () => {},
-	reportError = () => {},
-	
-}, ...props) => {
+	onChange = ()=>{},
+	reportError = ()=>{},
+
+}, ...props)=>{
 	const [isOwner, setIsOwner] = useState(global.account?.username && global.account?.username === metadata?.authors[0]);
 	const [showThumbnail, setShowThumbnail] = useState(true);
-
 
 	const toggleThumbnailDisplay = ()=>{
 		setShowThumbnail(!showThumbnail);
@@ -96,7 +94,7 @@ const MetadataEditor = ({
 
 		onChange(metadata, 'theme');
 	};
-	const handleThemeWritein = (e) =>{
+	const handleThemeWritein = (e)=>{
 		const shareId = e.target.value.split('/').pop(); //Extract just the ID if a URL was pasted in
 		metadata.theme = shareId;
 
@@ -329,7 +327,6 @@ const MetadataEditor = ({
 		</div>;
 	};
 
-
 	return (
 		<div className='metadataEditor uiEditor'>
 			<h1>Properties Editor</h1>
@@ -341,7 +338,7 @@ const MetadataEditor = ({
 					id='title_field'
 					className='value'
 					defaultValue={metadata.title}
-					onChange={(e) => handleFieldChange('title', e)}
+					onChange={(e)=>handleFieldChange('title', e)}
 				/>
 			</div>
 			<fieldset className='field-group'>
@@ -352,7 +349,7 @@ const MetadataEditor = ({
 							id='description_field'
 							defaultValue={metadata.description}
 							className='value'
-							onChange={(e) => handleFieldChange('description', e)}
+							onChange={(e)=>handleFieldChange('description', e)}
 						/>
 					</div>
 					<div className='field thumbnail'>
@@ -363,7 +360,7 @@ const MetadataEditor = ({
 							defaultValue={metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
 							className='value'
-							onChange={(e) => handleFieldChange('thumbnail', e)}
+							onChange={(e)=>handleFieldChange('thumbnail', e)}
 						/>
 						<button
 							className='display'
@@ -386,7 +383,7 @@ const MetadataEditor = ({
 						placeholder='add tag'
 						unique={true}
 						values={metadata.tags}
-						onChange={(e) => handleFieldChange('tags', e)}
+						onChange={(e)=>handleFieldChange('tags', e)}
 						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
 					/>
 				</div>
@@ -409,13 +406,13 @@ const MetadataEditor = ({
 						id='combobox-invited-authors'
 						label='invited authors'
 						valuePatterns={/.+/}
-						validators={[(v) => !metadata.authors?.includes(v)]}
+						validators={[(v)=>!metadata.authors?.includes(v)]}
 						placeholder='invite author'
 						unique={true}
 						tooltip={`Invited author usernames are case sensitive.
 							After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.`}
 						values={metadata.invitedAuthors}
-						onChange={(e) => handleFieldChange('invitedAuthors', e)}
+						onChange={(e)=>handleFieldChange('invitedAuthors', e)}
 					/>
 				</div>
 			</div>
