@@ -31,7 +31,6 @@ const MetadataEditor = ({
 		published   : false,
 		thumbnail   : '',
 		theme       : '5ePHB',
-
 	},
 	onChange = ()=>{},
 	reportError = ()=>{},
@@ -85,13 +84,11 @@ const MetadataEditor = ({
 	const handleTheme = (theme)=>{
 		metadata.renderer = theme.renderer;
 		metadata.theme    = theme.path;
-
 		onChange(metadata, 'theme');
 	};
 	const handleThemeWritein = (e)=>{
 		const shareId = e.target.value.split('/').pop(); //Extract just the ID if a URL was pasted in
 		metadata.theme = shareId;
-
 		onChange(metadata, 'theme');
 	};
 	const handleLanguage = (languageCode)=>{
@@ -354,7 +351,6 @@ const MetadataEditor = ({
 				</div>
 				{showThumbnail && <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>}
 			</fieldset>
-
 			<div className='field tags'>
 				<label htmlFor='combobox-tags'>Tags</label>
 				<div className='value'>
@@ -370,17 +366,12 @@ const MetadataEditor = ({
 					/>
 				</div>
 			</div>
-
 			{renderLanguageDropdown()}
-
 			{renderThemeDropdown()}
-
 			{renderRenderOptions()}
 
 			<h2>Authors</h2>
-
 			{renderAuthors()}
-
 			<div className='field invitedAuthors'>
 				<label htmlFor='combobox-invited-authors'>Invited authors</label>
 				<div className='value'>
@@ -400,7 +391,6 @@ const MetadataEditor = ({
 			</div>
 
 			<h2>Privacy</h2>
-
 			<div className='field publish'>
 				<label htmlFor='publish-button'>publish</label>
 				<div className='value'>
@@ -412,7 +402,6 @@ const MetadataEditor = ({
 					</small>
 				</div>
 			</div>
-
 			{metadata.editId && <div className='field delete'>
 				<label htmlFor='delete-button'>delete</label>
 				<div className='value'>
