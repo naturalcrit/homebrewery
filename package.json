@@ -14,7 +14,8 @@
   "scripts": {
     "start": "node server.js",
     "build": "vite build",
-    "force": "rm -rf .vite node_modules/.vite && vite build",
+    "force:win32": "rm .vite node_modules/.vite -r -force && vite --help",
+    "force:default": "rm -rf .vite node_modules/.vite && vite --help",
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
@@ -140,6 +141,7 @@
     "react-dom": "^19.3.1",
     "react-frame-component": "^5.3.2",
     "react-router": "^8.4.0",
+    "run-script-os": "^1.1.6",
     "sanitize-filename": "1.6.4",
     "superagent": "^10.4.1"
   },
