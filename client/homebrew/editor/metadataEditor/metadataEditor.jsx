@@ -20,17 +20,18 @@ const callIfExists = (val, fn, ...args)=>{
 
 const MetadataEditor = ({
 	metadata = {
-		editId      : null,
 		shareId     : null,
+		editId      : null,
 		title       : '',
 		description : '',
-		thumbnail   : '',
 		tags        : [],
-		published   : false,
-		authors     : [],
-		renderer    : 'legacy',
-		theme       : '5ePHB',
 		lang        : 'en',
+		renderer    : 'legacy',
+		authors     : [],
+		published   : false,
+		thumbnail   : '',
+		theme       : '5ePHB',
+
 	},
 	onChange = ()=>{},
 	reportError = ()=>{},
