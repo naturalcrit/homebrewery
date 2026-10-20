@@ -2,12 +2,13 @@
 import '../uiEditor.less';
 import React, { useState } from 'react';
 import _ from 'lodash';
-import request from '../../utils/request-middleware.js';
-import Combobox from '@components/combobox.jsx';
-import TagInput from '../tagInput/tagInput.jsx';
 
+import request from '../../utils/request-middleware.js';
 import Themes from '@themes/themes.json';
 import validations from './validations.js';
+
+import Combobox from '@components/combobox.jsx';
+import TagInput from '../tagInput/tagInput.jsx';
 
 import homebreweryThumbnail from '../../thumbnail.png';
 
@@ -19,32 +20,25 @@ const callIfExists = (val, fn, ...args)=>{
 
 const MetadataEditor = ({
 	metadata = {
-		editId      : null,
 		shareId     : null,
+		editId      : null,
 		title       : '',
 		description : '',
-		thumbnail   : '',
 		tags        : [],
-		published   : false,
-		authors     : [],
-		renderer    : 'legacy',
-		theme       : '5ePHB',
 		lang        : 'en',
+		renderer    : 'legacy',
+		authors     : [],
+		published   : false,
+		thumbnail   : '',
+		theme       : '5ePHB',
 	},
-
 	onChange = ()=>{},
 	reportError = ()=>{},
-	...props
+	userThemes = {},
+	themeBundle = {}
 })=>{
 	const [showThumbnail, setShowThumbnail] = useState(true);
 
-	const toggleThumbnailDisplay = ()=>{
-		setShowThumbnail(!showThumbnail);
-	};
-	const renderThumbnail = ()=>{
-		if(!showThumbnail) return;
-		return <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>;
-	};
 	const handleFieldChange = (name, e)=>{
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
@@ -90,13 +84,11 @@ const MetadataEditor = ({
 	const handleTheme = (theme)=>{
 		metadata.renderer = theme.renderer;
 		metadata.theme    = theme.path;
-
 		onChange(metadata, 'theme');
 	};
 	const handleThemeWritein = (e)=>{
 		const shareId = e.target.value.split('/').pop(); //Extract just the ID if a URL was pasted in
 		metadata.theme = shareId;
-
 		onChange(metadata, 'theme');
 	};
 	const handleLanguage = (languageCode)=>{
@@ -140,18 +132,6 @@ const MetadataEditor = ({
 				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
-	};
-	const renderDelete = ()=>{
-		if(!metadata.editId) return;
-
-		return <div className='field delete'>
-			<label htmlFor='delete-button'>delete</label>
-			<div className='value'>
-				<button id='delete-button' onClick={handleDelete}>
-					<i className='fas fa-trash-alt' /> delete brew
-				</button>
-			</div>
-		</div>;
 	};
 	const renderAuthors = ()=>{
 		const authors = metadata.authors;
@@ -204,7 +184,7 @@ const MetadataEditor = ({
 		);
 	};
 	const renderThemeDropdown = ()=>{
-		const mergedThemes = _.merge(Themes, props.userThemes);
+		const mergedThemes = _.merge(Themes, userThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -225,7 +205,7 @@ const MetadataEditor = ({
 		};
 
 		const currentRenderer = metadata.renderer;
-		const currentThemeDisplay = props.themeBundle?.name ? `${props.themeBundle.author ?? currentRenderer} : ${props.themeBundle.name}` : 'No Theme Selected';
+		const currentThemeDisplay = themeBundle?.name ? `${themeBundle.author ?? currentRenderer} : ${themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -296,7 +276,6 @@ const MetadataEditor = ({
 					}}
 				/>
 			</div>
-
 		</div>;
 	};
 	const renderRenderOptions = ()=>{
@@ -364,15 +343,14 @@ const MetadataEditor = ({
 						/>
 						<button
 							className='display'
-							onClick={toggleThumbnailDisplay}
+							onClick={()=>setShowThumbnail(!showThumbnail)}
 							aria-label={`${showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>
 				</div>
-				{renderThumbnail()}
+				{showThumbnail && <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>}
 			</fieldset>
-
 			<div className='field tags'>
 				<label htmlFor='combobox-tags'>Tags</label>
 				<div className='value'>
@@ -388,17 +366,12 @@ const MetadataEditor = ({
 					/>
 				</div>
 			</div>
-
 			{renderLanguageDropdown()}
-
 			{renderThemeDropdown()}
-
 			{renderRenderOptions()}
 
 			<h2>Authors</h2>
-
 			{renderAuthors()}
-
 			<div className='field invitedAuthors'>
 				<label htmlFor='combobox-invited-authors'>Invited authors</label>
 				<div className='value'>
@@ -418,7 +391,6 @@ const MetadataEditor = ({
 			</div>
 
 			<h2>Privacy</h2>
-
 			<div className='field publish'>
 				<label htmlFor='publish-button'>publish</label>
 				<div className='value'>
@@ -430,8 +402,14 @@ const MetadataEditor = ({
 					</small>
 				</div>
 			</div>
-
-			{renderDelete()}
+			{metadata.editId && <div className='field delete'>
+				<label htmlFor='delete-button'>delete</label>
+				<div className='value'>
+					<button id='delete-button' onClick={handleDelete}>
+						<i className='fas fa-trash-alt' /> delete brew
+					</button>
+				</div>
+			</div>}
 		</div>
 	);
 };
