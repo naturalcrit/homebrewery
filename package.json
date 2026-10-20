@@ -14,6 +14,7 @@
   "scripts": {
     "start": "node server.js",
     "build": "vite build",
+    "force": "rm -rf .vite node_modules/.vite && vite build",
     "lint": "eslint --fix",
     "lint:dry": "eslint",
     "stylelint": "stylelint --fix **/*.{less}",
