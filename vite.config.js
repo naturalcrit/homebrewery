@@ -15,6 +15,7 @@ export default defineConfig({
 			'@themes'       : path.resolve(import.meta.dirname, './themes'),
 			'@components'   : path.resolve(import.meta.dirname, './client/components')
 		},
+		preserveSymlinks: true,
 	},
 	build : {
 		outDir        : 'build',
