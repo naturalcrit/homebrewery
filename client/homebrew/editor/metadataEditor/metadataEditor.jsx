@@ -2,12 +2,13 @@
 import '../uiEditor.less';
 import React, { useState } from 'react';
 import _ from 'lodash';
-import request from '../../utils/request-middleware.js';
-import Combobox from '@components/combobox.jsx';
-import TagInput from '../tagInput/tagInput.jsx';
 
+import request from '../../utils/request-middleware.js';
 import Themes from '@themes/themes.json';
 import validations from './validations.js';
+
+import Combobox from '@components/combobox.jsx';
+import TagInput from '../tagInput/tagInput.jsx';
 
 import homebreweryThumbnail from '../../thumbnail.png';
 
@@ -31,20 +32,12 @@ const MetadataEditor = ({
 		theme       : '5ePHB',
 		lang        : 'en',
 	},
-
 	onChange = ()=>{},
 	reportError = ()=>{},
 	...props
 })=>{
 	const [showThumbnail, setShowThumbnail] = useState(true);
 
-	const toggleThumbnailDisplay = ()=>{
-		setShowThumbnail(!showThumbnail);
-	};
-	const renderThumbnail = ()=>{
-		if(!showThumbnail) return;
-		return <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>;
-	};
 	const handleFieldChange = (name, e)=>{
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
@@ -140,18 +133,6 @@ const MetadataEditor = ({
 				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
-	};
-	const renderDelete = ()=>{
-		if(!metadata.editId) return;
-
-		return <div className='field delete'>
-			<label htmlFor='delete-button'>delete</label>
-			<div className='value'>
-				<button id='delete-button' onClick={handleDelete}>
-					<i className='fas fa-trash-alt' /> delete brew
-				</button>
-			</div>
-		</div>;
 	};
 	const renderAuthors = ()=>{
 		const authors = metadata.authors;
@@ -296,7 +277,6 @@ const MetadataEditor = ({
 					}}
 				/>
 			</div>
-
 		</div>;
 	};
 	const renderRenderOptions = ()=>{
@@ -364,13 +344,13 @@ const MetadataEditor = ({
 						/>
 						<button
 							className='display'
-							onClick={toggleThumbnailDisplay}
+							onClick={()=>setShowThumbnail(!showThumbnail)}
 							aria-label={`${showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
 							<i className={`fas fa-caret-${showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>
 				</div>
-				{renderThumbnail()}
+				{showThumbnail && <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>}
 			</fieldset>
 
 			<div className='field tags'>
@@ -431,7 +411,14 @@ const MetadataEditor = ({
 				</div>
 			</div>
 
-			{renderDelete()}
+			{metadata.editId && <div className='field delete'>
+				<label htmlFor='delete-button'>delete</label>
+				<div className='value'>
+					<button id='delete-button' onClick={handleDelete}>
+						<i className='fas fa-trash-alt' /> delete brew
+					</button>
+				</div>
+			</div>}
 		</div>
 	);
 };
