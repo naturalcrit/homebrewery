@@ -34,7 +34,8 @@ const MetadataEditor = ({
 	},
 	onChange = ()=>{},
 	reportError = ()=>{},
-	...props
+	userThemes = {},
+	themeBundle = {}
 })=>{
 	const [showThumbnail, setShowThumbnail] = useState(true);
 
@@ -185,7 +186,7 @@ const MetadataEditor = ({
 		);
 	};
 	const renderThemeDropdown = ()=>{
-		const mergedThemes = _.merge(Themes, props.userThemes);
+		const mergedThemes = _.merge(Themes, userThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
@@ -206,7 +207,7 @@ const MetadataEditor = ({
 		};
 
 		const currentRenderer = metadata.renderer;
-		const currentThemeDisplay = props.themeBundle?.name ? `${props.themeBundle.author ?? currentRenderer} : ${props.themeBundle.name}` : 'No Theme Selected';
+		const currentThemeDisplay = themeBundle?.name ? `${themeBundle.author ?? currentRenderer} : ${themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
