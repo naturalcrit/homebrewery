@@ -50,6 +50,7 @@ export const folderApiErrors = {
   '110': `An error occurred trying to find folders for the user.`,
   '120': `The author username could not be found.`,
   '122': `One or more required fields are missing from the request.`,
+  '124': `One or more fields are values of the wrong type.`,
 
   // crud
   '105': `Folder could not be created.`,
