@@ -27,17 +27,8 @@ const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
 
-// const getTopBrews = (cb) => {
-// 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
-// 		cb(brews);
-// 	});
-// };
-
-
 const migrateSystemsToTags = (brew)=>{
-	if(!('systems' in brew)) return brew;
-
-	if(!Array.isArray(brew.systems) || brew.systems.length === 0) {
+	if(!('systems' in brew) || !Array.isArray(brew.systems) || brew.systems.length === 0) {
 		brew.systems = undefined;
 		return brew;
 	}
@@ -189,10 +180,7 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-
-
-			const fixedStub = migrateSystemsToTags(stub);
-			req.brew = fixedStub;
+			req.brew = migrateSystemsToTags(stub);
 			splitTextStyleAndMetadata(req.brew);
 			next();
 		};
@@ -412,10 +400,9 @@ const api = {
 			// throw err; // rethrow to preserve the 500 behavior
 		}
 
-		let brew         = _.assign(brewFromServer, brewFromClient);
+		let brew = _.assign(brewFromServer, brewFromClient);
 
-		migrateSystemsToTags(brew);
-
+		brew             = migrateSystemsToTags(brew);
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
