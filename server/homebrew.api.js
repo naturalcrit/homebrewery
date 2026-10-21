@@ -10,7 +10,7 @@ import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
 import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
-import { splitTextStyleAndMetadata,
+import { splitTextStyleAndMetadata, transformFrontmatter,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
 import checkClientVersion            from './middleware/check-client-version.js';
 import dbCheck                       from './middleware/dbCheck.js';
@@ -209,29 +209,7 @@ const api = {
 		return res.status(200).send(brew.style);
 	},
 	mergeBrewText : (brew)=>{
-		let text = brew.text;
-		if(brew.style !== undefined) {
-			text = `\`\`\`css\n` +
-				`${brew.style || ''}\n` +
-				`\`\`\`\n\n` +
-				`${text}`;
-		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
-		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
-		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
-		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
-		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
-		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
-		metadata.columns = brew?.columns;
-		metadata.columnGutter = brew?.columnGutter;
-		metadata.license = brew?.license;
-		metadata.legalAuthors = brew?.legalAuthors;
-
-		text = `\`\`\`metadata\n` +
-			`${yaml.dump(metadata)}\n` +
-			`\`\`\`\n\n` +
-			`${text}`;
-		return text;
+		return transformFrontmatter(brew);
 	},
 	getGoodBrewTitle : (text)=>{
 		const tokens = hbfm.marked.lexer(text);
