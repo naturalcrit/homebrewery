@@ -407,7 +407,7 @@ const api = {
 			brew.googleId = undefined;
 		} else if(!brew.googleId && saveToGoogle) {
 			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
-			brew.googleId = await api.newGoogleBrew(req.account, api.excludeGoogleProps(brew), res);
+			brew.googleId = await api.newGoogleBrew(req.account, brew, res);
 
 			if(!brew.googleId) return;
 		} else if(brew.googleId) {
