@@ -398,20 +398,12 @@ const api = {
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
 
+		//=====----- Update to or remove from Google Drive -----=========//
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
-		let afterSave = async ()=>true;
 
 		if(brew.googleId && removeFromGoogle) {
-			// If the google id exists and we're removing it from google, set afterSave to delete the google brew and mark the brew's google id as undefined
-			afterSave = async ()=>{
-				return await api.deleteGoogleBrew(req.account, googleId, brew.editId, res)
-					.catch((err)=>{
-						console.error(err);
-						res.status(err?.status || err?.response?.status || 500).send(err.message || err);
-					});
-			};
-
+			// If the google id exists and we're removing it from google, mark the brew's google id as undefined
 			brew.googleId = undefined;
 		} else if(!brew.googleId && saveToGoogle) {
 			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
@@ -425,8 +417,9 @@ const api = {
 			if(!updated) return;
 		}
 
+		//=====----- Update to Mongo -----=====//
 		if(brew.googleId) {
-			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
+			// If google id exists after above actions, Mongo will store only a stub; exclude non-stub properties from update
 			brew = api.excludeStubProps(brew);
 		} else {
 			// Compress brew text to binary before saving
@@ -454,11 +447,17 @@ const api = {
 			brew = new HomebrewModel(brew);
 
 		let saved = await brew.save().catch(saveError);
-
 		if(!saved) return;
-		// Call and wait for afterSave to complete
-		const after = await afterSave();
-		if(!after) return;
+
+		if(googleId && removeFromGoogle) {
+			const deleted = await api.deleteGoogleBrew(req.account, googleId, brew.editId, res)
+				.catch((err)=>{
+					console.error(err);
+					res.status(err?.status || err?.response?.status || 500).send(err.message || err);
+				});
+
+			if(!deleted) return;
+		}
 
 		saved.textBin = undefined; // Remove textBin from the saved object to save bandwidth
 
