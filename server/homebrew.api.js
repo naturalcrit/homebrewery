@@ -397,23 +397,26 @@ const api = {
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
+		brew.updatedAt   = new Date();
+		brew.version     = (brew.version || 1) + 1;
+		if(req.account) {
+			brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
+			brew.invitedAuthors = _.uniq(_.filter(brew.invitedAuthors, (a)=>req.account.username !== a));
+		}
 
 		//=====----- Update to or remove from Google Drive -----=========//
 		const googleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 
-		if(brew.googleId && removeFromGoogle) {
-			// If the google id exists and we're removing it from google, mark the brew's google id as undefined
+		if(brew.googleId && removeFromGoogle) {     // If removing from google, remove the brew's googleId
 			brew.googleId = undefined;
-		} else if(!brew.googleId && saveToGoogle) {
-			// If we don't have a google id and the user wants to save to google, create the google brew and set the google id on the brew
+		}
+		else if(!brew.googleId && saveToGoogle) { // If adding to google, create new google document and record the googleId
 			brew.googleId = await api.newGoogleBrew(req.account, brew, res);
-
 			if(!brew.googleId) return;
-		} else if(brew.googleId) {
-			// If the google id exists and no other actions are being performed, update the google brew
+		}
+		else if(brew.googleId) {                  // If already on google, update the google brew
 			const updated = await GoogleActions.updateGoogleBrew(api.excludeGoogleProps(brew), req.ip);
-
 			if(!updated) return;
 		}
 
@@ -426,13 +429,6 @@ const api = {
 			brew.textBin = zlib.deflateRawSync(brew.text);
 			// Delete the non-binary text field since it's not needed anymore
 			brew.text = undefined;
-		}
-		brew.updatedAt = new Date();
-		brew.version = (brew.version || 1) + 1;
-
-		if(req.account) {
-			brew.authors = _.uniq(_.concat(brew.authors, req.account.username));
-			brew.invitedAuthors = _.uniq(_.filter(brew.invitedAuthors, (a)=>req.account.username !== a));
 		}
 
 		// define a function to catch our save errors
