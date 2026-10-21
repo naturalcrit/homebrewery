@@ -238,28 +238,14 @@ const api = {
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 			.slice(0, MAX_TITLE_LENGTH);
 	},
-	excludePropsFromUpdate : (brew)=>{
-		// Remove undesired properties
-		const modified = _.clone(brew);
-		const propsToExclude = ['_id', 'views', 'lastViewed'];
-		for (const prop of propsToExclude) {
-			delete modified[prop];
-		}
-		return modified;
+	excludePropsFromUpdate : (brew)=>{ //Remove props that should not update/overwrite when editing
+		return _.omit(brew, ['_id', 'views', 'lastViewed']);
 	},
-	excludeGoogleProps : (brew)=>{
-		const modified = _.clone(brew);
-		const propsToExclude = ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
-		for (const prop of propsToExclude) {
-			delete modified[prop];
-		}
-		return modified;
+	excludeGoogleProps : (brew)=>{ //Remove props that should not be saved to Google (only stored to Homebrewery stub)
+		return _.omit(brew, ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail']);
 	},
-	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin'];
-		for (const prop of propsToExclude) {
-			brew[prop] = undefined;
-		}
+	excludeStubProps : (brew)=>{ //Remove props that should not be saved to stub-only brews
+		brew.text = brew.textBin = undefined; // Can't use _.omit because this brew is a Mongoose object
 		return brew;
 	},
 	beforeNewSave : (account, brew)=>{
@@ -292,7 +278,7 @@ const api = {
 
 		api.beforeNewSave(req.account, brew);
 
-		const newHomebrew = new HomebrewModel(brew);
+		let newHomebrew = new HomebrewModel(brew);
 		newHomebrew.editId = nanoid(12);
 		newHomebrew.shareId = nanoid(12);
 
@@ -301,7 +287,7 @@ const api = {
 			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
 
 			if(!googleId) return;
-			api.excludeStubProps(newHomebrew);
+			newHomebrew = api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
 		} else {
 			// Compress brew text to binary before saving
@@ -463,7 +449,7 @@ const api = {
 
 		if(brew.googleId) {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
-			api.excludeStubProps(brew);
+			brew = api.excludeStubProps(brew);
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
