@@ -447,16 +447,14 @@ const api = {
 			console.error(err);
 			res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
 		};
-		let saved;
-		if(!brew._id) {
-			// if the brew does not have a stub id, create and save it, then write the new value back to the brew.
-			saved = await new HomebrewModel(brew).save().catch(saveError);
-		} else {
-			// if the brew does have a stub id, update it using the stub id as the key.
+
+		if(brew._id) // if the brew has a stub id, fetch and merge into Mongo stub document
 			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
-			saved = await brew.save()
-				.catch(saveError);
-		}
+		else		 // if not, create a new Mongo document
+			brew = new HomebrewModel(brew);
+
+		let saved = await brew.save().catch(saveError);
+
 		if(!saved) return;
 		// Call and wait for afterSave to complete
 		const after = await afterSave();
