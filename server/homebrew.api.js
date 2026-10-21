@@ -375,12 +375,13 @@ const api = {
 			if(failedPatchCount){
 				throw (`Patch failure: ${failedPatchCount}/${result[1].length} did not apply`);
 			}
-			if(decodeURI(result[0]) != brewFromClient.text){
+			patchedText = decodeURI(result[0]);
+			if(patchedText != brewFromClient.text){
+				debugTextMismatch(brewFromClient.text, patchedText, `edit/${brewFromClient.editId}`);
 				throw ('Patches did not apply cleanly, text mismatch detected');
 			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
-			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				// patches : brewFromClient.patches,
 				// result  : result,
