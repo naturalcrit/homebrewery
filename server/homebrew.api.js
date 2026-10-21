@@ -27,17 +27,8 @@ const isStaticTheme = (renderer, themeName)=>{
 	return Themes[renderer]?.[themeName] !== undefined;
 };
 
-// const getTopBrews = (cb) => {
-// 	HomebrewModel.find().sort({ views: -1 }).limit(5).exec(function(err, brews) {
-// 		cb(brews);
-// 	});
-// };
-
-
 const migrateSystemsToTags = (brew)=>{
-	if(!('systems' in brew)) return brew;
-
-	if(!Array.isArray(brew.systems) || brew.systems.length === 0) {
+	if(!('systems' in brew) || !Array.isArray(brew.systems) || brew.systems.length === 0) {
 		brew.systems = undefined;
 		return brew;
 	}
@@ -108,19 +99,17 @@ const api = {
 
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
 
-		if(brews) {
-			for (const brew of brews) {
-				userThemes[brew.renderer] ??= {};
-				userThemes[brew.renderer][brew.shareId] = {
-					name         : brew.title,
-					renderer     : brew.renderer,
-					baseTheme    : brew.theme,
-					baseSnippets : false,
-					author       : brew.authors[0],
-					path         : brew.shareId,
-					thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
-				};
-			}
+		for (const brew of brews) {
+			userThemes[brew.renderer] ??= {};
+			userThemes[brew.renderer][brew.shareId] = {
+				name         : brew.title,
+				renderer     : brew.renderer,
+				baseTheme    : brew.theme,
+				baseSnippets : false,
+				author       : brew.authors[0],
+				path         : brew.shareId,
+				thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
+			};
 		}
 
 		return userThemes;
@@ -189,18 +178,14 @@ const api = {
 			stub.renderer = stub.renderer || undefined; // Clear empty strings
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
-
-
-			const fixedStub = migrateSystemsToTags(stub);
-			req.brew = fixedStub;
+			req.brew = migrateSystemsToTags(stub);
 			splitTextStyleAndMetadata(req.brew);
 			next();
 		};
 	},
 	getCSS : async (req, res)=>{
 		const { brew } = req;
-		if(!brew) return res.status(404).send('');
-		if(!brew.style) return res.status(404).send('');
+		if(!brew?.style) return res.status(404).send('');
 
 		res.set({
 			'Cache-Control' : 'no-cache',
@@ -216,16 +201,12 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme', 'columns', 'columnGutter', 'license', 'legalAuthors']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
 		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
 		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
-		metadata.columns = brew?.columns;
-		metadata.columnGutter = brew?.columnGutter;
-		metadata.license = brew?.license;
-		metadata.legalAuthors = brew?.legalAuthors;
 
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
@@ -238,28 +219,14 @@ const api = {
 		return (tokens.find((token)=>token.type === 'heading' || token.type === 'paragraph')?.text || 'No Title')
 			.slice(0, MAX_TITLE_LENGTH);
 	},
-	excludePropsFromUpdate : (brew)=>{
-		// Remove undesired properties
-		const modified = _.clone(brew);
-		const propsToExclude = ['_id', 'views', 'lastViewed'];
-		for (const prop of propsToExclude) {
-			delete modified[prop];
-		}
-		return modified;
+	excludePropsFromUpdate : (brew)=>{ //Remove props that should not update/overwrite when editing
+		return _.omit(brew, ['_id', 'views', 'lastViewed']);
 	},
-	excludeGoogleProps : (brew)=>{
-		const modified = _.clone(brew);
-		const propsToExclude = ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail'];
-		for (const prop of propsToExclude) {
-			delete modified[prop];
-		}
-		return modified;
+	excludeGoogleProps : (brew)=>{ //Remove props that should not be saved to Google (only stored to Homebrewery stub)
+		return _.omit(brew, ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail']);
 	},
-	excludeStubProps : (brew)=>{
-		const propsToExclude = ['text', 'textBin'];
-		for (const prop of propsToExclude) {
-			brew[prop] = undefined;
-		}
+	excludeStubProps : (brew)=>{ //Remove props that should not be saved to stub-only brews
+		brew.text = brew.textBin = undefined; // Can't use _.omit because this brew is a Mongoose object
 		return brew;
 	},
 	beforeNewSave : (account, brew)=>{
@@ -278,9 +245,7 @@ const api = {
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
 
-		const newBrew = api.excludeGoogleProps(brew);
-
-		return await GoogleActions.newGoogleBrew(oAuth2Client, newBrew);
+		return await GoogleActions.newGoogleBrew(oAuth2Client, api.excludeGoogleProps(brew));
 	},
 	newBrew : async (req, res)=>{
 		const brew = req.body;
@@ -292,7 +257,7 @@ const api = {
 
 		api.beforeNewSave(req.account, brew);
 
-		const newHomebrew = new HomebrewModel(brew);
+		let newHomebrew = new HomebrewModel(brew);
 		newHomebrew.editId = nanoid(12);
 		newHomebrew.shareId = nanoid(12);
 
@@ -301,7 +266,7 @@ const api = {
 			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
 
 			if(!googleId) return;
-			api.excludeStubProps(newHomebrew);
+			newHomebrew = api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
 		} else {
 			// Compress brew text to binary before saving
@@ -406,16 +371,17 @@ const api = {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
 			result = applyPatches(patches, encodeURI(brewFromServer.text));
-			const failedPatches = patches.map((patch, index)=>{if(!result[1][index]){ return patch; }});
-			if(failedPatches > 0){
-				throw (`Patch failure: ${failedPatches}/${result[1].length} did not apply`);
+			const failedPatchCount = result[1].filter((patchApplied)=>!patchApplied).length; //Count how many patches failed to apply
+			if(failedPatchCount){
+				throw (`Patch failure: ${failedPatchCount}/${result[1].length} did not apply`);
 			}
-			if(decodeURI(result[0]) != brewFromClient.text){
+			patchedText = decodeURI(result[0]);
+			if(patchedText != brewFromClient.text){
+				debugTextMismatch(brewFromClient.text, patchedText, `edit/${brewFromClient.editId}`);
 				throw ('Patches did not apply cleanly, text mismatch detected');
 			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
-			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				// patches : brewFromClient.patches,
 				// result  : result,
@@ -426,10 +392,9 @@ const api = {
 			// throw err; // rethrow to preserve the 500 behavior
 		}
 
-		let brew         = _.assign(brewFromServer, brewFromClient);
+		let brew = _.assign(brewFromServer, brewFromClient);
 
-		migrateSystemsToTags(brew);
-
+		brew             = migrateSystemsToTags(brew);
 		brew.title       = brew.title.trim();
 		brew.description = brew.description.trim() || '';
 		brew.text        = api.mergeBrewText(brew);
@@ -463,7 +428,7 @@ const api = {
 
 		if(brew.googleId) {
 			// If the google id exists after all those actions, exclude the props that are stored in google and aren't needed for rendering the brew items
-			api.excludeStubProps(brew);
+			brew = api.excludeStubProps(brew);
 		} else {
 			// Compress brew text to binary before saving
 			brew.textBin = zlib.deflateRawSync(brew.text);
