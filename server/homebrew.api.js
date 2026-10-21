@@ -406,9 +406,9 @@ const api = {
 			const patches = parsePatch(brewFromClient.patches);
 			// Patch to a throwaway variable while parallelizing - we're more concerned with error/no error.
 			result = applyPatches(patches, encodeURI(brewFromServer.text));
-			const failedPatches = patches.map((patch, index)=>{if(!result[1][index]){ return patch; }});
-			if(failedPatches > 0){
-				throw (`Patch failure: ${failedPatches}/${result[1].length} did not apply`);
+			const failedPatchCount = result[1].filter((patchApplied)=>!patchApplied).length; //Count how many patches failed to apply
+			if(failedPatchCount){
+				throw (`Patch failure: ${failedPatchCount}/${result[1].length} did not apply`);
 			}
 			if(decodeURI(result[0]) != brewFromClient.text){
 				throw ('Patches did not apply cleanly, text mismatch detected');
