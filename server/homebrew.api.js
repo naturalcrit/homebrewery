@@ -223,7 +223,7 @@ const api = {
 		return _.omit(brew, ['_id', 'views', 'lastViewed']);
 	},
 	excludeGoogleProps : (brew)=>{ //Remove props that should not be saved to Google (only stored to Homebrewery stub)
-		return _.omit(brew, ['version', 'tags', 'systems', 'published', 'authors', 'owner', 'views', 'thumbnail']);
+		return _.omit(brew, ['version', 'tags', 'systems', 'published', 'authors', 'invitedAuthors', 'owner', 'views', 'thumbnail']);
 	},
 	excludeStubProps : (brew)=>{ //Remove props that should not be saved to stub-only brews
 		brew.text = brew.textBin = undefined; // Can't use _.omit because this brew is a Mongoose object
@@ -345,7 +345,6 @@ const api = {
 		return res.status(200).send(returnObj);
 	},
 	updateBrew : async (req, res)=>{
-		// Initialize brew from request and body, destructure query params, and set the initial value for the after-save method
 		const brewFromClient = api.excludePropsFromUpdate(req.body);
 		const brewFromServer = req.brew;
 
@@ -405,7 +404,7 @@ const api = {
 		}
 
 		//=====----- Update to or remove from Google Drive -----=========//
-		const googleId = brew.googleId;
+		const originalGoogleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 
 		if(brew.googleId && removeFromGoogle) {     // If removing from google, remove the brew's googleId
@@ -431,22 +430,21 @@ const api = {
 			brew.text = undefined;
 		}
 
-		// define a function to catch our save errors
-		const saveError = (err)=>{
-			console.error(err);
-			res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
-		};
-
 		if(brew._id) // if the brew has a stub id, fetch and merge into Mongo stub document
 			brew = _.assign(await HomebrewModel.findOne({ _id: brew._id }), brew);
 		else		 // if not, create a new Mongo document
 			brew = new HomebrewModel(brew);
 
-		let saved = await brew.save().catch(saveError);
+		let saved = await brew.save()
+			.catch((err)=>{
+				console.error(err);
+				res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');
+			});
+
 		if(!saved) return;
 
-		if(googleId && removeFromGoogle) {
-			const deleted = await api.deleteGoogleBrew(req.account, googleId, brew.editId, res)
+		if(originalGoogleId && removeFromGoogle) {
+			const deleted = await api.deleteGoogleBrew(req.account, originalGoogleId, brew.editId, res)
 				.catch((err)=>{
 					console.error(err);
 					res.status(err?.status || err?.response?.status || 500).send(err.message || err);
