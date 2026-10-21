@@ -99,19 +99,17 @@ const api = {
 
 		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
 
-		if(brews) {
-			for (const brew of brews) {
-				userThemes[brew.renderer] ??= {};
-				userThemes[brew.renderer][brew.shareId] = {
-					name         : brew.title,
-					renderer     : brew.renderer,
-					baseTheme    : brew.theme,
-					baseSnippets : false,
-					author       : brew.authors[0],
-					path         : brew.shareId,
-					thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
-				};
-			}
+		for (const brew of brews) {
+			userThemes[brew.renderer] ??= {};
+			userThemes[brew.renderer][brew.shareId] = {
+				name         : brew.title,
+				renderer     : brew.renderer,
+				baseTheme    : brew.theme,
+				baseSnippets : false,
+				author       : brew.authors[0],
+				path         : brew.shareId,
+				thumbnail    : brew.thumbnail || '/assets/naturalCritLogoWhite.svg'
+			};
 		}
 
 		return userThemes;
@@ -187,8 +185,7 @@ const api = {
 	},
 	getCSS : async (req, res)=>{
 		const { brew } = req;
-		if(!brew) return res.status(404).send('');
-		if(!brew.style) return res.status(404).send('');
+		if(!brew?.style) return res.status(404).send('');
 
 		res.set({
 			'Cache-Control' : 'no-cache',
@@ -204,16 +201,12 @@ const api = {
 				`\`\`\`\n\n` +
 				`${text}`;
 		}
-		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme']);
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme', 'columns', 'columnGutter', 'license', 'legalAuthors']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
 		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
 		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
-		metadata.columns = brew?.columns;
-		metadata.columnGutter = brew?.columnGutter;
-		metadata.license = brew?.license;
-		metadata.legalAuthors = brew?.legalAuthors;
 
 		text = `\`\`\`metadata\n` +
 			`${yaml.dump(metadata)}\n` +
@@ -252,9 +245,7 @@ const api = {
 	newGoogleBrew : async (account, brew, res)=>{
 		const oAuth2Client = GoogleActions.authCheck(account, res);
 
-		const newBrew = api.excludeGoogleProps(brew);
-
-		return await GoogleActions.newGoogleBrew(oAuth2Client, newBrew);
+		return await GoogleActions.newGoogleBrew(oAuth2Client, api.excludeGoogleProps(brew));
 	},
 	newBrew : async (req, res)=>{
 		const brew = req.body;
