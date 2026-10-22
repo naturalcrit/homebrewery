@@ -7,7 +7,7 @@ import { hbfm }   from 'marked-hbfm';
 import * as yaml                     from 'js-yaml';
 import asyncHandler                  from 'express-async-handler';
 import { nanoid }                    from 'nanoid';
-import { makePatches, applyPatches, stringifyPatches, parsePatch } from '@sanity/diff-match-patch';
+import { applyPatches, parsePatch } from '@sanity/diff-match-patch';
 import { md5 }                       from 'hash-wasm';
 import { splitTextStyleAndMetadata,
 		 brewSnippetsToJSON, debugTextMismatch }        from '../shared/helpers.js';
@@ -103,7 +103,6 @@ const api = {
 			userThemes[brew.renderer][brew.shareId] = {
 				name         : brew.title,
 				renderer     : brew.renderer,
-				baseTheme    : brew.theme,
 				baseSnippets : false,
 				author       : brew.authors[0],
 				path         : brew.shareId,
@@ -182,7 +181,7 @@ const api = {
 			next();
 		};
 	},
-	getCSS : async (req, res)=>{
+	getCSS : (req, res)=>{
 		const { brew } = req;
 		if(!brew?.style) return res.status(404).send('');
 
@@ -260,24 +259,22 @@ const api = {
 		newHomebrew.editId = nanoid(12);
 		newHomebrew.shareId = nanoid(12);
 
-		let googleId, saved;
 		if(saveToGoogle) {
-			googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
+			let googleId = await api.newGoogleBrew(req.account, newHomebrew, res);
 
 			if(!googleId) return;
 			newHomebrew = api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
 		}
 		
-		saved = await newHomebrew.save()
+		const saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
 				throw { name: 'BrewSave Error', message: `Error while creating new brew, ${err.toString()}`, status: 500, HBErrorCode: '06' };
 			});
 		if(!saved) return;
-		saved = saved.toObject();
 
-		res.status(200).send(saved);
+		res.status(200).send(saved.toObject());
 	},
 	getThemeBundle : async(req, res)=>{
 		/*	getThemeBundle: Collects the theme and all parent themes
@@ -335,7 +332,6 @@ const api = {
 			author   : themeAuthor
 		};
 
-		res.setHeader('Content-Type', 'application/json');
 		return res.status(200).send(returnObj);
 	},
 	updateBrew : async (req, res)=>{
