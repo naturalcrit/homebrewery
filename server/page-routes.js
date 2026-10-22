@@ -294,6 +294,12 @@ export default function pageRoutes({
 			type        : 'article'
 		};
 
+		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+	};
+
+	//Share Page
+	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+		await shareEmbedCommon(req, res);
 		// increase visitor view count, do not include visits by author(s)
 		if(!brew.authors.includes(req.account?.username)){
 			if(req.params.id.length > 12 && !brew._id) {
@@ -305,14 +311,7 @@ export default function pageRoutes({
 				await HomebrewModel.increaseView({ shareId: brew.shareId });
 			}
 		};
-
-		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-	};
-
-	//Share Page
-	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-	        await shareEmbedCommon(req, res);
-	        return next();
+		return next();
 	}));
 
 	//Embed Page - More work will be done on this later...
