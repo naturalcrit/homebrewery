@@ -2,7 +2,6 @@
 import _                             from 'lodash';
 import { model as HomebrewModel }    from './homebrew.model.js';
 import express                       from 'express';
-import zlib                          from 'zlib';
 import GoogleActions                 from './googleActions.js';
 import { hbfm }   from 'marked-hbfm';
 import * as yaml                     from 'js-yaml';
@@ -268,13 +267,8 @@ const api = {
 			if(!googleId) return;
 			newHomebrew = api.excludeStubProps(newHomebrew);
 			newHomebrew.googleId = googleId;
-		} else {
-			// Compress brew text to binary before saving
-			newHomebrew.textBin = zlib.deflateRawSync(newHomebrew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			newHomebrew.text = undefined;
 		}
-
+		
 		saved = await newHomebrew.save()
 			.catch((err)=>{
 				console.error(err, err.toString(), err.stack);
@@ -374,12 +368,13 @@ const api = {
 			if(failedPatchCount){
 				throw (`Patch failure: ${failedPatchCount}/${result[1].length} did not apply`);
 			}
-			if(decodeURI(result[0]) != brewFromClient.text){
+			patchedText = decodeURI(result[0]);
+			if(patchedText != brewFromClient.text){
+				debugTextMismatch(brewFromClient.text, patchedText, `edit/${brewFromClient.editId}`);
 				throw ('Patches did not apply cleanly, text mismatch detected');
 			}
 			// brew.text = applyPatches(patches, brewFromServer.text)[0];
 		} catch (err) {
-			debugTextMismatch(brewFromClient.text, brewFromServer.text, `edit/${brewFromClient.editId}`);
 			console.error('Failed to apply patches:', {
 				// patches : brewFromClient.patches,
 				// result  : result,
@@ -423,11 +418,6 @@ const api = {
 		if(brew.googleId) {
 			// If google id exists after above actions, Mongo will store only a stub; exclude non-stub properties from update
 			brew = api.excludeStubProps(brew);
-		} else {
-			// Compress brew text to binary before saving
-			brew.textBin = zlib.deflateRawSync(brew.text);
-			// Delete the non-binary text field since it's not needed anymore
-			brew.text = undefined;
 		}
 
 		if(brew._id) // if the brew has a stub id, fetch and merge into Mongo stub document
@@ -504,8 +494,6 @@ const api = {
 				if(shouldDeleteGoogleBrew) {
 					// When there are still authors remaining, we delete the google brew but store the full brew in the Homebrewery database
 					brew.googleId = undefined;
-					brew.textBin = zlib.deflateRawSync(brew.text);
-					brew.text = undefined;
 				}
 				brew.markModified('authors'); //Mongo will not properly update arrays without markModified()
 				await brew.save()
