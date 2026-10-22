@@ -368,8 +368,8 @@ const api = {
 			if(failedPatchCount){
 				throw (`Patch failure: ${failedPatchCount}/${result[1].length} did not apply`);
 			}
-			patchedText = decodeURI(result[0]);
-			if(patchedText != brewFromClient.text){
+			const patchedText = decodeURI(result[0]);
+			if(patchedText !== brewFromClient.text){
 				debugTextMismatch(brewFromClient.text, patchedText, `edit/${brewFromClient.editId}`);
 				throw ('Patches did not apply cleanly, text mismatch detected');
 			}
