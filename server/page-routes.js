@@ -285,21 +285,10 @@ export default function pageRoutes({
 		return next();
 	}));
 
-	const shareEmbedCommon = async(req, res)=>{
-		const { brew } = req;
-		req.ogMeta = { ...defaultMetaTags,
-			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
-			description : req.brew.description || 'No description.',
-			image       : req.brew.thumbnail || defaultMetaTags.image,
-			type        : 'article'
-		};
-
-		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
-	};
-
 	//Share Page
 	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-		await shareEmbedCommon(req, res);
+		const { brew } = req;
+
 		// increase visitor view count, do not include visits by author(s)
 		if(!brew.authors.includes(req.account?.username)){
 			if(req.params.id.length > 12 && !brew._id) {
@@ -311,13 +300,30 @@ export default function pageRoutes({
 				await HomebrewModel.increaseView({ shareId: brew.shareId });
 			}
 		};
+
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
+			description : req.brew.description || 'No description.',
+			image       : req.brew.thumbnail || defaultMetaTags.image,
+			type        : 'article'
+		};
+
+		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+
 		return next();
 	}));
 
 	//Embed Page - More work will be done on this later...
 	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
-	        await shareEmbedCommon(req, res);
-	        return next();
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
+			description : req.brew.description || 'No description.',
+			image       : req.brew.thumbnail || defaultMetaTags.image,
+			type        : 'article'
+		};
+
+		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+		return next();
 	}));
 
 	//Account Page
