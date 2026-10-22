@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import dedent from 'dedent';
 
 describe('Tests for api', ()=>{
 	let api;
@@ -493,35 +494,35 @@ describe('Tests for api', ()=>{
 				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-renderer: v3
-theme: phb
-bleedSize:
-  top: .125in
-  bottom: .125in
-  inner: .125in
-  outer: .125in
-safetySpace:
-  top: .25in
-  bottom: .25in
-  outer: .25in
-  inner: .5in
-trimSize:
-  width: 8.5in
-  height: 11in
-columns: '2'
-columnGutter: .125in
-license: None
-legalAuthors: ''
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
-
-brew`);
+				brew`);
 		});
 
 		it('should set metadata and style', ()=>{
@@ -556,39 +557,39 @@ brew`);
 				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-renderer: v3
-theme: phb
-bleedSize:
-  top: .125in
-  bottom: .125in
-  inner: .125in
-  outer: .125in
-safetySpace:
-  top: .25in
-  bottom: .25in
-  outer: .25in
-  inner: .5in
-trimSize:
-  width: 8.5in
-  height: 11in
-columns: '2'
-columnGutter: .125in
-license: None
-legalAuthors: ''
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
+				\`\`\`css
+				hello yes i am css
+				\`\`\`
 
-\`\`\`css
-hello yes i am css
-\`\`\`
-
-brew`);
+				brew`);
 		});
 	});
 	describe('exclusion methods', ()=>{
@@ -704,12 +705,11 @@ brew`);
     							'title: asdf\n' +
     							'bleedSize: {}\n' +
     							'safetySpace: {}\n' +
-    							'trimSize: {}\n' +
+    							'trimSize: {}' +
 								'\n' +
 								'```\n' +
 								'\n' +
     							'asdf',
-				textBin     : undefined,
 				theme       : '5ePHB',
 				thumbnail   : '',
 				title       : 'asdf',

@@ -208,7 +208,7 @@ const api = {
 		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
 
 		text = `\`\`\`metadata\n` +
-			`${yaml.dump(metadata)}\n` +
+			`${yaml.dump(metadata)}` +
 			`\`\`\`\n\n` +
 			`${text}`;
 		return text;
