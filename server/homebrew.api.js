@@ -402,7 +402,7 @@ const api = {
 		const originalGoogleId = brew.googleId;
 		const { saveToGoogle, removeFromGoogle } = req.query;
 
-		if(brew.googleId && removeFromGoogle) {     // If removing from google, remove the brew's googleId
+		if(brew.googleId && removeFromGoogle) {   // If removing from google, remove the brew's googleId
 			brew.googleId = undefined;
 		}
 		else if(!brew.googleId && saveToGoogle) { // If adding to google, create new google document and record the googleId
@@ -425,7 +425,7 @@ const api = {
 		else		 // if not, create a new Mongo document
 			brew = new HomebrewModel(brew);
 
-		let saved = await brew.save()
+		const saved = await brew.save()
 			.catch((err)=>{
 				console.error(err);
 				res.status(err.status || 500).send(err.message || 'Unable to save brew to Homebrewery database');

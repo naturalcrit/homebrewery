@@ -32,8 +32,8 @@ const HomebrewSchema = mongoose.Schema({
 	lock : { type: Object, index: true }
 }, { versionKey: false });
 
-HomebrewSchema.pre('save', ()=>{
-	if(!this.googleId) {
+HomebrewSchema.pre('save', function() {
+	if(this.text !== undefined) {
 		this.textBin = zlib.deflateRawSync(this.text);
 		this.text = undefined;
 	}
@@ -44,9 +44,9 @@ HomebrewSchema.statics.increaseView = async function(query) {
 	brew.lastViewed = new Date();
 	brew.views = brew.views + 1;
 	await brew.save()
-	.catch((err)=>{
-		return err;
-	});
+		.catch((err)=>{
+			return err;
+		});
 	return brew;
 };
 
