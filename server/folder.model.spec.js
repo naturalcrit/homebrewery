@@ -2,7 +2,7 @@
 
 /* eslint-disable max-lines */
 
-import { Folder } from './folder.model.js';
+import { model as Folder } from './folder.model.js';
 import { model as BrewModel } from './homebrew.model.js';
 
 jest.mock('./homebrew.model.js', ()=>({
