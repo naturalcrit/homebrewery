@@ -315,6 +315,7 @@ export default function pageRoutes({
 
 	//Embed Page - More work will be done on this later...
 	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+		const { brew } = req;
 		req.ogMeta = { ...defaultMetaTags,
 			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
 			description : req.brew.description || 'No description.',
