@@ -389,4 +389,4 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
 // Now compile the model ...
 const Folder = mongoose.model('Folder', FolderSchema);
 
-export { Folder };
+export { Folder as model };
