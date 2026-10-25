@@ -102,6 +102,22 @@ function throwFolderError(err, code, fields = []) {
   error.message = folderApiErrors[error.HBErrorCode];
   error.cause = err;
 
+  // NOTE1: Error objects are not normally serialisable
+  // NOTE2: Stack traces shouldn't normally get passed back to external callers
+  // TODO: Remove cause details from API responses after debugging.
+  error.toJSON = function () {
+    return {
+      HBErrorCode: this.HBErrorCode,
+      name: this.name,
+      message: this.message,
+      cause: this.cause && {
+        name: this.cause.name,
+        message: this.cause.message,
+        stack: this.cause.stack,
+      },
+    };
+  };
+
   const fieldNames = Array.isArray(fields) ? fields : fields.split();
   if ( fieldNames.length ) {
     error['invalid-params'] = fieldNames.map((name) => ({
