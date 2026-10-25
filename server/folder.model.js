@@ -191,6 +191,7 @@ FolderSchema.statics.createFolder = async function(
     if (slug == '') {
       const err = new Error();
       err.HBErrorCode = '121';
+      err.fields = ['slug'];
       throw err;
     }
 
