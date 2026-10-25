@@ -97,6 +97,7 @@ describe('Tests for folder api', ()=>{
         title: 'My Folder',
         slug: 'my-folder',
         isPublished: true,
+        isPrivate: false,
         ignored: 'value',
       };
 
@@ -108,6 +109,7 @@ describe('Tests for folder api', ()=>{
         title: 'My Folder',
         slug: 'my-folder',
         isPublished: true,
+        isPrivate: false,
       });
 
       expect(res.status).toHaveBeenCalledWith(201);

@@ -185,6 +185,7 @@ FolderSchema.statics.createFolder = async function(
     title = (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slugify(slug || title);
     isPublished = isPublished ?? false;
+    isPrivate = isPrivate ?? true;
 
     // throw if slug invalid, e.g. ''
     if (slug == '') {

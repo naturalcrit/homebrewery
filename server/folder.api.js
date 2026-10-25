@@ -55,6 +55,7 @@ const createFolderApi = async (req, res)=>{
       title: req.body.title,
       slug: req.body.slug,
       isPublished: req.body.isPublished,
+      isPrivate: req.body.isPrivate,
     });
 
     res.status(201).send(folder);
