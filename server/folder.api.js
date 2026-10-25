@@ -64,7 +64,7 @@ const createFolderApi = async (req, res)=>{
     switch (error.HBErrorCode ?? '') {
       case '101' : httpstatus = 409; break; // folder with identifier already exists
       case '121' : httpstatus = 422; break; // slug not valid
-      case '105' : httpstatus = 404; break; // folder could not be created
+      case '105' : httpstatus = 500; break; // generic, folder could not be created
       default:
         httpstatus = 500;
     }

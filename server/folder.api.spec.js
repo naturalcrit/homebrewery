@@ -115,7 +115,7 @@ describe('Tests for folder api', ()=>{
     });
 
     it.each([
-      [404, '105'],
+      [500, '105'],
       [500, '120'],
       [500, '999'],
       [500, undefined],
