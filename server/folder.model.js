@@ -103,7 +103,7 @@ function throwFolderError(err, code, fields = []) {
   error.cause = err;
 
   const fieldNames = Array.isArray(fields) ? fields : fields.split();
-  if ( (fields?? []).length ) {
+  if ( (fields ?? []).length ) {
     error['invalid-params'] = fields.map((name) => ({
       name,
       reason: 'Must not be null or blank',
