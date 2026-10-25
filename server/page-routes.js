@@ -21,6 +21,8 @@ import GoogleActions                 from './googleActions.js';
 import api from './homebrew.api.js';
 const { getBrew, getUsersBrewThemes } = api;
 
+import { model as FolderModel }      from './folder.model.js';
+
 const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
 const migrateText       = fs.readFileSync('./client/homebrew/pages/homePage/migrate.md', 'utf8');
