@@ -19,6 +19,7 @@ const EmbedPage = (props)=>{
 				theme={props.brew.theme}
 				themeBundle={themeBundle}
 				allowPrint={true}
+				embedPage={true}
 			/>
 		</div>
 	);
