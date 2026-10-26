@@ -109,7 +109,7 @@
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.1",
     "@vitejs/plugin-react": "^6.1.2",
-    "body-parser": "^2.3.0",
+    "body-parser": "^2.4.0",
     "classnames": "^2.5.1",
     "codemirror-5-themes": "^1.5.3",
     "cookie-parser": "^1.4.7",
