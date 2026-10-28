@@ -321,7 +321,7 @@ const errorIndex = (errorCode, props = {})=>{
 		// ####### Default unknown error
 
 		default:
-			return `
+			return dedent `
 				# An unexpected error occurred.
 				So unexpected we don't even have an error message for the code (${escape(errorCode)}).`;	}
 };
