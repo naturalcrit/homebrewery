@@ -45,7 +45,7 @@ const VaultPage = (props)=>{
 	const v3Ref           = useRef(null);
 	const legacyRef       = useRef(null);
 	const submitButtonRef = useRef(null);
-	const [tagsList, setTagList] = useState([]);
+	const [tagsList, setTagList] = useState(props.query.tags.split(',') || []);
 
 	useEffect(()=>{
 		disableSubmitIfFormInvalid();
