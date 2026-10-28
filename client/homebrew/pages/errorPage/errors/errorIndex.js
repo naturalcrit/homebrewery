@@ -115,7 +115,7 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Brew Title:** ${escape(props.brew.brewTitle) || 'Unable to show title'}
 
-				**Current Authors:** ${authorLinks(props.brew?.authors) || 'Unable to list authors'}${authorLinks(props.brew?.authors) || 'Unable to list authors'}
+				**Current Authors:** ${authorLinks(props.brew?.authors) || 'Unable to list authors'}
 
 				[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`;
 
