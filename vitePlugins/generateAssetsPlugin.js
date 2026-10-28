@@ -12,6 +12,14 @@ export function generateAssetsPlugin(isDev = false) {
 			// Copy favicon
 			await fs.copy('./client/homebrew/favicon.ico', `${buildDir}/assets/favicon.ico`);
 
+			//Copy this image into multiple paths to avoid server spam where browser requests an image
+			//at the wrong path, gets a 406, then in response requests broken-image which also fails. Error handler
+			//used the wrong path for this image causing an infinite request loop. Should be able to remove
+			//in some time once all users haver refreshed their browser
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/edit/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/new/client/icons/broken-image.jpg`);
+			await fs.copy('./client/icons/broken-image.jpg', `${buildDir}/client/icons/broken-image.jpg`);
+
 			// Copy shared styles/fonts
 			const assets = fs.readdirSync('./shared/naturalcrit/styles');
 			for (const file of assets) {
@@ -20,8 +28,10 @@ export function generateAssetsPlugin(isDev = false) {
 
 			// Compile Legacy themes
 			const themes = { Legacy: {}, V3: {} };
-			const legacyDirs = fs.readdirSync('./themes/Legacy');
-			for (const dir of legacyDirs) {
+      const legacyDirs = fs.readdirSync('./themes/Legacy', { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
+      for (const dir of legacyDirs) {
 				const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;
 				themes.Legacy[dir] = themeData;
@@ -33,7 +43,9 @@ export function generateAssetsPlugin(isDev = false) {
 			}
 
 			// Compile V3 themes
-			const v3Dirs = fs.readdirSync('./themes/V3');
+			const v3Dirs = fs.readdirSync('./themes/V3', { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
 			for (const dir of v3Dirs) {
 				const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;

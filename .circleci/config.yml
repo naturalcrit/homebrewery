@@ -83,6 +83,9 @@ jobs:
           name: Test - HTML sanitization
           command: npm run test:safehtml
       - run:
+          name: Test - Helpers
+          command: npm run test:helpers
+      - run:
           name: Test - Coverage
           command: npm run test:coverage
       - run:

@@ -9,9 +9,13 @@ import BrewItem from './brewItem/brewItem.jsx';
 const USERPAGE_SORT_DIR = 'HB_listPage_sortDir';
 const USERPAGE_SORT_TYPE = 'HB_listPage_sortType';
 const USERPAGE_GROUP_VISIBILITY_PREFIX = 'HB_listPage_visibility_group';
+const USERPAGE_LAYOUT_MODE = 'HB_listPage_layout_mode';
+const USERPAGE_THEME_MODE = 'HB_listPage_theme_mode';
 
 const DEFAULT_SORT_TYPE = 'alpha';
 const DEFAULT_SORT_DIR = 'asc';
+const DEFAULT_LAYOUT_MODE = 'grid';
+const DEFAULT_THEME_MODE = 'light';
 
 const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
@@ -19,6 +23,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
+	const [layoutMode, setLayoutMode] = useState(DEFAULT_LAYOUT_MODE);
+	const [themeMode, setThemeMode] = useState(DEFAULT_THEME_MODE);
 
 	const groupVisibilityRef = useRef(groupVisibility);
 	const sortTypeRef = useRef(sortType);
@@ -49,9 +55,14 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			return visibility;
 		}, {});
 
+		const newLayoutMode = localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE;
+		const newThemeMode = localStorage.getItem(USERPAGE_THEME_MODE) || DEFAULT_THEME_MODE;
+
 		setGroupVisibility(namedBrewCollection);
 		setSortType(newSortType);
 		setSortDir(newSortDir);
+		setLayoutMode(newLayoutMode);
+		setThemeMode(newThemeMode);
 
 		return ()=>{
 			window.onbeforeunload = null;
@@ -74,6 +85,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				brew={brew}
 				key={idx}
 				reportError={reportError}
+				theme={themeMode}
 				updateListFilter={(tag)=>{
 					updateUrl(filterString, sortType, sortDir, tag);
 				}}
@@ -107,12 +119,12 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const renderSortOption = (sortTitle, sortValue)=>{
 		return (
-			<div className={`sort-option ${sortType == sortValue ? 'active' : ''}`}>
+			<label className={`option ${sortType == sortValue ? 'active' : ''}`}>
 				<button value={`${sortValue}`} onClick={sortType == sortValue ? handleSortDirChange : handleSortOptionChange}>
 					{`${sortTitle}`}
 				</button>
 				{sortType == sortValue && <i className={`sortDir fas ${sortDir == 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>}
-			</div>
+			</label>
 		);
 	};
 
@@ -175,6 +187,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		if(filterTags?.length == 0) return;
 		return (
 			<div className='tags-container'>
+				Tags: 
 				{_.map(filterTags, (tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
@@ -185,7 +198,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 								updateUrl(filterString, sortType, sortDir, tag);
 							}}>
 							{matches[2]}
-						</span>
+						</span>						
 					);
 				})}
 			</div>
@@ -194,14 +207,13 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const renderSortOptions = ()=>{
 		return (
-			<div className='sort-container'>
+			<div className='radio-toggle sort-container'>
 				<h6>Sort by :</h6>
 				{renderSortOption('Title', 'alpha')}
 				{renderSortOption('Created Date', 'created')}
 				{renderSortOption('Updated Date', 'updated')}
 				{renderSortOption('Views', 'views')}
 				{/* {renderSortOption('Latest', 'latest')} */}
-				{renderFilterOption()}
 			</div>
 		);
 	};
@@ -259,31 +271,91 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			const sortedBrewGroup = sortedBrewCollection[idx];
 			const visible = groupVisibility[brewGroup.class];
 
-			return (
-				<div key={idx} className={`brewCollection ${brewGroup.class ?? ''}`}>
-					<h1
-						className={visible ? 'active' : 'inactive'}
-						onClick={()=>{
-							toggleBrewCollectionState(brewGroup.class);
-						}}>
-						{brewGroup.title || 'No Title'}
-					</h1>
+			return (<>
+				<h1
+					className={visible ? 'active' : 'inactive'}
+					onClick={()=>{
+						toggleBrewCollectionState(brewGroup.class);
+					}}>
+					{brewGroup.title || 'No Title'}
+				</h1>
+				<div key={idx} className={`brewGroup ${brewGroup.class ?? ''} ${layoutMode}`}>
+
 					{visible ? renderBrews(sortedBrewGroup.brews) : <></>}
 				</div>
-			);
+			</>);
 		});
 	};
 
-	return (
-		<div className='listPage sitePage'>
-			<link href='/themes/V3/Blank/style.css' type='text/css' rel='stylesheet' />
-			<link href='/themes/V3/5ePHB/style.css' type='text/css' rel='stylesheet' />
-			{navItems}
-			{renderSortOptions()}
-			{renderTagsOptions()}
+	const handleLayoutChange = (e, mode)=>{
+		setLayoutMode(e.target.checked ? mode : DEFAULT_LAYOUT_MODE);
+		localStorage.setItem(USERPAGE_LAYOUT_MODE, e.target.checked ? mode : DEFAULT_LAYOUT_MODE);
+		return;
+	};
 
-			<div className='content V3'>
-				<div className='page'>{renderBrewCollection(brewCollection)}</div>
+	const renderLayoutModeOptions = ()=>{
+		return (
+			<div className='radio-toggle layout-container'>
+				<h6>View:</h6>
+				<label className='option' title='grid'>
+						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+						<i className='fac compressed-grid'></i>
+				</label>
+				<label className='option' title='list'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
+					<i className='fas fa-bars'></i>
+				</label>
+				<label className='option' title='card'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'card')} checked={layoutMode === 'card'} />
+					<i className='fac format-card'></i>
+				</label>
+			</div>
+		);
+	};
+
+	const handleThemeChange = (e, mode)=>{
+		setThemeMode(e.target.checked ? mode : DEFAULT_THEME_MODE);
+		localStorage.setItem(USERPAGE_THEME_MODE, e.target.checked ? mode : DEFAULT_THEME_MODE);
+		return;
+	};
+	const renderThemePicker = ()=>{
+		return (
+			<div className="radio-toggle theme-container">
+				<h6>Theme:</h6>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
+					<i className="fas fa-sun"/>
+				</label>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
+					<i className="fas fa-moon"/>
+				</label>
+			</div>
+		)
+	};
+
+	const renderNav = () =>{
+
+		return (
+			<div className="listPageNav">
+				{renderLayoutModeOptions()}
+				{renderThemePicker()}
+				{renderSortOptions()}
+				{renderFilterOption()}
+				{renderTagsOptions()}
+			</div>
+		);
+			
+	} 
+
+	return (
+		<div className='sitePage listPage'>
+			{navItems}
+
+			{renderNav()}
+
+			<div className={`content V3 ${themeMode + 'Mode'}`}>
+				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
 			</div>
 		</div>
 	);

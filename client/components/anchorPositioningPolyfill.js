@@ -1,6 +1,6 @@
 /*
 This file basically checks support for Anchor Positioning API in the browser,
-and then loads the Oddbird polyfill if support is lacking. 
+and then loads the Oddbird polyfill if support is lacking.
 */
 
 let polyfillPromise;

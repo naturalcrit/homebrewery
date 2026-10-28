@@ -1,7 +1,7 @@
 import './errorPage.less';
 import React      from 'react';
 import UIPage     from '../basePages/uiPage/uiPage.jsx';
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm }   from 'marked-hbfm';
 import ErrorIndex from './errors/errorIndex.js';
 
 const ErrorPage = ({ brew })=>{

@@ -3,23 +3,23 @@
 @arrowSize     : 6px;
 @arrowPosition : 18px;
 [data-tooltip] {
-	position:relative;
+	position : relative;
 	.tooltip(attr(data-tooltip));
 }
 [data-tooltip-top] {
-	position:relative;
+	position : relative;
 	.tooltipTop(attr(data-tooltip-top));
 }
 [data-tooltip-bottom] {
-	position:relative;
+	position : relative;
 	.tooltipBottom(attr(data-tooltip-bottom));
 }
 [data-tooltip-left] {
-	position:relative;
+	position : relative;
 	.tooltipLeft(attr(data-tooltip-left));
 }
 [data-tooltip-right] {
-	position:relative;
+	position : relative;
 	.tooltipRight(attr(data-tooltip-right));
 }
 .tooltip(@content) {
@@ -33,9 +33,9 @@
 	}
 	&::after { margin-left : -18px; }
 	&::before, &::after {
-		bottom : 100%;
-		left   : 50%;
-		translate: -50% 0;
+		bottom    : 100%;
+		left      : 50%;
+		translate : -50% 0;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateY(-(@arrowSize + 2)));
@@ -49,9 +49,9 @@
 	}
 	&::after { margin-left : -18px; }
 	&::before, &::after {
-		top  : 100%;
-		left : 50%;
-		translate: -50% 0;
+		top       : 100%;
+		left      : 50%;
+		translate : -50% 0;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateY(@arrowSize + 2));
@@ -65,8 +65,8 @@
 		border-left-color : @tooltipColor;
 	}
 	&::after {
+		max-width     : 50ch;
 		margin-bottom : -14px;
-		max-width   : 50ch;
 	}
 	&::before, &::after {
 		right  : 100%;
@@ -84,13 +84,13 @@
 		border-right-color : @tooltipColor;
 	}
 	&::after {
+		max-width     : 50ch;
 		margin-bottom : -14px;
-		max-width   : 50ch;
 	}
 	&::before, &::after {
-		top : 50%;
-		left   : 100%;
-		translate:0 -50%;
+		top       : 50%;
+		left      : 100%;
+		translate : 0 -50%;
 	}
 	&:hover::after, &:hover::before, &:focus::after, &:focus::before {
 		.transform(translateX(@arrowSize + 2));
@@ -115,17 +115,17 @@
 	}
 	//Box
 	&::after {
-		visibility  : hidden;
-		padding     : 8px 10px;
-		font-size   : 12px;
-		line-height : 12px;
-		color       : white;
-		content     : @content;
-		background  : @tooltipColor;
-		max-width   : 60ch;
-		width		:max-content;
-		word-break	: break-word;
+		visibility    : hidden;
+		width         : max-content;
+		max-width     : 60ch;
+		padding       : 8px 10px;
+		font-size     : 12px;
+		line-height   : 12px;
+		color         : white;
+		word-break    : break-word;
 		overflow-wrap : break-word;
+		content       : @content;
+		background    : @tooltipColor;
 	}
 	&:hover::before, &:hover::after {
 		visibility : visible;

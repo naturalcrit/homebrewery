@@ -6,6 +6,9 @@ updates:
     interval: daily
   open-pull-requests-limit: 99
   groups:
+    eslint-bundle:
+      patterns: ["*eslint*"]
+      update-types: ["patch", "minor", "major"]
     dev-dependencies:
       dependency-type: "development"
       patterns: ["*"]

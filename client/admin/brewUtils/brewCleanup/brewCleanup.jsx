@@ -10,7 +10,7 @@ const BrewCleanup = ({})=>{
 	const [error, setError] = useState(null);
 
 	const find = async (type)=>{
-		
+
 
 		if(type === 'junk') try {
 			setPendingJunk(true);
@@ -109,18 +109,18 @@ const BrewCleanup = ({})=>{
 								<td style={{ width: '200px' }}>{Moment(brew.updatedAt).fromNow()}</td>
 								<td>{brew.lastViewed ? Moment(brew.lastViewed).fromNow() : 'No last viewed date'}</td>
 								<td>{brew.googleId ? 'Google' : 'Homebrewery'}</td>
-							</tr>
+							</tr>;
 						})}
 				</tbody>
 			</table>
 		</>;
 	};
 	const renderFound = (type)=>{
-		const deleteButton = !(type === 'junk' && junkBrewCollection.length === 0 || type === 'lost' && lostBrewCollection.length === 0); 
+		const deleteButton = !(type === 'junk' && junkBrewCollection.length === 0 || type === 'lost' && lostBrewCollection.length === 0);
 
 		return <div className='result'>
 			{deleteButton && <button onClick={()=>cleanup(type)} className='remove'>
-				{pendingLost && type === "lost" || pendingJunk && type === "junk"
+				{pendingLost && type === 'lost' || pendingJunk && type === 'junk'
 					? <i className='fas fa-spin fa-spinner' />
 					: <span><i className='fas fa-times' /> Remove</span>
 				}

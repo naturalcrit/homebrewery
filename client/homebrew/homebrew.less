@@ -1,7 +1,7 @@
 @import '@sharedStyles/core.less';
 .homebrew {
-	height : 100%;
-	background-color:@steel;
+	height           : 100%;
+	background-color : @steel;
 	&.deployment { background-color : darkred; }
 
 	.sitePage {
@@ -14,22 +14,6 @@
 			flex       : auto;
 			height     : calc(~'100% - 29px'); //Navbar height
 			overflow-y : hidden;
-		}
-		&.listPage .content {
-			overflow-y : scroll;
-
-			&::-webkit-scrollbar {
-				width : 20px;
-				&:horizontal {
-					width  : auto;
-					height : 20px;
-				}
-				&-thumb {
-					background : linear-gradient(90deg, #D3C1AF 15px, #00000000 15px);
-					&:horizontal { background : linear-gradient(0deg, #D3C1AF 15px, #00000000 15px); }
-				}
-				&-corner { visibility : hidden; }
-			}
 		}
 	}
 }

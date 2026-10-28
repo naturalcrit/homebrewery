@@ -99,13 +99,13 @@ const ToolBar = ({ displayOptions, onDisplayOptionsChange, visiblePages, totalPa
 	return (
 		<div id='preview-toolbar' className={`toolBar ${toolsVisible ? 'visible' : 'hidden'}`} role='toolbar'>
 			<div className='toggleButton'>
-				<button data-tooltip-right={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} 
-						aria-label={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`} 
+				<button data-tooltip-right={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`}
+					aria-label={`${toolsVisible ? 'Hide' : 'Show'} Preview Toolbar`}
 					    onClick={()=>{ setToolsVisible(!toolsVisible); localStorage.setItem(TOOLBAR_VISIBILITY, !toolsVisible); }}>
 					<i aria-hidden='true' className='fas fa-glasses' />
 				</button>
-				<button data-tooltip-right={`${headerState ? 'Hide' : 'Show'} Header Navigation`} 
-						aria-label={`${headerState ? 'Hide' : 'Show'} Header Navigation`} 
+				<button data-tooltip-right={`${headerState ? 'Hide' : 'Show'} Header Navigation`}
+					aria-label={`${headerState ? 'Hide' : 'Show'} Header Navigation`}
 					    onClick={()=>{setHeaderState(!headerState);}}>
 					<i aria-hidden='true' className='fas fa-rectangle-list' />
 				</button>

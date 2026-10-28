@@ -1,29 +1,31 @@
 @import '@sharedStyles/core.less';
-@import (less) './client/icons/customIcons.less';
+@import (less) '../../../icons/customIcons.less';
 @import (less) '@themes/fonts/5e/fonts.less';
 
 .snippetBar {
-	--activeTriggerColor: inherit;
 	--menuColor      : #DDDDDD;
+	--textColor      : black;
+	--hoverMenuColor : #999999;
+
 	@menuHeight      : 25px;
 	position         : relative;
 	display          : flex;
 	flex-wrap        : wrap-reverse;
-	reading-flow     : flex-visual;
 	justify-content  : space-between;
 	height           : auto;
-	color            : black;
-	background-color : #DDDDDD;
-	font-size        : .65rem;
-	font-family: 'Open Sans', sans-serif;
-	text-transform: uppercase;
-	font-weight: 800;
+	font-family      : 'Open Sans', sans-serif;
+	font-size        : 0.65rem;
+	font-weight      : 800;
+	color            : var(--textColor);
+	text-transform   : uppercase;
+	background-color : var(--menuColor);
+	reading-flow     : flex-visual;
 
 	.editors {
 		display         : flex;
 		justify-content : flex-end;
 		min-width       : 275px; //must be controlled every time an item is added, must be hardcoded for the wrapping as it is applied
-		font-size: .85rem;
+		font-size:0.85rem;
 		&:only-child {min-width   : unset; margin-left : auto;}
 		reading-order   : 2;
 
@@ -34,7 +36,7 @@
 
 			&:first-child { border-left : none; }
 
-			& > button {
+			& > button, & > li {
 				position    : relative;
 				width       : @menuHeight;
 				height      : @menuHeight;
@@ -42,9 +44,9 @@
 				text-align  : center;
 				cursor      : pointer;
 
-				&.editorTool:not(.active) { cursor : not-allowed; }
+				&.editorTool:not(.active),&.editorTool:disabled { cursor : not-allowed; }
 
-				&:hover,&.selected { background-color : #999999; }
+				&:hover,&.selected { background-color : var(--hoverMenuColor); }
 				&.text {
 					.tooltipLeft('Brew Editor');
 				}
@@ -56,6 +58,9 @@
 				}
 				&.snippet {
 					.tooltipLeft('Snippets');
+				}
+				&.settings {
+					.tooltipLeft('Settings');
 				}
 				&.undo {
 					.tooltipLeft('Undo');
@@ -83,11 +88,16 @@
 					&.active { color : inherit; }
 				}
 				&.history {
+					font-size:.70rem;
+					
+					i {
+						min-width:auto;
+					}
 					.tooltipLeft('History');
 					position  : relative;
 					color     : grey;
 					border    : none;
-					&.active { color : inherit; }
+					&:not(:disabled) { color : inherit; }
 					& > .dropdown {
 						right : -1px;
 						& > .snippet { padding-right : 10px; }
@@ -100,11 +110,6 @@
 						position         : relative;
 						background-color : #999999;
 					}
-				}
-				&.divider {
-					width      : 5px;
-					background : linear-gradient(currentColor, currentColor) no-repeat center/1px 100%;
-					&:hover { background-color : inherit; }
 				}
 			}
 			.themeSelector {
@@ -138,36 +143,32 @@
 	}
 
 	// removed caret for top level items, by request (makes buttons too wide).
-	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display: none; }
+	.menu-wrapper .menu-item:is(.snippets > .menu-wrapper > .menu-item):first-child .caret { display : none; }
 
 	.menu-item {
-		position    : relative;
-		display     : flex;
-		justify-content: space-between;
-		align-items : center; 
-		min-width   : max-content;
-		padding     : 5px;
-		cursor      : pointer;
-		width: 100%;
-		&:is(.menu-list .menu-item) [class*="name"] {
-			padding-inline: 8px;   // additional space between icon and name (helpful in Fonts menu especially).
+		position        : relative;
+		display         : flex;
+		align-items     : center;
+		justify-content : space-between;
+		width           : 100%; 
+		min-width       : max-content;
+		padding         : 5px;
+		cursor          : pointer;
+		&:is(.menu-list .menu-item) [class*='name'] {
+			padding-inline : 8px;   // additional space between icon and name (helpful in Fonts menu especially).
 		}
 		.menu-name {
-			flex: 1;
-			text-align: left;
-			text-box-trim: trim-end;
+			flex          : 1;
+			text-align    : left;
+			text-box-trim : trim-end;
 		}
 		i {
 			min-width    : 25px;
-			height       : .85rem;
+			height       : 0.85rem;
 			font-size    : 1.2em;
 			text-align   : center;
-			&.caret {
-				margin-right: 0;
-			}
-			&.caret:is(.menu-wrapper .menu-wrapper * ) {
-				text-align: right;
-			}
+			&.caret { margin-right : 0; }
+			&.caret:is(.menu-wrapper .menu-wrapper *) { text-align : right; }
 			/* Fonts */
 			&.font {
 				height : auto;
@@ -206,18 +207,16 @@
 			background    : grey;
 			border-radius : 12px;
 		}
-		&:hover {
-			background-color : #999999;
-		}
+		&:hover { background-color : var(--hoverMenuColor); }
 		&:disabled {
-			color: gray;
-			cursor: not-allowed;
-			&:hover { background-color: unset; }
+			color  : gray;
+			cursor : not-allowed;
+			&:hover { background-color : unset; }
 		}
 	}
 }
 @container editor (width < 841px) {
- 	.snippetBar {
+	.snippetBar {
 		.editors { 
 			flex            : 1;
 			justify-content : space-between;
@@ -233,3 +232,8 @@
 	}
 }
 
+.editor.darkMode .snippetBar {
+	--menuColor      : #666666;
+	--textColor      : #EEEEEE;
+	--hoverMenuColor : #444444;
+}

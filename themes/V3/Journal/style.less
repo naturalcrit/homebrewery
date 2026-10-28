@@ -80,20 +80,22 @@
 		font-size           : 0.89cm;
 		font-variant        : small-caps;
 		line-height         : 1em;
-		& + p::first-letter {
-			float                   : left;
-			padding-top             : 0.3em;
-			padding-bottom          : 2px;
-			padding-left            : 40px; //Allow background color to extend into margins
-			margin-top              : -0.3cm;
-			margin-right            : 0.1em;
-			margin-bottom           : -20px;
-			margin-left             : -40px;
-			font-family             : 'FrederickaTheGreat';
-			font-size               : 1.9em;
-			line-height             : 1em;
-		}
 		& + p::first-line { font-variant : small-caps; }
+	}
+	p.first-letter::first-letter,
+	p.drop-cap::first-letter,
+	h1 + p::first-letter {
+		float                   : left;
+		padding-top             : 0.3em;
+		padding-bottom          : 2px;
+		padding-left            : 40px; //Allow background color to extend into margins
+		margin-top              : -0.3cm;
+		margin-right            : 0.1em;
+		margin-bottom           : -20px;
+		margin-left             : -40px;
+		font-family             : 'FrederickaTheGreat';
+		font-size               : 1.9em;
+		line-height             : 1em;
 	}
 	h2 {
 		font-size     : 0.62cm;
@@ -273,12 +275,12 @@
 
 		// Monster Ability table
 		hr + table:first-of-type {
+			column-span         : none;
 			margin              : 0;
 			color               : inherit;
 			background-image    : none;
 			border-style        : none;
 			border-image        : none;
-			column-span         : none;
 			tr { background-image  : none; }
 			td,th { padding : 0px; }
 		}
@@ -370,8 +372,8 @@
 
 .page .spellList {
 	.useSansSerif();
-	font-family  : 'PermanentMarker';
 	column-count : 2;
+	font-family  : 'PermanentMarker';
 	ul + h5 { margin-top : 15px; }
 	ul {
 		padding-left                : 1em;
@@ -380,7 +382,7 @@
 		list-style-type             : none;
 		break-inside                : auto;
 		-webkit-column-break-inside : auto;
-		page-break-inside           : auto;
+		break-inside           : auto;
 	}
 	&.wide { column-count : 4; }
 }
@@ -397,7 +399,7 @@
 // *****************************/
 .page .toc {
 	-webkit-column-break-inside : avoid;
-	page-break-inside           : avoid;
+	break-inside           : avoid;
 	break-inside                : avoid;
 	h1 {
 		margin-bottom : 0.3cm;

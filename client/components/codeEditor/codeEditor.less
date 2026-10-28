@@ -16,15 +16,15 @@
 }
 
 @keyframes slideacross {
- 0% {
-	bottom: -200px;
-	left: -200px;
- }
+	0% {
+		bottom : -200px;
+		left   : -200px;
+	}
 
- 100% {
-	bottom:100%;
-	left:100%;
- }
+	100% {
+		bottom : 100%;
+		left   : 100%;
+	}
 }
 
 :where(.codeEditor) {
@@ -37,22 +37,22 @@
 		outline : none !important;
 
 		&.cm-flash {
-			position:relative;
+			position : relative;
 			&::after {
-				position:absolute;
-				content:'';
-				bottom:-200px;
-				left:-200px;
-				translate:-50%;
-				width:200%;
-				height:100px;
-				background:linear-gradient(0deg, #89eafc00 0px, #89ebfc8e 50px, #89eafc00 100px, transparent);
-				display:block;
+				position   : absolute;
+				bottom     : -200px;
+				left       : -200px;
+				display    : block;
+				width      : 200%;
+				height     : 100px;
+				content    : '';
+				background : linear-gradient(0deg, #89EAFC00 0px, #89EBFC8E 50px, #89EAFC00 100px, transparent);
 				
-				rotate:30deg;
+				rotate     : 30deg;
+				translate  : -50%;
 
-				@media screen and (prefers-reduced-motion: no-preference) { 
-					animation: .5s linear 1 slideacross ;
+				@media screen and (prefers-reduced-motion : no-preference) { 
+					animation : 0.5s linear 1 slideacross;
 				}
 			}
 		}
@@ -134,9 +134,7 @@
 			vertical-align : sub;
 			color          : rgb(123, 123, 15);
 		}
-		.cm-strikethrough {
-			text-decoration: line-through;
-		}
+		.cm-strikethrough { text-decoration : line-through; }
 
 		.cm-definitionList {
 			.cm-definitionTerm { color : rgb(96, 117, 143); }
@@ -196,30 +194,27 @@
 	}
 
 	.cm-image {
-		position:relative;
+		position : relative;
 		
 		.cm-preview {
-			object-fit: contain;
-			position:absolute;
-			bottom:0;
-			left:0;
-			height:200px;
-			width:200px;
-			height:200px;
-			padding:5px;
-			background-color: #fff;
-			border-radius:10px;
-			border:3px solid grey;
-			pointer-events: none;
-			opacity:0;
-			transition:0.2s opacity 0.5s;
-			translate:0 100%;
-			z-index:1000;
+			position         : absolute;
+			bottom           : 0;
+			left             : 0;
+			z-index          : 1000;
+			width            : 200px;
+			height           : 200px;
+			padding          : 5px;
+			pointer-events   : none;
+			object-fit       : contain;
+			background-color : #FFFFFF;
+			border           : 3px solid grey;
+			border-radius    : 10px;
+			opacity          : 0;
+			translate        : 0 100%;
+			transition       : 0.2s opacity 0.5s;
 		}
 
-		&:hover .cm-preview {
-			opacity:1;
-		}
+		&:hover .cm-preview { opacity : 1; }
 	}
 
 	/* Tab character visualization (optional) */

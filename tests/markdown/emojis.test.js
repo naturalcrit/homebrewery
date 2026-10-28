@@ -1,4 +1,4 @@
-import { hbfm } from 'hbmarkedwrapper';
+import { hbfm } from 'marked-hbfm';
 import dedent from 'dedent';
 
 // Marked.js adds line returns after closing tags on some default tokens.

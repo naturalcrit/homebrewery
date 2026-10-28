@@ -32,3 +32,10 @@ html,body, #reactRoot {
 		background-color : @silver !important;
 	}
 }
+.ellipsis() {
+	overflow      : hidden;
+	text-overflow : ellipsis;
+	word-break    : break-all;
+	white-space   : nowrap;
+	//remember, for ellipsis to work, an explicit width must be set
+}

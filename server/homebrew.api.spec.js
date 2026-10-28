@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import dedent from 'dedent';
 
 describe('Tests for api', ()=>{
 	let api;
@@ -360,25 +361,25 @@ describe('Tests for api', ()=>{
 				trashed     : false,
 				updatedAt   : undefined,
 				views       : 0,
-				bleedSize: {
-					top: '.125in',
-					bottom: '.125in',
-					inner: '.125in',
-					outer: '.125in',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
 				},
-				columns: '2',
-				columnGutter: '.125in',
-				legalAuthors: '',
-				license: 'None',
-				safetySpace: {
-					top: '.25in',
-					bottom: '.25in',
-					outer: '.25in',
-					inner: '.5in',
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
 				},
-				trimSize: {
-					width: '8.5in',
-					height: '11in',
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
 				},
 			});
 			expect(next).toHaveBeenCalled();
@@ -471,57 +472,57 @@ describe('Tests for api', ()=>{
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345',
-				bleedSize: {
-					top: '.125in',
-					bottom: '.125in',
-					inner: '.125in',
-					outer: '.125in',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
 				},
-				columns: '2',
-				columnGutter: '.125in',
-				legalAuthors: '',
-				license: 'None',
-				safetySpace: {
-					top: '.25in',
-					bottom: '.25in',
-					outer: '.25in',
-					inner: '.5in',
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
 				},
-				trimSize: {
-					width: '8.5in',
-					height: '11in',
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
 				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-renderer: v3
-theme: phb
-bleedSize:
-  top: .125in
-  bottom: .125in
-  inner: .125in
-  outer: .125in
-safetySpace:
-  top: .25in
-  bottom: .25in
-  outer: .25in
-  inner: .5in
-trimSize:
-  width: 8.5in
-  height: 11in
-columns: '2'
-columnGutter: .125in
-license: None
-legalAuthors: ''
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
-
-brew`);
+				brew`);
 		});
 
 		it('should set metadata and style', ()=>{
@@ -534,61 +535,61 @@ brew`);
 				renderer    : 'v3',
 				theme       : 'phb',
 				googleId    : '12345',
-				bleedSize: {
-					top: '.125in',
-					bottom: '.125in',
-					inner: '.125in',
-					outer: '.125in',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
 				},
-				columns: '2',
-				columnGutter: '.125in',
-				legalAuthors: '',
-				license: 'None',
-				safetySpace: {
-					top: '.25in',
-					bottom: '.25in',
-					outer: '.25in',
-					inner: '.5in',
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
 				},
-				trimSize: {
-					width: '8.5in',
-					height: '11in',
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
 				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-renderer: v3
-theme: phb
-bleedSize:
-  top: .125in
-  bottom: .125in
-  inner: .125in
-  outer: .125in
-safetySpace:
-  top: .25in
-  bottom: .25in
-  outer: .25in
-  inner: .5in
-trimSize:
-  width: 8.5in
-  height: 11in
-columns: '2'
-columnGutter: .125in
-license: None
-legalAuthors: ''
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
+				\`\`\`css
+				hello yes i am css
+				\`\`\`
 
-\`\`\`css
-hello yes i am css
-\`\`\`
-
-brew`);
+				brew`);
 		});
 	});
 	describe('exclusion methods', ()=>{
@@ -687,46 +688,53 @@ brew`);
 
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id          : '1',
-				authors      : ['test user'],
-				createdAt    : undefined,
-				description  : '',
-				editId       : expect.any(String),
-				gDrive       : false,
-				pageCount    : 1,
-				published    : false,
-				renderer     : 'V3',
-				lang         : 'en',
+				_id         : '1',
+				authors     : ['test user'],
+				createdAt   : undefined,
+				description : '',
+				editId      : expect.any(String),
+				gDrive      : false,
+				pageCount   : 1,
+				published   : false,
+				renderer    : 'V3',
+				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
 				tags        : [],
-				text        : undefined,
-				textBin     : expect.objectContaining({}),
+				text        : '```metadata\n' +
+    							'title: asdf\n' +
+    							'bleedSize: {}\n' +
+    							'safetySpace: {}\n' +
+    							'trimSize: {}' +
+								'\n' +
+								'```\n' +
+								'\n' +
+    							'asdf',
 				theme       : '5ePHB',
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
 				updatedAt   : undefined,
 				views       : 0,
-				bleedSize: {
-					top: '.125in',
-					bottom: '.125in',
-					inner: '.125in',
-					outer: '.125in',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
 				},
-				columns: '2',
-				columnGutter: '.125in',
-				legalAuthors: '',
-				license: 'None',
-				safetySpace: {
-					top: '.25in',
-					bottom: '.25in',
-					outer: '.25in',
-					inner: '.5in',
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
 				},
-				trimSize: {
-					width: '8.5in',
-					height: '11in',
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
 				},
 			});
 		});
@@ -765,16 +773,16 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id          : '1',
-				authors      : ['test user'],
-				bleedSize: {
-					top: '.125in',
-					bottom: '.125in',
-					inner: '.125in',
-					outer: '.125in',
+				_id       : '1',
+				authors   : ['test user'],
+				bleedSize : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
 				},
-				columns: '2',
-				columnGutter: '.125in',
+				columns      : '2',
+				columnGutter : '.125in',
 				createdAt    : undefined,
 				description  : '',
 				editId       : expect.any(String),
@@ -784,29 +792,29 @@ brew`);
 				renderer     : 'V3',
 				lang         : 'en',
 				shareId      : expect.any(String),
-				legalAuthors: '',
-				license: 'None',
-				safetySpace: {
-					top: '.25in',
-					bottom: '.25in',
-					outer: '.25in',
-					inner: '.5in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
 				},
-				googleId     : expect.any(String),
-				style        : undefined,
-				tags         : [],
-				text         : undefined,
-				textBin      : undefined,
-				theme        : '5ePHB',
-				thumbnail    : '',
-				title        : 'asdf',
-				trashed      : false,
-				trimSize: {
-					width: '8.5in',
-					height: '11in',
+				googleId  : expect.any(String),
+				style     : undefined,
+				tags      : [],
+				text      : undefined,
+				textBin   : undefined,
+				theme     : '5ePHB',
+				thumbnail : '',
+				title     : 'asdf',
+				trashed   : false,
+				trimSize  : {
+					width  : '8.5in',
+					height : '11in',
 				},
-				updatedAt    : undefined,
-				views        : 0
+				updatedAt : undefined,
+				views     : 0
 			});
 		});
 	});
@@ -1031,7 +1039,7 @@ brew`);
 			);
 		});
 	});
-	
+
 	describe('deleteGoogleBrew', ()=>{
 		it('should check auth and delete brew', async ()=>{
 			const result = await api.deleteGoogleBrew({ username: 'test user' }, 'id', 'editId', res);
@@ -1233,8 +1241,7 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 			expect(saved.googleId).toEqual(undefined);
-			expect(saved.text).toEqual(undefined);
-			expect(saved.textBin).not.toEqual(undefined);
+			expect(saved.text).not.toEqual(undefined);
 		});
 
 		it('should retain google brew and update stub when multiple authors and extra author requests deletion', async ()=>{
@@ -1261,7 +1268,7 @@ brew`);
 			expect(saved.googleId).toEqual(brew.googleId);
 		});
 	});
-	
+
 	describe('Split Text, Style, and Metadata', ()=>{
 
 		it('basic splitting', async ()=>{
@@ -1372,5 +1379,5 @@ brew`);
 			expect(testBrew.text).toEqual('text\n');
 		});
 	});
-	
+
 });

@@ -1,11 +1,11 @@
 /**
  * A dropdown menu component that uses the Anchor Positioning API to position the elements.  It supports nested submenus as well.
  * Anchor Positioning is now supported in all major browsers.  A polyfill is conditionally loaded for older browsers.
- * 
+ *
  * As-is, the menus will always open down aligned on left to trigger, submenus open to the right initially.
  * If no space, menus will still open down, but aligned to the right of the trigger.  Submenus will flip to the other side of the top menu.
  * This could be customized either in more specific CSS, or as a `direction` prop on the component (in future iterations).
- * 
+ *
  * @param {string} props.groupName - Name of the menu. Appears as the trigger text.
  * @param {string} [props.icon] - Icon to display in the trigger.
  * @param {string} [props.color] - Color class to add to the trigger.
@@ -22,7 +22,7 @@ import _ from 'lodash';
 // use react context to keep track of the menu depth (menus in menus)
 const MenuDepthContext = React.createContext(0);
 
-const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, ...props })=>{
+const Dropdown = ({ groupName, className = null, icon, children, color = null, customTrigger, disabled = false, ...props })=>{
 	const reactId = useId();
 	const safeId = reactId.replace(/[^a-zA-Z0-9_-]/g, '');
 	const menuId = `${_.kebabCase(groupName)}-${safeId}-menu`;
@@ -41,7 +41,7 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 	useEffect(()=>{
 		triggerRef.current?.setAttribute('style', `anchor-name: ${anchorName}`);
 		menuRef.current?.setAttribute('style', `position-anchor: ${anchorName}`);
-	}, [anchorName]);
+	}, [anchorName, disabled]);
 
 	// hide popover with click inside iframe (not supported by light dismiss)
 	useEffect(()=>{
@@ -91,8 +91,23 @@ const Dropdown = ({ groupName, className = null, icon, children, color = null, c
 		document.querySelectorAll('.menu-list:popover-open').forEach((openMenu)=>openMenu.hidePopover());
 	};
 
+	if(disabled){
+		return (
+			<li className={['menu-wrapper', className].filter(Boolean).join(' ')} role='none'>
+				<button
+					className={['menu-item', color].filter(Boolean).join(' ')}
+					aria-label={groupName}
+					role='menuitem'
+					disabled
+				>
+					{trigger(groupName, icon)}
+				</button>
+			</li>
+		);
+	}
+
 	return (
-		<li className='menu-wrapper' role='none'>
+		<li className={['menu-wrapper', className].filter(Boolean).join(' ')} role='none'>
 			<button
 				id={`${menuId}-trigger`}
 				className={['menu-item', color].join(' ')}

@@ -12,7 +12,7 @@ export default function(){
 		return ()=>{
 			document.removeEventListener('print:startprep', handlePrintStartPrep);
 			document.removeEventListener('print:finishedprep', handlePrintPrepFinished);
-		}
+		};
 	}, []);
 
 	const handlePrintStartPrep = ()=>{ setPrinting(true); };
