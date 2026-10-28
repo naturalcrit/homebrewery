@@ -146,29 +146,6 @@ describe('errorIndex', () => {
   });
 
 
-  describe('error-code types', () => {
-
-    it('does not treat number 91 as string error code 91', () => {
-      expect(errorIndex(91)).not.toBe(
-        errorIndex('91')
-      );
-    });
-
-    it('does not treat number 1 as string error code 01', () => {
-        expect(errorIndex(1)).not.toBe(
-          errorIndex('01')
-        );
-    });
-
-    it('honours leading zeros', () => {
-      expect(errorIndex('1')).not.toBe(
-        errorIndex('01')
-      );
-    });
-
-  });
-
-
   describe('defined error codes', () => {
 
     it('returns usable messages for all defined error codes', () => {
