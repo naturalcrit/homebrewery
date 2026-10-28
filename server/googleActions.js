@@ -151,7 +151,6 @@ const GoogleActions = {
 				description : file.description,
 				views       : parseInt(file.properties.views),
 				published   : file.properties.published ? file.properties.published == 'true' : false,
-				systems     : [],
 				lang        : file.properties.lang,
 				thumbnail   : file.properties.thumbnail,
 				webViewLink : file.webViewLink
@@ -298,7 +297,6 @@ const GoogleActions = {
 				text    : file.data,
 
 				description : obj.data.description,
-				systems     : obj.data.properties.systems ? obj.data.properties.systems.split(',') : [],
 				authors     : [],
 				lang        : obj.data.properties.lang,
 				published   : obj.data.properties.published ? obj.data.properties.published == 'true' : false,

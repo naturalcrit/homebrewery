@@ -1,8 +1,6 @@
-
-import 'core-js/es/string/to-well-formed.js'; //Polyfill for older browsers
+import 'core-js/es/string/to-well-formed.js'; // Polyfill for older browsers
 import './homebrew.less';
-import React from 'react';
-import { StaticRouter as Router, Route, Routes, useParams, useSearchParams } from 'react-router';
+import { BrowserRouter as Router, Routes, Route, useParams, useSearchParams } from 'react-router';
 
 import { updateLocalStorage } from './utils/updateLocalStorage/updateLocalStorageKeys.js';
 
@@ -38,46 +36,66 @@ const Homebrew = (props)=>{
 			lang      : ''
 		},
 		userThemes,
-		brews
+		brews,
+		enablev4
 	} = props;
 
 	global.account       = account;
 	global.version       = version;
 	global.config        = config;
+	global.enablev4      = enablev4;
 
 	const backgroundObject = ()=>{
-		if(global.config.deployment || (config.local && config.development)){
-  			const bgText = global.config.deployment || 'Local';
-  			return {
-    			backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
-  			};
+		if(config?.deployment || config?.developmentStyle) {
+			const bgText = config?.deployment || 'Local';
+			return {
+				backgroundImage : `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='100px' width='200px'><text x='0' y='15' fill='%23fff7' font-size='20'>${bgText}</text></svg>")`
+			};
 		}
 		return null;
 	};
+
 	updateLocalStorage();
 
+	if(brew.pureError) {
+		return (
+			<Router>
+				<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
+					<Routes>
+						<Route path={brew.originalUrl} element={<WithRoute el={ErrorPage} brew={brew} />} />
+					</Routes>
+				</div>
+			</Router>
+		);
+	}
+
 	return (
-		<Router location={url}>
-			<div className={`homebrew${(config.deployment || config.local) ? ' deployment' : ''}`} style={backgroundObject()}>
+		<Router>
+			<div className={`homebrew${(config?.deployment || config?.developmentStyle) ? ' deployment' : ''}`} style={backgroundObject()}>
 				<Routes>
-					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
-					<Route path='/new/:id' element={<WithRoute el={NewPage} brew={brew} userThemes={userThemes}/>} />
-					<Route path='/new' element={<WithRoute el={NewPage} userThemes={userThemes}/> } />
-					<Route path='/user/:username' element={<WithRoute el={UserPage} brews={brews} />} />
-					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
-					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/faq' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/migrate' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
-					<Route path='/account' element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
+					<Route path='/'       element={<WithRoute el={HomePage} brew={brew} />} />
+					<Route path='/*'      element={<WithRoute el={HomePage} brew={brew} />} />
 					<Route path='/legacy' element={<WithRoute el={HomePage} brew={brew} />} />
-					<Route path='/error' element={<WithRoute el={ErrorPage} brew={brew} />} />
-					<Route path='/' element={<WithRoute el={HomePage} brew={brew} />} />
-					<Route path='/*' element={<WithRoute el={HomePage} brew={brew} />} />
+
+					<Route path='/new/:id'  element={<WithRoute el={NewPage}  brew={brew} userThemes={userThemes}/>} />
+					<Route path='/new'      element={<WithRoute el={NewPage}  userThemes={userThemes}/> } />
+
+					<Route path='/edit/:id' element={<WithRoute el={EditPage} brew={brew} userThemes={userThemes}/>} />
+
+					<Route path='/share/:id' element={<WithRoute el={SharePage} brew={brew} />} />
+					<Route path='/changelog' element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
+					<Route path='/faq'       element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
+					<Route path='/migrate'   element={<WithRoute el={SharePage} brew={brew} disableMeta={true} />} />
+
+					<Route path='/account'        element={<WithRoute el={AccountPage} brew={brew} accountDetails={brew.accountDetails} />} />
+					<Route path='/error'          element={<WithRoute el={ErrorPage}   brew={brew} />} />
+
+					<Route path='/user/:username' element={<WithRoute el={UserPage}    brews={brews} />} />
+					<Route path='/vault' element={<WithRoute el={VaultPage}/>}/>
 				</Routes>
 			</div>
 		</Router>
 	);
 };
 
-module.exports = Homebrew;
+export default Homebrew;

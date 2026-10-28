@@ -34,9 +34,9 @@ renderer.link = function (href, title, text) {
 	if(title) {
 		out += ` title="${title}"`;
 	}
-	if(self) {
-		out += ' target="_self"';
-	}
+	// if(self) {
+	// 	out += ' target="_self"';
+	// }
 	out += `>${text}</a>`;
 	return out;
 };

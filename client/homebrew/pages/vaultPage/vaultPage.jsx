@@ -3,20 +3,27 @@
 import './vaultPage.less';
 import React, { useState, useEffect, useRef } from 'react';
 
-import Nav          from '../../navbar/nav.jsx';
-import Navbar       from '../../navbar/navbar.jsx';
-import RecentNavItems from '../../navbar/recent.navitem.jsx';
+import Nav          from '@navbar/nav.jsx';
+import Navbar       from '@navbar/navbar.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account      from '../../navbar/account.navitem.jsx';
-import NewBrew      from '../../navbar/newbrew.navitem.jsx';
-import HelpNavItem  from '../../navbar/help.navitem.jsx';
+import Account      from '@navbar/account.navitem.jsx';
+import NewBrew      from '@navbar/newbrew.navitem.jsx';
+import HelpNavItem  from '@navbar/help.navitem.jsx';
 import BrewItem     from '../basePages/listPage/brewItem/brewItem.jsx';
-import SplitPane    from '../../../components/splitPane/splitPane.jsx';
+import SplitPane    from '@components/splitPane/splitPane.jsx';
 import ErrorIndex   from '../errorPage/errors/errorIndex.js';
 
 import TagInput from '../../editor/tagInput/tagInput.jsx';
 
 import request from '../../utils/request-middleware.js';
+
+const DEFAULT_SORT_TYPE = 'alpha';
+const DEFAULT_SORT_DIR = 'asc';
+const DEFAULT_LAYOUT_MODE = 'grid';
+const DEFAULT_THEME_MODE = 'light';
+const USERPAGE_LAYOUT_MODE = 'HB_listPage_layout_mode';
+const USERPAGE_THEME_MODE = 'HB_listPage_theme_mode';
 
 const VaultPage = (props)=>{
 	const [pageState, setPageState] = useState(parseInt(props.query.page) || 1);
@@ -29,6 +36,8 @@ const VaultPage = (props)=>{
 	const [totalBrews, setTotalBrews]         = useState(null);
 	const [searching, setSearching]           = useState(false);
 	const [error, setError]                   = useState(null);
+	const [layoutMode, setLayoutMode] = useState(DEFAULT_LAYOUT_MODE);
+	const [themeMode, setThemeMode] = useState(DEFAULT_THEME_MODE);
 
 	const titleRef        = useRef(null);
 	const authorRef       = useRef(null);
@@ -39,6 +48,13 @@ const VaultPage = (props)=>{
 
 	useEffect(()=>{
 		disableSubmitIfFormInvalid();
+
+		const newLayoutMode = localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE;
+		const newThemeMode = localStorage.getItem(USERPAGE_THEME_MODE) || DEFAULT_THEME_MODE;
+
+		setLayoutMode(newLayoutMode);
+		setThemeMode(newThemeMode);
+
 		loadPage(pageState, true, props.query.sort, props.query.dir);
 	}, []);
 
@@ -76,7 +92,7 @@ const VaultPage = (props)=>{
 				updateStateWithBrews([], 1);
 			});
 
-		if(response.ok)
+		if(response?.ok)
 			updateStateWithBrews(response.body.brews, page);
 	};
 
@@ -85,7 +101,8 @@ const VaultPage = (props)=>{
 
 		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`)
 		.catch((error)=>{
-			console.log('error at loadTotal: ', error);
+			console.log('error at loadTotal: ');
+			console.error(error);
 			setError(error);
 			updateStateWithBrews([], 1);
 		});
@@ -274,7 +291,7 @@ const VaultPage = (props)=>{
 		const oppositeDir = dirState === 'asc' ? 'desc' : 'asc';
 
 		return (
-			<div className={`sort-option ${sortState === optionValue ? `active` : ''}`}>
+			<div className={`option ${sortState === optionValue ? `active` : ''}`}>
 				<button onClick={()=>loadPage(1, false, optionValue, oppositeDir)}>
 					{optionTitle}
 				</button>
@@ -285,10 +302,10 @@ const VaultPage = (props)=>{
 		);
 	};
 
-	const renderSortBar = ()=>{
+	const renderSortOptions = ()=>{
 
 		return (
-			<div className='sort-container'>
+			<div className='radio-toggle sort-container'>
 				{renderSortOption('Title', 'title', props.query.dir)}
 				{renderSortOption('Created Date', 'createdAt', props.query.dir)}
 				{renderSortOption('Updated Date', 'updatedAt', props.query.dir)}
@@ -296,6 +313,64 @@ const VaultPage = (props)=>{
 			</div>
 		);
 	};
+
+	const handleLayoutChange = (e, mode)=>{
+		setLayoutMode(e.target.checked ? mode : DEFAULT_LAYOUT_MODE);
+		localStorage.setItem(USERPAGE_LAYOUT_MODE, e.target.checked ? mode : DEFAULT_LAYOUT_MODE);
+		return;
+	};
+	const renderLayoutModeOptions = ()=>{
+		return (
+			<div className='radio-toggle layout-container'>
+				<h6>View:</h6>
+				<label className='option' title='grid'>
+						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+						<i className='fac compressed-grid'></i>
+				</label>
+				<label className='option' title='list'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
+					<i className='fas fa-bars'></i>
+				</label>
+				<label className='option' title='card'>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'card')} checked={layoutMode === 'card'} />
+					<i className='fac format-card'></i>
+				</label>
+			</div>
+		);
+	};
+	const handleThemeChange = (e, mode)=>{
+		setThemeMode(e.target.checked ? mode : DEFAULT_THEME_MODE);
+		localStorage.setItem(USERPAGE_THEME_MODE, e.target.checked ? mode : DEFAULT_THEME_MODE);
+		return;
+	};
+
+	const renderThemePicker = ()=>{
+		return (
+			<div className="radio-toggle theme-container">
+				<h6>Theme:</h6>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
+					<i className="fas fa-sun"/>
+				</label>
+				<label className="option">
+					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
+					<i className="fas fa-moon"/>
+				</label>
+			</div>
+		)
+	};
+
+	
+	const renderNav = () =>{
+		return (
+			<div className="listPageNav">
+				{renderLayoutModeOptions()}
+				{renderThemePicker()}
+				{renderSortOptions()}
+			</div>
+		);
+			
+	}
 
 	const renderPaginationControls = ()=>{
 		if(!totalBrews || totalBrews < 10) return null;
@@ -377,13 +452,23 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+			if(error.HBErrorCode === undefined) { 
+				return (
+					<div className='foundBrews noBrews'>
+						<h3>Error: Unknown error</h3>
+					</div>
+				)
+			} else {
 
-			return (
-				<div className='foundBrews noBrews'>
+				const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
+
+				return (
+					<div className='foundBrews noBrews'>
 					<h3>Error: {errorText}</h3>
-				</div>
-			);
+					</div>
+				);
+			}
+
 		}
 
 		if(!brewCollection) {
@@ -403,22 +488,26 @@ const VaultPage = (props)=>{
 		}
 
 		return (
-			<div className='foundBrews'>
+			<div className={`foundBrews ${themeMode + 'Mode'}`}>
 				<span className='totalBrews'>
 					{`Brews found: `}
 					<span>{totalBrews}</span>
 				</span>
 				{brewCollection.length > 10 && renderPaginationControls()}
-				{brewCollection.map((brew, index)=>{
-					return (
-						<BrewItem
-							brew={{ ...brew }}
-							key={index}
-							reportError={props.reportError}
-							renderStorage={false}
-						/>
-					);
-				})}
+				<div className='brewCollection'>
+					<div className={`brewGroup ${layoutMode}`}>
+						{brewCollection.map((brew, index)=>{
+							return (
+								<BrewItem
+									brew={{ ...brew }}
+									key={index}
+									reportError={props.reportError}
+									renderStorage={false}
+								/>
+							);
+						})}
+					</div>
+				</div>
 				{renderPaginationControls()}
 			</div>
 		);
@@ -433,7 +522,7 @@ const VaultPage = (props)=>{
 				<SplitPane showDividerButtons={false}>
 					<div className='form dataGroup'>{renderForm()}</div>
 					<div className='resultsContainer dataGroup'>
-						{renderSortBar()}
+						{renderNav()}
 						{renderFoundBrews()}
 					</div>
 				</SplitPane>

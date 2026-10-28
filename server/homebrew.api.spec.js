@@ -1,6 +1,7 @@
 /* eslint-disable max-lines */
 
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
+import dedent from 'dedent';
 
 describe('Tests for api', ()=>{
 	let api;
@@ -63,7 +64,6 @@ describe('Tests for api', ()=>{
 			title       : 'some title',
 			description : 'this is a description',
 			tags        : ['something', 'fun'],
-			systems     : ['D&D 5e'],
 			lang        : 'en',
 			renderer    : 'v3',
 			theme       : 'phb',
@@ -204,7 +204,6 @@ describe('Tests for api', ()=>{
 			expect(id).toEqual('abcdefghij');
 		});
 	});
-
 	describe('getBrew', ()=>{
 		const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
 		const notFoundError = { HBErrorCode: '05', message: 'Brew not found', name: 'BrewLoad Error', status: 404, accessType: 'share', brewId: '1' };
@@ -351,7 +350,6 @@ describe('Tests for api', ()=>{
 				renderer    : 'legacy',
 				lang        : 'en',
 				shareId     : undefined,
-				systems     : [],
 				tags        : [],
 				theme       : '5ePHB',
 				thumbnail   : '',
@@ -362,7 +360,27 @@ describe('Tests for api', ()=>{
 				style       : undefined,
 				trashed     : false,
 				updatedAt   : undefined,
-				views       : 0
+				views       : 0,
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
+				},
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
+				},
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
+				},
 			});
 			expect(next).toHaveBeenCalled();
 			expect(api.getId).toHaveBeenCalledWith(req);
@@ -382,7 +400,68 @@ describe('Tests for api', ()=>{
 			await expect(fn(req, null, next)).rejects.toEqual({ 'HBErrorCode': '51', 'brewId': '1', 'brewTitle': 'test brew', 'code': 404, 'message': 'brew locked' });
 		});
 	});
+	describe('Get CSS', ()=>{
+		it('should return brew style content as CSS text', async ()=>{
+			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
 
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
+			expect(res.set).toHaveBeenCalledWith({
+				'Cache-Control' : 'no-cache',
+				'Content-Type'  : 'text/css'
+			});
+		});
+
+		it('should return 404 when brew has no style content', async ()=>{
+			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+
+		it('should return 404 when brew does not exist', async ()=>{
+			const testBrew = { };
+
+			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
+			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
+			model.get = jest.fn(()=>toBrewPromise(testBrew));
+
+			const fn = api.getBrew('share', true);
+			const req = { brew: {} };
+			const next = jest.fn();
+			await fn(req, null, next);
+			await api.getCSS(req, res);
+
+			expect(req.brew).toEqual(testBrew);
+			expect(req.brew).toHaveProperty('style');
+			expect(res.status).toHaveBeenCalledWith(404);
+			expect(res.send).toHaveBeenCalledWith('');
+		});
+	});
 	describe('mergeBrewText', ()=>{
 		it('should set metadata and no style if it is not present', ()=>{
 			const result = api.mergeBrewText({
@@ -390,26 +469,60 @@ describe('Tests for api', ()=>{
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345'
+				googleId    : '12345',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
+				},
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
+				},
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
+				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-systems:
-  - D&D 5e
-renderer: v3
-theme: phb
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
-
-brew`);
+				brew`);
 		});
 
 		it('should set metadata and style', ()=>{
@@ -419,33 +532,66 @@ brew`);
 				title       : 'some title',
 				description : 'this is a description',
 				tags        : ['something', 'fun'],
-				systems     : ['D&D 5e'],
 				renderer    : 'v3',
 				theme       : 'phb',
-				googleId    : '12345'
+				googleId    : '12345',
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
+				},
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
+				},
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
+				},
 			});
 
-			expect(result).toEqual(`\`\`\`metadata
-title: some title
-description: this is a description
-tags:
-  - something
-  - fun
-systems:
-  - D&D 5e
-renderer: v3
-theme: phb
+			expect(result).toEqual(dedent`
+				\`\`\`metadata
+				title: some title
+				description: this is a description
+				tags:
+				  - something
+				  - fun
+				renderer: v3
+				theme: phb
+				columns: '2'
+				columnGutter: .125in
+				license: None
+				legalAuthors: ''
+				bleedSize:
+				  top: .125in
+				  bottom: .125in
+				  inner: .125in
+				  outer: .125in
+				safetySpace:
+				  top: .25in
+				  bottom: .25in
+				  outer: .25in
+				  inner: .5in
+				trimSize:
+				  width: 8.5in
+				  height: 11in
+				\`\`\`
 
-\`\`\`
+				\`\`\`css
+				hello yes i am css
+				\`\`\`
 
-\`\`\`css
-hello yes i am css
-\`\`\`
-
-brew`);
+				brew`);
 		});
 	});
-
 	describe('exclusion methods', ()=>{
 		it('excludePropsFromUpdate removes the correct keys', ()=>{
 			const sent = Object.assign({}, googleBrew);
@@ -463,7 +609,6 @@ brew`);
 
 			expect(sent).toEqual(googleBrew);
 			expect(result.tags).toBeUndefined();
-			expect(result.systems).toBeUndefined();
 			expect(result.published).toBeUndefined();
 			expect(result.authors).toBeUndefined();
 			expect(result.owner).toBeUndefined();
@@ -483,7 +628,6 @@ brew`);
 			expect(result.pageCount).toBe(1);
 		});
 	});
-
 	describe('beforeNewSave', ()=>{
 		it('sets the title if none', ()=>{
 			const brew = {
@@ -525,7 +669,6 @@ brew`);
 			expect(hbBrew.text).toEqual('merged');
 		});
 	});
-
 	describe('newGoogleBrew', ()=>{
 		it('should call the correct methods', ()=>{
 			api.excludeGoogleProps = jest.fn(()=>'newBrew');
@@ -539,7 +682,6 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalledWith('client', 'newBrew');
 		});
 	});
-
 	describe('newBrew', ()=>{
 		it('should set up a default brew via Homebrew model', async ()=>{
 			await api.newBrew({ body: { text: 'asdf' }, query: {}, account: { username: 'test user' } }, res);
@@ -558,16 +700,42 @@ brew`);
 				lang        : 'en',
 				shareId     : expect.any(String),
 				style       : undefined,
-				systems     : [],
 				tags        : [],
-				text        : undefined,
-				textBin     : expect.objectContaining({}),
+				text        : '```metadata\n' +
+    							'title: asdf\n' +
+    							'bleedSize: {}\n' +
+    							'safetySpace: {}\n' +
+    							'trimSize: {}' +
+								'\n' +
+								'```\n' +
+								'\n' +
+    							'asdf',
 				theme       : '5ePHB',
 				thumbnail   : '',
 				title       : 'asdf',
 				trashed     : false,
 				updatedAt   : undefined,
-				views       : 0
+				views       : 0,
+				bleedSize   : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
+				},
+				columns      : '2',
+				columnGutter : '.125in',
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
+				},
+				trimSize : {
+					width  : '8.5in',
+					height : '11in',
+				},
 			});
 		});
 
@@ -605,43 +773,51 @@ brew`);
 			expect(google.newGoogleBrew).toHaveBeenCalled();
 			expect(res.status).toHaveBeenCalledWith(200);
 			expect(res.send).toHaveBeenCalledWith({
-				_id         : '1',
-				authors     : ['test user'],
-				createdAt   : undefined,
-				description : '',
-				editId      : expect.any(String),
-				gDrive      : false,
-				pageCount   : 1,
-				published   : false,
-				renderer    : 'V3',
-				lang        : 'en',
-				shareId     : expect.any(String),
-				googleId    : expect.any(String),
-				style       : undefined,
-				systems     : [],
-				tags        : [],
-				text        : undefined,
-				textBin     : undefined,
-				theme       : '5ePHB',
-				thumbnail   : '',
-				title       : 'asdf',
-				trashed     : false,
-				updatedAt   : undefined,
-				views       : 0
+				_id       : '1',
+				authors   : ['test user'],
+				bleedSize : {
+					top    : '.125in',
+					bottom : '.125in',
+					inner  : '.125in',
+					outer  : '.125in',
+				},
+				columns      : '2',
+				columnGutter : '.125in',
+				createdAt    : undefined,
+				description  : '',
+				editId       : expect.any(String),
+				gDrive       : false,
+				pageCount    : 1,
+				published    : false,
+				renderer     : 'V3',
+				lang         : 'en',
+				shareId      : expect.any(String),
+				legalAuthors : '',
+				license      : 'None',
+				safetySpace  : {
+					top    : '.25in',
+					bottom : '.25in',
+					outer  : '.25in',
+					inner  : '.5in',
+				},
+				googleId  : expect.any(String),
+				style     : undefined,
+				tags      : [],
+				text      : undefined,
+				textBin   : undefined,
+				theme     : '5ePHB',
+				thumbnail : '',
+				title     : 'asdf',
+				trashed   : false,
+				trimSize  : {
+					width  : '8.5in',
+					height : '11in',
+				},
+				updatedAt : undefined,
+				views     : 0
 			});
 		});
 	});
-
-	describe('deleteGoogleBrew', ()=>{
-		it('should check auth and delete brew', async ()=>{
-			const result = await api.deleteGoogleBrew({ username: 'test user' }, 'id', 'editId', res);
-
-			expect(result).toBe(true);
-			expect(google.authCheck).toHaveBeenCalledWith({ username: 'test user' }, expect.objectContaining({}));
-			expect(google.deleteGoogleBrew).toHaveBeenCalledWith('client', 'id', 'editId');
-		});
-	});
-
 	describe('Theme bundle', ()=>{
 		it('should return Theme Bundle for a User Theme', async ()=>{
 			const brews = {
@@ -785,7 +961,94 @@ brew`);
 				status      : 422 });
 		});
 	});
+	describe('updateBrew', ()=>{
+		it('should return error on version mismatch', async ()=>{
+			const brewFromClient = { version: 1 };
+			const brewFromServer = { version: 1000, text: '' };
 
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		it('should return error on hash mismatch', async ()=>{
+			const brewFromClient = { version: 1, hash: '1234' };
+			const brewFromServer = { version: 1, text: 'test' };
+
+			const req = {
+				brew : brewFromServer,
+				body : brewFromClient
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
+			expect(res.status).toHaveBeenCalledWith(409);
+			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
+		});
+
+		// Commenting this one out for now, since we are no longer throwing this error while we monitor
+		// it('should return error on applying patches', async ()=>{
+		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
+		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+		// 	const req = {
+		// 		brew  : brewFromServer,
+		// 		body  : brewFromClient,
+		// 	};
+
+		// 	let err;
+		// 	try {
+		// 		await api.updateBrew(req, res);
+		// 	} catch (e) {
+		// 		err = e;
+		// 	}
+
+		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
+		// });
+
+		it('should save brew, no ID', async ()=>{
+			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
+			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
+
+			model.save = jest.fn((brew)=>{return brew;});
+
+			const req = {
+				brew  : brewFromServer,
+				body  : brewFromClient,
+				query : { saveToGoogle: false, removeFromGoogle: false }
+			};
+
+			await api.updateBrew(req, res);
+
+			expect(res.status).toHaveBeenCalledWith(200);
+			expect(res.send).toHaveBeenCalledWith(
+				expect.objectContaining({
+					_id         : '1',
+					description : 'Test Description',
+					hash        : '098f6bcd4621d373cade4e832627b4f6',
+					title       : 'Test Title',
+					version     : 2
+				})
+			);
+		});
+	});
+
+	describe('deleteGoogleBrew', ()=>{
+		it('should check auth and delete brew', async ()=>{
+			const result = await api.deleteGoogleBrew({ username: 'test user' }, 'id', 'editId', res);
+
+			expect(result).toBe(true);
+			expect(google.authCheck).toHaveBeenCalledWith({ username: 'test user' }, expect.objectContaining({}));
+			expect(google.deleteGoogleBrew).toHaveBeenCalledWith('client', 'id', 'editId');
+		});
+	});
 	describe('deleteBrew', ()=>{
 		it('should handle case where fetching the brew returns an error', async ()=>{
 			api.getBrew = jest.fn(()=>async ()=>{ throw { message: 'err', HBErrorCode: '02' }; });
@@ -978,8 +1241,7 @@ brew`);
 			expect(saveFunc).toHaveBeenCalled();
 			expect(saved.authors).toEqual(['test2']);
 			expect(saved.googleId).toEqual(undefined);
-			expect(saved.text).toEqual(undefined);
-			expect(saved.textBin).not.toEqual(undefined);
+			expect(saved.text).not.toEqual(undefined);
 		});
 
 		it('should retain google brew and update stub when multiple authors and extra author requests deletion', async ()=>{
@@ -1006,68 +1268,7 @@ brew`);
 			expect(saved.googleId).toEqual(brew.googleId);
 		});
 	});
-	describe('Get CSS', ()=>{
-		it('should return brew style content as CSS text', async ()=>{
-			const testBrew = { title: 'test brew', text: '```css\n\nI Have a style!\n```\n\n' };
 
-			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
-			model.get = jest.fn(()=>toBrewPromise(testBrew));
-
-			const fn = api.getBrew('share', true);
-			const req = { brew: {} };
-			const next = jest.fn();
-			await fn(req, null, next);
-			await api.getCSS(req, res);
-
-			expect(req.brew).toEqual(testBrew);
-			expect(req.brew).toHaveProperty('style', '\nI Have a style!\n');
-			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith('\nI Have a style!\n');
-			expect(res.set).toHaveBeenCalledWith({
-				'Cache-Control' : 'no-cache',
-				'Content-Type'  : 'text/css'
-			});
-		});
-
-		it('should return 404 when brew has no style content', async ()=>{
-			const testBrew = { title: 'test brew', text: 'I don\'t have a style!' };
-
-			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
-			model.get = jest.fn(()=>toBrewPromise(testBrew));
-
-			const fn = api.getBrew('share', true);
-			const req = { brew: {} };
-			const next = jest.fn();
-			await fn(req, null, next);
-			await api.getCSS(req, res);
-
-			expect(req.brew).toEqual(testBrew);
-			expect(req.brew).toHaveProperty('style');
-			expect(res.status).toHaveBeenCalledWith(404);
-			expect(res.send).toHaveBeenCalledWith('');
-		});
-
-		it('should return 404 when brew does not exist', async ()=>{
-			const testBrew = { };
-
-			const toBrewPromise = (brew)=>new Promise((res)=>res({ toObject: ()=>brew }));
-			api.getId = jest.fn(()=>({ id: '1', googleId: undefined }));
-			model.get = jest.fn(()=>toBrewPromise(testBrew));
-
-			const fn = api.getBrew('share', true);
-			const req = { brew: {} };
-			const next = jest.fn();
-			await fn(req, null, next);
-			await api.getCSS(req, res);
-
-			expect(req.brew).toEqual(testBrew);
-			expect(req.brew).toHaveProperty('style');
-			expect(res.status).toHaveBeenCalledWith(404);
-			expect(res.send).toHaveBeenCalledWith('');
-		});
-	});
 	describe('Split Text, Style, and Metadata', ()=>{
 
 		it('basic splitting', async ()=>{
@@ -1076,7 +1277,6 @@ brew`);
 					'title: title\n' +
 					'description: description\n' +
 					'tags: [ \'tag a\' , \'tag b\' ]\n' +
-					'systems: [ test system ]\n' +
 					'renderer: legacy\n' +
 					'theme: 5ePHB\n' +
 					'lang: en\n' +
@@ -1097,8 +1297,6 @@ brew`);
 			// Metadata
 			expect(testBrew.title).toEqual('title');
 			expect(testBrew.description).toEqual('description');
-			expect(testBrew.tags).toEqual(['tag a', 'tag b']);
-			expect(testBrew.systems).toEqual(['test system']);
 			expect(testBrew.renderer).toEqual('legacy');
 			expect(testBrew.theme).toEqual('5ePHB');
 			expect(testBrew.lang).toEqual('en');
@@ -1108,96 +1306,78 @@ brew`);
 			expect(testBrew.text).toEqual('text\n');
 		});
 
-		it('convert tags string to array', async ()=>{
+		it('extended metadata', async ()=>{
 			const testBrew = {
 				text : '```metadata\n' +
-					'tags: tag a\n' +
-					'```\n\n'
+					'title: title\n' +
+					'description: description\n' +
+					'tags: [ \'tag a\' , \'tag b\' ]\n' +
+					'renderer: legacy\n' +
+					'theme: 5ePHB\n' +
+					'lang: en\n' +
+					'bleedSize:\n' +
+					'  top: 1.5in\n' +
+					'  bottom: 1.5in\n' +
+					'  outer: 1.5in\n' +
+					'  inner: 1.5in\n' +
+					'safetySpace:\n' +
+					'  top: 1.25in\n' +
+					'  bottom: 1.25in\n' +
+					'  outer: 1.25in\n' +
+					'  inner: 1.5in\n' +
+					'trimSize:\n' +
+					'  width: 18.5in\n' +
+					'  height: 111in\n' +
+					'columns: 12\n' +
+					'columnGutter: 1.125in\n' +
+					'license: AELF\n' +
+					'legalAuthors: Tom Bombadil\n' +
+					'\n' +
+					'```\n' +
+					'\n' +
+					'```css\n' +
+					'style\n' +
+					'style\n' +
+					'style\n' +
+					'```\n' +
+					'\n' +
+					'text\n'
 			};
 
 			splitTextStyleAndMetadata(testBrew);
 
 			// Metadata
-			expect(testBrew.tags).toEqual(['tag a']);
+			expect(testBrew.title).toEqual('title');
+			expect(testBrew.description).toEqual('description');
+			expect(testBrew.renderer).toEqual('legacy');
+			expect(testBrew.theme).toEqual('5ePHB');
+			expect(testBrew.lang).toEqual('en');
+			// Paper Specfications
+			expect(testBrew.bleedSize.top).toEqual('1.5in');
+			expect(testBrew.bleedSize.bottom).toEqual('1.5in');
+			expect(testBrew.bleedSize.inner).toEqual('1.5in');
+			expect(testBrew.bleedSize.outer).toEqual('1.5in');
+
+			expect(testBrew.safetySpace.top).toEqual('1.25in');
+			expect(testBrew.safetySpace.bottom).toEqual('1.25in');
+			expect(testBrew.safetySpace.inner).toEqual('1.5in');
+			expect(testBrew.safetySpace.outer).toEqual('1.25in');
+
+			expect(testBrew.trimSize.width).toEqual('18.5in');
+			expect(testBrew.trimSize.height).toEqual('111in');
+
+			expect(testBrew.columns).toEqual(12);
+			expect(testBrew.columnGutter).toEqual('1.125in');
+
+			// Extended Metadata
+			expect(testBrew.license).toEqual('AELF');
+			expect(testBrew.legalAuthors).toEqual('Tom Bombadil');
+
+			// Style
+			expect(testBrew.style).toEqual('style\nstyle\nstyle\n');
+			// Text
+			expect(testBrew.text).toEqual('text\n');
 		});
 	});
 
-	describe('updateBrew', ()=>{
-		it('should return error on version mismatch', async ()=>{
-			const brewFromClient = { version: 1 };
-			const brewFromServer = { version: 1000, text: '' };
-
-			const req = {
-				brew : brewFromServer,
-				body : brewFromClient
-			};
-
-			await api.updateBrew(req, res);
-
-			expect(res.status).toHaveBeenCalledWith(409);
-			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server version is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
-		});
-
-		it('should return error on hash mismatch', async ()=>{
-			const brewFromClient = { version: 1, hash: '1234' };
-			const brewFromServer = { version: 1, text: 'test' };
-
-			const req = {
-				brew : brewFromServer,
-				body : brewFromClient
-			};
-
-			await api.updateBrew(req, res);
-
-			expect(req.brew.hash).toBe('098f6bcd4621d373cade4e832627b4f6');
-			expect(res.status).toHaveBeenCalledWith(409);
-			expect(res.send).toHaveBeenCalledWith('{\"message\":\"The server copy is out of sync with the saved brew. Please save your changes elsewhere, refresh, and try again.\"}');
-		});
-
-		// Commenting this one out for now, since we are no longer throwing this error while we monitor
-		// it('should return error on applying patches', async ()=>{
-		// 	const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: 'not a valid patch string' };
-		// 	const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
-
-		// 	const req = {
-		// 		brew  : brewFromServer,
-		// 		body  : brewFromClient,
-		// 	};
-
-		// 	let err;
-		// 	try {
-		// 		await api.updateBrew(req, res);
-		// 	} catch (e) {
-		// 		err = e;
-		// 	}
-
-		// 	expect(err).toEqual(Error('Invalid patch string: not a valid patch string'));
-		// });
-
-		it('should save brew, no ID', async ()=>{
-			const brewFromClient = { version: 1, hash: '098f6bcd4621d373cade4e832627b4f6', patches: '' };
-			const brewFromServer = { version: 1, text: 'test', title: 'Test Title', description: 'Test Description' };
-
-			model.save = jest.fn((brew)=>{return brew;});
-
-			const req = {
-				brew  : brewFromServer,
-				body  : brewFromClient,
-				query : { saveToGoogle: false, removeFromGoogle: false }
-			};
-
-			await api.updateBrew(req, res);
-
-			expect(res.status).toHaveBeenCalledWith(200);
-			expect(res.send).toHaveBeenCalledWith(
-				expect.objectContaining({
-					_id         : '1',
-					description : 'Test Description',
-					hash        : '098f6bcd4621d373cade4e832627b4f6',
-					title       : 'Test Title',
-					version     : 2
-				})
-			);
-		});
-	});
 });

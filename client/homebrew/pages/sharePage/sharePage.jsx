@@ -1,22 +1,26 @@
 import './sharePage.less';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Meta }                          from 'vitreum/headtags';
+import Headtags   from '../../../../vitreum/headtags.js';
+const Meta = Headtags.Meta;
 
-import Nav from '../../navbar/nav.jsx';
-import Navbar from '../../navbar/navbar.jsx';
-import MetadataNav from '../../navbar/metadata.navitem.jsx';
-import PrintNavItem from '../../navbar/print.navitem.jsx';
-import RecentNavItems from '../../navbar/recent.navitem.jsx';
+import Nav from '@navbar/nav.jsx';
+import Navbar from '@navbar/navbar.jsx';
+import MetadataNav from '@navbar/metadata.navitem.jsx';
+import PrintNavItem from '@navbar/print.navitem.jsx';
+import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
-import Account from '../../navbar/account.navitem.jsx';
+import Account from '@navbar/account.navitem.jsx';
 import BrewRenderer from '../../brewRenderer/brewRenderer.jsx';
 
+import request from '../../utils/request-middleware.js';
+
 import { DEFAULT_BREW_LOAD } from '../../../../server/brewDefaults.js';
-import { printCurrentBrew, fetchThemeBundle } from '../../../../shared/helpers.js';
+import { printCurrentBrew, fetchThemeBundle } from '@shared/helpers.js';
 
 const SharePage = (props)=>{
-	const { brew = DEFAULT_BREW_LOAD, disableMeta = false } = props;
+	const { disableMeta = false } = props;
 
+	const [currentBrew, setCurrentBrew] = useState(props.brew || DEFAULT_BREW_LOAD);
 	const [themeBundle,                setThemeBundle]                = useState({});
 	const [currentBrewRendererPageNum, setCurrentBrewRendererPageNum] = useState(1);
 
@@ -34,23 +38,51 @@ const SharePage = (props)=>{
 		}
 	};
 
+	const fetchUpdatedBrew = async ()=>{
+		const response = await request
+			.get(`/api/fetch/${currentBrew.shareId}`)
+			.catch((error)=>{
+				console.log('error at fetching updated brew: ', error);
+			});
+		if(response.ok && !!response.body.brew) {
+			setCurrentBrew(response.body.brew);
+		}
+	};
+
 	useEffect(()=>{
 		document.addEventListener('keydown', handleControlKeys);
-		fetchThemeBundle(undefined, setThemeBundle, brew.renderer, brew.theme);
+		fetchThemeBundle(undefined, setThemeBundle, currentBrew.renderer, currentBrew.theme);
+
+		let eventSource;
+		// Start a stream if the brew has been updated in the last month
+		if(Date.parse(props.brew?.updatedAt) > (new Date).setDate((new Date).getDate() - 30)){
+			// listen for changes in the brew version
+			eventSource = new EventSource(`/api/stream/${props.brew.shareId}`);
+
+			eventSource.addEventListener('brewUpdated', (evt)=>{
+				const messageData = JSON.parse(evt.data);
+
+				if(messageData.version != currentBrew.version) {
+					console.log('should fetch brew');
+					fetchUpdatedBrew();
+				}
+			});
+		}
 
 		return ()=>{
 			document.removeEventListener('keydown', handleControlKeys);
+			eventSource?.close();
 		};
 	}, []);
 
 	const processShareId = ()=>{
-		return brew.googleId && !brew.stubbed ? brew.googleId + brew.shareId : brew.shareId;
+		return currentBrew.googleId && !currentBrew.stubbed ? currentBrew.googleId + currentBrew.shareId : currentBrew.shareId;
 	};
 
 	const renderEditLink = ()=>{
-		if(!brew.editId) return null;
+		if(!currentBrew.editId) return null;
 
-		const editLink = brew.googleId && ! brew.stubbed ? brew.googleId + brew.editId : brew.editId;
+		const editLink = currentBrew.googleId && ! currentBrew.stubbed ? currentBrew.googleId + currentBrew.editId : currentBrew.editId;
 
 		return (
 			<Nav.item color='orange' icon='fas fa-pencil-alt' href={`/edit/${editLink}`}>
@@ -61,7 +93,7 @@ const SharePage = (props)=>{
 
 	const titleEl = (
 		<Nav.item className='brewTitle' style={disableMeta ? { cursor: 'default' } : {}}>
-			{brew.title}
+			{currentBrew.title}
 		</Nav.item>
 	);
 
@@ -70,11 +102,11 @@ const SharePage = (props)=>{
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
 				<Nav.section className='titleSection'>
-					{disableMeta ? titleEl : <MetadataNav brew={brew}>{titleEl}</MetadataNav>}
+					{disableMeta ? titleEl : <MetadataNav brew={currentBrew}>{titleEl}</MetadataNav>}
 				</Nav.section>
 
 				<Nav.section>
-					{brew.shareId && (
+					{currentBrew.shareId && (
 						<>
 							<PrintNavItem />
 							<Nav.dropdown>
@@ -91,24 +123,36 @@ const SharePage = (props)=>{
 								<Nav.item color='blue' icon='fas fa-clone' href={`/new/${processShareId()}`}>
 									clone to new
 								</Nav.item>
+								<Nav.item
+									color='blue'
+									icon='fas fa-link'
+									onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}`);}}>
+									copy url
+								</Nav.item>
+								{currentBrewRendererPageNum > 1 &&
+									<Nav.item
+										color='blue'
+										icon='fas fa-hashtag'
+										onClick={()=>{navigator.clipboard.writeText(`${global.config.baseUrl}/share/${processShareId()}#p${currentBrewRendererPageNum}`);}}>
+										copy url (page {currentBrewRendererPageNum})
+									</Nav.item>}
 							</Nav.dropdown>
 						</>
 					)}
-					<RecentNavItem brew={brew} storageKey='view' />
+					<RecentNavItem brew={currentBrew} storageKey='view' />
 					<Account />
 				</Nav.section>
 			</Navbar>
 
 			<div className='content'>
 				<BrewRenderer
-					text={brew.text}
-					style={brew.style}
-					lang={brew.lang}
-					renderer={brew.renderer}
-					theme={brew.theme}
+					text={currentBrew.text}
+					style={currentBrew.style}
+					lang={currentBrew.lang}
+					renderer={currentBrew.renderer}
+					theme={currentBrew.theme}
 					themeBundle={themeBundle}
 					onPageChange={handleBrewRendererPageChange}
-					currentBrewRendererPageNum={currentBrewRendererPageNum}
 					allowPrint={true}
 				/>
 			</div>

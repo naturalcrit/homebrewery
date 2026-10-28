@@ -1,10 +1,11 @@
 import './brewItem.less';
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import moment from 'moment';
 import request from '../../../../utils/request-middleware.js';
 
 import googleDriveIcon from '../../../../googleDrive.svg';
-import homebreweryIcon from '../../../../thumbnail.svg';
+import homebreweryIconWhite from '@themes/assets/naturalCritLogoWhite.svg';
+import homebreweryIconBlack from '@themes/assets/naturalCritLogoBlack.svg';
 import dedent from 'dedent';
 
 const BrewItem = ({
@@ -16,8 +17,11 @@ const BrewItem = ({
 	},
 	updateListFilter = ()=>{},
 	reportError = ()=>{},
+	theme,
 	renderStorage = true,
 })=>{
+
+	const [detailsOpen, setDetailsOpen] = useState(false);
 
 	const deleteBrew = useCallback(()=>{
 		if(brew.authors.length <= 1) {
@@ -39,9 +43,9 @@ const BrewItem = ({
 		if(!brew.editId) return null;
 
 		return (
-			<a className='deleteLink' onClick={deleteBrew}>
-				<i className='fas fa-trash-alt' title='Delete' />
-			</a>
+			<button aria-label={`Delete ${brew.title}`} className='deleteLink' onClick={deleteBrew}>
+				<i className='fas fa-trash-alt' aria-hidden='true' title='Delete' />
+			</button>
 		);
 	};
 
@@ -52,7 +56,7 @@ const BrewItem = ({
 		if(brew.googleId && !brew.stubbed) editLink = brew.googleId + editLink;
 
 		return (
-			<a className='editLink' href={`/edit/${editLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='editLink' href={`/edit/${editLink}`} aria-label={`Edit ${brew.title}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-pencil-alt' title='Edit' />
 			</a>
 		);
@@ -67,7 +71,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<a className='shareLink' href={`/share/${shareLink}`} target='_blank' rel='noopener noreferrer'>
+			<a className='shareLink' href={`/share/${shareLink}`} aria-label={`Share ${brew.title}`} target='_blank' rel='noopener noreferrer'>
 				<i className='fas fa-share-alt' title='Share' />
 			</a>
 		);
@@ -82,7 +86,7 @@ const BrewItem = ({
 		}
 
 		return (
-			<a className='downloadLink' href={`/download/${shareLink}`}>
+			<a className='downloadLink' aria-label={`Download ${brew.title}`} href={`/download/${shareLink}`}>
 				<i className='fas fa-download' title='Download' />
 			</a>
 		);
@@ -92,17 +96,16 @@ const BrewItem = ({
 		if(!renderStorage) return null;
 		if(brew.googleId) {
 			return (
-				<span title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
+				<span className='storage' title={brew.webViewLink ? 'Your Google Drive Storage' : 'Another User\'s Google Drive Storage'}>
 					<a href={brew.webViewLink} target='_blank'>
-						<img className='googleDriveIcon' src={googleDriveIcon} alt='googleDriveIcon' />
+						<img className='googleDriveIcon' src={googleDriveIcon} alt='Google Drive Storage' />
 					</a>
 				</span>
 			);
 		}
-
 		return (
-			<span title='Homebrewery Storage'>
-				<img className='homebreweryIcon' src={homebreweryIcon} alt='homebreweryIcon' />
+			<span className='storage' title='Homebrewery Storage'>
+				<img className='homebreweryIcon' src={theme === 'light' ? homebreweryIconBlack : homebreweryIconWhite} alt='Homebrewery Storage' />
 			</span>
 		);
 	};
@@ -117,13 +120,12 @@ const BrewItem = ({
 	const dateFormatString = 'YYYY-MM-DD HH:mm:ss';
 
 	return (
-		<div className='brewItem'>
+		<div className={`brewItem${detailsOpen ? ' detailsOpen' : ''}`} onClick={() => setDetailsOpen(!detailsOpen)} >
 			{brew.thumbnail && <div className='thumbnail' style={{ backgroundImage: `url(${brew.thumbnail})` }}></div>}
 			<div className='text'>
-				<h2>{brew.title}</h2>
+				<h2 title={brew.title}>{brew.title}</h2>
 				<p className='description'>{brew.description}</p>
 			</div>
-			<hr />
 			<div className='info'>
 				{brew.tags?.length ? (
 					<div className='brewTags' title={`${brew.tags.length} tags:\n${brew.tags.join('\n')}`}>
@@ -134,7 +136,7 @@ const BrewItem = ({
 						})}
 					</div>
 				) : null}
-				<span title={`Authors:\n${brew.authors?.join('\n')}`}>
+				<div className='brewAuthors' title={`Authors:\n${brew.authors?.join('\n')}`}>
 					<i className='fas fa-user' />{' '}
 					{brew.authors?.map((author, index)=>(
 						<React.Fragment key={index}>
@@ -146,21 +148,22 @@ const BrewItem = ({
 							{index < brew.authors.length - 1 && ', '}
 						</React.Fragment>
 					))}
-				</span>
-				<br />
-				<span title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
-					<i className='fas fa-eye' /> {brew.views}
-				</span>
+				</div>
 				{brew.pageCount && (
-					<span title={`Page count: ${brew.pageCount}`}>
-						<i className='far fa-file' /> {brew.pageCount}
+					<span className='brewPages' aria-label={`${brew.pageCount} pages`} title={`Page count: ${brew.pageCount}`}>
+						<span aria-hidden='true'><i className='far fa-file' /> {brew.pageCount}</span>
 					</span>
 				)}
+				<span className='lastViewed' aria-label={`Viewed ${brew.views} times`} title={`Last viewed: ${moment(brew.lastViewed).local().format(dateFormatString)}`}>
+					<span aria-hidden='true'><i className='fas fa-eye' /> {brew.views}</span>
+				</span>
 				<span
+					className='lastUpdated'
+					aria-label={`Last updated ${moment(brew.updatedAt).fromNow()}`}
 					title={dedent` Created: ${moment(brew.createdAt).local().format(dateFormatString)}
                         Last updated: ${moment(brew.updatedAt).local().format(dateFormatString)}`}
 				>
-					<i className='fas fa-sync-alt' /> {moment(brew.updatedAt).fromNow()}
+					<i className='fas fa-sync-alt' /><span aria-hidden='true'> {moment(brew.updatedAt).fromNow()}</span>
 				</span>
 				{renderStorageIcon()}
 			</div>

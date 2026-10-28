@@ -6,6 +6,9 @@ updates:
     interval: daily
   open-pull-requests-limit: 99
   groups:
+    eslint-bundle:
+      patterns: ["*eslint*"]
+      update-types: ["patch", "minor", "major"]
     dev-dependencies:
       dependency-type: "development"
       patterns: ["*"]
@@ -66,10 +69,6 @@ updates:
   - dependency-name: "@babel/preset-react"
     versions:
     - 7.13.13
-  - dependency-name: codemirror
-    versions:
-    - 5.59.3
-    - 5.60.0
   - dependency-name: classnames
     versions:
     - 2.3.0

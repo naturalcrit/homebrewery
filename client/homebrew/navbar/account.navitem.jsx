@@ -97,7 +97,7 @@ const Account = createReactClass({
 
 		//  Logged out
 		//  LOCAL ONLY
-		if(global.config.local) {
+		if(global.config?.local) {
 			return <Nav.item color='teal' icon='fas fa-sign-in-alt' onClick={this.localLogin}>
 				login
 			</Nav.item>;

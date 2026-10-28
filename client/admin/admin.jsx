@@ -49,4 +49,4 @@ const Admin = ()=>{
 	);
 };
 
-module.exports = Admin;
+export default Admin;

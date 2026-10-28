@@ -1,5 +1,5 @@
 import _       from 'lodash';
-import yaml    from 'js-yaml';
+import * as yaml from 'js-yaml';
 import request from '../client/homebrew/utils/request-middleware.js';
 
 // Convert the templates from a brew to a Snippets Structure.
@@ -19,7 +19,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 						userSnippets.push({
 							name : snippetName,
 							icon : '',
-							gen  : snipSplit[snips + 1],
+							gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 						});
 					}
 				}
@@ -44,7 +44,7 @@ const brewSnippetsToJSON = (menuTitle, userBrewSnippets, themeBundleSnippets=nul
 			if(snippetName.length != 0) {
 				const subSnip = {
 					name : snippetName,
-					gen  : snipSplit[snips + 1],
+					gen  : snipSplit[snips + 1].replace(/\n$/, ''),
 				};
 				// if(full) subSnip.icon = '';
 				userSnippets.push(subSnip);
@@ -91,8 +91,17 @@ const splitTextStyleAndMetadata = (brew)=>{
 		const index = brew.text.indexOf('\n```\n\n');
 		const metadataSection = brew.text.slice(11, index + 1);
 		const metadata = yaml.load(metadataSection);
-		Object.assign(brew, _.pick(metadata, ['title', 'description', 'tags', 'systems', 'renderer', 'theme', 'lang']));
+		Object.assign(brew, _.pick(metadata, ['title', 'description', 'renderer', 'theme', 'lang']));
 		brew.snippets = yamlSnippetsToText(_.pick(metadata, ['snippets']).snippets || '');
+
+		brew.bleedSize = { ...metadata.bleedSize };
+		brew.safetySpace = { ...metadata.safetySpace };
+		brew.trimSize  = { ...metadata.trimSize };
+		brew.columns = metadata?.columns;
+		brew.columnGutter = metadata?.columnGutter;
+		brew.license = metadata?.license;
+		brew.legalAuthors = metadata.legalAuthors;
+
 		brew.text = brew.text.slice(index + 6);
 	}
 	if(brew.text.startsWith('```css')) {
@@ -105,18 +114,39 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
-const printCurrentBrew = ()=>{
+const printCurrentBrew = async ()=>{
 	if(window.typeof !== 'undefined') {
-		window.frames['BrewRenderer'].contentWindow.print();
-		//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
-		const node = window.frames['BrewRenderer'].contentDocument.getElementsByClassName('brewRenderer').item(0);
-		node.style.display='none';
-		node.offsetHeight; // accessing this is enough to trigger a reflow
-		node.style.display='';
+		// fire a custom event for the print cycle
+		document.dispatchEvent(new CustomEvent('print:startprep'));
+		try {
+			const iframeDoc = window.frames['BrewRenderer'].contentDocument;
+
+			// get all img elements with lazy loading (currently only elements generated through MarkedJS)
+			const lazyImages = [...iframeDoc.querySelectorAll('img[loading="lazy"]')];
+			lazyImages.forEach((img)=>{ img.loading = 'eager'; });
+
+			// waits for images to load before resolving promise and opening print dialog
+			await Promise.all(
+				lazyImages
+								.filter((img)=>!img.complete)
+								.map((img)=>new Promise((resolve)=>{ img.onload = resolve; img.onerror = resolve; }))
+			);
+
+			window.frames['BrewRenderer'].contentWindow.print();
+
+			//Force DOM reflow; Print dialog causes a repaint, and @media print CSS somehow makes out-of-view pages disappear
+			const node = iframeDoc.getElementsByClassName('brewRenderer').item(0);
+			node.style.display='none';
+			node.offsetHeight; // accessing this is enough to trigger a reflow
+			node.style.display='';
+		} finally {
+			// when lazy load images have all been loaded, and the doc re-rendered for print preview, emit 'finished' event.
+			document.dispatchEvent(new CustomEvent('print:finishedprep'));
+		}
 	}
 };
 
-const fetchThemeBundle = async (setError, setThemeBundle, renderer, theme)=>{
+const fetchThemeBundle = async (setError = ()=>{}, setThemeBundle = ()=>{}, renderer, theme)=>{
 	if(!renderer || !theme) return;
 	const res = await request
 			.get(`/api/theme/${renderer}/${theme}`)
@@ -160,9 +190,35 @@ const debugTextMismatch = (clientTextRaw, serverTextRaw, label)=>{
 	// Char-level diff
 	for (let i = 0; i < Math.min(clientText.length, serverText.length); i++) {
 		if(clientText[i] !== serverText[i]) {
+			const getMismatchContext = (text, index, name, size = 10)=>{
+				const lower = Math.max(index - size, 0);
+				const upper = Math.min(index + size, text.length);
+				const slice = `${JSON.stringify(text.slice(lower, index)).slice(1, -1)}\u001B[31m${JSON.stringify(text[i]).slice(1, -1)}\u001B[0m${JSON.stringify(text.slice(index+1, upper)).slice(1, -1)}`;
+				const lineNo = text.slice(0, index).split('\n').length;
+				const code = `U+${text.charCodeAt(i).toString(16).toUpperCase()}`;
+
+				return {
+					name,
+					lineNo,
+					code,
+					lower,
+					upper,
+					slice
+				};
+			};
+
+			const boundSize = 10;
+
+			const clientContext = getMismatchContext(clientText, i, 'Client', boundSize);
+			const serverContext = getMismatchContext(serverText, i, 'Server', boundSize);
+
+			const logContext = (context)=>{
+				console.log(`  ${context.name} - line ${context.lineNo} : (${context.code})\t${context.slice}`);
+			};
+
 			console.log(`Char mismatch at index ${i}:`);
-			console.log(`  Client: '${clientText[i]}' (U+${clientText.charCodeAt(i).toString(16).toUpperCase()})`);
-			console.log(`  Server: '${serverText[i]}' (U+${serverText.charCodeAt(i).toString(16).toUpperCase()})`);
+			logContext(clientContext);
+			logContext(serverContext);
 			break;
 		}
 	}
@@ -173,5 +229,6 @@ export {
 	printCurrentBrew,
 	fetchThemeBundle,
 	brewSnippetsToJSON,
-	debugTextMismatch
+	debugTextMismatch,
+	yamlSnippetsToText
 };

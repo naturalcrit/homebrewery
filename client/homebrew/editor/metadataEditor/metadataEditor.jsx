@@ -1,16 +1,14 @@
 /* eslint-disable max-lines */
-import './metadataEditor.less';
-import React from 'react';
-import createReactClass from 'create-react-class';
+import '../uiEditor.less';
+import React, { useState } from 'react';
 import _ from 'lodash';
-import request from '../../utils/request-middleware.js';
-import Combobox from '../../../components/combobox.jsx';
-import TagInput from '../tagInput/tagInput.jsx';
 
-import Themes from 'themes/themes.json';
+import request from '../../utils/request-middleware.js';
+import Themes from '@themes/themes.json';
 import validations from './validations.js';
 
-const SYSTEMS = ['5e', '4e', '3.5e', 'Pathfinder'];
+import Combobox from '@components/combobox.jsx';
+import TagInput from '../tagInput/tagInput.jsx';
 
 import homebreweryThumbnail from '../../thumbnail.png';
 
@@ -20,48 +18,28 @@ const callIfExists = (val, fn, ...args)=>{
 	}
 };
 
-const MetadataEditor = createReactClass({
-	displayName     : 'MetadataEditor',
-	getDefaultProps : function() {
-		return {
-			metadata : {
-				editId      : null,
-				shareId     : null,
-				title       : '',
-				description : '',
-				thumbnail   : '',
-				tags        : [],
-				published   : false,
-				authors     : [],
-				systems     : [],
-				renderer    : 'legacy',
-				theme       : '5ePHB',
-				lang        : 'en'
-			},
-
-			onChange    : ()=>{},
-			reportError : ()=>{}
-		};
+const MetadataEditor = ({
+	metadata = {
+		shareId     : null,
+		editId      : null,
+		title       : '',
+		description : '',
+		tags        : [],
+		lang        : 'en',
+		renderer    : 'legacy',
+		authors     : [],
+		published   : false,
+		thumbnail   : '',
+		theme       : '5ePHB',
 	},
+	onChange = ()=>{},
+	reportError = ()=>{},
+	userThemes = {},
+	themeBundle = {}
+})=>{
+	const [showThumbnail, setShowThumbnail] = useState(true);
 
-	getInitialState : function(){
-		return {
-			showThumbnail : true
-		};
-	},
-
-	toggleThumbnailDisplay : function(){
-		this.setState({
-			showThumbnail : !this.state.showThumbnail
-		});
-	},
-
-	renderThumbnail : function(){
-		if(!this.state.showThumbnail) return;
-		return <img className='thumbnail-preview' src={this.props.metadata.thumbnail || homebreweryThumbnail}></img>;
-	},
-
-	handleFieldChange : function(name, e){
+	const handleFieldChange = (name, e)=>{
 		// load validation rules, and check input value against them
 		const inputRules = validations[name] ?? [];
 		const validationErr = inputRules.map((rule)=>rule(e.target.value)).filter(Boolean);
@@ -74,8 +52,8 @@ const MetadataEditor = createReactClass({
 		// if no validation rules, save to props
 		if(validationErr.length === 0){
 			callIfExists(e.target, 'setCustomValidity', '');
-			this.props.onChange({
-				...this.props.metadata,
+			onChange({
+				...metadata,
 				[name] : e.target.value
 			});
 			return true;
@@ -85,58 +63,40 @@ const MetadataEditor = createReactClass({
 				return `- ${err}`;
 			}).join('\n');
 
-
 			debouncedReportValidity(e.target, errMessage);
 			return false;
 		}
-	},
-
-	handleSystem : function(system, e){
+	};
+	const handleRenderer = (renderer, e)=>{
 		if(e.target.checked){
-			this.props.metadata.systems.push(system);
-		} else {
-			this.props.metadata.systems = _.without(this.props.metadata.systems, system);
-		}
-		this.props.onChange(this.props.metadata);
-	},
-
-	handleRenderer : function(renderer, e){
-		if(e.target.checked){
-			this.props.metadata.renderer = renderer;
+			metadata.renderer = renderer;
 			if(renderer == 'legacy')
-				this.props.metadata.theme = '5ePHB';
+				metadata.theme = '5ePHB';
 		}
-		this.props.onChange(this.props.metadata, 'renderer');
-	},
-
-	handlePublish : function(val){
-		this.props.onChange({
-			...this.props.metadata,
+		onChange(metadata, 'renderer');
+	};
+	const handlePublish = (val)=>{
+		onChange({
+			...metadata,
 			published : val
 		});
-	},
-
-	handleTheme : function(theme){
-		this.props.metadata.renderer = theme.renderer;
-		this.props.metadata.theme    = theme.path;
-
-		this.props.onChange(this.props.metadata, 'theme');
-	},
-
-	handleThemeWritein : function(e) {
+	};
+	const handleTheme = (theme)=>{
+		metadata.renderer = theme.renderer;
+		metadata.theme    = theme.path;
+		onChange(metadata, 'theme');
+	};
+	const handleThemeWritein = (e)=>{
 		const shareId = e.target.value.split('/').pop(); //Extract just the ID if a URL was pasted in
-		this.props.metadata.theme = shareId;
-
-		this.props.onChange(this.props.metadata, 'theme');
-	},
-
-	handleLanguage : function(languageCode){
-		this.props.metadata.lang = languageCode;
-		this.props.onChange(this.props.metadata);
-	},
-
-	handleDelete : function(){
-		if(this.props.metadata.authors && this.props.metadata.authors.length <= 1){
+		metadata.theme = shareId;
+		onChange(metadata, 'theme');
+	};
+	const handleLanguage = (languageCode)=>{
+		metadata.lang = languageCode;
+		onChange(metadata);
+	};
+	const handleDelete = ()=>{
+		if(metadata.authors && metadata.authors.length <= 1){
 			if(!confirm('Are you sure you want to delete this brew? Because you are the only owner of this brew, the document will be deleted permanently.')) return;
 			if(!confirm('Are you REALLY sure? You will not be able to recover the document.')) return;
 		} else {
@@ -144,73 +104,91 @@ const MetadataEditor = createReactClass({
 			if(!confirm('Are you REALLY sure? You will lose editor access to this document.')) return;
 		}
 
-		request.delete(`/api/${this.props.metadata.googleId ?? ''}${this.props.metadata.editId}`)
+		request.delete(`/api/${metadata.googleId ?? ''}${metadata.editId}`)
 			.send()
 			.end((err, res)=>{
 				if(err) {
-					this.props.reportError(err);
+					reportError(err);
 				} else {
 					window.location.href = '/';
 				}
 			});
-	},
-
-	renderSystems : function(){
-		return _.map(SYSTEMS, (val)=>{
-			return <label key={val}>
-				<input
-					type='checkbox'
-					checked={_.includes(this.props.metadata.systems, val)}
-					onChange={(e)=>this.handleSystem(val, e)} />
-				{val}
-			</label>;
+	};
+	const handleDeleteAuthor = (author)=>{
+		if(!confirm('Are you sure you want to remove this author? They will lose all edit access to this brew, and it will dissapear from their userpage.')) return;
+		if(!metadata.authors.includes(author)) return;
+		onChange({
+    		...metadata,
+    		authors : metadata.authors.filter((a)=>a !== author)
 		});
-	},
-
-	renderPublish : function(){
-		if(this.props.metadata.published){
-			return <button className='unpublish' onClick={()=>this.handlePublish(false)}>
-				<i className='fas fa-ban' /> unpublish
+	};
+	const renderPublish = ()=>{
+		if(metadata.published){
+			return <button id='publish-button' className='unpublish' onClick={()=>handlePublish(false)}>
+				<i className='fas fa-ban' aria-hidden='true' /> unpublish
 			</button>;
 		} else {
-			return <button className='publish' onClick={()=>this.handlePublish(true)}>
-				<i className='fas fa-globe' /> publish
+			return <button id='publish-button' className='publish' onClick={()=>handlePublish(true)}>
+				<i className='fas fa-globe' aria-hidden='true' /> publish
 			</button>;
 		}
-	},
-
-	renderDelete : function(){
-		if(!this.props.metadata.editId) return;
-
-		return <div className='field delete'>
-			<label>delete</label>
-			<div className='value'>
-				<button className='publish' onClick={this.handleDelete}>
-					<i className='fas fa-trash-alt' /> delete brew
-				</button>
+	};
+	const renderAuthors = ()=>{
+		const authors = metadata.authors;
+		const isOwner = global.account?.username && global.account?.username === authors[0];
+		if(!isOwner || authors.length < 2) return (
+			<div className='field authors'>
+				<label>authors</label>
+				<div className='value'>
+					{authors.length > 0 && (
+						<a href={`/user/${authors[0]}`} className='author-link' target='_blank' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+							{authors[0]}{authors.length > 1 && ', '}
+						</a>
+					)}
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
+        					{author}{i+2 < authors.length && ', '}
+        				</a>
+        			))}
+				</div>
 			</div>
-		</div>;
-	},
+		);
+		return (
+			<div className='field authors'>
+				<label>Authors</label>
+				<ul className='list'>
+					{authors.length > 0 && (
+						<li className='tag owner' title='Owner'>
+							<a href={`/user/${authors[0]}`} className='author-link' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}
+							</a>
+						</li>
+					)}
 
-	renderAuthors : function(){
-		let text = 'None.';
-		if(this.props.metadata.authors && this.props.metadata.authors.length){
-			text = this.props.metadata.authors.join(', ');
-		}
-		return <div className='field authors'>
-			<label>authors</label>
-			<div className='value'>
-				{text}
+					{authors.length > 1 && authors.slice(1).map((author, i)=>(
+        				<li className='tag author' key={i + 1} title='Author'>
+        					<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${authors[0]}'s profile in a new tab`}>
+        						{author}
+        					</a>
+        					<button
+								onClick={()=>handleDeleteAuthor(author)}
+								className='delete'
+								title={`Remove ${author} as an author`}
+        					>
+        						<i className='fa fa-times fa-fw' />
+        					</button>
+        				</li>
+        			))}
+				</ul>
 			</div>
-		</div>;
-	},
-
-	renderThemeDropdown : function(){
-		const mergedThemes = _.merge(Themes, this.props.userThemes);
+		);
+	};
+	const renderThemeDropdown = ()=>{
+		const mergedThemes = _.merge(Themes, userThemes);
 
 		const listThemes = (renderer)=>{
 			return _.map(_.values(mergedThemes[renderer]), (theme)=>{
-				if(theme.path == this.props.metadata.shareId) return;
+				if(theme.path == metadata.shareId) return;
 				const preview = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownPreview.png`;
 				const texture = theme.thumbnail || `/themes/${theme.renderer}/${theme.path}/dropdownTexture.png`;
 				return <div className='item' key={`${renderer}_${theme.name}`} value={`${theme.author ?? renderer} : ${theme.name}`} data={theme} title={''}>
@@ -226,8 +204,8 @@ const MetadataEditor = createReactClass({
 			}).filter(Boolean);
 		};
 
-		const currentRenderer = this.props.metadata.renderer;
-		const currentThemeDisplay = this.props.themeBundle?.name ? `${this.props.themeBundle.author ?? currentRenderer} : ${this.props.themeBundle.name}` : 'No Theme Selected';
+		const currentRenderer = metadata.renderer;
+		const currentThemeDisplay = themeBundle?.name ? `${themeBundle.author ?? currentRenderer} : ${themeBundle.name}` : 'No Theme Selected';
 		let dropdown;
 
 		if(currentRenderer == 'legacy') {
@@ -237,16 +215,17 @@ const MetadataEditor = createReactClass({
 				</div>;
 		} else {
 			dropdown =
-				<div className='value'>
+				<div className='value' data-tooltip-top='Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.'>
 					<Combobox trigger='click'
+						id='combobox-themes'
 						className='themes-dropdown'
 						default={currentThemeDisplay}
 						placeholder='Select from below, or enter the Share URL or ID of a brew with the meta:theme tag'
-						onSelect={(value)=>this.handleTheme(value)}
+						onSelect={(value)=>handleTheme(value)}
 						onEntry={(e)=>{
 							e.target.setCustomValidity('');	//Clear the validation popup while typing
-							if(this.handleFieldChange('theme', e))
-								this.handleThemeWritein(e);
+							if(handleFieldChange('theme', e))
+								handleThemeWritein(e);
 						}}
 						options={listThemes(currentRenderer)}
 						autoSuggest={{
@@ -255,17 +234,15 @@ const MetadataEditor = createReactClass({
 							filterOn                : ['value', 'title']
 						}}
 					/>
-					<small>Select from the list below (built-in themes and brews you have tagged "meta:theme"), or paste in the Share URL or Share ID of any brew.</small>
 				</div>;
 		}
 
 		return <div className='field themes'>
-			<label>theme</label>
+			<label htmlFor='combobox-themes'>theme</label>
 			{dropdown}
 		</div>;
-	},
-
-	renderLanguageDropdown : function(){
+	};
+	const renderLanguageDropdown = ()=>{
 		const langCodes = ['en', 'de', 'de-ch', 'fr', 'ja', 'es', 'it', 'sv', 'ru', 'zh-Hans', 'zh-Hant'];
 		const listLanguages = ()=>{
 			return _.map(langCodes.sort(), (code, index)=>{
@@ -279,16 +256,17 @@ const MetadataEditor = createReactClass({
 		};
 
 		return <div className='field language'>
-			<label>language</label>
-			<div className='value'>
+			<label htmlFor='combobox-language'>language</label>
+			<div className='value' data-tooltip-right='Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.'>
 				<Combobox trigger='click'
+					id='combobox-language'
 					className='language-dropdown'
-					default={this.props.metadata.lang || ''}
+					default={metadata.lang || ''}
 					placeholder='en'
-					onSelect={(value)=>this.handleLanguage(value)}
+					onSelect={(value)=>handleLanguage(value)}
 					onEntry={(e)=>{
 						e.target.setCustomValidity('');	//Clear the validation popup while typing
-						this.handleFieldChange('lang', e);
+						handleFieldChange('lang', e);
 					}}
 					options={listLanguages()}
 					autoSuggest={{
@@ -297,14 +275,11 @@ const MetadataEditor = createReactClass({
 						filterOn                : ['value', 'detail', 'title']
 					}}
 				/>
-				<small>Sets the HTML Lang property for your brew. May affect hyphenation or spellcheck.</small>
 			</div>
-
 		</div>;
-	},
-
-	renderRenderOptions : function(){
-		return <div className='field systems'>
+	};
+	const renderRenderOptions = ()=>{
+		return <div className='field renderers'>
 			<label>Renderer</label>
 			<div className='value'>
 				<label key='legacy'>
@@ -312,8 +287,8 @@ const MetadataEditor = createReactClass({
 						type='radio'
 						value = 'legacy'
 						name = 'renderer'
-						checked={this.props.metadata.renderer === 'legacy'}
-						onChange={(e)=>this.handleRenderer('legacy', e)} />
+						checked={metadata.renderer === 'legacy'}
+						onChange={(e)=>handleRenderer('legacy', e)} />
 					Legacy
 				</label>
 
@@ -322,92 +297,121 @@ const MetadataEditor = createReactClass({
 						type='radio'
 						value = 'V3'
 						name = 'renderer'
-						checked={this.props.metadata.renderer === 'V3'}
-						onChange={(e)=>this.handleRenderer('V3', e)} />
+						checked={metadata.renderer === 'V3'}
+						onChange={(e)=>handleRenderer('V3', e)} />
 					V3
 				</label>
 				<small><a href='/legacy' target='_blank' rel='noopener noreferrer'>Click here to see the demo page for the old Legacy renderer!</a></small>
 			</div>
 		</div>;
-	},
+	};
 
-	render : function(){
-		return <div className='metadataEditor'>
+	return (
+		<div className='metadataEditor uiEditor'>
 			<h1>Properties Editor</h1>
 
 			<div className='field title'>
-				<label>title</label>
-				<input type='text' className='value'
-					defaultValue={this.props.metadata.title}
-					onChange={(e)=>this.handleFieldChange('title', e)} />
+				<label htmlFor='title_field'>title</label>
+				<input
+					type='text'
+					id='title_field'
+					className='value'
+					defaultValue={metadata.title}
+					onChange={(e)=>handleFieldChange('title', e)}
+				/>
 			</div>
-			<div className='field-group'>
+			<fieldset className='field-group'>
 				<div className='field-column'>
 					<div className='field description'>
-						<label>description</label>
-						<textarea defaultValue={this.props.metadata.description} className='value'
-							onChange={(e)=>this.handleFieldChange('description', e)} />
+						<label htmlFor='description_field'>description</label>
+						<textarea
+							id='description_field'
+							defaultValue={metadata.description}
+							className='value'
+							onChange={(e)=>handleFieldChange('description', e)}
+						/>
 					</div>
 					<div className='field thumbnail'>
-						<label>thumbnail</label>
-						<input type='text'
-							defaultValue={this.props.metadata.thumbnail}
+						<label htmlFor='thumbnail_field'>thumbnail</label>
+						<input
+							type='text'
+							id='thumbnail_field'
+							defaultValue={metadata.thumbnail}
 							placeholder='https://my.thumbnail.url'
 							className='value'
-							onChange={(e)=>this.handleFieldChange('thumbnail', e)} />
-						<button className='display' onClick={this.toggleThumbnailDisplay}>
-							<i className={`fas fa-caret-${this.state.showThumbnail ? 'right' : 'left'}`} />
+							onChange={(e)=>handleFieldChange('thumbnail', e)}
+						/>
+						<button
+							className='display'
+							onClick={()=>setShowThumbnail(!showThumbnail)}
+							aria-label={`${showThumbnail ? 'hide thumbnail' : 'show thumbnail'}`}>
+							<i className={`fas fa-caret-${showThumbnail ? 'right' : 'left'}`} />
 						</button>
 					</div>
 				</div>
-				{this.renderThumbnail()}
-			</div>
-
-			<TagInput label='tags' valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-				placeholder='add tag' unique={true}
-				values={this.props.metadata.tags}
-				onChange={(e)=>this.handleFieldChange('tags', e)}
-			/>
-
-			<div className='field systems'>
-				<label>systems</label>
+				{showThumbnail && <img className='thumbnail-preview' src={metadata.thumbnail || homebreweryThumbnail}></img>}
+			</fieldset>
+			<div className='field tags'>
+				<label htmlFor='combobox-tags'>Tags</label>
 				<div className='value'>
-					{this.renderSystems()}
+					<TagInput
+						id='combobox-tags'
+						label='tags'
+						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+						placeholder='add tag'
+						unique={true}
+						values={metadata.tags}
+						onChange={(e)=>handleFieldChange('tags', e)}
+						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+					/>
 				</div>
 			</div>
-
-			{this.renderLanguageDropdown()}
-
-			{this.renderThemeDropdown()}
-
-			{this.renderRenderOptions()}
+			{renderLanguageDropdown()}
+			{renderThemeDropdown()}
+			{renderRenderOptions()}
 
 			<h2>Authors</h2>
-
-			{this.renderAuthors()}
-
-			<TagInput label='invited authors' valuePatterns={[/.+/]}
-				validators={[(v)=>!this.props.metadata.authors?.includes(v)]}
-				placeholder='invite author' unique={true}
-				values={this.props.metadata.invitedAuthors}
-				notes={['Invited author usernames are case sensitive.', 'After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.']}
-				onChange={(e)=>this.handleFieldChange('invitedAuthors', e)}
-			/>
-
-			<h2>Privacy</h2>
-
-			<div className='field publish'>
-				<label>publish</label>
+			{renderAuthors()}
+			<div className='field invitedAuthors'>
+				<label htmlFor='combobox-invited-authors'>Invited authors</label>
 				<div className='value'>
-					{this.renderPublish()}
-					<small>Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page.  Unpublished brews are not indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines.  You can unpublish a brew any time.</small>
+					<TagInput
+						id='combobox-invited-authors'
+						label='invited authors'
+						valuePatterns={/.+/}
+						validators={[(v)=>!metadata.authors?.includes(v)]}
+						placeholder='invite author'
+						unique={true}
+						tooltip={`Invited author usernames are case sensitive.
+							After adding an invited author, send them the edit link. There, they can choose to accept or decline the invitation.`}
+						values={metadata.invitedAuthors}
+						onChange={(e)=>handleFieldChange('invitedAuthors', e)}
+					/>
 				</div>
 			</div>
 
-			{this.renderDelete()}
-
-		</div>;
-	}
-});
+			<h2>Privacy</h2>
+			<div className='field publish'>
+				<label htmlFor='publish-button'>publish</label>
+				<div className='value'>
+					{renderPublish()}
+					<small>
+						Published brews are searchable in <a href='/vault'>the Vault</a> and visible on your user page. Unpublished brews are not
+						indexed in the Vault or visible on your user page, but can still be shared and indexed by search engines. You can unpublish a
+						brew any time.
+					</small>
+				</div>
+			</div>
+			{metadata.editId && <div className='field delete'>
+				<label htmlFor='delete-button'>delete</label>
+				<div className='value'>
+					<button id='delete-button' onClick={handleDelete}>
+						<i className='fas fa-trash-alt' /> delete brew
+					</button>
+				</div>
+			</div>}
+		</div>
+	);
+};
 
 export default MetadataEditor;

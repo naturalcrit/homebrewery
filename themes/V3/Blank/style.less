@@ -34,15 +34,15 @@ body { counter-reset : page-numbers 0; }
 }
 
 .useColumns(@multiplier : 1, @fillMode: auto) {
-	column-fill          : @fillMode;
 	column-count         : 2;
+	column-fill          : @fillMode;
 }
 .columnWrapper {
+	columns           : inherit;
+	column-span       : all;
+	column-fill       : inherit;
 	column-gap        : inherit;
 	max-height        : 100%;
-	column-span       : all;
-	columns           : inherit;
-	column-fill       : inherit;
 }
 .page {
 	.useColumns();
@@ -51,13 +51,13 @@ body { counter-reset : page-numbers 0; }
 	box-sizing             : border-box;
 	width                  : 215.9mm;
 	height                 : 279.4mm;
+	contain-intrinsic-size : auto none;
 	padding                : 1.4cm 1.9cm 1.7cm;
+	contain                : strict;
+	content-visibility     : auto;
 	overflow               : clip;
 	background-color       : var(--HB_Color_Background);
 	text-rendering         : optimizeLegibility;
-	contain                : strict;
-	content-visibility     : auto;
-	contain-intrinsic-size : auto none;
 }
 //*****************************
 // *            BASE
@@ -145,7 +145,7 @@ body { counter-reset : page-numbers 0; }
 	blockquote,table {
 		z-index                     : 15;
 		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
+		break-inside           : avoid;
 		break-inside                : avoid;
 	}
 	// Nested lists
@@ -155,20 +155,20 @@ body { counter-reset : page-numbers 0; }
 	}
 	li {
 		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
+		break-inside           : avoid;
 		break-inside                : avoid;
 	}
 
 	/* Wrap Text */
 	.wrapLeft {
-		shape-outside : var(--HB_src);
 		float         : right;
+		shape-outside : var(--HB_src);
 		shape-margin  : 0.2cm;
 	}
 
 	.wrapRight {
-		shape-outside : var(--HB_src);
 		float         : left;
+		shape-outside : var(--HB_src);
 		shape-margin  : 0.2cm;
 	}
 
@@ -433,8 +433,8 @@ body { counter-reset : page-numbers 0; }
 // *****************************/
 .page {
 	.wide {
-		column-span         : all;
 		display             : block;
+		column-span         : all;
 		margin-bottom       : 1em;
 		& + * { margin-top : 0; }
 	}
@@ -502,66 +502,54 @@ body { counter-reset : page-numbers 0; }
 // * Ordered List Type Overrides
 // *****************************/
 @counter-style lower-alpha-trailing-paren {
-	system: extends lower-alpha;
-	prefix: "";
-	suffix: ") ";
-  }
+	system : extends lower-alpha;
+	prefix : '';
+	suffix : ') ';
+}
 
-.page{
-	.ol-ccby ol {
-		list-style-type: lower-alpha;
-	}
+.page {
+	.ol-ccby ol { list-style-type : lower-alpha; }
 
-	.ol-ccby ol ol{
-		padding-left: 0px !important;
-		list-style-type: greek;
+	.ol-ccby ol ol {
+		padding-left    : 0px !important;
+		list-style-type : greek;
 	}
 
 	.ol-ccby ol ol ol {
-		padding-left: 0px !important;
-		list-style-type: upper-alpha;
+		padding-left    : 0px !important;
+		list-style-type : upper-alpha;
 	}
 
 	.ol-ccby ol ol ol ol {
-		padding-left: 0px !important;
-		list-style-type: lower-roman;
+		padding-left    : 0px !important;
+		list-style-type : lower-roman;
 	}
 
 	.ol-ccby p {
-		padding-left: 25px;
-		text-indent: 0em !important;
+		padding-left : 25px;
+		text-indent  : 0em !important;
 	}
 
 	// Non-indented, numerical lists with slight gap between paragraphs.
+	.ol-lowerLetters ol { list-style-type : lower-alpha-trailing-paren; }
+
+	.ol-lowerLetters ol li p { display : inline; }
+
 	.ol-lowerLetters ol {
-		list-style-type: lower-alpha-trailing-paren;
+		padding             : 0px;
+		list-style-position : inside;
 	}
 
-	.ol-lowerLetters ol li p {
-		display: inline;
-	}
-
-  	.ol-lowerLetters ol {
-		list-style-position: inside;
-		padding: 0px;
-	}
-
-	.ol-lowerLetters ol li:not(:last-child) { 
-		 margin-bottom: 0.5em; 	
-	}      	  
+	.ol-lowerLetters ol li:not(:last-child) { margin-bottom : 0.5em; }      	  
 
 	.ol-noIndent ol {
-		list-style-position: inside;
-		padding: 0px;
+		padding             : 0px;
+		list-style-position : inside;
 	}
 
-	.ol-noIndent ol li p {
-		display: inline;
-	}
+	.ol-noIndent ol li p { display : inline; }
 
-	.ol-noIndent ol li:not(:last-child) { 
-		 margin-bottom: 0.5em; 	
-	}  
+	.ol-noIndent ol li:not(:last-child) { margin-bottom : 0.5em; }  
 }
 
 // *****************************
@@ -617,7 +605,7 @@ h6,
 	&:has(.toc)::after { display : none; }
 	.toc {
 		-webkit-column-break-inside : avoid;
-		page-break-inside           : avoid;
+		break-inside           : avoid;
 		break-inside                : avoid;
 		h1 {
 			margin-bottom : 0.3cm;
@@ -684,10 +672,10 @@ Firefox endruns
 **********************************/
 
 @supports (-moz-user-select: none) {  // This section will only apply to Firefox; it's the only browser that supports `-mos-xyz...`
-  .page {
-    blockquote, table {
-      page-break-inside: auto;
-      break-inside: auto; 
-    }
-  }
+	.page {
+		blockquote, table {
+			break-inside : auto;
+			break-inside      : auto; 
+		}
+	}
 }

@@ -1,4 +1,4 @@
-@import (less) './client/icons/customIcons.less';
+@import (less) '../../../icons/customIcons.less';
 
 .toolBar {
 	position         : absolute;
@@ -166,7 +166,7 @@
 
 	&.hidden {
 		flex-wrap        : nowrap;
-		width            : 92px;
+		width            : 50%;
 		overflow         : hidden;
 		background-color : unset;
 		opacity          : 0.7;
@@ -176,9 +176,7 @@
 			transition : all 0.2s ease;
 		}
 
-		.toggleButton button i {
-			filter: drop-shadow(0 0 2px black) drop-shadow(0 0 1px black);
-		}
+		.toggleButton button i { filter : drop-shadow(0 0 2px black) drop-shadow(0 0 1px black); }
 	}
 }
 

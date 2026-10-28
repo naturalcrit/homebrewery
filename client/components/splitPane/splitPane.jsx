@@ -18,8 +18,7 @@ const SplitPane = (props)=>{
 	const [liveScroll, setLiveScroll] = useState(false);
 
 	useEffect(()=>{
-		const savedPos = window.localStorage.getItem(PANE_WIDTH_KEY);
-		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
+		handleResize();
 		setLiveScroll(window.localStorage.getItem(LIVE_SCROLL_KEY) === 'true');
 
 		window.addEventListener('resize', handleResize);
@@ -29,7 +28,10 @@ const SplitPane = (props)=>{
 	const limitPosition = (x, min = 1, max = window.innerWidth - 13)=>Math.round(Math.min(max, Math.max(min, x)));
 
 	//when resizing, the divider should grow smaller if less space is given, then grow back if the space is restored, to the original position
-	const handleResize = ()=>setDividerPos(limitPosition(window.localStorage.getItem(PANE_WIDTH_KEY), 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)));
+	const handleResize = ()=>{
+		const savedPos = window.localStorage.getItem(PANE_WIDTH_KEY);
+		setDividerPos(savedPos ? limitPosition(savedPos, 0.1 * (window.innerWidth - 13), 0.9 * (window.innerWidth - 13)) : window.innerWidth / 2);
+	};
 
 	const handleUp =(e)=>{
 		e.preventDefault();
