@@ -45,6 +45,7 @@ const VaultPage = (props)=>{
 	const v3Ref           = useRef(null);
 	const legacyRef       = useRef(null);
 	const submitButtonRef = useRef(null);
+	const [tagsList, setTagList] = useState([]);
 
 	useEffect(()=>{
 		disableSubmitIfFormInvalid();
@@ -64,7 +65,7 @@ const VaultPage = (props)=>{
 		setSearching(false);
 	};
 
-	const updateUrl = (titleValue, authorValue, countValue, v3Value, legacyValue, page, sort, dir)=>{
+	const updateUrl = (titleValue, authorValue, countValue, v3Value, legacyValue, tagsValue, page, sort, dir)=>{
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
@@ -73,19 +74,22 @@ const VaultPage = (props)=>{
 		urlParams.set('count', countValue);
 		urlParams.set('v3', v3Value);
 		urlParams.set('legacy', legacyValue);
+		urlParams.set('tags', tagsValue);
 		urlParams.set('page', page);
 		urlParams.set('sort', sort);
 		urlParams.set('dir', dir);
 
+
+		console.log(urlParams.toString());
 		url.search = urlParams.toString();
 		window.history.replaceState(null, '', url.toString());
 	};
 
-	const performSearch = async (title, author, count, v3, legacy, page, sort, dir)=>{
-		updateUrl(title, author, count, v3, legacy, page, sort, dir);
+	const performSearch = async (title, author, count, v3, legacy, tags, page, sort, dir)=>{
+		updateUrl(title, author, count, v3, legacy, tags, page, sort, dir);
 
 		const response = await request
-			.get(`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&count=${count}&page=${page}&sort=${sort}&dir=${dir}`)
+			.get(`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&tags=${tags}&count=${count}&page=${page}&sort=${sort}&dir=${dir}`)
 			.catch((error)=>{
 				console.log('error at loadPage: ', error);
 				setError(error);
@@ -96,10 +100,10 @@ const VaultPage = (props)=>{
 			updateStateWithBrews(response.body.brews, page);
 	};
 
-	const loadTotal = async (title, author, v3, legacy)=>{
+	const loadTotal = async (title, author, v3, legacy, tags)=>{
 		setTotalBrews(null);
 
-		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}`)
+		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&tags=${tags}`)
 		.catch((error)=>{
 			console.log('error at loadTotal: ');
 			console.error(error);
@@ -122,6 +126,7 @@ const VaultPage = (props)=>{
 		const count      = countRef.current.value || 20;
 		const v3         = v3Ref.current.checked != false;
 		const legacy     = legacyRef.current.checked != false;
+		const tags       = tagsList;
 		const sortOption = sort || 'title';
 		const dirOption  = dir || 'asc';
 		const pageProp   = page || 1;
@@ -129,10 +134,10 @@ const VaultPage = (props)=>{
 		setSort(sortOption);
 		setdir(dirOption);
 
-		performSearch(title, author, count, v3, legacy, pageProp, sortOption, dirOption);
+		performSearch(title, author, count, v3, legacy, tags, pageProp, sortOption, dirOption);
 
 		if(updateTotal)
-			loadTotal(title, author, v3, legacy);
+			loadTotal(title, author, v3, legacy, tags);
 	};
 
 	const renderNavItems = ()=>(
@@ -208,11 +213,14 @@ const VaultPage = (props)=>{
 				<label>
 					Tags
 					<TagInput 
+						id='combobox-tags'
 						label='tags' 
-						valuePatterns={[/^(?:(?:group|meta|system|type):)?[A-Za-z0-9][A-Za-z0-9 \/.\-]{0,40}$/]}
-						placeholder='add tag' unique={true}
-						values={props.metadata.tags}
-						onChange={(e)=>this.handleFieldChange('tags', e)}
+						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+						placeholder='add tag'
+						unique={true}
+						values={tagsList}
+						onChange={(e)=>setTagList(e.target.value)}
+						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
 					/>
 				</label>
 
