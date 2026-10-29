@@ -187,7 +187,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		if(filterTags?.length == 0) return;
 		return (
 			<div className='tags-container'>
-				Tags: 
+				Tags:
 				{_.map(filterTags, (tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
@@ -198,7 +198,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 								updateUrl(filterString, sortType, sortDir, tag);
 							}}>
 							{matches[2]}
-						</span>						
+						</span>
 					);
 				})}
 			</div>
@@ -298,8 +298,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			<div className='radio-toggle layout-container'>
 				<h6>View:</h6>
 				<label className='option' title='grid'>
-						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
-						<i className='fac compressed-grid'></i>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+					<i className='fac compressed-grid'></i>
 				</label>
 				<label className='option' title='list'>
 					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
@@ -320,24 +320,24 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	};
 	const renderThemePicker = ()=>{
 		return (
-			<div className="radio-toggle theme-container">
+			<div className='radio-toggle theme-container'>
 				<h6>Theme:</h6>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
-					<i className="fas fa-sun"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
+					<i className='fas fa-sun'/>
 				</label>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
-					<i className="fas fa-moon"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
+					<i className='fas fa-moon'/>
 				</label>
 			</div>
-		)
+		);
 	};
 
-	const renderNav = () =>{
+	const renderNav = ()=>{
 
 		return (
-			<div className="listPageNav">
+			<div className='listPageNav'>
 				{renderLayoutModeOptions()}
 				{renderThemePicker()}
 				{renderSortOptions()}
@@ -345,8 +345,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderTagsOptions()}
 			</div>
 		);
-			
-	} 
+
+	};
 
 	return (
 		<div className='sitePage listPage'>
@@ -354,7 +354,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 			{renderNav()}
 
-			<div className={`content V3 ${themeMode + 'Mode'}`}>
+			<div className={`content V3 ${`${themeMode}Mode`}`}>
 				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
 			</div>
 		</div>
