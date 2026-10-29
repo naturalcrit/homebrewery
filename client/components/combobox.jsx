@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import _ from 'lodash';
 import './combobox.less';
 
@@ -16,6 +16,7 @@ const Combobox = ({
 	},
 	valuePatterns = /.+/,
 	options = [],
+	keepValueOnClose = false,
 	...props
 })=>{
 	const dropdownRef = useRef(null);
@@ -30,15 +31,23 @@ const Combobox = ({
 		}
 	}, []);
 
-	const handleClickOutside = (e)=>{
+	const handleClickOutside = useCallback((e)=>{
 		// Close dropdown when clicked outside
-		if(!dropdownRef.current?.contains(e.target)) handleDropdown(false);
-	};
+    	if(!dropdownRef.current?.contains(e.target)) {
+        	handleDropdown(false);
+    	}
+	}, []);
 
 	const handleDropdown = (show)=>{
-		setValue(show ? '' : defaultValue);
+		if(show) {
+			if(autoSuggest.clearAutoSuggestOnClick) {
+				setValue('');
+			}
+		} else if(!keepValueOnClose) {
+			setValue(defaultValue);
+		}
 		setShowDropdown(show);
-		setInputFocused(autoSuggest.clearAutoSuggestOnClick ? show : false);
+		setInputFocused(autoSuggest.clearAutoSuggestOnClick && show);
 	};
 
 	const handleInput = (e)=>{

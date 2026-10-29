@@ -262,6 +262,7 @@ const MetadataEditor = ({
 					id='combobox-language'
 					className='language-dropdown'
 					defaultValue={metadata.lang || ''}
+					keepValueOnClose={true}
 					placeholder='en'
 					onSelect={(value)=>handleLanguage(value)}
 					onEntry={(e)=>{
