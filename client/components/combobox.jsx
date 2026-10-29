@@ -24,7 +24,6 @@ const Combobox = ({
 	const [options, setOptions] = useState([...props.options]);
 	const [inputFocused, setInputFocused] = useState(false);
 
-
 	useEffect(()=>{
 		if(trigger == 'click') {
 			document.addEventListener('click', handleClickOutside);
@@ -121,7 +120,6 @@ const Combobox = ({
 		);
 	};
 
-
 	return (
 		<div className={`dropdown-container ${className}`}
 			ref={dropdownRef}
@@ -130,7 +128,6 @@ const Combobox = ({
 			{renderDropdown()}
 		</div>
 	);
-
 
 };
 
