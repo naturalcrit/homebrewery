@@ -15,23 +15,21 @@ const authorLinks = (authors = []) =>
 
 
 const errorIndex = (errorCode, props = {})=>{
-	//NOTE: errorCode is a string, not a number, and switch() uses strict equality ===
 	//			01-51 : Brew errors
 	//			52-99 : Other pages errors
 
-	switch(errorCode) {
+	// dynamic strings as arrow functions for lazy evaluation
+	const errors = {
 
 		// Default catch all
-		case '00':
-			return dedent`
+		'00': () => dedent`
 				## An unknown error occurred!
 
 				We aren't sure what happened, but our server wasn't able to find what you
-				were looking for.`;
+				were looking for.`,
 
 		// General Google load error
-		case '01':
-			return dedent`
+		'01': () => dedent`
 				## An error occurred while retrieving this brew from Google Drive!
 
 				Google is able to see the brew at this link, but reported an error while attempting to retrieve it.
@@ -45,14 +43,13 @@ const errorIndex = (errorCode, props = {})=>{
 				- After completing the sign in process, return to Homebrewery and refresh/reload the page so that it can pick up the updated credentials.
 				- If this was the source of the issue, it should now be resolved.
 
-				If following these steps does not resolve the issue, please let us know!`;
+				If following these steps does not resolve the issue, please let us know!`,
 
 
 		// ####### Brew Page Errors ...
 
 		// Google Drive - 404 : brew deleted or access denied
-		case '02':
-			return dedent`
+		'02': () => dedent`
 				## We can't find this brew in Google Drive!
 
 				This file was saved on Google Drive, but this link doesn't work anymore.
@@ -99,11 +96,10 @@ const errorIndex = (errorCode, props = {})=>{
 					:
 					Also note, if you prefer not to use your Google Drive for storage, you can always
 					change the storage location of a brew by clicking the Google drive icon by the
-					brew title and choosing *transfer my brew to/from Google Drive*.`;
+					brew title and choosing *transfer my brew to/from Google Drive*.`,
 
 		// User is not Authors list
-		case '03':
-			return dedent`
+		'03': () => dedent`
 				## Current signed-in user does not have editor access to this brew.
 
 				If you believe you should have access to this brew, ask one of its authors to invite you
@@ -117,11 +113,10 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Current Authors:** ${authorLinks(props.brew?.authors) || 'Unable to list authors'}
 
-				[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`;
+				[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
 		// User is not signed in; must be a user on the Authors List
-		case '04':
-			return dedent`
+		'04': () => dedent`
 				## Sign-in required to edit this brew.
 
 				You must be logged in to one of the accounts listed as an author of this brew.
@@ -133,11 +128,10 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Current Authors:** ${authorLinks(props.brew?.authors) || 'Unable to list authors'}
 
-				[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`;
+				[Click here to be redirected to the brew's share page.](/share/${props.brew.shareId})`,
 
 		// Brew load error
-		case '05':
-			return dedent`
+		'05': () => dedent`
 				## No Homebrewery document could be found.
 
 				The server could not locate the Homebrewery document. It was likely deleted by
@@ -147,40 +141,36 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Requested access:** ${props.brew.accessType}
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		// Brew save error
-		case '06':
-			return dedent`
+		'06': () => dedent`
 				## Unable to save Homebrewery document.
 
-				An error occurred while attempting to save the Homebrewery document.`;
+				An error occurred while attempting to save the Homebrewery document.`,
 
 		//Brew delete error
-		case '07':
-			return dedent`
+		'07': () => dedent`
 				## Unable to delete Homebrewery document.
 
 				An error occurred while attempting to remove the Homebrewery document.
 
 				:
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		//Author delete error
-		case '08':
-			return dedent`
+		'08': () => dedent`
 				## Unable to remove user from Homebrewery document.
 
 				An error occurred while attempting to remove the user from the Homebrewery document author list!
 
 				:
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		//Theme load error
-		case '09':
-			return dedent`
+		'09': () => dedent`
 				## No Homebrewery theme document could be found.
 
 				The server could not locate the Homebrewery document. It was likely deleted by
@@ -190,58 +180,52 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Requested access:** ${props.brew.accessType}
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		//Theme Not Valid
-		case '10':
-			return dedent`
+		'10': () => dedent`
 				## The selected theme is not tagged as a theme.
 
 				The brew selected as a theme exists, but has not been marked for use as a theme with the \`theme:meta\` tag.
 
-				If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`;
+				If the selected brew is your document, you may designate it as a theme by adding the \`theme:meta\` tag.`,
 
 		//ID validation error
-		case '11':
-			return dedent`
+		'11': () => dedent`
 				## No Homebrewery document could be found.
 
 				The server could not locate the Homebrewery document. The Brew ID failed the validation check.
 
 				:
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		//Google ID validation error
-		case '12':
-			return dedent`
+		'12': () => dedent`
 				## No Google document could be found.
 
 				The server could not locate the Google document. The Google ID failed the validation check.
 
 				:
 
-				**Brew ID:**	${props.brew.brewId}`;
+				**Brew ID:**	${props.brew.brewId}`,
 
 		//Database Connection Lost
-		case '13':
-			return dedent`
+		'13': () => dedent`
 				## Database connection has been lost.
 
-				The server could not communicate with the database.`;
+				The server could not communicate with the database.`,
 
 		//account page when account is not defined
-		case '50':
-			return dedent`
+		'50': () => dedent`
 				## You are not signed in.
 
 				You are trying to access the account page, but are not signed in to an account.
 
-				Please login or signup at our [login page](${loginUrl}?redirect=https://homebrewery.naturalcrit.com/account).`;
+				Please login or signup at our [login page](${loginUrl}?redirect=https://homebrewery.naturalcrit.com/account).`,
 
 		//Brew locked by Administrators error
-		case '51':
-			return dedent`
+		'51': () => dedent`
 				## This brew has been locked.
 
 				Only an author may request that this lock is removed.
@@ -252,78 +236,60 @@ const errorIndex = (errorCode, props = {})=>{
 
 				**Brew Title:** ${escape(props.brew.brewTitle)}
 
-				**Brew Authors:**	 ${authorLinks(props.brew?.authors) || 'Unable to list authors'}`;
+				**Brew Authors:**	 ${authorLinks(props.brew?.authors) || 'Unable to list authors'}`,
 
 
 		//####### Admin page error #######
 
-		case '52':
-			return dedent`
+		'52': () => dedent`
 				## Access Denied
-				You need to provide correct administrator credentials to access this page.`;
+				You need to provide correct administrator credentials to access this page.`,
 
 
 		// ####### Lock Errors
-		case '60':
-			return dedent`Lock Error: General`;
+		'60': () => dedent`Lock Error: General`,
 
-		case '61':
-			return dedent`Lock Get Error: Unable to get lock count`;
+		'61': () => dedent`Lock Get Error: Unable to get lock count`,
 
-		case '62':
-			return dedent`Lock Set Error: Cannot lock`;
+		'62': () => dedent`Lock Set Error: Cannot lock`,
 
-		case '63':
-			return dedent`Lock Set Error: Brew not found`;
+		'63': () => dedent`Lock Set Error: Brew not found`,
 
-		case '64':
-			return dedent`Lock Set Error: Already locked`;
+		'64': () => dedent`Lock Set Error: Already locked`,
 
-		case '65':
-			return dedent`Lock Remove Error: Cannot unlock`;
+		'65': () => dedent`Lock Remove Error: Cannot unlock`,
 
-		case '66':
-			return dedent`Lock Remove Error: Brew not found`;
+		'66': () => dedent`Lock Remove Error: Brew not found`,
 
-		case '67':
-			return dedent`Lock Remove Error: Not locked`;
+		'67': () => dedent`Lock Remove Error: Not locked`,
 
-		case '68':
-			return dedent`Lock Get Review Error: Cannot get review requests`;
+		'68': () => dedent`Lock Get Review Error: Cannot get review requests`,
 
-		case '69':
-			return dedent`Lock Set Review Error: Cannot set review request`;
+		'69': () => dedent`Lock Set Review Error: Cannot set review request`,
 
-		case '70':
-			return dedent`Lock Set Review Error: Brew not found`;
+		'70': () => dedent`Lock Set Review Error: Brew not found`,
 
-		case '71':
-			return dedent`Lock Set Review Error: Review already requested`;
+		'71': () => dedent`Lock Set Review Error: Review already requested`,
 
-		case '72':
-			return dedent`Lock Remove Review Error: Cannot clear review request`;
+		'72': () => dedent`Lock Remove Review Error: Cannot clear review request`,
 
-		case '73':
-			return dedent`Lock Remove Review Error: Brew not found`;
+		'73': () => dedent`Lock Remove Review Error: Brew not found`,
 
 
 		// ####### Vault Errors
 
-		case '90':
-			return dedent`
+		'90': () => dedent`
 				An unexpected error occurred while looking for these brews.
-				Try again in a few minutes.`;
+				Try again in a few minutes.`,
 
-		case '91':
-			return dedent`An unexpected error occurred while trying to get the total of brews.`;
+		'91': () => dedent`An unexpected error occurred while trying to get the total of brews.`,
 
+	};
 
-		// ####### Default unknown error
-
-		default:
-			return dedent `
+	return errors[errorCode]?.() ?? dedent `
 				# An unexpected error occurred.
-				So unexpected we don't even have an error message for the code (${escape(errorCode)}).`;	}
+				So unexpected we don't even have an error message for the code (${escape(errorCode)}).`;
+
 };
 
 export { escape, authorLinks };
