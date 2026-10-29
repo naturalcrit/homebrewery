@@ -85,7 +85,7 @@ const Combobox = ({
 
 	const renderDropdown = ()=>{
 		if(!showDropdown) return null;
-		const dropdownChildren = options.map((child, i)=>{
+		let dropdownChildren = options.map((child, i)=>{
 			const clone = React.cloneElement(child, { onClick: ()=>handleSelect(child.props.value, child.props.data) });
 			return clone;
 		});
