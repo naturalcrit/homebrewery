@@ -34,14 +34,21 @@ const HomebrewSchema = mongoose.Schema({
 	lock : { type: Object, index: true }
 }, { versionKey: false });
 
+HomebrewSchema.pre('save', function() {
+	if(this.text !== undefined) {
+		this.textBin = zlib.deflateRawSync(this.text);
+		this.text = undefined;
+	}
+});
+
 HomebrewSchema.statics.increaseView = async function(query) {
 	const brew = await Homebrew.findOne(query).exec();
 	brew.lastViewed = new Date();
 	brew.views = brew.views + 1;
 	await brew.save()
-	.catch((err)=>{
-		return err;
-	});
+		.catch((err)=>{
+			return err;
+		});
 	return brew;
 };
 
@@ -53,6 +60,7 @@ HomebrewSchema.statics.get = async function(query, fields=null){
 	if(!_.isNil(brew.textBin)) {			// Uncompress zipped text field
 		const unzipped = zlib.inflateRawSync(brew.textBin);
 		brew.text = unzipped.toString();
+		brew.textBin = undefined;
 	}
 	return brew;
 };
