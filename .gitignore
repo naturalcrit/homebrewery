@@ -15,3 +15,5 @@ startMViewer.bat
 .vscode
 
 coverage
+
+env.server.local

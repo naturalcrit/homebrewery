@@ -2,6 +2,7 @@
 import fs from 'fs-extra';
 import path from 'path';
 import less from 'less';
+import config from '../server/config.js';
 
 export function generateAssetsPlugin(isDev = false) {
 	return {
@@ -73,6 +74,16 @@ export function generateAssetsPlugin(isDev = false) {
 			await fs.copy('./themes/fonts', `${buildDir}/fonts`);
 			await fs.copy('./themes/assets', `${buildDir}/assets`);
 			await fs.copy('./client/icons', `${buildDir}/icons`);
+			// Generate server allowed's based on config.
+
+			const localServer = {
+				fs : {
+					allowedHosts : config.get('host').split(':')[0],
+				}
+			};
+
+			await fs.outputFile('./env.server.local', JSON.stringify(localServer, null, 2));
 		},
+
 	};
 }
