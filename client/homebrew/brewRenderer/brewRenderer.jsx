@@ -329,7 +329,7 @@ const BrewRenderer = (props)=>{
 				onClick={emitClick}
 				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
-				<div className='brewRenderer'
+				<div className={`brewRenderer${props.embedPage ? ' embedRenderer': ''}`}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 				>
