@@ -288,12 +288,6 @@ export default function pageRoutes({
 	//Share Page
 	app.get('/share/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
 		const { brew } = req;
-		req.ogMeta = { ...defaultMetaTags,
-			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
-			description : req.brew.description || 'No description.',
-			image       : req.brew.thumbnail || defaultMetaTags.image,
-			type        : 'article'
-		};
 
 		// increase visitor view count, do not include visits by author(s)
 		if(!brew.authors.includes(req.account?.username)){
@@ -305,6 +299,28 @@ export default function pageRoutes({
 			} else {
 				await HomebrewModel.increaseView({ shareId: brew.shareId });
 			}
+		};
+
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
+			description : req.brew.description || 'No description.',
+			image       : req.brew.thumbnail || defaultMetaTags.image,
+			type        : 'article'
+		};
+
+		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');
+
+		return next();
+	}));
+
+	//Embed Page - More work will be done on this later...
+	app.get('/embed/:id', dbCheck, asyncHandler(getBrew('share')), asyncHandler(async (req, res, next)=>{
+		const { brew } = req;
+		req.ogMeta = { ...defaultMetaTags,
+			title       : `${req.brew.title || 'Untitled Brew'} - ${req.brew.authors[0] || 'No author.'}`,
+			description : req.brew.description || 'No description.',
+			image       : req.brew.thumbnail || defaultMetaTags.image,
+			type        : 'article'
 		};
 
 		brew.authors.includes(req.account?.username) ? sanitizeBrew(req.brew, 'shareAuthor') : sanitizeBrew(req.brew, 'share');

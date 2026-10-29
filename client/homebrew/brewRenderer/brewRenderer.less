@@ -85,3 +85,20 @@
 	.headerNav { visibility : hidden; }
 
 }
+
+// Embedding overrides;
+.embedRenderer {
+	padding-top: 0px;
+
+	:where(.pages) {
+		& > :where(.page) {
+			width         : 215.9mm;
+			height        : 279.4mm;
+			margin-bottom : 0px;
+			margin-left: unset;
+			margin-right: unset;
+			box-shadow    : unset;
+		}
+
+	}
+}
