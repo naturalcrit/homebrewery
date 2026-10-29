@@ -15,33 +15,24 @@ const Combobox = ({
 		filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 	},
 	valuePatterns = /.+/,
+	options,
 	...props
 })=>{
-
 	const dropdownRef = useRef(null);
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [value, setValue] = useState('');
-	const [options, setOptions] = useState([...props.options]);
 	const [inputFocused, setInputFocused] = useState(false);
+	const [value, setValue] = useState(defaultValue);
 
 	useEffect(()=>{
-		if(trigger == 'click') {
+		if(trigger === 'click') {
 			document.addEventListener('click', handleClickOutside);
+			return ()=>document.removeEventListener('click', handleClickOutside);
 		}
-		setValue(defaultValue);
-
-		return ()=>{
-			if(trigger == 'click') {
-				document.removeEventListener('click', handleClickOutside);
-			}
-		};
 	}, []);
 
 	const handleClickOutside = (e)=>{
 		// Close dropdown when clicked outside
-		if(dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-			handleDropdown(false);
-		}
+		if(!dropdownRef.current?.contains(e.target)) handleDropdown(false);
 	};
 
 	const handleDropdown = (show)=>{
@@ -112,7 +103,6 @@ const Combobox = ({
 			});
 			dropdownChildren = _.uniq(filteredArrays.flat(1));
 		}
-
 		return (
 			<div className='dropdown-options'>
 				{dropdownChildren}
