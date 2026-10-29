@@ -1,6 +1,6 @@
 /*eslint max-lines: ["warn", {"max": 300, "skipBlankLines": true, "skipComments": true}]*/
 import './listPage.less';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -26,24 +26,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const [layoutMode, setLayoutMode] = useState(DEFAULT_LAYOUT_MODE);
 	const [themeMode, setThemeMode] = useState(DEFAULT_THEME_MODE);
 
-	const groupVisibilityRef = useRef(groupVisibility);
-	const sortTypeRef = useRef(sortType);
-	const sortDirRef = useRef(sortDir);
-
 	useEffect(()=>{
-		groupVisibilityRef.current = groupVisibility;
-	}, [groupVisibility]);
-
-	useEffect(()=>{
-		sortTypeRef.current = sortType;
-	}, [sortType]);
-
-	useEffect(()=>{
-		sortDirRef.current = sortDir;
-	}, [sortDir]);
-
-	useEffect(()=>{
-		window.onbeforeunload = saveToLocalStorage;
 		if(typeof window === 'undefined') return;
 
 		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
@@ -63,19 +46,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		setSortDir(newSortDir);
 		setLayoutMode(newLayoutMode);
 		setThemeMode(newThemeMode);
-
-		return ()=>{
-			window.onbeforeunload = null;
-		};
 	}, []);
-
-	const saveToLocalStorage = ()=>{
-		brewCollection.forEach((brewGroup)=>{
-			localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`, `${groupVisibilityRef.current[brewGroup.class]}`);
-		});
-		localStorage.setItem(USERPAGE_SORT_TYPE, sortTypeRef.current);
-		localStorage.setItem(USERPAGE_SORT_DIR, sortDirRef.current);
-	};
 
 	const renderBrews = (brews)=>{
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
@@ -108,6 +79,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const handleSortOptionChange = (event)=>{
 		updateUrl(filterString, event.target.value, sortDir);
 		setSortType(event.target.value);
+		localStorage.setItem(USERPAGE_SORT_TYPE, event.target.value);
+		return;
 	};
 
 	const handleSortDirChange = (event)=>{
@@ -115,6 +88,8 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		updateUrl(filterString, sortType, newDir);
 		setSortDir(newDir);
+		localStorage.setItem(USERPAGE_SORT_DIR, newDir);
+		return;
 	};
 
 	const renderSortOption = (sortTitle, sortValue)=>{
@@ -257,7 +232,13 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	}, [brewCollection, filterString, filterTags, sortType, sortDir]);
 
 	const toggleBrewCollectionState = (brewGroupClass)=>{
-		setGroupVisibility((prevVisibility)=>({ ...prevVisibility, [brewGroupClass]: !prevVisibility[brewGroupClass] }));
+		setGroupVisibility((prevVisibility)=>{
+			const visible = !prevVisibility[brewGroupClass];
+
+			localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroupClass}`, visible);
+
+			return {...prevVisibility, [brewGroupClass]: visible};
+		});
 	};
 
 	const renderBrewCollection = (brewCollection)=>{
