@@ -264,6 +264,7 @@ const MetadataEditor = ({
 					defaultValue={metadata.lang || ''}
 					keepValueOnClose={true}
 					placeholder='en'
+					valuePatterns="^[a-z]{2,3}(-[A-Z][a-z]{3})?(-[A-Z]{2})?$"
 					onSelect={(value)=>handleLanguage(value)}
 					onEntry={(e)=>{
 						e.target.setCustomValidity('');	//Clear the validation popup while typing

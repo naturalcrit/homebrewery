@@ -14,7 +14,7 @@ const Combobox = ({
 		suggestMethod           : 'includes',
 		filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 	},
-	valuePatterns = /.+/,
+	valuePatterns = '.+',
 	options = [],
 	keepValueOnClose = false,
 	...props
