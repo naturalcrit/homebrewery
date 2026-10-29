@@ -156,6 +156,31 @@ const CodeEditor = forwardRef(
 			return folds;
 		};
 
+		const foldAll = (view = viewRef.current)=>{
+			if(!view) return false;
+
+			const doc = view.state.doc;
+			const pages = pageMap.current;
+
+			const effects = pages.map((start, i)=>{
+				const next = pages[i + 1] || doc.length;
+				const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
+				const to = doc.line(doc.lineAt(next).number).from - 1;
+
+				return to > from ? foldEffect.of({ from, to }) : null;
+			}).filter(Boolean);
+
+			view.dispatch({ effects });
+			return true;
+		};
+
+		const unfoldAll = (view = viewRef.current)=>{
+			if(!view) return false;
+
+			view.dispatch(unfoldAllCmd(view));
+			return true;
+		};
+
 		const createExtensions = ({ onChange, language, editorTheme })=>{
 			const setEventListeners = EditorView.updateListener.of((update)=>{
 				if(update.docChanged) {
@@ -199,7 +224,7 @@ const CodeEditor = forwardRef(
 
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
-				generalKeymap,
+				generalKeymap(foldAll, unfoldAll),
 				...(tab === 'brewStyles' ? [cssKeymap] : [markdownKeymap]),
 
 				//multiple cursors and selections
@@ -404,29 +429,8 @@ const CodeEditor = forwardRef(
 					undone : redoDepth(view.state),
 				};
 			},
-
-			foldAll : ()=>{
-				const view = viewRef.current;
-				if(!view) return;
-
-				const doc = view.state.doc;
-				const pages = pageMap.current;
-
-				const effects = pages.map((start, i)=>{
-					const next = pages[i + 1] || doc.length;
-					const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
-					const to = doc.line(doc.lineAt(next).number).from - 1;
-
-					return to > from ? foldEffect.of({ from, to }) : null;
-				}).filter(Boolean);
-
-				view.dispatch({ effects });
-			},
-			unfoldAll : ()=>{
-				const view = viewRef.current;
-				if(!view) return;
-				view.dispatch(unfoldAllCmd(view));
-			},
+			foldAll   : ()=>foldAll(),
+			unfoldAll : ()=>unfoldAll(),
 
 			focus : ()=>viewRef.current.focus(),
 		}));
