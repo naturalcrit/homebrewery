@@ -1,117 +1,113 @@
-import React from 'react';
-import createReactClass from 'create-react-class';
+import React, { useState, useEffect, useRef } from 'react';
 import _ from 'lodash';
 import './combobox.less';
 
-const Combobox = createReactClass({
-	displayName     : 'Combobox',
-	getDefaultProps : function() {
-		return {
-			id          : '',
-			className   : '',
-			trigger     : 'hover',
-			default     : '',
-			placeholder : '',
-			tooltip     : '',
-			autoSuggest : {
-				clearAutoSuggestOnClick : true,
-				suggestMethod           : 'includes',
-				filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
-			},
-			valuePatterns : /.+/
-		};
+const Combobox = ({
+	id          = '',
+	className   = '',
+	trigger     = 'hover',
+	default: defaultValue = '',
+	placeholder = '',
+	tooltip     = '',
+	autoSuggest = {
+		clearAutoSuggestOnClick : true,
+		suggestMethod           : 'includes',
+		filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 	},
-	getInitialState : function() {
-		this.dropdownRef = React.createRef();
-		return {
-			showDropdown : false,
-			value        : '',
-			options      : [...this.props.options],
-			inputFocused : false
-		};
-	},
-	componentDidMount : function() {
-		if(this.props.trigger == 'click')
-			document.addEventListener('click', this.handleClickOutside);
-		this.setState({
-			value : this.props.default
-		});
-	},
-	componentWillUnmount : function() {
-		if(this.props.trigger == 'click')
-			document.removeEventListener('click', this.handleClickOutside);
-	},
-	handleClickOutside : function(e){
-		// Close dropdown when clicked outside
-		if(this.dropdownRef.current && !this.dropdownRef.current.contains(e.target)) {
-			this.handleDropdown(false);
+	valuePatterns = /.+/,
+	...props
+})=>{
+
+	const dropdownRef = useRef(null);
+	const [showDropdown, setShowDropdown] = useState(false);
+	const [value, setValue] = useState('');
+	const [options, setOptions] = useState([...props.options]);
+	const [inputFocused, setInputFocused] = useState(false);
+
+
+	useEffect(()=>{
+		if(trigger == 'click') {
+			document.addEventListener('click', handleClickOutside);
 		}
-	},
-	handleDropdown : function(show){
-		this.setState({
-			value        : show ? '' : this.props.default,
-			showDropdown : show,
-			inputFocused : this.props.autoSuggest.clearAutoSuggestOnClick ? show : false
-		});
-	},
-	handleInput : function(e){
-		e.persist();
-		this.setState({
-			value        : e.target.value,
-			inputFocused : false
-		}, ()=>{
-			this.props.onEntry(e);
-		});
-	},
-	handleSelect : function(value, data=value){
-		this.setState({
-			value : value
-		}, ()=>{this.props.onSelect(data);});
-		;
-	},
-	renderTextInput : function(){
+		setValue(defaultValue);
+
+		return ()=>{
+			if(trigger == 'click') {
+				document.removeEventListener('click', handleClickOutside);
+			}
+		};
+	}, []);
+
+	const handleClickOutside = (e)=>{
+		// Close dropdown when clicked outside
+		if(dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+			handleDropdown(false);
+		}
+	};
+
+	const handleDropdown = (show)=>{
+		setValue(show ? '' : defaultValue);
+		setShowDropdown(show);
+		setInputFocused(autoSuggest.clearAutoSuggestOnClick ? show : false);
+	};
+
+	const handleInput = (e)=>{
+		setValue(e.target.value);
+		setInputFocused(false);
+		props.onEntry(e);
+	};
+
+	const handleSelect = (value, data=value)=>{
+		setValue(value);
+		props.onSelect(data);
+	};
+
+	const renderTextInput = ()=>{
 		return (
 			<div className='dropdown-input item'
-				onMouseEnter={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(true);} : undefined}
-				onClick=     {this.props.trigger == 'click' ? ()=>{this.handleDropdown(true);} : undefined}
-				{...(this.props.tooltip ? { 'data-tooltip-right': this.props.tooltip } : {})}>
+				onMouseEnter={trigger == 'hover' ? ()=>{handleDropdown(true);} : undefined}
+				onClick=     {trigger == 'click' ? ()=>{handleDropdown(true);} : undefined}
+				{...(tooltip ? { 'data-tooltip-right': tooltip } : {})}>
 				<input
-					id={this.props.id}
+					id={id}
 					type='text'
-					onChange={(e)=>this.handleInput(e)}
-					value={this.state.value || ''}
+					onChange={(e)=>handleInput(e)}
+					value={value || ''}
 					title=''
-					pattern={this.props.valuePatterns}
-					placeholder={this.props.placeholder}
+					pattern={valuePatterns}
+					placeholder={placeholder}
 					onBlur={(e)=>{
 						if(!e.target.checkValidity()){
-							this.setState({
-								value : this.props.default
-							});
+							setValue(defaultValue);
 						}
 					}}
 					onKeyDown={(e)=>{
 						if(e.key === 'Enter') {
 							e.preventDefault();
-							this.props.onEntry(e);
+							props.onEntry(e);
 						}
 					}}
 				/>
 				<i className='fas fa-caret-down'/>
 			</div>
 		);
-	},
-	renderDropdown : function(dropdownChildren){
-		if(!this.state.showDropdown) return null;
-		if(this.props.autoSuggest && !this.state.inputFocused){
-			const suggestMethod = this.props.autoSuggest.suggestMethod;
-			const filterOn = _.isString(this.props.autoSuggest.filterOn) ? [this.props.autoSuggest.filterOn] : this.props.autoSuggest.filterOn;
+	};
+
+	const renderDropdown = ()=>{
+		if(!showDropdown) return null;
+		const dropdownChildren = options.map((child, i)=>{
+			const clone = React.cloneElement(child, { onClick: ()=>handleSelect(child.props.value, child.props.data) });
+			return clone;
+		});
+		if(autoSuggest && !inputFocused){
+			const suggestMethod = autoSuggest.suggestMethod;
+			const filterOn = _.isString(autoSuggest.filterOn) ? [autoSuggest.filterOn] : autoSuggest.filterOn;
 			const filteredArrays = filterOn.map((attr)=>{
 				const children = dropdownChildren.filter((item)=>{
 					if(suggestMethod === 'includes')
-						return item.props[attr]?.toLowerCase().includes(this.state.value.toLowerCase());
+						return item.props[attr]?.toLowerCase().includes(value.toLowerCase());
 					if(suggestMethod === 'startsWith')
-						return item.props[attr]?.toLowerCase().startsWith(this.state.value.toLowerCase());
+						return item.props[attr]?.toLowerCase().startsWith(value.toLowerCase());
 				});
 				return children;
 			});
@@ -123,21 +119,19 @@ const Combobox = createReactClass({
 				{dropdownChildren}
 			</div>
 		);
-	},
-	render : function () {
-		const dropdownChildren = this.state.options.map((child, i)=>{
-			const clone = React.cloneElement(child, { onClick: ()=>this.handleSelect(child.props.value, child.props.data) });
-			return clone;
-		});
-		return (
-			<div className={`dropdown-container ${this.props.className}`}
-				ref={this.dropdownRef}
-				onMouseLeave={this.props.trigger == 'hover' ? ()=>{this.handleDropdown(false);} : undefined}>
-				{this.renderTextInput()}
-				{this.renderDropdown(dropdownChildren)}
-			</div>
-		);
-	}
-});
+	};
+
+
+	return (
+		<div className={`dropdown-container ${className}`}
+			ref={dropdownRef}
+			onMouseLeave={trigger == 'hover' ? ()=>{handleDropdown(false);} : undefined}>
+			{renderTextInput()}
+			{renderDropdown()}
+		</div>
+	);
+
+
+};
 
 export default Combobox;
