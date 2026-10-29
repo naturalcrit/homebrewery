@@ -219,7 +219,7 @@ const MetadataEditor = ({
 					<Combobox trigger='click'
 						id='combobox-themes'
 						className='themes-dropdown'
-						default={currentThemeDisplay}
+						defaultValue={currentThemeDisplay}
 						placeholder='Select from below, or enter the Share URL or ID of a brew with the meta:theme tag'
 						onSelect={(value)=>handleTheme(value)}
 						onEntry={(e)=>{
@@ -261,7 +261,7 @@ const MetadataEditor = ({
 				<Combobox trigger='click'
 					id='combobox-language'
 					className='language-dropdown'
-					default={metadata.lang || ''}
+					defaultValue={metadata.lang || ''}
 					placeholder='en'
 					onSelect={(value)=>handleLanguage(value)}
 					onEntry={(e)=>{

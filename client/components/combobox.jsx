@@ -6,7 +6,7 @@ const Combobox = ({
 	id          = '',
 	className   = '',
 	trigger     = 'hover',
-	default: defaultValue = '',
+	defaultValue = '',
 	placeholder = '',
 	tooltip     = '',
 	autoSuggest = {
@@ -15,7 +15,7 @@ const Combobox = ({
 		filterOn                : []  // should allow as array to filter on multiple attributes, or even custom filter
 	},
 	valuePatterns = /.+/,
-	options,
+	options = [],
 	...props
 })=>{
 	const dropdownRef = useRef(null);
