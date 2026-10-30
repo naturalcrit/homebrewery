@@ -48,7 +48,7 @@ const assertErrorMessages = (errorCodes, props = {}) => {
 describe('errorIndex', () => {
 
   describe('static messages', () => {
-    const staticErrorCodes = expandRanges('00-02,06,10,13,50,52,60-73,90-91');
+    const staticErrorCodes = expandRanges('00-01,06,10,13,50,52,60-73,90-91');
 
     it.each(staticErrorCodes)
       ('returns a static string when no props are provided', (errorCode) => {
@@ -74,7 +74,7 @@ describe('errorIndex', () => {
 
 
   describe('dynamic messages', () => {
-    const dynamicErrorCodes = expandRanges('03-05,07-09,11-12,51');
+    const dynamicErrorCodes = expandRanges('02-05,07-09,11-12,51');
 
     it.each(dynamicErrorCodes)
       ('throws when a required prop is not supplied', (errorCode) => {
