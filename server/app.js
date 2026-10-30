@@ -17,7 +17,8 @@ import fs      from 'fs-extra';
 import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 
 import api from './homebrew.api.js';
-const { homebrewApi, getBrew, getCSS } = api;
+const { homebrewApi, getBrew, getUsersBrewThemes, getCSS } = api;
+import folderApi                   from './folder.api.js';
 import adminApi                    from './admin.api.js';
 import vaultApi                    from './vault.api.js';
 import streamApi                   from './stream.api.js';
@@ -25,7 +26,8 @@ import pageRoutes from './page-routes.js';
 
 import serveCompressedStaticAssets from './static-assets.mv.js';
 import asyncHandler                from 'express-async-handler';
-import { model as HomebrewModel }   from './homebrew.model.js';
+import { model as HomebrewModel }  from './homebrew.model.js';
+import { model as FolderModel }    from './folder.model.js';
 
 //==== Middleware Imports ====//
 import contentNegotiation from './middleware/content-negotiation.js';
@@ -113,6 +115,7 @@ export default async function createApp(vite) {
 	});
 
 	app.use(homebrewApi);
+	app.use(folderApi);
 	app.use(adminApi(vite));
 	app.use(vaultApi);
 	app.use(streamApi);
@@ -238,6 +241,7 @@ export default async function createApp(vite) {
 			url         : req.customUrl || req.originalUrl,
 			brew        : req.brew,
 			brews       : req.brews,
+			folders     : req.folders,
 			googleBrews : req.googleBrews,
 			account     : req.account,
 			config      : configuration,
