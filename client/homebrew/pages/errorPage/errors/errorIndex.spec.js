@@ -51,13 +51,13 @@ describe('errorIndex', () => {
     const staticErrorCodes = expandRanges('00-01,06,10,13,50,52,60-73,90-91');
 
     it.each(staticErrorCodes)
-      ('returns a static string when no props are provided', (errorCode) => {
+      ('returns a static string when no props are provided for %p', (errorCode) => {
         const result = errorIndex(errorCode);
         expect(typeof result).toBe('string');
       });
 
     it.each(staticErrorCodes)
-      ('ignores props if provided', (errorCode) => {
+      ('ignores props if provided for %p', (errorCode) => {
         const props = {
           brew: {
             accessType: 'edit',
@@ -77,7 +77,7 @@ describe('errorIndex', () => {
     const dynamicErrorCodes = expandRanges('02-05,07-09,11-12,51');
 
     it.each(dynamicErrorCodes)
-      ('throws when a required prop is not supplied', (errorCode) => {
+      ('throws when a required prop is not supplied for %p', (errorCode) => {
         expect(() => errorIndex(errorCode)).toThrow();
       });
 
@@ -160,7 +160,7 @@ describe('errorIndex', () => {
     });
 
     it.each([-1,undefined,null,[],{}])
-      ('throws if error code is not a string', (errorCode) => {
+      ('throws if error code %p is not a string', (errorCode) => {
         expect(() => errorIndex(errorCode)).toThrow();
       });
 
