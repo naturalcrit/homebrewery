@@ -127,7 +127,7 @@ const addBrewToFolderApi = async (req, res)=>{
     const result = await FolderModel.addBrewToFolder(
       req.account.username,
       req.params.folderId,
-      req.body.brewId,
+      req.body.shareId,
     );
 
     res.status(200).send(result);
@@ -151,7 +151,7 @@ const removeBrewFromFolderApi = async (req, res)=>{
     const result = await FolderModel.removeBrewFromFolder(
       req.account.username,
       req.params.folderId,
-      req.params.brewId,
+      req.params.shareId,
     );
 
     res.status(200).send(result);
@@ -188,7 +188,7 @@ router.delete('/api/folder/:folderId',
 router.post('/api/folder/:folderId/brews',
   requireAccount, asyncHandler(addBrewToFolderApi));
 
-router.delete('/api/folder/:folderId/brews/:brewId',
+router.delete('/api/folder/:folderId/brews/:shareId',
   requireAccount, asyncHandler(removeBrewFromFolderApi));
 
 
