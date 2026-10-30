@@ -194,7 +194,7 @@ export default function pageRoutes({
 
 		// collate all unique brewIds filed into folders
 		const shareIds = [...new Set(
-			folders.flatMap(folder => folder.brewIds || [])
+			folders.flatMap(folder => folder.shareIds || [])
 		)];
 
 		// collect metadata of brews by username and filedIds

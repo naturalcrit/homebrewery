@@ -199,7 +199,7 @@ FolderSchema.statics.createFolder = async function(
 ) {
   try {
     // normalise user inputs
-    title = (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
+    title = String(title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slugify(slug || title);
     isPublished = isPublished ?? false;
     isPrivate = isPrivate ?? true;
@@ -217,7 +217,6 @@ FolderSchema.statics.createFolder = async function(
 
     const folder = new this(
       { author, title, slug, isPublished, isPrivate, },
-      { strict: "throw" }
     );
 
     await folder.save();
@@ -322,19 +321,23 @@ FolderSchema.statics.deleteFolder = async function(author, folderId) {
 };
 
 
-FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId) {
+FolderSchema.statics.addBrewToFolder = async function( author, folderId, shareId) {
+console.log('addBrewToFolder(', {author, folderId, shareId}, ')');
   try {
-    const brewExists = await BrewModel.exists({ brewId });
+    const brewExists = await BrewModel.exists({ shareId });
     if(!brewExists) {
       const err = new Error();
       err.HBErrorCode = '112';
       throw err;
     }
 
+    // TOFIX: (node:6967) [MONGOOSE] Warning: mongoose: the `new` option for
+    //   `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use
+    //   `returnDocument: 'after'` instead.
     const result = await this.findOneAndUpdate(
       { author, folderId },
       {
-        $addToSet: { shareIds: brewId },
+        $addToSet: { shareIds: shareId },
         $set: { updatedAt: new Date() },
       },
       { new: true },
@@ -355,10 +358,10 @@ FolderSchema.statics.addBrewToFolder = async function( author, folderId, brewId)
 };
 
 
-FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, brewId ) {
+FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, shareId ) {
   // returns updated folder
   try {
-    const brewExists = await BrewModel.exists({ brewId });
+    const brewExists = await BrewModel.exists({ shareId });
     if(!brewExists) {
       const err = new Error();
       err.HBErrorCode = '114';
@@ -376,7 +379,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, br
     const result = await this.findOneAndUpdate(
       { author, folderId },
       {
-        $pull: { shareIds: brewId },
+        $pull: { shareIds: shareId },
         $set: { updatedAt: new Date() },
       },
       { new: true },
