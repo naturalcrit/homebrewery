@@ -438,25 +438,17 @@ const VaultPage = (props)=>{
 			);
 		}
 
-		if(error) {
-			if(error.HBErrorCode === undefined) { 
-				return (
-					<div className='foundBrews noBrews'>
-						<h3>Error: Unknown error</h3>
-					</div>
-				)
-			} else {
+	if (error) {
+		const errorText = error.HBErrorCode === undefined
+			? 'Unknown error'
+			: ErrorIndex(error.HBErrorCode.toString()) || '';
 
-				const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
-
-				return (
-					<div className='foundBrews noBrews'>
-					<h3>Error: {errorText}</h3>
-					</div>
-				);
-			}
-
-		}
+		return (
+			<div className='foundBrews noBrews'>
+				<h3>Error: {errorText}</h3>
+			</div>
+		);
+	}
 
 		if(!brewCollection) {
 			return (
