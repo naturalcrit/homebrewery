@@ -53,14 +53,31 @@
 				letter-spacing : 2px;
 				color          : var(--h1-clr);
 			}
+
+			h1 {
+				margin        : 20px 0;
+				font-size     : 30px;
+				text-align    : center;
+				border-bottom : 3px solid;
+			}
+
+			h2 {
+				margin-block  : 30px 20px;
+				font-size     : 18px;
+				text-align    : center;
+				border-bottom : 2px solid;
+			}
+
+			h3 {
+				margin-block: 20px 5px;
+				border-bottom:1px solid;
+			}
+
+			fieldset {
+				padding-left:5px;
+			}
 				
 			legend {
-				h3 {
-					margin-block  : 30px 20px;
-					font-size     : 20px;
-					text-align    : center;
-					border-bottom : 2px solid;
-				}
 				ul {
 					padding-inline : 30px 10px;
 					li {
@@ -87,14 +104,6 @@
 				transition  : opacity 0.5s;
 			}
 			&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
-
-			.formTitle {
-				margin        : 20px 0;
-				font-size     : 30px;
-				color         : black;
-				text-align    : center;
-				border-bottom : 2px solid;
-			}
 
 			.formContents {
 				position       : relative;
@@ -127,12 +136,12 @@
     				display: grid;
 
 					.tagInput-dropdown {
-   						z-index: 400;
+   						z-index: unset;
     					max-width: 200px;
 						
 					}
 				}
-	.list {
+		.list {
 			display   : flex;
 			flex      : 1 0;
 			flex-wrap : wrap;

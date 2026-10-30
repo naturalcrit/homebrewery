@@ -45,7 +45,12 @@ const VaultPage = (props)=>{
 	const v3Ref           = useRef(null);
 	const legacyRef       = useRef(null);
 	const submitButtonRef = useRef(null);
-	const [tagsList, setTagList] = useState(props.query.tags.split(',') || []);
+
+	const parseTags = (value)=>value?.split(',').filter(Boolean) || [];
+
+	const [tagsListAnd, setTagListAnd] = useState(parseTags(props.query.tagsAnd));
+	const [tagsListOr, setTagListOr] = useState(parseTags(props.query.tagsOr));
+	const [tagsListNot, setTagListNot] = useState(parseTags(props.query.tagsNot));
 
 	useEffect(()=>{
 		disableSubmitIfFormInvalid();
@@ -65,54 +70,88 @@ const VaultPage = (props)=>{
 		setSearching(false);
 	};
 
-	const updateUrl = (titleValue, authorValue, countValue, v3Value, legacyValue, tagsValue, page, sort, dir)=>{
+
+	const buildQueryParams = (entries)=>{
+		const params = new URLSearchParams();
+
+		entries.forEach(([key, value])=>{
+			if(value === undefined || value === null || value === '') return;
+			if(Array.isArray(value) && value.length === 0) return;
+
+			params.set(key, Array.isArray(value) ? value.join(',') : value);
+		});
+
+		return params.toString();
+	};
+
+
+	const updateUrl = (params)=>{
 		const url = new URL(window.location.href);
-		const urlParams = new URLSearchParams(url.search);
 
-		urlParams.set('title', titleValue);
-		urlParams.set('author', authorValue);
-		urlParams.set('count', countValue);
-		urlParams.set('v3', v3Value);
-		urlParams.set('legacy', legacyValue);
-		urlParams.set('tags', tagsValue);
-		urlParams.set('page', page);
-		urlParams.set('sort', sort);
-		urlParams.set('dir', dir);
+		url.search = params;
 
-
-		console.log(urlParams.toString());
-		url.search = urlParams.toString();
 		window.history.replaceState(null, '', url.toString());
 	};
 
-	const performSearch = async (title, author, count, v3, legacy, tags, page, sort, dir)=>{
-		updateUrl(title, author, count, v3, legacy, tags, page, sort, dir);
 
-		const response = await request
-			.get(`/api/vault?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&tags=${tags}&count=${count}&page=${page}&sort=${sort}&dir=${dir}`)
-			.catch((error)=>{
-				console.log('error at loadPage: ', error);
-				setError(error);
-				updateStateWithBrews([], 1);
-			});
+	const performSearch = async (formContents, page, sort, dir)=>{
+		const { title, author, count, v3, legacy, tagsAnd, tagsOr, tagsNot } = formContents;
 
-		if(response?.ok)
+
+		const params = buildQueryParams([
+			['title', title],
+			['author', author],
+			['v3', v3],
+			['legacy', legacy],
+			['tagsAnd', tagsAnd],
+			['tagsOr', tagsOr],
+			['tagsNot', tagsNot],
+			['count', count],
+			['page', page],
+			['sort', sort],
+			['dir', dir]
+		]);
+
+		updateUrl(params);
+
+		const response = await request.get(`/api/vault?${params}`)
+        .catch((error)=>{
+        	console.log('error at loadPage: ', error);
+        	setError(error);
+        	updateStateWithBrews([], 1);
+        });
+
+		if(response?.ok) {
 			updateStateWithBrews(response.body.brews, page);
+		}
 	};
 
-	const loadTotal = async (title, author, v3, legacy, tags)=>{
+	const loadTotal = async (formContents)=>{
+		const { title, author, count, v3, legacy, tagsAnd, tagsOr, tagsNot } = formContents;
+
 		setTotalBrews(null);
 
-		const response = await request.get(`/api/vault/total?title=${title}&author=${author}&v3=${v3}&legacy=${legacy}&tags=${tags}`)
-		.catch((error)=>{
-			console.log('error at loadTotal: ');
-			console.error(error);
-			setError(error);
-			updateStateWithBrews([], 1);
-		});
+		const params = buildQueryParams([
+			['title', title],
+			['author', author],
+			['v3', v3],
+			['legacy', legacy],
+			['tagsAnd', tagsAnd],
+			['tagsOr', tagsOr],
+			['tagsNot', tagsNot]
+		]);
 
-		if(response.ok)
+		const response = await request.get(`/api/vault/total?${params}`)
+        .catch((error)=>{
+        	console.log('error at loadTotal: ');
+        	console.error(error);
+        	setError(error);
+        	updateStateWithBrews([], 1);
+        });
+
+		if(response?.ok) {
 			setTotalBrews(response.body.totalBrews);
+		}
 	};
 
 	const loadPage = async (page, updateTotal, sort, dir)=>{
@@ -126,7 +165,14 @@ const VaultPage = (props)=>{
 		const count      = countRef.current.value || 20;
 		const v3         = v3Ref.current.checked != false;
 		const legacy     = legacyRef.current.checked != false;
-		const tags       = tagsList;
+		const tagsAnd    = tagsListAnd;
+		const tagsOr     = tagsListOr;
+		const tagsNot    = tagsListNot;
+
+		const formContents = {
+			title, author, count, v3, legacy, tagsAnd, tagsOr, tagsNot
+		};
+
 		const sortOption = sort || 'title';
 		const dirOption  = dir || 'asc';
 		const pageProp   = page || 1;
@@ -134,10 +180,10 @@ const VaultPage = (props)=>{
 		setSort(sortOption);
 		setdir(dirOption);
 
-		performSearch(title, author, count, v3, legacy, tags, pageProp, sortOption, dirOption);
+		performSearch(formContents, pageProp, sortOption, dirOption);
 
 		if(updateTotal)
-			loadTotal(title, author, v3, legacy, tags);
+			loadTotal(formContents);
 	};
 
 	const renderNavItems = ()=>(
@@ -161,8 +207,9 @@ const VaultPage = (props)=>{
 		const isTitleValid      = titleRef.current.validity.valid && titleRef.current.value;
 		const isAuthorValid     = authorRef.current.validity.valid && authorRef.current.value;
 		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
+		const isTagsValid = tagsListAnd.length >= 1 || tagsListOr.length >= 1;
 
-		const isFormValid = (isTitleValid || isAuthorValid) && isCheckboxChecked;
+		const isFormValid = (isTitleValid || isAuthorValid || isTagsValid) && isCheckboxChecked;
 
 		return isFormValid;
 	};
@@ -173,7 +220,7 @@ const VaultPage = (props)=>{
 
 	const renderForm = ()=>(
 		<div className='brewLookup'>
-			<h2 className='formTitle'>Brew Lookup</h2>
+			<h1 className='formTitle'>Brew Lookup</h1>
 			<div className='formContents'>
 				<label>
 					Title of the brew
@@ -210,19 +257,50 @@ const VaultPage = (props)=>{
 					/>
 				</label>
 
-				<label>
-					Tags
-					<TagInput 
-						id='combobox-tags'
-						label='tags' 
-						valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
-						placeholder='add tag'
-						unique={true}
-						values={tagsList}
-						onChange={(e)=>setTagList(e.target.value)}
-						tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
-					/>
-				</label>
+				<h3>Tag Search</h3>
+				<fieldset className='tags'>
+					<label>
+					Must include
+						<TagInput
+							id='combobox-tags-and'
+							label='tags'
+							valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+							placeholder='add tag'
+							unique={true}
+							values={tagsListAnd}
+							onChange={(e)=>setTagListAnd(e.target.value)}
+							tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+						/>
+					</label>
+
+					<label>
+					Match any
+						<TagInput
+							id='combobox-tags-or'
+							label='tags'
+							valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+							placeholder='add tag'
+							unique={true}
+							values={tagsListOr}
+							onChange={(e)=>setTagListOr(e.target.value)}
+							tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+						/>
+					</label>
+
+					<label>
+					Must exclude
+						<TagInput
+							id='combobox-tags-not'
+							label='tags'
+							valuePatterns={/^\s*(?:(?:group|meta|system|type)\s*:\s*)?[A-Za-z0-9][A-Za-z0-9 \/\\.&_\-]{0,40}\s*$/}
+							placeholder='add tag'
+							unique={true}
+							values={tagsListNot}
+							onChange={(e)=>setTagListNot(e.target.value)}
+							tooltip='You may start tags with "type", "system", "group" or "meta" followed by a colon ":", these will be colored in your userpage.'
+						/>
+					</label>
+				</fieldset>
 
 				<label>
 					Results per page
@@ -270,7 +348,7 @@ const VaultPage = (props)=>{
 				</button>
 			</div>
 			<legend>
-				<h3>Tips and tricks</h3>
+				<h2>Tips and tricks</h2>
 				<ul>
 					<li>
 						Only <b>published</b> brews are searchable via this tool
@@ -332,8 +410,8 @@ const VaultPage = (props)=>{
 			<div className='radio-toggle layout-container'>
 				<h6>View:</h6>
 				<label className='option' title='grid'>
-						<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
-						<i className='fac compressed-grid'></i>
+					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'grid')} checked={layoutMode === 'grid'} />
+					<i className='fac compressed-grid'></i>
 				</label>
 				<label className='option' title='list'>
 					<input name='layout-mode' type='radio' onChange={(e)=>handleLayoutChange(e, 'list')} checked={layoutMode === 'list'} />
@@ -354,31 +432,31 @@ const VaultPage = (props)=>{
 
 	const renderThemePicker = ()=>{
 		return (
-			<div className="radio-toggle theme-container">
+			<div className='radio-toggle theme-container'>
 				<h6>Theme:</h6>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
-					<i className="fas fa-sun"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'light')} checked={themeMode === 'light'}/>
+					<i className='fas fa-sun'/>
 				</label>
-				<label className="option">
-					<input type="radio" name="theme" onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
-					<i className="fas fa-moon"/>
+				<label className='option'>
+					<input type='radio' name='theme' onChange={(e)=>handleThemeChange(e, 'dark')}  checked={themeMode === 'dark'}/>
+					<i className='fas fa-moon'/>
 				</label>
 			</div>
-		)
+		);
 	};
 
-	
-	const renderNav = () =>{
+
+	const renderNav = ()=>{
 		return (
-			<div className="listPageNav">
+			<div className='listPageNav'>
 				{renderLayoutModeOptions()}
 				{renderThemePicker()}
 				{renderSortOptions()}
 			</div>
 		);
-			
-	}
+
+	};
 
 	const renderPaginationControls = ()=>{
 		if(!totalBrews || totalBrews < 10) return null;
@@ -460,19 +538,19 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			if(error.HBErrorCode === undefined) { 
+			if(error.HBErrorCode === undefined) {
 				return (
 					<div className='foundBrews noBrews'>
 						<h3>Error: Unknown error</h3>
 					</div>
-				)
+				);
 			} else {
 
 				const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
 
 				return (
 					<div className='foundBrews noBrews'>
-					<h3>Error: {errorText}</h3>
+						<h3>Error: {errorText}</h3>
 					</div>
 				);
 			}
@@ -496,7 +574,7 @@ const VaultPage = (props)=>{
 		}
 
 		return (
-			<div className={`foundBrews ${themeMode + 'Mode'}`}>
+			<div className={`foundBrews ${`${themeMode}Mode`}`}>
 				<span className='totalBrews'>
 					{`Brews found: `}
 					<span>{totalBrews}</span>
