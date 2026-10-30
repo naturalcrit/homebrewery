@@ -12,6 +12,22 @@ const codeStrings = (from, to, width = String(to).length) => {
   return values;
 };
 
+const expandRanges = (input) => {
+  // console.log(expandRanges('1-5,08-11,98-101'));
+  // ['1', '2', '3', '4', '5', '08', '09', '10', '11', '98', '99', '100', '101']
+  return input.split(',').flatMap(part => {
+    const [start, end] = part.split('-').map(Number);
+    const pad = part.split('-')[0].length > 1
+      ? part.split('-')[0].length
+      : 0;
+
+    return Array.from(
+      { length: end - start + 1 },
+      (_, i) => String(start + i).padStart(pad, '0')
+    );
+  });
+};
+
 const assertErrorMessages = (errorCodes, props = {}) => {
   const defaultResult = errorIndex('NO_SUCH_ERROR');
   errorCodes.forEach((errorCode) => {
