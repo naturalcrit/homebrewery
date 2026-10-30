@@ -32,8 +32,6 @@ const rendererConditions = (legacy, v3)=>{
 const tagConditions = (tagsAnd, tagsOr, tagsNot) => {
     const conditions = {};
 
-	console.log(tagsAnd.length, tagsOr.length, tagsNot.length);
-
     if (tagsAnd.length > 0) {
         conditions.$and = tagsAnd.map(tag => ({
             tags: tag.trim()
@@ -73,7 +71,7 @@ const findBrews = async (req, res)=>{
 	const sort = req.query.sort || 'title';
 	const dir = req.query.dir || 'asc';
 
-	console.log(`Title: ${title}, Author: ${author}, page: ${page}, count: ${count}, tagsAnd: ${tagsAnd}, tagsOr: ${tagsOr} tagsNot: ${tagsNot}`);
+	//console.log(`Title: ${title}, Author: ${author}, page: ${page}, count: ${count}, tagsAnd: ${tagsAnd}, tagsOr: ${tagsOr} tagsNot: ${tagsNot}`);
 
 	const combinedQuery = {
 		$and : [

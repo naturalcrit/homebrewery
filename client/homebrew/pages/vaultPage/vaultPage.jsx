@@ -64,12 +64,13 @@ const VaultPage = (props)=>{
 		loadPage(pageState, true, props.query.sort, props.query.dir);
 	}, []);
 
+	useEffect(()=>{disableSubmitIfFormInvalid()},[tagsListAnd, tagsListOr, tagsListNot])
+
 	const updateStateWithBrews = (brews, page)=>{
 		setBrewCollection(brews || null);
 		setPageState(parseInt(page) || 1);
 		setSearching(false);
 	};
-
 
 	const buildQueryParams = (entries)=>{
 		const params = new URLSearchParams();
@@ -84,19 +85,8 @@ const VaultPage = (props)=>{
 		return params.toString();
 	};
 
-
-	const updateUrl = (params)=>{
-		const url = new URL(window.location.href);
-
-		url.search = params;
-
-		window.history.replaceState(null, '', url.toString());
-	};
-
-
 	const performSearch = async (formContents, page, sort, dir)=>{
 		const { title, author, count, v3, legacy, tagsAnd, tagsOr, tagsNot } = formContents;
-
 
 		const params = buildQueryParams([
 			['title', title],
@@ -112,7 +102,9 @@ const VaultPage = (props)=>{
 			['dir', dir]
 		]);
 
-		updateUrl(params);
+		const url = new URL(window.location.href);
+		url.search = params;
+		window.history.replaceState(null, '', url.toString());
 
 		const response = await request.get(`/api/vault?${params}`)
         .catch((error)=>{
@@ -127,7 +119,7 @@ const VaultPage = (props)=>{
 	};
 
 	const loadTotal = async (formContents)=>{
-		const { title, author, count, v3, legacy, tagsAnd, tagsOr, tagsNot } = formContents;
+		const { title, author, v3, legacy, tagsAnd, tagsOr, tagsNot } = formContents;
 
 		setTotalBrews(null);
 
@@ -208,6 +200,7 @@ const VaultPage = (props)=>{
 		const isAuthorValid     = authorRef.current.validity.valid && authorRef.current.value;
 		const isCheckboxChecked = legacyRef.current.checked || v3Ref.current.checked;
 		const isTagsValid = tagsListAnd.length >= 1 || tagsListOr.length >= 1;
+		//if a search is done with only negative tags, the planner crashes
 
 		const isFormValid = (isTitleValid || isAuthorValid || isTagsValid) && isCheckboxChecked;
 
