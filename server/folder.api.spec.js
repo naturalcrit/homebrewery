@@ -224,10 +224,10 @@ describe('Tests for folder api', ()=>{
   describe('addBrewToFolderApi', ()=>{
 
     it('should add a brew to a folder and return HTTP 200', async () => {
-      const result = { folderId: 'folder123', brewId: 'brew123' };
+      const result = { folderId: 'folder123', shareId: 'brew123' };
 
       req.params.folderId = 'folder123';
-      req.body.brewId = 'brew123';
+      req.body.shareId = 'brew123';
 
       FolderModel.addBrewToFolder.mockResolvedValue(result);
 
@@ -268,10 +268,10 @@ describe('Tests for folder api', ()=>{
   describe('removeBrewFromFolderApi', ()=>{
 
     it('should remove a brew from a folder and return HTTP 200', async () => {
-      const result = { folderId: 'folder123', brewId: 'brew123' };
+      const result = { folderId: 'folder123', shareId: 'brew123' };
 
       req.params.folderId = 'folder123';
-      req.params.brewId = 'brew123';
+      req.params.shareId = 'brew123';
 
       FolderModel.removeBrewFromFolder.mockResolvedValue(result);
 

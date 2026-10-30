@@ -411,7 +411,7 @@ describe('Folder model', ()=>{
       });
 
       expect(BrewModel.exists).toHaveBeenCalledWith({
-        brewId: 'brew123',
+        shareId: 'brew123',
       });
 
       expect(findOneAndUpdate).toHaveBeenCalledWith(
@@ -487,7 +487,7 @@ describe('Folder model', ()=>{
       expect(result).toBe(folder);
 
       expect(BrewModel.exists).toHaveBeenCalledWith({
-        brewId: 'brew123',
+        shareId: 'brew123',
       });
 
       expect(Folder.findOneAndUpdate).toHaveBeenCalled();
@@ -548,7 +548,7 @@ describe('Folder model', ()=>{
       );
 
       expect(BrewModel.exists).toHaveBeenCalledWith({
-        brewId: 'brew123',
+        shareId: 'brew123',
       });
 
       expect(findOneAndUpdate).toHaveBeenCalledWith(
