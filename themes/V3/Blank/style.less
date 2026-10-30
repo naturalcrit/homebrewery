@@ -27,6 +27,7 @@ body { counter-reset : page-numbers 0; }
 		break-inside      : avoid;
 		img { z-index : 0; }
 	}
+	:where(.block > :first-child) { margin-top : 0; } // Zero-specificity so themes can still override; avoids relying on reset.less
 	.inline-block {
 		display     : inline-block;
 		text-indent : initial;
