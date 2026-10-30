@@ -14,6 +14,9 @@ const authorLinks = (authors = []) =>
 		.join(', ');
 
 const errorIndex = (errorCode, props = {})=>{
+  if (typeof errorCode !== 'string' || errorCode === '')
+    throw new TypeError('Error code must be a string');
+
 	//	 01-51 : Brew errors
 	//	    52 : Admin page errors
 	//	 60-73 : Lock errors
