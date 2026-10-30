@@ -96,7 +96,9 @@ const api = {
 
 		const userThemes = {};
 
-		const brews = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] } });
+		const userBrewThemes = await HomebrewModel.getByUser(username, true, fields, { tags: { $in: ['meta:theme', 'meta:Theme'] }});
+		const pinnedBrewThemes = await HomebrewModel.getUserPinnedThemes(username);
+		const brews = concat(userBrewThemes, pinnedBrewThemes);
 
 		for (const brew of brews) {
 			userThemes[brew.renderer] ??= {};
@@ -219,7 +221,7 @@ const api = {
 			.slice(0, MAX_TITLE_LENGTH);
 	},
 	excludePropsFromUpdate : (brew)=>{ //Remove props that should not update/overwrite when editing
-		return _.omit(brew, ['_id', 'views', 'lastViewed']);
+		return _.omit(brew, ['_id', 'views', 'lastViewed','pinnedByUsers']);
 	},
 	excludeGoogleProps : (brew)=>{ //Remove props that should not be saved to Google (only stored to Homebrewery stub)
 		return _.omit(brew, ['version', 'tags', 'systems', 'published', 'authors', 'invitedAuthors', 'owner', 'views', 'thumbnail']);
