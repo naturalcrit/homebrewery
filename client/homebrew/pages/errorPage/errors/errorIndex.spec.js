@@ -28,22 +28,6 @@ const expandRanges = (input) => {
   });
 };
 
-const assertErrorMessages = (errorCodes, props = {}) => {
-  const defaultResult = errorIndex('NO_SUCH_ERROR');
-  errorCodes.forEach((errorCode) => {
-    let result;
-
-    expect(() => {
-      result = errorIndex(errorCode, props);
-    }).not.toThrow();
-
-    expect(typeof result).toBe('string');
-    expect(result).not.toBe(defaultResult);
-    expect(result.length).toBeGreaterThan(0);
-  });
-};
-
-
 // tests..
 describe('errorIndex', () => {
 
