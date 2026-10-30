@@ -13,10 +13,12 @@ const authorLinks = (authors = []) =>
 		.map((author) => `[${escape(author)}](/user/${encodeURIComponent(author)})`)
 		.join(', ');
 
-
 const errorIndex = (errorCode, props = {})=>{
-	//			01-51 : Brew errors
-	//			52-99 : Other pages errors
+	//	 01-51 : Brew errors
+	//	    52 : Admin page errors
+	//	 60-73 : Lock errors
+	//   90-91 : Vault errors
+	// 100-130 : Folder errors
 
 	// dynamic strings as arrow functions for lazy evaluation
 	const errors = {
