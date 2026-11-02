@@ -236,7 +236,9 @@ export default function pageRoutes({
 		brews = _.map(brews, (brew)=>{
 			brew.title = brew.title?.trim();
 			brew.description = brew.description?.trim();
-			return sanitizeBrew(brew, ownAccount ? 'edit' : 'share');
+      if ( !brew.authors.includes(req.account?.username) )
+        brew.editId = undefined;
+ 			return sanitizeBrew(brew);
 		});
 
 		req.brews = brews;

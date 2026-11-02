@@ -46,7 +46,7 @@ export default async function createApp(vite) {
 	const isProd = nodeEnv === 'production';
 	const isLocalEnvironment = config.get('local_environments').includes(nodeEnv);
 
-	const sanitizeBrew = (brew, accessType)=>{
+	const sanitizeBrew = (brew, accessType = 'edit')=>{
 		brew._id = undefined;
 		brew.__v = undefined;
 		if(accessType !== 'edit' && accessType !== 'shareAuthor') {
