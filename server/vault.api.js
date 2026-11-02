@@ -29,59 +29,64 @@ const rendererConditions = (legacy, v3)=>{
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
-const tagConditions = (tagsAnd, tagsOr, tagsNot) => {
-    const conditions = {};
+const tagConditions = (tagsAnd, tagsOr, tagsNot)=>{
+	const conditions = {};
 
-    if (tagsAnd.length > 0) {
-        conditions.$and = tagsAnd.map(tag => ({
-            tags: tag.trim()
-        }));
-    }
+	if(tagsAnd.length > 0) {
+		conditions.$and = tagsAnd.map((tag)=>({
+			tags : tag.trim()
+		}));
+	}
 
-    if (tagsOr.length > 0) {
-        conditions.$or = tagsOr.map(tag => ({
-            tags: tag.trim()
-        }));
-    }
+	if(tagsOr.length > 0) {
+		conditions.$or = tagsOr.map((tag)=>({
+			tags : tag.trim()
+		}));
+	}
 
-    if (tagsNot.length > 0) {
-        conditions.$nor = tagsNot.map(tag => ({
-            tags: tag.trim()
-        }));
-    }
+	if(tagsNot.length > 0) {
+		conditions.$nor = tagsNot.map((tag)=>({
+			tags : tag.trim()
+		}));
+	}
 
-    return conditions;
+	return conditions;
 };
 
-const sortConditions = (sort, dir) => {
+const sortConditions = (sort, dir)=>{
 	return {
-		[sort]: dir === 'asc' ? 1 : -1
+		[sort] : dir === 'asc' ? 1 : -1
 	};
-}
+};
 
-const findBrews = async (req, res)=>{
+const buildVaultQuery = (req)=>{
 	const title  = req.query.title || '';
 	const author = req.query.author || '';
-	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
-	const count  = Math.max(parseInt(req.query.count) || 20, 10);
-	const skip   = (page - 1) * count;
 	const tagsAnd = req.query.tagsAnd?.split(',') || [];
 	const tagsOr = req.query.tagsOr?.split(',') || [];
 	const tagsNot = req.query.tagsNot?.split(',') || [];
-	const sort = req.query.sort || 'title';
-	const dir = req.query.dir || 'asc';
 
 	//console.log(`Title: ${title}, Author: ${author}, page: ${page}, count: ${count}, tagsAnd: ${tagsAnd}, tagsOr: ${tagsOr} tagsNot: ${tagsNot}`);
 
-	const combinedQuery = {
-		$and : [
-			{ published: true },
-			rendererConditions(req.query.legacy, req.query.v3),
-			titleConditions(title),
-			tagConditions(tagsAnd, tagsOr, tagsNot),
-			authorConditions(author)
-		],
-	};
+	const conditions = [
+		{ published: true },
+		rendererConditions(req.query.legacy, req.query.v3),
+		titleConditions(title),
+		authorConditions(author),
+		tagConditions(tagsAnd, tagsOr, tagsNot)
+	].filter((condition)=>Object.keys(condition).length > 0);
+
+	return { $and: conditions };
+};
+
+const findBrews = async (req, res)=>{
+	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
+	const count  = Math.max(parseInt(req.query.count) || 20, 10);
+	const skip   = (page - 1) * count;
+	const sort = req.query.sort || 'title';
+	const dir = req.query.dir || 'asc';
+
+	const combinedQuery = buildVaultQuery(req);
 
 	const projection = {
 		editId   : 0,
@@ -108,26 +113,12 @@ const findBrews = async (req, res)=>{
 			res.json({ brews: processedBrews, page });
 		})
 		.catch((error)=>{
-			throw { ...error, message: 'Error finding brews in Vault search', HBErrorCode: 90 };
+			throw {  ...error, message: error.errorResponse?.errmsg || 'Error finding brews in Vault search',  HBErrorCode: 90 };
 		});
 };
 
 const findTotal = async (req, res)=>{
-	const title  = req.query.title || '';
-	const author = req.query.author || '';
-	const tagsAnd = req.query.tagsAnd?.split(',') || [];
-	const tagsOr = req.query.tagsOr?.split(',') || [];
-	const tagsNot = req.query.tagsNot?.split(',') || [];
-
-	const combinedQuery = {
-		$and : [
-			{ published: true },
-			rendererConditions(req.query.legacy, req.query.v3),
-			titleConditions(title),
-			authorConditions(author),
-			tagConditions(tagsAnd, tagsOr, tagsNot)
-		],
-	};
+	const combinedQuery = buildVaultQuery(req);
 
 	await HomebrewModel.countDocuments(combinedQuery)
 		.then((totalBrews)=>{
@@ -135,7 +126,7 @@ const findTotal = async (req, res)=>{
 			res.json({ totalBrews });
 		})
 		.catch((error)=>{
-			throw { ...error, message: 'Error finding brews in Vault search findTotal function', HBErrorCode: 91 };
+			throw { ...error, message: error.errorResponse?.errmsg || 'Error finding brews in Vault search findTotal function', HBErrorCode: 91 };
 		});
 };
 

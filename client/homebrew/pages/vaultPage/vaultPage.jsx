@@ -108,8 +108,8 @@ const VaultPage = (props)=>{
 
 		const response = await request.get(`/api/vault?${params}`)
         .catch((error)=>{
-        	console.log('error at loadPage: ', error);
-        	setError(error);
+        	console.error('error at loadPage: ', error.response?.body.message);
+        	setError(error.response?.body);
         	updateStateWithBrews([], 1);
         });
 
@@ -531,23 +531,13 @@ const VaultPage = (props)=>{
 		}
 
 		if(error) {
-			if(error.HBErrorCode === undefined) {
-				return (
-					<div className='foundBrews noBrews'>
-						<h3>Error: Unknown error</h3>
-					</div>
-				);
-			} else {
+			const errorText = error.message || ErrorIndex()[error.HBErrorCode?.toString()] || 'Unknown error';
 
-				const errorText = ErrorIndex()[error.HBErrorCode.toString()] || '';
-
-				return (
-					<div className='foundBrews noBrews'>
-						<h3>Error: {errorText}</h3>
-					</div>
-				);
-			}
-
+			return (
+				<div className='foundBrews noBrews'>
+					<h3>Error: {errorText}</h3>
+				</div>
+			);
 		}
 
 		if(!brewCollection) {
