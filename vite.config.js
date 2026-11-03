@@ -7,6 +7,7 @@ import config from './server/config.js';
 
 const localServer = config.get('host').split(':')[0];
 
+
 export default defineConfig({
 	plugins : [react(), generateAssetsPlugin()],
 	resolve : {
@@ -36,7 +37,8 @@ export default defineConfig({
 	server : {
 		port : 8000,
 		fs   : {
-			allow : ['.', localServer],
+			allow : ['.'],
 		},
+		allowedHosts : [localServer],
 	},
 });

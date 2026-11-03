@@ -69,7 +69,7 @@ export default async function createApp(vite) {
 	const corsOptions = {
 		origin : (origin, callback)=>{
 
-			const localHostname = `https://${config.get('host').split(/\:/)[0]}`;
+			const localHostname = `http://${config.get('host').split(/\:/)[0]}`;
 			const localPublicURL = config.get('publicUrl');
 
 			const allowedOrigins = [
