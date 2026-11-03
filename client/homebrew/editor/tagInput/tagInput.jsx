@@ -131,7 +131,7 @@ const TagInput = ({ id, tooltip, label, valuePatterns, values = [], unique = tru
 				id={id}
 				trigger='click'
 				className='tagInput-dropdown'
-				default=''
+				defaultValue=''
 				placeholder={placeholder}
 				options={label === 'tags' ? suggestionOptions : []}
 				tooltip={tooltip}
