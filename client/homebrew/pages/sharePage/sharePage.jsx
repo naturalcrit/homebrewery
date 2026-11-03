@@ -6,6 +6,7 @@ const Meta = Headtags.Meta;
 import Nav from '@navbar/nav.jsx';
 import Navbar from '@navbar/navbar.jsx';
 import MetadataNav from '@navbar/metadata.navitem.jsx';
+import PinnedItemsNav from '@navbar/pinned.navitem.jsx';
 import PrintNavItem from '@navbar/print.navitem.jsx';
 import RecentNavItems from '@navbar/recent.navitem.jsx';
 const { both: RecentNavItem } = RecentNavItems;
@@ -101,6 +102,11 @@ const SharePage = (props)=>{
 		<div className='sharePage sitePage'>
 			<Meta name='robots' content='noindex, nofollow' />
 			<Navbar>
+
+				<Nav.section className='pinnedSection'>
+					{disableMeta ? titleEl : <PinnedItemsNav brew={currentBrew}>{titleEl}</PinnedItemsNav>}
+				</Nav.section>
+
 				<Nav.section className='titleSection'>
 					{disableMeta ? titleEl : <MetadataNav brew={currentBrew}>{titleEl}</MetadataNav>}
 				</Nav.section>
