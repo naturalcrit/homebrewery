@@ -39,6 +39,10 @@
 			flex-grow : 1;
 			min-width : 300px;
 		}
+
+		&:has(.brewPin) {
+			flex-grow: 0;
+		}
 		>.brewTitle { cursor : auto; }
 	}
 	// "NaturalCrit" logo
@@ -117,6 +121,9 @@
 			background-color : transparent;		
 		}
 		&.brewPin {
+			    i { 
+					margin-left: 0px;
+				}
 				&.active i {
 					color: @blue;
 				}
