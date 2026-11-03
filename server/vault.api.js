@@ -29,26 +29,26 @@ const rendererConditions = (legacy, v3)=>{
 	return {}; // If all renderers selected, renderer field not needed in query for speed
 };
 
-const tagConditions = (tagsAnd, tagsOr, tagsNot) => {
+const tagConditions = (tagsAnd, tagsOr, tagsNot)=>{
 	const conditions = {};
 
-	if (tagsAnd.length > 0) {
+	if(tagsAnd.length > 0) {
 		conditions.tags = {
-			$all: tagsAnd.map(tag => tag.trim())
+			$all : tagsAnd.map((tag)=>tag.trim())
 		};
 	}
 
-	if (tagsOr.length > 0) {
+	if(tagsOr.length > 0) {
 		conditions.tags = {
 			...conditions.tags,
-			$in: tagsOr.map(tag => tag.trim())
+			$in : tagsOr.map((tag)=>tag.trim())
 		};
 	}
 
-	if (tagsNot.length > 0) {
+	if(tagsNot.length > 0) {
 		conditions.tags = {
 			...conditions.tags,
-			$nin: tagsNot.map(tag => tag.trim())
+			$nin : tagsNot.map((tag)=>tag.trim())
 		};
 	}
 
