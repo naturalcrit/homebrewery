@@ -19,7 +19,7 @@ import { splitTextStyleAndMetadata } from '../shared/helpers.js';
 import GoogleActions                 from './googleActions.js';
 
 import api from './homebrew.api.js';
-const { getBrew, getUsersBrewThemes } = api;
+const { getBrew, getUsersBrewThemes, mergeBrewText } = api;
 
 const welcomeText       = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg.md', 'utf8');
 const welcomeTextLegacy = fs.readFileSync('./client/homebrew/pages/homePage/welcome_msg_legacy.md', 'utf8');
@@ -122,7 +122,7 @@ export default function pageRoutes({
 	});
 
 	//Source page
-	app.get('/source/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	app.get('/source/:id', asyncHandler(getBrew('share', false, false)), (req, res)=>{
 		const { brew } = req;
 
 		const replaceStrings = { '&': '&amp;', '<': '&lt;', '>': '&gt;' };
@@ -135,10 +135,11 @@ export default function pageRoutes({
 	});
 
 	//Download brew source page
-	app.get('/download/:id', asyncHandler(getBrew('share')), (req, res)=>{
+	app.get('/download/:id', asyncHandler(getBrew('share', false, false)), (req, res)=>{
 		const { brew } = req;
 		sanitizeBrew(brew, 'share');
 		const prefix = 'HB - ';
+		console.log(brew);
 
 		const encodeRFC3986ValueChars = (str)=>{
 			return (
