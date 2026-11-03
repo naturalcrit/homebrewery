@@ -16,4 +16,4 @@ startMViewer.bat
 
 coverage
 
-env.server.local
+*.local

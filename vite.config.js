@@ -3,6 +3,9 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { generateAssetsPlugin } from './vitePlugins/generateAssetsPlugin.js';
+import config from './server/config.js';
+
+const localServer = config.get('host').split(':')[0];
 
 export default defineConfig({
 	plugins : [react(), generateAssetsPlugin()],
@@ -33,7 +36,7 @@ export default defineConfig({
 	server : {
 		port : 8000,
 		fs   : {
-			allow : ['.'],
+			allow : ['.', localServer],
 		},
 	},
 });
