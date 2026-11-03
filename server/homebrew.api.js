@@ -115,7 +115,7 @@ const api = {
 
 		return userThemes;
 	},
-	getBrew : (accessType, stubOnly = false)=>{
+	getBrew : (accessType, stubOnly = false, split = true)=>{
 		// Create middleware with the accessType passed in as part of the scope
 		return async (req, res, next)=>{
 			// Get relevant IDs for the brew
@@ -180,7 +180,7 @@ const api = {
 			stub = _.defaults(stub, DEFAULT_BREW_LOAD); // Fill in blank fields
 
 			req.brew = migrateSystemsToTags(stub);
-			splitTextStyleAndMetadata(req.brew);
+			split && splitTextStyleAndMetadata(req.brew);
 			next();
 		};
 	},
