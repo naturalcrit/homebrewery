@@ -1,17 +1,12 @@
-import express    from 'express';
+import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { model as HomebrewModel }     from './homebrew.model.js';
+import { model as HomebrewModel } from './homebrew.model.js';
 
 const router = express.Router();
 
 const titleConditions = (title)=>{
 	if(!title) return {};
-	return {
-		$text : {
-			$search        : title,
-			$caseSensitive : false,
-		},
-	};
+	return { $text: { $search: title, $caseSensitive: false } };
 };
 
 const authorConditions = (author)=>{
@@ -20,78 +15,96 @@ const authorConditions = (author)=>{
 };
 
 const rendererConditions = (legacy, v3)=>{
-	if(legacy === 'true' && v3 !== 'true')
-		return { renderer: 'legacy' };
+	if(legacy === 'true' && v3 !== 'true') return { renderer: 'legacy' };
 
-	if(v3 === 'true' && legacy !== 'true')
-		return { renderer: 'V3' };
+	if(v3 === 'true' && legacy !== 'true') return { renderer: 'V3' };
 
 	return {}; // If all renderers selected, renderer field not needed in query for speed
+};
+
+const tagConditions = (tagsAnd, tagsOr, tagsNot)=>{
+	const conditions = {};
+
+	if(tagsAnd.length > 0) {
+		conditions.tags = { $all: tagsAnd.map((tag)=>tag.trim()) };
+	}
+
+	if(tagsOr.length > 0) {
+		conditions.tags = { ...conditions.tags, $in: tagsOr.map((tag)=>tag.trim()) };
+	}
+
+	if(tagsNot.length > 0) {
+		conditions.tags = { ...conditions.tags, $nin: tagsNot.map((tag)=>tag.trim()) };
+	}
+
+	return conditions;
 };
 
 const sortConditions = (sort, dir)=>{
 	return { [sort]: dir === 'asc' ? 1 : -1 };
 };
 
-const findBrews = async (req, res)=>{
-	const title  = req.query.title || '';
+const selectIndex = (req)=>{
+	const hasTags = !!(req.query.tagsAnd || req.query.tagsOr || req.query.tagsNot);
+
+	return hasTags && req.query.title.length === 0 ? 'published_1_tags_1' : null;
+};
+
+const buildVaultQuery = (req)=>{
+	const title = req.query.title || '';
 	const author = req.query.author || '';
-	const page   = Math.max(parseInt(req.query.page)  || 1, 1);
-	const count  = Math.max(parseInt(req.query.count) || 20, 10);
-	const skip   = (page - 1) * count;
+	const tagsAnd = req.query.tagsAnd?.split(',') || [];
+	const tagsOr = req.query.tagsOr?.split(',') || [];
+	const tagsNot = req.query.tagsNot?.split(',') || [];
+
+	//console.log(`Title: ${title}, Author: ${author}, page: ${page}, count: ${count}, tagsAnd: ${tagsAnd}, tagsOr: ${tagsOr} tagsNot: ${tagsNot}`);
+
+	const conditions = [
+		{ published: true },
+		rendererConditions(req.query.legacy, req.query.v3),
+		titleConditions(title),
+		authorConditions(author),
+		tagConditions(tagsAnd, tagsOr, tagsNot),
+	].filter((condition)=>Object.keys(condition).length > 0);
+
+	return { $and: conditions };
+};
+
+const findBrews = async (req, res)=>{
+	const page = Math.max(parseInt(req.query.page) || 1, 1);
+	const count = Math.max(parseInt(req.query.count) || 20, 10);
+	const skip = (page - 1) * count;
 	const sort = req.query.sort || 'title';
 	const dir = req.query.dir || 'asc';
 
-	const combinedQuery = {
-		$and : [
-			{ published: true },
-			rendererConditions(req.query.legacy, req.query.v3),
-			titleConditions(title),
-			authorConditions(author)
-		],
-	};
+	const combinedQuery = buildVaultQuery(req);
 
-	const projection = {
-		editId   : 0,
-		googleId : 0,
-		text     : 0,
-		textBin  : 0,
-		version  : 0
-	};
+	const projection = { editId: 0, googleId: 0, text: 0, textBin: 0, version: 0 };
 
-	await HomebrewModel.find(combinedQuery, projection)
-		.sort(sortConditions(sort, dir))
-		.skip(skip)
-		.limit(count)
-		.maxTimeMS(5000)
+	let query = HomebrewModel.find(combinedQuery, projection).sort(sortConditions(sort, dir)).skip(skip).limit(count).maxTimeMS(5000);
+
+	const indexHint = selectIndex(req);
+	if(indexHint) query = query.hint(indexHint);
+
+	await query
 		.exec()
 		.then((brews)=>{
 			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 			const processedBrews = brews.map((brew)=>{
-				brew.authors = brew.authors.map((author)=>emailRegex.test(author) ? 'hidden' : author
-				);
+				brew.authors = brew.authors.map((author)=>(emailRegex.test(author) ? 'hidden' : author));
 				return brew;
 			});
+
 			res.json({ brews: processedBrews, page });
 		})
 		.catch((error)=>{
-			throw { ...error, message: 'Error finding brews in Vault search', HBErrorCode: 90 };
+			throw { ...error, message: error.errorResponse?.errmsg || 'Error finding brews in Vault search', HBErrorCode: 90 };
 		});
 };
 
 const findTotal = async (req, res)=>{
-	const title  = req.query.title || '';
-	const author = req.query.author || '';
-
-	const combinedQuery = {
-		$and : [
-			{ published: true },
-			rendererConditions(req.query.legacy, req.query.v3),
-			titleConditions(title),
-			authorConditions(author)
-		],
-	};
+	const combinedQuery = buildVaultQuery(req);
 
 	await HomebrewModel.countDocuments(combinedQuery)
 		.then((totalBrews)=>{
@@ -99,7 +112,7 @@ const findTotal = async (req, res)=>{
 			res.json({ totalBrews });
 		})
 		.catch((error)=>{
-			throw { ...error, message: 'Error finding brews in Vault search findTotal function', HBErrorCode: 91 };
+			throw { ...error, message: error.errorResponse?.errmsg || 'Error finding brews in Vault search findTotal function', HBErrorCode: 91 };
 		});
 };
 
