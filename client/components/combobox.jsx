@@ -29,14 +29,18 @@ const Combobox = ({
 			document.addEventListener('click', handleClickOutside);
 			return ()=>document.removeEventListener('click', handleClickOutside);
 		}
-	}, []);
+	}, [defaultValue]);
+
+	useEffect(()=>{
+		if(!showDropdown && !keepValueOnClose) setValue(defaultValue);
+	}, [defaultValue]);
 
 	const handleClickOutside = useCallback((e)=>{
 		// Close dropdown when clicked outside
     	if(!dropdownRef.current?.contains(e.target)) {
         	handleDropdown(false);
     	}
-	}, []);
+	}, [defaultValue]);
 
 	const handleDropdown = (show)=>{
 		if(show) {
