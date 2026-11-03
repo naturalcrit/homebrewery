@@ -51,18 +51,22 @@ const TagInput = ({ id, tooltip, label, valuePatterns, values = [], unique = tru
 			}
 		}
 
-		if(normalizedTag.includes(':')) {
-			const [rawType, rawValue = ''] = normalizedTag.split(':');
+		if (normalizedTag.includes(':')) {
+			const colonIndex = normalizedTag.indexOf(':');
+			const rawType = normalizedTag.slice(0, colonIndex);
+			const rawValue = normalizedTag.slice(colonIndex + 1);
+
 			const tagType = rawType.trim().toLowerCase();
 			const tagValue = rawValue.trim();
 
-			if(tagValue.length > 0) {
-				normalizedTag = `${tagType}:${tagValue[0].toUpperCase()}${tagValue.slice(1)}`;
+			if (tagValue.length > 0) {
+				const chars = Array.from(tagValue);
+				chars[0] = chars[0].toUpperCase();
+				normalizedTag = `${tagType}:${chars.join('')}`;
 			}
-			//trims spaces around colon and capitalizes the first word after the colon
-			//this is preferred to users not understanding they can't put spaces in
+			// Trims spaces around colon and capitalizes the first Unicode character
+			// after the colon, without losing subsequent colons.
 		}
-
 		return normalizedTag;
 	};
 
