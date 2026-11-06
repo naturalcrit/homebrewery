@@ -89,11 +89,11 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^8.0.10",
+    "@babel/core": "^8.1.0",
     "@babel/plugin-transform-runtime": "^8.0.6",
     "@babel/preset-env": "^8.0.7",
     "@babel/preset-react": "^8.0.1",
-    "@babel/runtime": "^8.0.10",
+    "@babel/runtime": "^8.1.0",
     "@codemirror/autocomplete": "^6.20.4",
     "@codemirror/commands": "^6.11.1",
     "@codemirror/lang-css": "^6.3.1",
@@ -108,7 +108,7 @@
     "@lezer/highlight": "^1.2.4",
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.1",
-    "@vitejs/plugin-react": "^6.1.2",
+    "@vitejs/plugin-react": "^6.2.1",
     "body-parser": "^2.4.0",
     "classnames": "^2.5.1",
     "codemirror-5-themes": "^1.5.3",
