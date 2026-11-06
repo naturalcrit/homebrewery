@@ -279,7 +279,7 @@ FolderSchema.statics.updateFolder = async function(
       folder = await this.findOneAndUpdate(
         { author, folderId },
         { $set: updates },
-        { new: true },
+        { returnDocument: 'after' },
       );
     }
 
@@ -331,16 +331,13 @@ console.log('addBrewToFolder(', {author, folderId, shareId}, ')');
       throw err;
     }
 
-    // TOFIX: (node:6967) [MONGOOSE] Warning: mongoose: the `new` option for
-    //   `findOneAndUpdate()` and `findOneAndReplace()` is deprecated. Use
-    //   `returnDocument: 'after'` instead.
     const result = await this.findOneAndUpdate(
       { author, folderId },
       {
         $addToSet: { shareIds: shareId },
         $set: { updatedAt: new Date() },
       },
-      { new: true },
+      { returnDocument: 'after' },
     );
 
     // nothing updated == folder not found
@@ -382,7 +379,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, sh
         $pull: { shareIds: shareId },
         $set: { updatedAt: new Date() },
       },
-      { new: true },
+      { returnDocument: 'after' },
     );
 
     // null == no folder updated because no folder found .. which is an error
