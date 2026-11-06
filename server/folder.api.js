@@ -51,12 +51,7 @@ const getByUserApi = async (req, res)=>{
 
 const createFolderApi = async (req, res)=>{
   try {
-    const folder = await FolderModel.createFolder(req.account.username, {
-      title: req.body.title,
-      slug: req.body.slug,
-      isPublished: req.body.isPublished,
-      isPrivate: req.body.isPrivate,
-    });
+    const folder = await FolderModel.createFolder(req.account.username, req.body);
 
     res.status(201).send(folder);
   }
