@@ -238,7 +238,9 @@ FolderSchema.statics.updateFolder = async function(
 ) {
   try {
     // normalise user inputs
-    title = (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
+    title = title === undefined
+      ? undefined // undefined inputs don't get sent to mongo
+      : (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slug === undefined ? undefined : slugify(slug || title);
 
     // throw if slug invalid, e.g. ''
