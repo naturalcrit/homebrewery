@@ -114,9 +114,17 @@ function normaliseTags(tags) {
 }
 
 function validateTags(tags) {
+  // accept 'tagstring', 'csv,tag,string', ['tagstring'+]
+  if (typeof tags === 'string')
+    tags = tags.split(',').map(tag => tag.trim()).filter(Boolean);
+
+  if (!Array.isArray(tags))
+    return false;
+
   // TODO
   // bork if any schema not recognised
   // bork if illegal chars in tag
+  // bork if too long
   return true;
 
   // TODO: move to a tags library file, import the function
