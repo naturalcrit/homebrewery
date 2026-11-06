@@ -267,10 +267,19 @@ FolderSchema.statics.updateFolder = async function(
 ) {
   try {
     // normalise user inputs
+    // NOTE: undefined inputs == don't update those fields
     title = title === undefined
       ? undefined // undefined inputs don't get sent to mongo
       : (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
-    slug = slug === undefined ? undefined : slugify(slug || title);
+    slug = slug === undefined
+      ? undefined
+      : slugify(slug || title);
+    isPublished = isPublished === undefined
+      ? undefined
+      : Boolean(isPublished);
+    isPrivate = isPrivate === undefined
+      ? undefined
+      : Boolean(isPrivate);
     tags = normaliseTags(tags);
 
     // throw if slug invalid, e.g. ''
