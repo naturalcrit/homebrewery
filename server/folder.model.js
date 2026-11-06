@@ -159,6 +159,8 @@ function throwFolderError(err, code, fields = []) {
 
 // Folder operations .........................................................
 
+const folderFields = 'author folderId slug title tags shareIds subFolderIds isPublished isPrivate createdAt updatedAt -_id';
+
 FolderSchema.statics.getByUser = async function(author, ownAccount) {
   try {
 
@@ -174,9 +176,7 @@ FolderSchema.statics.getByUser = async function(author, ownAccount) {
       query.isPrivate = false;
     }
 
-    const folders = await this.find(query)
-      .select( 'author folderId slug title shareIds subFolderIds isPublished isPrivate' )
-      .lean();
+    const folders = await this.find(query).select(folderFields).lean();
     // NOTE: null == empty set, not an error
 
     return folders;
@@ -200,9 +200,7 @@ FolderSchema.statics.getById = async function(author, folderId, ownAccount=false
       query.isPrivate = false;
     }
 
-    const folder = await this.findOne(query)
-      .select( 'author folderId slug title shareIds subFolderIds isPublished isPrivate' )
-      .lean();
+    const folder = await this.findOne(query).select(folderFields).lean();
 
     // null is not normally an error
     // here though it should be .. the caller has an id, it should exist
@@ -311,14 +309,14 @@ FolderSchema.statics.updateFolder = async function(
 
     let folder;
     if (Object.keys(updates).length === 0) {
-      folder = this.findOne({ author, folderId });
+      folder = this.findOne({ author, folderId }).select(folderFields).lean();
     }
     else {
       folder = await this.findOneAndUpdate(
         { author, folderId },
         { $set: updates },
         { returnDocument: 'after' },
-      );
+      ).select(folderFields).lean();
     }
 
     // Folder doesn't exist?
@@ -376,7 +374,7 @@ console.log('addBrewToFolder(', {author, folderId, shareId}, ')');
         $set: { updatedAt: new Date() },
       },
       { returnDocument: 'after' },
-    );
+    ).select(folderFields).lean();
 
     // nothing updated == folder not found
     if ( result === null ) {
@@ -418,7 +416,7 @@ FolderSchema.statics.removeBrewFromFolder = async function( author, folderId, sh
         $set: { updatedAt: new Date() },
       },
       { returnDocument: 'after' },
-    );
+    ).select(folderFields).lean();
 
     // null == no folder updated because no folder found .. which is an error
     if (!result) {
