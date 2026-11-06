@@ -11,6 +11,7 @@ const FolderSchema = mongoose.Schema({
   slug:         { type: String, required: true, trim: true, lowercase: true,
     match: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, },
   title:        { type: String, required: true, trim: true, default: 'Untitled folder', },
+  description:  { type: String, trim: true },
   tags:         { type: [String], default: [] },
   shareIds:     { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
@@ -168,7 +169,7 @@ function throwFolderError(err, code, fields = []) {
 // Folder operations .........................................................
 
 const folderFields =
-    'author folderId slug title tags '
+    'author folderId slug title description tags '
   + 'shareIds subFolderIds isPublished isPrivate '
   + 'createdAt updatedAt -_id';
 
@@ -231,7 +232,7 @@ FolderSchema.statics.getById = async function(author, folderId, ownAccount=false
 
 FolderSchema.statics.createFolder = async function(
   author,
-  { title, slug, isPublished, isPrivate, tags, }
+  { title, slug, isPublished, isPrivate, description, tags, }
 ) {
   try {
     // normalise user inputs
@@ -256,7 +257,7 @@ FolderSchema.statics.createFolder = async function(
     // TODO: LATER: throw if parentId provided but folder not found - before or after creating folder?
 
     const folder = new this(
-      { author, title, slug, isPublished, isPrivate, tags },
+      { author, title, slug, isPublished, isPrivate, description, tags },
     );
 
     await folder.save();
@@ -274,7 +275,7 @@ FolderSchema.statics.createFolder = async function(
 FolderSchema.statics.updateFolder = async function(
   author,
   folderId,
-  { title, slug, isPublished, isPrivate, tags } = {}
+  { title, slug, isPublished, isPrivate, description, tags, } = {}
 ) {
   try {
     // normalise user inputs
@@ -315,6 +316,8 @@ FolderSchema.statics.updateFolder = async function(
     const updates = {
       title,
       slug,
+      description,
+      tags,
       isPublished,
       isPrivate,
       tags,
