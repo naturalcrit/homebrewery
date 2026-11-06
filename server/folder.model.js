@@ -11,6 +11,7 @@ const FolderSchema = mongoose.Schema({
   slug:         { type: String, required: true, trim: true, lowercase: true,
     match: /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/, },
   title:        { type: String, required: true, trim: true, default: 'Untitled folder', },
+  tags:         { type: [String], default: [] },
   shareIds:     { type: [String], default: [] },
   subFolderIds: { type: [String], default: [] },
   isPublished:  { type: Boolean, required: true, default: false },
@@ -93,6 +94,32 @@ function slugify(str) {
     .replace(/[^a-z0-9\s_-]/g, "")    // Remove special characters
     .replace(/[\s_-]+/g, "-")         // Spaces/underscores → hyphens
     .replace(/^-+|-+$/g, "");         // Trim hyphens
+}
+
+function normaliseTags(tags) {
+  // accept an actual array or a csv string for tags
+  if (tags === undefined) {
+    // do nothing, will be omitted for updates/creation
+  }
+  else if (typeof tags === 'string') {
+    tags = tags.split(',').map(item => item.trim()).filter(Boolean);
+  }
+  else if (!Array.isArray(tags)) {
+    tags = tags === null ? [] : [tags];
+  }
+  // TODO: coerce tags[] elements to String().trim() ? or just let things crash?
+  return tags;
+
+  // TODO: move to a tags library file, import the function
+}
+
+function validateTags(tags) {
+  // TODO
+  // bork if any schema not recognised
+  // bork if illegal chars in tag
+  return true;
+
+  // TODO: move to a tags library file, import the function
 }
 
 function throwFolderError(err, code, fields = []) {
@@ -195,7 +222,7 @@ FolderSchema.statics.getById = async function(author, folderId, ownAccount=false
 
 FolderSchema.statics.createFolder = async function(
   author,
-  { title, slug, isPublished, isPrivate }
+  { title, slug, isPublished, isPrivate, tags, }
 ) {
   try {
     // normalise user inputs
@@ -203,6 +230,7 @@ FolderSchema.statics.createFolder = async function(
     slug = slugify(slug || title);
     isPublished = isPublished ?? false;
     isPrivate = isPrivate ?? true;
+    tags = normaliseTags(tags);
 
     // throw if slug invalid, e.g. ''
     if (slug == '') {
@@ -212,11 +240,14 @@ FolderSchema.statics.createFolder = async function(
       throw err;
     }
 
+    // TODO: throw if tags not valid
+    // if (!validateTags(tags)) { throw }
+
     // TODO: throw if slug not unique within parent folder [TRICKY]
     // TODO: LATER: throw if parentId provided but folder not found - before or after creating folder?
 
     const folder = new this(
-      { author, title, slug, isPublished, isPrivate, },
+      { author, title, slug, isPublished, isPrivate, tags },
     );
 
     await folder.save();
@@ -234,7 +265,7 @@ FolderSchema.statics.createFolder = async function(
 FolderSchema.statics.updateFolder = async function(
   author,
   folderId,
-  { title, slug, isPublished, isPrivate } = {}
+  { title, slug, isPublished, isPrivate, tags } = {}
 ) {
   try {
     // normalise user inputs
@@ -242,6 +273,7 @@ FolderSchema.statics.updateFolder = async function(
       ? undefined // undefined inputs don't get sent to mongo
       : (title ?? '').replace(/\s+/gu, ' ').trim() || 'Untitled folder';
     slug = slug === undefined ? undefined : slugify(slug || title);
+    tags = normaliseTags(tags);
 
     // throw if slug invalid, e.g. ''
     if (slug !== undefined && slug === '') {
@@ -259,11 +291,15 @@ FolderSchema.statics.updateFolder = async function(
       throw err;
     }
 
+    // TODO: throw if tags not valid
+    // if (!validateTags(tags)) { throw }
+
     const updates = {
       title,
       slug,
       isPublished,
       isPrivate,
+      tags,
       updatedAt: new Date()
     };
 
