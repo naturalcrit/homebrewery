@@ -159,7 +159,10 @@ function throwFolderError(err, code, fields = []) {
 
 // Folder operations .........................................................
 
-const folderFields = 'author folderId slug title tags shareIds subFolderIds isPublished isPrivate createdAt updatedAt -_id';
+const folderFields =
+    'author folderId slug title tags '
+  + 'shareIds subFolderIds isPublished isPrivate '
+  + 'createdAt updatedAt -_id';
 
 FolderSchema.statics.getByUser = async function(author, ownAccount) {
   try {
