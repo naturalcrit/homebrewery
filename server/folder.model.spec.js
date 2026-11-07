@@ -455,9 +455,11 @@ describe('Folder model', ()=>{
         shareIds: ['brew123'],
       };
 
+      const query = mockQuery(folder);
+
       const findOneAndUpdate = jest
         .spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(folder);
+        .mockReturnValue(query);
 
       const result = await Folder.addBrewToFolder(
         'testuser',
@@ -481,6 +483,8 @@ describe('Folder model', ()=>{
         { new: true },
       );
 
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
       expect(result).toBe(folder);
     });
 
@@ -496,8 +500,10 @@ describe('Folder model', ()=>{
         folderId: 'abc123',
       };
 
-      jest.spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(folder);
+      const query = mockQuery(folder);
+
+      const findOneAndUpdate = jest.spyOn(Folder, 'findOneAndUpdate')
+        .mockReturnValue(query);
 
       const result = await Folder.addBrewToFolder(
         'testuser',
@@ -511,7 +517,9 @@ describe('Folder model', ()=>{
         shareId: 'brew123',
       });
 
-      expect(Folder.findOneAndUpdate).toHaveBeenCalled();
+      expect(findOneAndUpdate).toHaveBeenCalled();
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
     });
 
   });
@@ -558,9 +566,11 @@ describe('Folder model', ()=>{
         shareIds: [],
       };
 
+      const query = mockQuery(folder);
+
       const findOneAndUpdate = jest
         .spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(folder);
+        .mockReturnValue(query);
 
       const result = await Folder.removeBrewFromFolder(
         'testuser',
@@ -588,6 +598,8 @@ describe('Folder model', ()=>{
         { new: true },
       );
 
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
       expect(result).toBe(folder);
     });
 
@@ -600,8 +612,10 @@ describe('Folder model', ()=>{
         folderId: 'abc123',
       };
 
-      jest.spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(folder);
+      const query = mockQuery(folder);
+
+      const findOneAndUpdate = jest.spyOn(Folder, 'findOneAndUpdate')
+        .mockReturnValue(query);
 
       const result = await Folder.removeBrewFromFolder(
         'testuser',
@@ -610,6 +624,9 @@ describe('Folder model', ()=>{
       );
 
       expect(result).toBe(folder);
+      expect(findOneAndUpdate).toHaveBeenCalled();
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
     });
 
   });
