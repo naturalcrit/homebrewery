@@ -420,8 +420,11 @@ describe('Folder model', ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
 
+      const lean = jest.fn().mockResolvedValue(null);
+      const select = jest.fn().mockReturnValue({ lean });
+
       const findOneAndUpdate = jest.spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(null);
+        .mockReturnValue({ select });
 
       await expect(Folder.addBrewToFolder(
         'testuser',
@@ -438,8 +441,11 @@ describe('Folder model', ()=>{
       expect(findOneAndUpdate).toHaveBeenCalledWith(
         { author: 'testuser', folderId: 'missing-folder' },
         expect.any(Object),
-        { new: true },
+        { returnDocument: 'after' },
       );
+
+      expect(select).toHaveBeenCalledWith(folderFields);
+      expect(lean).toHaveBeenCalled();
     });
 
     it('should add the brew to the folder', async ()=>{
@@ -541,11 +547,13 @@ describe('Folder model', ()=>{
     });
 
     it('should throw HBErrorCode 113 when the folder does not exist', async () => {
-      jest.spyOn(BrewModel, 'exists')
-        .mockResolvedValue({ _id: 'brew' });
+      jest.spyOn(BrewModel, 'exists').mockResolvedValue({ _id: 'brew' });
 
-      jest.spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(null);
+      const lean = jest.fn().mockResolvedValue(null);
+      const select = jest.fn().mockReturnValue({ lean });
+
+      const findOneAndUpdate = jest.spyOn(Folder, 'findOneAndUpdate')
+        .mockReturnValue({ select });
 
       await expect(Folder.removeBrewFromFolder(
         'testuser',
@@ -554,8 +562,20 @@ describe('Folder model', ()=>{
       )).rejects.toMatchObject({
         HBErrorCode: '113',
       });
-    });
 
+      expect(BrewModel.exists).toHaveBeenCalledWith({
+        shareId: 'brew123',
+      });
+
+      expect(findOneAndUpdate).toHaveBeenCalledWith(
+        { author: 'testuser', folderId: 'missing-folder' },
+        expect.any(Object),
+        { returnDocument: 'after' },
+      );
+
+      expect(select).toHaveBeenCalledWith(folderFields);
+      expect(lean).toHaveBeenCalled();
+    });
     it('should remove the brew from the folder', async ()=>{
       jest.spyOn(BrewModel, 'exists')
         .mockResolvedValue({ _id: 'brew' });
