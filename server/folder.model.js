@@ -320,7 +320,6 @@ FolderSchema.statics.updateFolder = async function(
       tags,
       isPublished,
       isPrivate,
-      tags,
       updatedAt: new Date()
     };
 
