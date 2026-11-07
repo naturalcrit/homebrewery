@@ -480,7 +480,7 @@ describe('Folder model', ()=>{
             updatedAt: expect.any(Date),
           }),
         }),
-        { new: true },
+        { returnDocument: 'after' },
       );
 
       expect(query.select).toHaveBeenCalled();
@@ -595,7 +595,7 @@ describe('Folder model', ()=>{
             updatedAt: expect.any(Date),
           }),
         }),
-        { new: true },
+        { returnDocument: 'after' },
       );
 
       expect(query.select).toHaveBeenCalled();
