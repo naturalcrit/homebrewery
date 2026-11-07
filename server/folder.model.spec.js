@@ -151,7 +151,7 @@ describe('Folder model', ()=>{
       });
 
       expect(select).toHaveBeenCalledWith(
-        'author folderId slug title shareIds subFolderIds isPublished isPrivate',
+        'author folderId slug title description tags shareIds subFolderIds isPublished isPrivate createdAt updatedAt -_id',
       );
 
       expect(result).toBe(folders);
