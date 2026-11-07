@@ -2,7 +2,7 @@
 
 /* eslint-disable max-lines */
 
-import { model as Folder } from './folder.model.js';
+import { model as FolderModel, folderFields } from './folder.model.js';
 import { model as BrewModel } from './homebrew.model.js';
 
 jest.mock('./homebrew.model.js', ()=>({
@@ -150,9 +150,7 @@ describe('Folder model', ()=>{
         author: 'testuser',
       });
 
-      expect(select).toHaveBeenCalledWith(
-        'author folderId slug title description tags shareIds subFolderIds isPublished isPrivate createdAt updatedAt -_id',
-      );
+      expect(select).toHaveBeenCalledWith(folderFields);
 
       expect(result).toBe(folders);
     });

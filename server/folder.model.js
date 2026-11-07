@@ -168,7 +168,7 @@ function throwFolderError(err, code, fields = []) {
 
 // Folder operations .........................................................
 
-const folderFields =
+export const folderFields =
     'author folderId slug title description tags '
   + 'shareIds subFolderIds isPublished isPrivate '
   + 'createdAt updatedAt -_id';
