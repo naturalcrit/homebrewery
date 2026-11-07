@@ -11,6 +11,13 @@ jest.mock('./homebrew.model.js', ()=>({
   },
 }));
 
+const mockQuery = (result)=>{
+  const lean = jest.fn().mockResolvedValue(result);
+  const select = jest.fn().mockReturnValue({ lean });
+
+  return { select, lean };
+};
+
 describe('Folder model', ()=>{
   beforeEach(()=>{
     jest.restoreAllMocks();
@@ -282,9 +289,11 @@ describe('Folder model', ()=>{
         title   : 'Updated',
       };
 
+      const query = mockQuery(folder);
+
       const findOneAndUpdate = jest
         .spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(folder);
+        .mockReturnValue(query);
 
       await Folder.updateFolder('testuser', 'abc123', {
         title      : 'Updated',
@@ -293,9 +302,9 @@ describe('Folder model', ()=>{
         isPrivate  : true,
       });
 
-      const [query, update, options] = findOneAndUpdate.mock.calls[0];
+      const [queryArgs, update, options] = findOneAndUpdate.mock.calls[0];
 
-      expect(query).toEqual({
+      expect(queryArgs).toEqual({
         author  : 'testuser',
         folderId: 'abc123',
       });
@@ -305,13 +314,18 @@ describe('Folder model', ()=>{
       expect(update.$set.isPublished).toBe(true);
       expect(update.$set.isPrivate).toBe(true);
       expect(update.$set.updatedAt).toBeInstanceOf(Date);
-      expect(options).toEqual({ new: true });
+      expect(options).toEqual({ returnDocument: 'after' });
+
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
     });
 
     it('should not update fields that were not supplied', async ()=>{
+      const query = mockQuery({});
+
       const findOneAndUpdate = jest
         .spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue({});
+        .mockReturnValue(query);
 
       await Folder.updateFolder('testuser', 'abc123', {
         title: 'Updated',
@@ -329,15 +343,22 @@ describe('Folder model', ()=>{
       expect(update.$set).not.toHaveProperty('isPublished');
       expect(update.$set).not.toHaveProperty('isPrivate');
       expect(update.$set.updatedAt).toBeInstanceOf(Date);
+
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
     });
 
     it('should throw HBErrorCode 106 when the folder does not exist', async ()=>{
+      const query = mockQuery(null);
+
       jest.spyOn(Folder, 'findOneAndUpdate')
-        .mockResolvedValue(null);
+        .mockReturnValue(query);
 
       await expect(Folder.updateFolder('testuser', 'missing', {}))
         .rejects.toMatchObject({ HBErrorCode: '106' });
 
+      expect(query.select).toHaveBeenCalled();
+      expect(query.lean).toHaveBeenCalled();
     });
 
   });
