@@ -69,8 +69,9 @@ export default async function createApp(vite) {
 	const corsOptions = {
 		origin : (origin, callback)=>{
 
-			const localHostname = `http://${config.get('host').split(/\:/)[0]}`;
 			const localPublicURL = config.get('publicUrl');
+			const localHostname = `http://${config.get('host').split(/\:/)[0]}`;
+			const localHostnameSSL = `https://${config.get('host').split(/\:/)[0]}`;
 
 			const allowedOrigins = [
 				'https://homebrewery.naturalcrit.com',
@@ -78,6 +79,7 @@ export default async function createApp(vite) {
 				'https://naturalcrit-stage.herokuapp.com',
 				'https://homebrewery-stage.herokuapp.com',
 				localHostname,
+				localHostnameSSL,
 				localPublicURL
 			];
 
