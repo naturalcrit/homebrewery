@@ -89,11 +89,11 @@
     ]
   },
   "dependencies": {
-    "@babel/core": "^8.0.10",
+    "@babel/core": "^8.1.0",
     "@babel/plugin-transform-runtime": "^8.0.6",
     "@babel/preset-env": "^8.0.7",
     "@babel/preset-react": "^8.0.1",
-    "@babel/runtime": "^8.0.10",
+    "@babel/runtime": "^8.1.0",
     "@codemirror/autocomplete": "^6.20.4",
     "@codemirror/commands": "^6.11.1",
     "@codemirror/lang-css": "^6.3.1",
@@ -108,7 +108,7 @@
     "@lezer/highlight": "^1.2.4",
     "@oddbird/css-anchor-positioning": "^0.10.2",
     "@sanity/diff-match-patch": "^3.2.1",
-    "@vitejs/plugin-react": "^6.1.2",
+    "@vitejs/plugin-react": "^6.2.1",
     "body-parser": "^2.4.0",
     "classnames": "^2.5.1",
     "codemirror-5-themes": "^1.5.3",
@@ -122,7 +122,7 @@
     "express-static-gzip": "3.0.2",
     "fflate": "^0.8.3",
     "fs-extra": "^11.4.1",
-    "hash-wasm": "^4.12.0",
+    "hash-wasm": "^4.13.0",
     "idb-keyval": "^6.2.5",
     "js-yaml": "^5.5.0",
     "jwt-simple": "^0.6.1",
@@ -131,7 +131,7 @@
     "marked-hbfm": "^1.0.3",
     "markedLegacy": "npm:marked@^0.3.19",
     "moment": "^2.31.0",
-    "mongoose": "^9.11.4",
+    "mongoose": "^9.12.0",
     "nanoid": "6.0.2",
     "nconf": "^0.13.0",
     "node": "^26.13.0",
@@ -140,8 +140,8 @@
     "react-dom": "^19.3.1",
     "react-frame-component": "^5.3.2",
     "react-router": "^8.5.1",
-    "sanitize-filename": "1.6.4",
-    "superagent": "^10.4.1"
+    "sanitize-filename": "1.6.5",
+    "superagent": "^10.4.2"
   },
   "devDependencies": {
     "@stylistic/stylelint-plugin": "^5.3.1",
