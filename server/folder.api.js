@@ -131,7 +131,7 @@ const addBrewToFolderApi = async (req, res)=>{
     let httpstatus;
     switch (error.HBErrorCode ?? '') {
       case '111' : httpstatus = 404; break; // folder not found
-      case '112' : httpstatus = 404; break; // brew not found
+      case '112' : httpstatus = 422; break; // brew not found
       case '115' : httpstatus = 500; break; // generic error
       default:
         httpstatus = 500;
@@ -155,7 +155,7 @@ const removeBrewFromFolderApi = async (req, res)=>{
     let httpstatus;
     switch (error.HBErrorCode ?? '') {
       case '113' : httpstatus = 404; break; // folder not found
-      case '114' : httpstatus = 404; break; // brew not found
+      case '114' : httpstatus = 422; break; // brew not found
       case '116' : httpstatus = 500; break; // generic error
       default:
         httpstatus = 500;
