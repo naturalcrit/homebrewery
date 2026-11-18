@@ -64,16 +64,11 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		));
 	};
 
-	const sortBrewOrder = (brew)=>{
-		const title = brew.title || 'No Title';
-		const mapping = {
-			'alpha'   : _.deburr(title.trim().toLowerCase()),
-			'created' : moment(brew.createdAt).format(),
-			'updated' : moment(brew.updatedAt).format(),
-			'views'   : brew.views,
-			'latest'  : moment(brew.lastViewed).format(),
-		};
-		return mapping[sortType];
+	const brewSorters = {
+		'alpha'   : (brew)=>_.deburr(brew.title).trim().toLowerCase(),
+		'created' : (brew)=>moment(brew.createdAt).format(),
+		'updated' : (brew)=>moment(brew.updatedAt).format(),
+		'views'   : (brew)=>brew.views
 	};
 
 	const handleSortOptionChange = (event)=>{
@@ -188,7 +183,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderSortOption('Created Date', 'created')}
 				{renderSortOption('Updated Date', 'updated')}
 				{renderSortOption('Views', 'views')}
-				{/* {renderSortOption('Latest', 'latest')} */}
 			</div>
 		);
 	};
@@ -210,13 +204,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			return filterTextTest && filterTagTest;
 		});
 
-		return _.orderBy(
-			brews,
-			(brew)=>{
-				return sortBrewOrder(brew);
-			},
-			sortDir,
-		);
+		return _.orderBy(brews, brewSorters[sortType], sortDir);
 	};
 
 	const sortedBrewCollection = useMemo(()=>{
