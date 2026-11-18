@@ -233,28 +233,21 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		});
 	};
 
-	const renderBrewCollection = (brewCollection)=>{
-		if(brewCollection.length === 0)
-			return (
-				<div className='brewCollection'>
-					<h1>No Brews</h1>
-				</div>
-			);
-		return _.map(brewCollection, (brewGroup, idx)=>{
-			const sortedBrewGroup = sortedBrewCollection[idx];
+	const renderBrewCollection = ()=>{
+		if(sortedBrewCollection.length === 0)
+			return <h1>No Brews</h1>;
+
+		return _.map(sortedBrewCollection, (brewGroup, idx)=>{
 			const visible = groupVisibility[brewGroup.class];
 
 			return (<>
 				<h1
 					className={visible ? 'active' : 'inactive'}
-					onClick={()=>{
-						toggleBrewCollectionState(brewGroup.class);
-					}}>
+					onClick={()=>toggleBrewCollectionState(brewGroup.class)}>
 					{brewGroup.title || 'No Title'}
 				</h1>
 				<div key={idx} className={`brewGroup ${brewGroup.class ?? ''} ${layoutMode}`}>
-
-					{visible ? renderBrews(sortedBrewGroup.brews) : <></>}
+					{visible ? renderBrews(brewGroup.brews) : <></>}
 				</div>
 			</>);
 		});
@@ -318,7 +311,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderTagsOptions()}
 			</div>
 		);
-
 	};
 
 	return (
@@ -328,7 +320,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			{renderNav()}
 
 			<div className={`content V3 ${`${themeMode}Mode`}`}>
-				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
+				<div className='brewCollection'>{renderBrewCollection()}</div>
 			</div>
 		</div>
 	);
