@@ -202,18 +202,10 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			const filterTextTest = brewStrings.includes(testString);
 
 			// Filter by user selected tags
-			let filterTagTest = true;
-			if(filterTags.length > 0) {
-				filterTagTest =
-					Array.isArray(brew.tags) &&
-					filterTags?.every((tag)=>{
-						return (
-							brew.tags.findIndex((brewTag)=>{
-								return brewTag.toLowerCase() == tag.toLowerCase();
-							}) >= 0
-						);
-					});
-			}
+			const filterTagTest = filterTags.every((tag)=>{
+				Array.isArray(brew.tags) && //TODO: brew.tags should be converted to array at load so we don't have to catch it here
+				brew.tags.some((brewTag)=>brewTag.toLowerCase() == tag.toLowerCase())}
+			);
 
 			return filterTextTest && filterTagTest;
 		});
