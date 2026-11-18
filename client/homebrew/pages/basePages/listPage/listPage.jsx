@@ -19,7 +19,7 @@ const DEFAULT_THEME_MODE = 'light';
 
 const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
-	const [filterTags, setFilterTags] = useState([]);
+	const [filterTags, setFilterTags] = useState(query?.tag || []);
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
@@ -31,7 +31,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
 		const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
-		updateUrl(filterString, newSortType, newSortDir);
+		updateUrl(filterString, newSortType, newSortDir, filterTags);
 
 		const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
 			visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
@@ -57,9 +57,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				key={idx}
 				reportError={reportError}
 				theme={themeMode}
-				updateListFilter={(tag)=>{
-					updateUrl(filterString, sortType, sortDir, tag);
-				}}
+				updateListFilter={handleFilterTagChange}
 			/>
 		));
 	};
@@ -72,7 +70,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	};
 
 	const handleSortOptionChange = (event)=>{
-		updateUrl(filterString, event.target.value, sortDir);
+		updateUrl(filterString, event.target.value, sortDir, filterTags);
 		setSortType(event.target.value);
 		localStorage.setItem(USERPAGE_SORT_TYPE, event.target.value);
 		return;
@@ -81,7 +79,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const handleSortDirChange = (event)=>{
 		const newDir = sortDir == 'asc' ? 'desc' : 'asc';
 
-		updateUrl(filterString, sortType, newDir);
+		updateUrl(filterString, sortType, newDir, filterTags);
 		setSortDir(newDir);
 		localStorage.setItem(USERPAGE_SORT_DIR, newDir);
 		return;
@@ -100,40 +98,39 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const handleFilterTextChange = (e)=>{
 		setFilterString(e.target.value);
-		updateUrl(e.target.value, sortType, sortDir);
+		updateUrl(e.target.value, sortType, sortDir, filterTags);
 		return;
 	};
 
-	const updateUrl = (filterTerm, sortType, sortDir, filterTag = '')=>{
+	const handleFilterTagChange = (newTag)=>{
+		let newFilterTags;
+
+		const alreadyExists = filterTags.some((t)=>t.toLowerCase() == newTag.toLowerCase());
+
+		if(alreadyExists)
+			newFilterTags = filterTags.filter((t)=>t.toLowerCase() != newTag.toLowerCase());
+		else
+			newFilterTags = [...filterTags, newTag];
+
+		newFilterTags.sort((a, b)=>{
+			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+
+		setFilterTags(newFilterTags);
+
+		updateUrl(filterString, sortType, sortDir, newFilterTags);
+	};
+
+	const updateUrl = (filterTerm, sortType, sortDir, filterTags)=>{
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
 		urlParams.set('sort', sortType);
 		urlParams.set('dir', sortDir);
 
-		let filterTags = urlParams.getAll('tag');
-		if(filterTag != '') {
-			if(
-				filterTags.findIndex((tag)=>{
-					return tag.toLowerCase() == filterTag.toLowerCase();
-				}) == -1
-			) {
-				filterTags.push(filterTag);
-			} else {
-				filterTags = filterTags.filter((tag)=>{
-					return tag.toLowerCase() != filterTag.toLowerCase();
-				});
-			}
-		}
+		// Add tags to URL in alphabetical order
 		urlParams.delete('tag');
-		// Add tags to URL in the order they were clicked
 		filterTags.forEach((tag)=>urlParams.append('tag', tag));
-		// Sort tags before updating state
-		filterTags.sort((a, b)=>{
-			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
-		});
-
-		setFilterTags(filterTags);
 
 		if(!filterTerm) urlParams.delete('filter');
 		else urlParams.set('filter', filterTerm);
@@ -164,9 +161,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 						<span
 							key={idx}
 							className={matches[1]}
-							onClick={()=>{
-								updateUrl(filterString, sortType, sortDir, tag);
-							}}>
+							onClick={()=>handleFilterTagChange(tag)}>
 							{matches[2]}
 						</span>
 					);
