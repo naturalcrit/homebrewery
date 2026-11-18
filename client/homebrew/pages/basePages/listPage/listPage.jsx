@@ -202,9 +202,9 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			const filterTextTest = brewStrings.includes(testString);
 
 			// Filter by user selected tags
-			const filterTagTest = filterTags.every((tag)=>{
+			const filterTagTest = filterTags.every((tag)=>
 				Array.isArray(brew.tags) && //TODO: brew.tags should be converted to array at load so we don't have to catch it here
-				brew.tags.some((brewTag)=>brewTag.toLowerCase() == tag.toLowerCase())}
+				brew.tags.some((brewTag)=>brewTag.toLowerCase() == tag.toLowerCase())
 			);
 
 			return filterTextTest && filterTagTest;
