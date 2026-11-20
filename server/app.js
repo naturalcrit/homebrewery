@@ -80,7 +80,7 @@ export default async function createApp(vite) {
 
 			const herokuRegex = /^https:\/\/(?:homebrewery-pr-\d+\.herokuapp\.com|naturalcrit-pr-\d+\.herokuapp\.com)$/; // Matches any Heroku app
 
-			if(!origin || allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
+			if(!origin || origin == 'null' ||allowedOrigins.includes(origin) || herokuRegex.test(origin) || (isLocalEnvironment && localNetworkRegex.test(origin))) {
 				callback(null, true);
 			} else {
 				console.log(origin, 'not allowed');
