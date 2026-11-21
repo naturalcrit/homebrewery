@@ -19,7 +19,7 @@ const DEFAULT_THEME_MODE = 'light';
 
 const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
-	const [filterTags, setFilterTags] = useState([]);
+	const [filterTags, setFilterTags] = useState(query?.tag || []);
 	const [sortType, setSortType] = useState(query?.sort || null);
 	const [sortDir, setSortDir] = useState(query?.dir || null);
 	const [groupVisibility, setGroupVisibility] = useState({});
@@ -31,7 +31,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
 		const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
-		updateUrl(filterString, newSortType, newSortDir);
+		updateUrl(filterString, newSortType, newSortDir, filterTags);
 
 		const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
 			visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
@@ -57,27 +57,20 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				key={idx}
 				reportError={reportError}
 				theme={themeMode}
-				updateListFilter={(tag)=>{
-					updateUrl(filterString, sortType, sortDir, tag);
-				}}
+				updateListFilter={handleFilterTagChange}
 			/>
 		));
 	};
 
-	const sortBrewOrder = (brew)=>{
-		const title = brew.title || 'No Title';
-		const mapping = {
-			'alpha'   : _.deburr(title.trim().toLowerCase()),
-			'created' : moment(brew.createdAt).format(),
-			'updated' : moment(brew.updatedAt).format(),
-			'views'   : brew.views,
-			'latest'  : moment(brew.lastViewed).format(),
-		};
-		return mapping[sortType];
+	const brewSorters = {
+		'alpha'   : (brew)=>_.deburr(brew.title).trim().toLowerCase(),
+		'created' : (brew)=>moment(brew.createdAt).format(),
+		'updated' : (brew)=>moment(brew.updatedAt).format(),
+		'views'   : (brew)=>brew.views
 	};
 
 	const handleSortOptionChange = (event)=>{
-		updateUrl(filterString, event.target.value, sortDir);
+		updateUrl(filterString, event.target.value, sortDir, filterTags);
 		setSortType(event.target.value);
 		localStorage.setItem(USERPAGE_SORT_TYPE, event.target.value);
 		return;
@@ -86,7 +79,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const handleSortDirChange = (event)=>{
 		const newDir = sortDir == 'asc' ? 'desc' : 'asc';
 
-		updateUrl(filterString, sortType, newDir);
+		updateUrl(filterString, sortType, newDir, filterTags);
 		setSortDir(newDir);
 		localStorage.setItem(USERPAGE_SORT_DIR, newDir);
 		return;
@@ -105,40 +98,39 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const handleFilterTextChange = (e)=>{
 		setFilterString(e.target.value);
-		updateUrl(e.target.value, sortType, sortDir);
+		updateUrl(e.target.value, sortType, sortDir, filterTags);
 		return;
 	};
 
-	const updateUrl = (filterTerm, sortType, sortDir, filterTag = '')=>{
+	const handleFilterTagChange = (newTag)=>{
+		let newFilterTags;
+
+		const alreadyExists = filterTags.some((t)=>t.toLowerCase() == newTag.toLowerCase());
+
+		if(alreadyExists)
+			newFilterTags = filterTags.filter((t)=>t.toLowerCase() != newTag.toLowerCase());
+		else
+			newFilterTags = [...filterTags, newTag];
+
+		newFilterTags.sort((a, b)=>{
+			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+
+		setFilterTags(newFilterTags);
+
+		updateUrl(filterString, sortType, sortDir, newFilterTags);
+	};
+
+	const updateUrl = (filterTerm, sortType, sortDir, filterTags)=>{
 		const url = new URL(window.location.href);
 		const urlParams = new URLSearchParams(url.search);
 
 		urlParams.set('sort', sortType);
 		urlParams.set('dir', sortDir);
 
-		let filterTags = urlParams.getAll('tag');
-		if(filterTag != '') {
-			if(
-				filterTags.findIndex((tag)=>{
-					return tag.toLowerCase() == filterTag.toLowerCase();
-				}) == -1
-			) {
-				filterTags.push(filterTag);
-			} else {
-				filterTags = filterTags.filter((tag)=>{
-					return tag.toLowerCase() != filterTag.toLowerCase();
-				});
-			}
-		}
+		// Add tags to URL in alphabetical order
 		urlParams.delete('tag');
-		// Add tags to URL in the order they were clicked
 		filterTags.forEach((tag)=>urlParams.append('tag', tag));
-		// Sort tags before updating state
-		filterTags.sort((a, b)=>{
-			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
-		});
-
-		setFilterTags(filterTags);
 
 		if(!filterTerm) urlParams.delete('filter');
 		else urlParams.set('filter', filterTerm);
@@ -169,9 +161,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 						<span
 							key={idx}
 							className={matches[1]}
-							onClick={()=>{
-								updateUrl(filterString, sortType, sortDir, tag);
-							}}>
+							onClick={()=>handleFilterTagChange(tag)}>
 							{matches[2]}
 						</span>
 					);
@@ -188,7 +178,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderSortOption('Created Date', 'created')}
 				{renderSortOption('Updated Date', 'updated')}
 				{renderSortOption('Views', 'views')}
-				{/* {renderSortOption('Latest', 'latest')} */}
 			</div>
 		);
 	};
@@ -202,29 +191,15 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			const filterTextTest = brewStrings.includes(testString);
 
 			// Filter by user selected tags
-			let filterTagTest = true;
-			if(filterTags.length > 0) {
-				filterTagTest =
-					Array.isArray(brew.tags) &&
-					filterTags?.every((tag)=>{
-						return (
-							brew.tags.findIndex((brewTag)=>{
-								return brewTag.toLowerCase() == tag.toLowerCase();
-							}) >= 0
-						);
-					});
-			}
+			const filterTagTest = filterTags.every((tag)=>
+				Array.isArray(brew.tags) && //TODO: brew.tags should be converted to array at load so we don't have to catch it here
+				brew.tags.some((brewTag)=>brewTag.toLowerCase() == tag.toLowerCase())
+			);
 
 			return filterTextTest && filterTagTest;
 		});
 
-		return _.orderBy(
-			brews,
-			(brew)=>{
-				return sortBrewOrder(brew);
-			},
-			sortDir,
-		);
+		return _.orderBy(brews, brewSorters[sortType], sortDir);
 	};
 
 	const sortedBrewCollection = useMemo(()=>{
@@ -241,28 +216,21 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		});
 	};
 
-	const renderBrewCollection = (brewCollection)=>{
-		if(brewCollection.length === 0)
-			return (
-				<div className='brewCollection'>
-					<h1>No Brews</h1>
-				</div>
-			);
-		return _.map(brewCollection, (brewGroup, idx)=>{
-			const sortedBrewGroup = sortedBrewCollection[idx];
+	const renderBrewCollection = ()=>{
+		if(sortedBrewCollection.length === 0)
+			return <h1>No Brews</h1>;
+
+		return _.map(sortedBrewCollection, (brewGroup, idx)=>{
 			const visible = groupVisibility[brewGroup.class];
 
 			return (<>
 				<h1
 					className={visible ? 'active' : 'inactive'}
-					onClick={()=>{
-						toggleBrewCollectionState(brewGroup.class);
-					}}>
+					onClick={()=>toggleBrewCollectionState(brewGroup.class)}>
 					{brewGroup.title || 'No Title'}
 				</h1>
 				<div key={idx} className={`brewGroup ${brewGroup.class ?? ''} ${layoutMode}`}>
-
-					{visible ? renderBrews(sortedBrewGroup.brews) : <></>}
+					{visible ? renderBrews(brewGroup.brews) : <></>}
 				</div>
 			</>);
 		});
@@ -326,7 +294,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 				{renderTagsOptions()}
 			</div>
 		);
-
 	};
 
 	return (
@@ -336,7 +303,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 			{renderNav()}
 
 			<div className={`content V3 ${`${themeMode}Mode`}`}>
-				<div className='brewCollection'>{renderBrewCollection(brewCollection)}</div>
+				<div className='brewCollection'>{renderBrewCollection()}</div>
 			</div>
 		</div>
 	);
