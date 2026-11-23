@@ -17,6 +17,13 @@ const DEFAULT_SORT_DIR = 'asc';
 const DEFAULT_LAYOUT_MODE = 'grid';
 const DEFAULT_THEME_MODE = 'light';
 
+const brewSorters = {
+	'alpha'   : (brew)=>_.deburr(brew.title).trim().toLowerCase(),
+	'created' : (brew)=>moment(brew.createdAt).format(),
+	'updated' : (brew)=>moment(brew.updatedAt).format(),
+	'views'   : (brew)=>brew.views
+};
+
 const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navItems = <></>, reportError = null, query })=>{
 	const [filterString, setFilterString] = useState(query?.filter || '');
 	const [filterTags, setFilterTags] = useState(query?.tag || []);
@@ -62,44 +69,32 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		));
 	};
 
-	const brewSorters = {
-		'alpha'   : (brew)=>_.deburr(brew.title).trim().toLowerCase(),
-		'created' : (brew)=>moment(brew.createdAt).format(),
-		'updated' : (brew)=>moment(brew.updatedAt).format(),
-		'views'   : (brew)=>brew.views
-	};
-
 	const handleSortOptionChange = (event)=>{
 		updateUrl(filterString, event.target.value, sortDir, filterTags);
 		setSortType(event.target.value);
 		localStorage.setItem(USERPAGE_SORT_TYPE, event.target.value);
-		return;
 	};
 
-	const handleSortDirChange = (event)=>{
+	const handleSortDirChange = ()=>{
 		const newDir = sortDir == 'asc' ? 'desc' : 'asc';
 
 		updateUrl(filterString, sortType, newDir, filterTags);
 		setSortDir(newDir);
 		localStorage.setItem(USERPAGE_SORT_DIR, newDir);
-		return;
 	};
 
-	const renderSortOption = (sortTitle, sortValue)=>{
-		return (
-			<label className={`option ${sortType == sortValue ? 'active' : ''}`}>
-				<button value={`${sortValue}`} onClick={sortType == sortValue ? handleSortDirChange : handleSortOptionChange}>
-					{`${sortTitle}`}
-				</button>
-				{sortType == sortValue && <i className={`sortDir fas ${sortDir == 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>}
-			</label>
-		);
-	};
+	const renderSortOption = (sortTitle, sortValue)=>(
+		<label className={`option ${sortType == sortValue ? 'active' : ''}`}>
+			<button value={sortValue} onClick={sortType == sortValue ? handleSortDirChange : handleSortOptionChange}>
+				{sortTitle}
+			</button>
+			{sortType == sortValue && <i className={`sortDir fas ${sortDir == 'asc' ? 'fa-sort-up' : 'fa-sort-down'}`}></i>}
+		</label>
+	);
 
 	const handleFilterTextChange = (e)=>{
 		setFilterString(e.target.value);
 		updateUrl(e.target.value, sortType, sortDir, filterTags);
-		return;
 	};
 
 	const handleFilterTagChange = (newTag)=>{
@@ -139,16 +134,14 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		window.history.replaceState(null, null, url);
 	};
 
-	const renderFilterOption = ()=>{
-		return (
-			<div className='filter-option'>
-				<label>
-					<i className='fas fa-search'></i>
-					<input type='search' placeholder='filter title/description/tags' onChange={handleFilterTextChange} value={filterString} />
-				</label>
-			</div>
-		);
-	};
+	const renderFilterOption = ()=>(
+		<div className='filter-option'>
+			<label>
+				<i className='fas fa-search'></i>
+				<input type='search' placeholder='filter title/description/tags' onChange={handleFilterTextChange} value={filterString} />
+			</label>
+		</div>
+	);
 
 	const renderTagsOptions = ()=>{
 		if(filterTags?.length == 0) return;
