@@ -116,21 +116,15 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	};
 
 	const handleFilterTagChange = (newTag)=>{
-		let newFilterTags;
-
 		const alreadyExists = filterTags.some((t)=>t.toLowerCase() == newTag.toLowerCase());
 
-		if(alreadyExists)
-			newFilterTags = filterTags.filter((t)=>t.toLowerCase() != newTag.toLowerCase());
-		else
-			newFilterTags = [...filterTags, newTag];
+		const newFilterTags = alreadyExists
+			? filterTags.filter((t)=>t.toLowerCase() != newTag.toLowerCase())	//Remove tag if it already exists
+			: [...filterTags, newTag];											//Add tag if it doesn't exist
 
-		newFilterTags.sort((a, b)=>{
-			return a.indexOf(':') - b.indexOf(':') != 0 ? a.indexOf(':') - b.indexOf(':') : a.toLowerCase().localeCompare(b.toLowerCase());
-		});
+		newFilterTags.sort((a, b)=>a.indexOf(':') - b.indexOf(':') || a.toLowerCase().localeCompare(b.toLowerCase()));
 
 		setFilterTags(newFilterTags);
-
 		updateUrl(filterString, sortType, sortDir, newFilterTags);
 	};
 
@@ -176,21 +170,15 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	const getSortedBrews = (brews)=>{
 		const testString = _.deburr(filterString).toLowerCase();
 
-		brews = _.filter(brews, (brew)=>{
-			// Filter by user entered text
+		return _.orderBy(_.filter(brews, (brew)=>{
 			const brewStrings = _.deburr([brew.title, brew.description, brew.tags].join('\n').toLowerCase());
-			const filterTextTest = brewStrings.includes(testString);
 
-			// Filter by user selected tags
-			const filterTagTest = filterTags.every((tag)=>
+			// Collect all brews that match the filter string and all of the filter tags
+			return brewStrings.includes(testString) && filterTags.every((tag)=>
 				Array.isArray(brew.tags) && //TODO: brew.tags should be converted to array at load so we don't have to catch it here
 				brew.tags.some((brewTag)=>brewTag.toLowerCase() == tag.toLowerCase())
 			);
-
-			return filterTextTest && filterTagTest;
-		});
-
-		return _.orderBy(brews, brewSorters[sortType], sortDir);
+		}), brewSorters[sortType], sortDir);
 	};
 
 	const sortedBrewCollection = useMemo(()=>{
