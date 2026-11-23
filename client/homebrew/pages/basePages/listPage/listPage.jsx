@@ -57,26 +57,24 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 	const updateUrl = (filterTerm, sortType, sortDir, filterTags)=>{
 		const url = new URL(window.location.href);
-		const urlParams = new URLSearchParams(url.search);
 
-		urlParams.set('sort', sortType);
-		urlParams.set('dir', sortDir);
+		url.searchParams.set('sort', sortType);
+		url.searchParams.set('dir', sortDir);
 
 		// Add tags to URL in alphabetical order
-		urlParams.delete('tag');
-		filterTags.forEach((tag)=>urlParams.append('tag', tag));
+		url.searchParams.delete('tag');
+		filterTags.forEach((tag)=>url.searchParams.append('tag', tag));
 
-		if(!filterTerm) urlParams.delete('filter');
-		else urlParams.set('filter', filterTerm);
+		if(!filterTerm) url.searchParams.delete('filter');
+		else url.searchParams.set('filter', filterTerm);
 
-		url.search = urlParams;
 		window.history.replaceState(null, null, url);
 	};
 
 	const renderBrews = (brews)=>{
-		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
+		if(!brews.length) return <div className='noBrews'>No Brews.</div>;
 
-		return _.map(brews, (brew, idx)=>(
+		return brews.map((brew, idx)=>(
 			<BrewItem
 				brew={brew}
 				key={idx}
@@ -138,11 +136,11 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	);
 
 	const renderTagsOptions = ()=>{
-		if(filterTags?.length == 0) return;
+		if(!filterTags.length) return;
 		return (
 			<div className='tags-container'>
 				Tags:
-				{_.map(filterTags, (tag, idx)=>{
+				{filterTags.map((tag, idx)=>{
 					const matches = tag.match(/^(?:([^:]+):)?([^:]+)$/);
 					return (
 						<span
@@ -195,7 +193,7 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		if(sortedBrewCollection.length === 0)
 			return <h1>No Brews</h1>;
 
-		return _.map(sortedBrewCollection, (brewGroup, idx)=>{
+		return sortedBrewCollection.map((brewGroup, idx)=>{
 			const visible = groupVisibility[brewGroup.class];
 
 			return (<>
