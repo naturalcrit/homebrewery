@@ -58,20 +58,32 @@ const SplitPane = (props)=>{
 		setLiveScroll(!liveScroll);
 	};
 
+	const DividerButton = ({ className, children, ...props })=>{
+		return <div
+			className={className}
+			onPointerDown={(e)=>{e.stopPropagation();}}
+			{...props} >
+
+			{children}
+
+		</div>;
+	};
+
 	const  renderMoveArrows = (showMoveArrows &&
 		<>
-			<div className='arrow left'
+			<DividerButton className='arrow left'
 				onClick={()=>setMoveSource(!moveSource)} >
 				<i className='fas fa-arrow-left' />
-			</div>
-			<div className='arrow right'
+			</DividerButton>
+			<DividerButton
+				className='arrow right'
 				onClick={()=>setMoveBrew(!moveBrew)} >
 				<i className='fas fa-arrow-right' />
-			</div>
-			<div id='scrollToggleDiv' className={liveScroll ? 'arrow lock' : 'arrow unlock'}
+			</DividerButton>
+			<DividerButton id='scrollToggleDiv' className={liveScroll ? 'arrow lock' : 'arrow unlock'}
 				onClick={liveScrollToggle} >
 				<i id='scrollToggle' className={liveScroll ? 'fas fa-lock' : 'fas fa-unlock'} />
-			</div>
+			</DividerButton>
 		</>
 	);
 
