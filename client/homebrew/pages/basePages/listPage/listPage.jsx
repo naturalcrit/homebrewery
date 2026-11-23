@@ -38,22 +38,40 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 
 		const newSortType = sortType ?? (localStorage.getItem(USERPAGE_SORT_TYPE) || DEFAULT_SORT_TYPE);
 		const newSortDir = sortDir ?? (localStorage.getItem(USERPAGE_SORT_DIR) || DEFAULT_SORT_DIR);
-		updateUrl(filterString, newSortType, newSortDir, filterTags);
+		const newLayoutMode = localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE;
+		const newThemeMode = localStorage.getItem(USERPAGE_THEME_MODE) || DEFAULT_THEME_MODE;
 
-		const namedBrewCollection = brewCollection.reduce((visibility, brewGroup)=>{
+		const initialGroupVisibility = brewCollection.reduce((visibility, brewGroup)=>{
 			visibility[brewGroup.class] = (localStorage.getItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroup.class}`) ?? 'true') == 'true';
 			return visibility;
 		}, {});
 
-		const newLayoutMode = localStorage.getItem(USERPAGE_LAYOUT_MODE) || DEFAULT_LAYOUT_MODE;
-		const newThemeMode = localStorage.getItem(USERPAGE_THEME_MODE) || DEFAULT_THEME_MODE;
-
-		setGroupVisibility(namedBrewCollection);
+		setGroupVisibility(initialGroupVisibility);
 		setSortType(newSortType);
 		setSortDir(newSortDir);
 		setLayoutMode(newLayoutMode);
 		setThemeMode(newThemeMode);
+
+		updateUrl(filterString, newSortType, newSortDir, filterTags);
 	}, []);
+
+	const updateUrl = (filterTerm, sortType, sortDir, filterTags)=>{
+		const url = new URL(window.location.href);
+		const urlParams = new URLSearchParams(url.search);
+
+		urlParams.set('sort', sortType);
+		urlParams.set('dir', sortDir);
+
+		// Add tags to URL in alphabetical order
+		urlParams.delete('tag');
+		filterTags.forEach((tag)=>urlParams.append('tag', tag));
+
+		if(!filterTerm) urlParams.delete('filter');
+		else urlParams.set('filter', filterTerm);
+
+		url.search = urlParams;
+		window.history.replaceState(null, null, url);
+	};
 
 	const renderBrews = (brews)=>{
 		if(!brews || !brews.length) return <div className='noBrews'>No Brews.</div>;
@@ -116,24 +134,6 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		updateUrl(filterString, sortType, sortDir, newFilterTags);
 	};
 
-	const updateUrl = (filterTerm, sortType, sortDir, filterTags)=>{
-		const url = new URL(window.location.href);
-		const urlParams = new URLSearchParams(url.search);
-
-		urlParams.set('sort', sortType);
-		urlParams.set('dir', sortDir);
-
-		// Add tags to URL in alphabetical order
-		urlParams.delete('tag');
-		filterTags.forEach((tag)=>urlParams.append('tag', tag));
-
-		if(!filterTerm) urlParams.delete('filter');
-		else urlParams.set('filter', filterTerm);
-
-		url.search = urlParams;
-		window.history.replaceState(null, null, url);
-	};
-
 	const renderFilterOption = ()=>(
 		<div className='filter-option'>
 			<label>
@@ -163,17 +163,15 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		);
 	};
 
-	const renderSortOptions = ()=>{
-		return (
-			<div className='radio-toggle sort-container'>
-				<h6>Sort by :</h6>
-				{renderSortOption('Title', 'alpha')}
-				{renderSortOption('Created Date', 'created')}
-				{renderSortOption('Updated Date', 'updated')}
-				{renderSortOption('Views', 'views')}
-			</div>
-		);
-	};
+	const renderSortOptions = ()=>(
+		<div className='radio-toggle sort-container'>
+			<h6>Sort by :</h6>
+			{renderSortOption('Title', 'alpha')}
+			{renderSortOption('Created Date', 'created')}
+			{renderSortOption('Updated Date', 'updated')}
+			{renderSortOption('Views', 'views')}
+		</div>
+	);
 
 	const getSortedBrews = (brews)=>{
 		const testString = _.deburr(filterString).toLowerCase();
@@ -200,13 +198,9 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 	}, [brewCollection, filterString, filterTags, sortType, sortDir]);
 
 	const toggleBrewCollectionState = (brewGroupClass)=>{
-		setGroupVisibility((prevVisibility)=>{
-			const visible = !prevVisibility[brewGroupClass];
-
-			localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroupClass}`, visible);
-
-			return {...prevVisibility, [brewGroupClass]: visible};
-		});
+		const visible = !groupVisibility[brewGroupClass];
+		localStorage.setItem(`${USERPAGE_GROUP_VISIBILITY_PREFIX}_${brewGroupClass}`, visible);
+		setGroupVisibility({...groupVisibility, [brewGroupClass]: visible});
 	};
 
 	const renderBrewCollection = ()=>{
@@ -234,58 +228,52 @@ const ListPage = ({ brewCollection = [{ title: '', class: '', brews: [] }], navI
 		localStorage.setItem(USERPAGE_LAYOUT_MODE, mode);
 	};
 
-	const renderLayoutModeOptions = ()=>{
-		return (
-			<div className='radio-toggle layout-container'>
-				<h6>View:</h6>
-				<label className='option' title='grid'>
-					<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('grid')} checked={layoutMode === 'grid'} />
-					<i className='fac compressed-grid'></i>
-				</label>
-				<label className='option' title='list'>
-					<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('list')} checked={layoutMode === 'list'} />
-					<i className='fas fa-bars'></i>
-				</label>
-				<label className='option' title='card'>
-					<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('card')} checked={layoutMode === 'card'} />
-					<i className='fac format-card'></i>
-				</label>
-			</div>
-		);
-	};
+	const renderLayoutModeOptions = ()=>(
+		<div className='radio-toggle layout-container'>
+			<h6>View:</h6>
+			<label className='option' title='grid'>
+				<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('grid')} checked={layoutMode === 'grid'} />
+				<i className='fac compressed-grid'></i>
+			</label>
+			<label className='option' title='list'>
+				<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('list')} checked={layoutMode === 'list'} />
+				<i className='fas fa-bars'></i>
+			</label>
+			<label className='option' title='card'>
+				<input name='layout-mode' type='radio' onChange={()=>handleLayoutChange('card')} checked={layoutMode === 'card'} />
+				<i className='fac format-card'></i>
+			</label>
+		</div>
+	);
 
 	const handleThemeChange = (mode)=>{
 		setThemeMode(mode);
 		localStorage.setItem(USERPAGE_THEME_MODE, mode);
 	};
 
-	const renderThemePicker = ()=>{
-		return (
-			<div className='radio-toggle theme-container'>
-				<h6>Theme:</h6>
-				<label className='option'>
-					<input type='radio' name='theme' onChange={()=>handleThemeChange('light')} checked={themeMode === 'light'}/>
-					<i className='fas fa-sun'/>
-				</label>
-				<label className='option'>
-					<input type='radio' name='theme' onChange={()=>handleThemeChange('dark')}  checked={themeMode === 'dark'}/>
-					<i className='fas fa-moon'/>
-				</label>
-			</div>
-		);
-	};
+	const renderThemePicker = ()=>(
+		<div className='radio-toggle theme-container'>
+			<h6>Theme:</h6>
+			<label className='option'>
+				<input type='radio' name='theme' onChange={()=>handleThemeChange('light')} checked={themeMode === 'light'}/>
+				<i className='fas fa-sun'/>
+			</label>
+			<label className='option'>
+				<input type='radio' name='theme' onChange={()=>handleThemeChange('dark')}  checked={themeMode === 'dark'}/>
+				<i className='fas fa-moon'/>
+			</label>
+		</div>
+	);
 
-	const renderNav = ()=>{
-		return (
-			<div className='listPageNav'>
-				{renderLayoutModeOptions()}
-				{renderThemePicker()}
-				{renderSortOptions()}
-				{renderFilterOption()}
-				{renderTagsOptions()}
-			</div>
-		);
-	};
+	const renderNav = ()=>(
+		<div className='listPageNav'>
+			{renderLayoutModeOptions()}
+			{renderThemePicker()}
+			{renderSortOptions()}
+			{renderFilterOption()}
+			{renderTagsOptions()}
+		</div>
+	);
 
 	return (
 		<div className='sitePage listPage'>
