@@ -155,7 +155,7 @@
     "jest-expect-message": "^1.1.3",
     "jsdom": "^30.1.3",
     "jsdom-global": "^3.0.2",
-    "postcss-less": "^6.0.0",
+    "postcss-less": "^7.0.1",
     "stylelint": "^17.16.0",
     "stylelint-config-recess-order": "^7.9.0",
     "stylelint-config-recommended": "^18.0.0",
