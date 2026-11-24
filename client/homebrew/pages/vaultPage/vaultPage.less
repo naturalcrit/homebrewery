@@ -53,14 +53,31 @@
 				letter-spacing : 2px;
 				color          : var(--h1-clr);
 			}
+
+			h1 {
+				margin        : 20px 0;
+				font-size     : 30px;
+				text-align    : center;
+				border-bottom : 3px solid;
+			}
+
+			h2 {
+				margin-block  : 30px 20px;
+				font-size     : 18px;
+				text-align    : center;
+				border-bottom : 2px solid;
+			}
+
+			h3 {
+				margin-block: 20px 5px;
+				border-bottom:1px solid;
+			}
+
+			fieldset {
+				padding-left:5px;
+			}
 				
 			legend {
-				h3 {
-					margin-block  : 30px 20px;
-					font-size     : 20px;
-					text-align    : center;
-					border-bottom : 2px solid;
-				}
 				ul {
 					padding-inline : 30px 10px;
 					li {
@@ -88,14 +105,6 @@
 			}
 			&:not(:has(input[type='checkbox']:checked))::after { opacity : 1; }
 
-			.formTitle {
-				margin        : 20px 0;
-				font-size     : 30px;
-				color         : black;
-				text-align    : center;
-				border-bottom : 2px solid;
-			}
-
 			.formContents {
 				position       : relative;
 				display        : flex;
@@ -105,15 +114,85 @@
 					display     : flex;
 					align-items : center; 
 					margin      : 10px 0;
+
+					> * {
+						margin: 0 10px;
+					}
 				}
 				input[type='text'], textarea, select {
-					margin   : 0 10px; 
+					
 					color            : var(--input-text-clr);
 					background-color : var(--input-bg);
 					border           : 1px solid var(--input-placeholder-clr);
 					&:hover, :focus { outline          : 1px solid var(--input-placeholder-clr); background-color : var(--input-bg-hover); }
 					&::placeholder { color : var(--input-placeholder-clr); }
 					&:invalid { background : #ffbcb5; }
+				}
+
+				
+				.tagInputWrap {
+    				grid-template-columns: 200px 3fr;
+    				gap: 10px;
+    				display: grid;
+
+					.tagInput-dropdown {
+   						z-index: unset;
+    					max-width: 200px;
+						
+					}
+				}
+		.list {
+			display   : flex;
+			flex      : 1 0;
+			flex-wrap : wrap;
+
+			> * { flex : 0 0 auto; }
+
+			#groupedIcon {
+				#backgroundColors;
+				position   : relative;
+				top        : -0.3em;
+				right      : -0.3em;
+				display    : inline-block;
+				min-width  : 20px;
+				height     : ~'calc(100% + 0.6em)';
+				color      : white;
+				text-align : center;
+				cursor     : pointer;
+	
+				i {
+					position  : relative;
+					top       : 50%;
+					transform : translateY(-50%);
+				}
+	
+				&:not(:last-child) { border-right : 1px solid black; }
+	
+				&:last-child { border-radius : 0 0.5em 0.5em 0; }
+			}
+
+			.tag {
+				padding          : 0.35em;
+				margin           : 2px;
+				font-size        : 0.95em;
+				border-radius    : 0.5em;
+
+				.icon { #groupedIcon; }
+
+				button {
+					cursor : pointer;
+
+					&:hover { color : @redLight; }
+				}
+			}
+		}
+				.tag {
+					color      : var(--input-bg);
+					background : var(--input-text-clr);
+					border-radius: .5em;
+    				margin: 2px;
+    				padding: .35em;
+    				font-size: .95em;
 				}
 
 				#searchButton {
