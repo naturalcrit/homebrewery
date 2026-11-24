@@ -25,10 +25,17 @@ import {
 	syntaxHighlighting,
 } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
-import { languages } from '@codemirror/language-data';
+import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
+
+const codeLanguages = [
+  { name: 'JavaScript', support: javascript() },
+  { name: 'CSS', support: css() },
+  { name: 'HTML', support: html() },
+];
+
 import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
 import { searchKeymap, search } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
@@ -198,7 +205,7 @@ const CodeEditor = forwardRef(
   			? syntaxHighlighting(customHighlightStyle)
   			: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
+			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: codeLanguages }), html({ autoCloseTags: true })];
 			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
 			return [
