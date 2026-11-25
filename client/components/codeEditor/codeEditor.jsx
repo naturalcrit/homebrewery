@@ -29,11 +29,10 @@ import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
-
 const codeLanguages = [
-  { name: 'JavaScript', support: javascript() },
-  { name: 'CSS', support: css() },
-  { name: 'HTML', support: html() },
+	{ name: 'JavaScript', support: javascript() },
+	{ name: 'CSS', support: css() },
+	{ name: 'HTML', support: html() },
 ];
 
 import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
