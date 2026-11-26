@@ -319,7 +319,7 @@ const BrewRenderer = (props)=>{
 				<NotificationPopup />
 			</div>
 
-			<ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={visiblePages.length > 0 ? visiblePages : [centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>
+			{!props.embedPage ? <ToolBar displayOptions={displayOptions} onDisplayOptionsChange={handleDisplayOptionsChange} visiblePages={visiblePages.length > 0 ? visiblePages : [centerPage]} totalPages={rawPages.length} headerState={headerState} setHeaderState={setHeaderState}/>:<></> }
 
 			{/*render in iFrame so broken code doesn't crash the site.*/}
 			<Frame id='BrewRenderer'  title='Rendered Brew Content' initialContent={INITIAL_CONTENT}
@@ -328,7 +328,7 @@ const BrewRenderer = (props)=>{
 				onClick={emitClick}
 				sandbox='allow-same-origin allow-modals allow-top-navigation'
 			>
-				<div className='brewRenderer'
+				<div className={`brewRenderer${props.embedPage ? ' embedRenderer': ''}`}
 					onKeyDown={handleControlKeys}
 					tabIndex={-1}
 				>
