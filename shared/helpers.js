@@ -129,19 +129,14 @@ const transformFrontmatter = (brew, format = 'hb')=>{
 			`\`\`\`\n\n` +
 			`${text}`;
 	}
-	const metadata = _.pick(brew, ['title', 'description', 'tags']);
+
 	if(format == 'hb') {
+		const metadata = _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme', 'columns', 'columnGutter', 'license', 'legalAuthors']);
 		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
 		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
 		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
 		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
 		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
-		metadata.columns = brew?.columns;
-		metadata.columnGutter = brew?.columnGutter;
-		metadata.license = brew?.license;
-		metadata.legalAuthors = brew?.legalAuthors;
-		metadata.renderer = brew.renderer;
-		metadata.theme = brew.theme;
 	}
 
 	text = `${markdownFormats[format]}\n` +

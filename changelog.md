@@ -90,8 +90,29 @@ pre {
 }
 ```
 
+
 ## changelog
 For a full record of development, visit our [Github Page](https://github.com/naturalcrit/homebrewery).
+
+### Tuesday 10/20/2026 - v3.24.2
+{{taskList
+##### G-Ambatte
+* [x] Hotfix for memory leak on server
+
+Fixes issue [#5090](https://github.com/naturalcrit/homebrewery/issues/5090)
+
+##### Calculuschild
+* [x] Fix brew variables not working across pages
+
+* [x] Allow brew variable definitions to be on adjacent lines (no blank line required anymore)
+
+##### 5e-Cleric
+* [x] Partial rollout of some site UI changes (includes alternate views and darkmode in {{openSans **BREWS** :fas_beer_mug_empty:}} page, and changes to {{openSans **VAULT** :fas_dungeon:}})
+
+##### Abquintic, Calculuschild, 5e-Cleric
+* [x] Multiple background fixes and code cleanups
+}}
+
 
 ### Tuesday 9/29/2026 - v3.24.1
 {{taskList
@@ -169,7 +190,7 @@ Fixes issue [#3840](https://github.com/naturalcrit/homebrewery/issues/3840)
 
 Fixes issue [#2037](https://github.com/naturalcrit/homebrewery/issues/2037)
 
-* [x] Remember editor theme across tabs
+* [x] Remember editor theme across tabs, and new {{openSans **SETTINGS :fas_gear:**}} tab with editor settings
 
 Fixes issue [#4858](https://github.com/naturalcrit/homebrewery/issues/4858)
 
