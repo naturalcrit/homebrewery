@@ -112,12 +112,15 @@ const EditorPage = (props)=>{
 			const snipStorage  = localStorage.getItem(SNIPKEY);
 			const metaStorage  = JSON.parse(localStorage.getItem(METAKEY));
 
-			brew.text     = brewStorage           ?? brew.text;
-			brew.style    = styleStorage          ?? brew.style;
-			brew.snippets = snipStorage           ?? brew.snippets;
-			brew.renderer = metaStorage?.renderer ?? brew.renderer;
-			brew.theme    = metaStorage?.theme    ?? brew.theme;
-			brew.lang     = metaStorage?.lang     ?? brew.lang;
+			brew.title       = metaStorage?.title       ?? brew.title;
+			brew.description = metaStorage?.description ?? brew.description;
+			brew.tags        = metaStorage?.tags        ?? brew.tags;
+			brew.text        = brewStorage              ?? brew.text;
+			brew.style       = styleStorage             ?? brew.style;
+			brew.snippets    = snipStorage              ?? brew.snippets;
+			brew.renderer    = metaStorage?.renderer    ?? brew.renderer;
+			brew.theme       = metaStorage?.theme       ?? brew.theme;
+			brew.lang        = metaStorage?.lang        ?? brew.lang;
 		}
 
 		const SAVEKEY = `${SAVEKEY_PREFIX}${global.account?.username}`;
@@ -130,7 +133,7 @@ const EditorPage = (props)=>{
 		                  localStorage.setItem(BREWKEY,  brew.text);
 		if(brew.style)    localStorage.setItem(STYLEKEY, brew.style);
 		if(brew.snippets) localStorage.setItem(SNIPKEY,  brew.snippets);
-		localStorage.setItem(METAKEY, JSON.stringify({ renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
+		localStorage.setItem(METAKEY, JSON.stringify({ title: brew.title, description: brew.description, tags: brew.tags, renderer: brew.renderer, theme: brew.theme, lang: brew.lang }));
 		if(window.location.pathname !== '/new')
 			window.history.replaceState({}, window.location.title, '/new/');
 	};
@@ -177,9 +180,12 @@ const EditorPage = (props)=>{
 			if(field == 'style')    localStorage.setItem(STYLEKEY, value);
 			if(field == 'snippets') localStorage.setItem(SNIPKEY, value);
 			if(field == 'metadata') localStorage.setItem(METAKEY, JSON.stringify({
-				renderer : value.renderer,
-				theme    : value.theme,
-				lang     : value.lang
+				title       : value.title,
+				description : value.description,
+				tags        : value.tags,
+				renderer    : value.renderer,
+				theme       : value.theme,
+				lang        : value.lang
 			}));
 		}
 	};

@@ -28,8 +28,10 @@ export function generateAssetsPlugin(isDev = false) {
 
 			// Compile Legacy themes
 			const themes = { Legacy: {}, V3: {} };
-			const legacyDirs = fs.readdirSync('./themes/Legacy');
-			for (const dir of legacyDirs) {
+      const legacyDirs = fs.readdirSync('./themes/Legacy', { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
+      for (const dir of legacyDirs) {
 				const themeData = JSON.parse(fs.readFileSync(`./themes/Legacy/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;
 				themes.Legacy[dir] = themeData;
@@ -41,7 +43,9 @@ export function generateAssetsPlugin(isDev = false) {
 			}
 
 			// Compile V3 themes
-			const v3Dirs = fs.readdirSync('./themes/V3');
+			const v3Dirs = fs.readdirSync('./themes/V3', { withFileTypes: true })
+        .filter(entry => entry.isDirectory())
+        .map(entry => entry.name);
 			for (const dir of v3Dirs) {
 				const themeData = JSON.parse(fs.readFileSync(`./themes/V3/${dir}/settings.json`, 'utf-8'));
 				themeData.path = dir;

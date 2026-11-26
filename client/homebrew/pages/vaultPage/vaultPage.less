@@ -1,8 +1,19 @@
+@import '@themes/assets/assets.less';
 @import '@sharedStyles/core.less';
 
 .vaultPage {
 	height           : 100%;
 	overflow-y       : hidden;
+
+	--bg-clr                : white;
+	--bg-image              : @backgroundImageAlt;
+	--h1-clr                : black;
+	--h2-clr                : #000077;
+	--label-clr             : black;
+	--input-bg              : white;
+	--input-bg-hover        : #DDDDDD;
+	--input-text-clr        : black;
+	--input-placeholder-clr : grey;
 
 	*:not(input) { user-select : none; }
 
@@ -13,8 +24,15 @@
 		height     : 100%;
 
 		&.form .brewLookup {
+			color                   : var(--label-clr);
+			background-color        : var(--bg-clr);
+			background-image        : var(--bg-image);
+			background-size         : cover;
+			height:100%;
+
 			position : relative;
 			padding  : 50px clamp(20px, 4vw, 50px);
+			
 
 			small {
 				font-size : 10pt;
@@ -33,6 +51,7 @@
 			h1, h2, h3, h4 {
 				font-family    : 'CodeBold';
 				letter-spacing : 2px;
+				color          : var(--h1-clr);
 			}
 				
 			legend {
@@ -87,14 +106,14 @@
 					align-items : center; 
 					margin      : 10px 0;
 				}
-				select { margin : 0 10px; }
-
-				input { 
+				input[type='text'], textarea, select {
 					margin   : 0 10px; 
-
-					&:invalid { background : rgb(255, 188, 181); }
-					
-					
+					color            : var(--input-text-clr);
+					background-color : var(--input-bg);
+					border           : 1px solid var(--input-placeholder-clr);
+					&:hover, :focus { outline          : 1px solid var(--input-placeholder-clr); background-color : var(--input-bg-hover); }
+					&::placeholder { color : var(--input-placeholder-clr); }
+					&:invalid { background : #ffbcb5; }
 				}
 
 				#searchButton {

@@ -25,10 +25,16 @@ import {
 	syntaxHighlighting,
 } from '@codemirror/language';
 import { defaultKeymap, history, undo, redo, undoDepth, redoDepth } from '@codemirror/commands';
-import { languages } from '@codemirror/language-data';
+import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { html } from '@codemirror/lang-html';
+const codeLanguages = [
+	{ name: 'JavaScript', support: javascript() },
+	{ name: 'CSS', support: css() },
+	{ name: 'HTML', support: html() },
+];
+
 import { autocompleteEmoji } from './extensions/autocompleteEmoji.js';
 import { searchKeymap, search } from '@codemirror/search';
 import { closeBrackets } from '@codemirror/autocomplete';
@@ -156,6 +162,31 @@ const CodeEditor = forwardRef(
 			return folds;
 		};
 
+		const foldAll = (view = viewRef.current)=>{
+			if(!view) return false;
+
+			const doc = view.state.doc;
+			const pages = pageMap.current;
+
+			const effects = pages.map((start, i)=>{
+				const next = pages[i + 1] || doc.length;
+				const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
+				const to = doc.line(doc.lineAt(next).number).from - 1;
+
+				return to > from ? foldEffect.of({ from, to }) : null;
+			}).filter(Boolean);
+
+			view.dispatch({ effects });
+			return true;
+		};
+
+		const unfoldAll = (view = viewRef.current)=>{
+			if(!view) return false;
+
+			view.dispatch(unfoldAllCmd(view));
+			return true;
+		};
+
 		const createExtensions = ({ onChange, language, editorTheme })=>{
 			const setEventListeners = EditorView.updateListener.of((update)=>{
 				if(update.docChanged) {
@@ -173,7 +204,7 @@ const CodeEditor = forwardRef(
   			? syntaxHighlighting(customHighlightStyle)
   			: syntaxHighlighting(legacyCustomHighlightStyle);
 
-			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: languages }), html({ autoCloseTags: true })];
+			const languageExtension = language === 'css' ? css() : [markdown({ base: markdownLanguage, codeLanguages: codeLanguages }), html({ autoCloseTags: true })];
 			const themeExtension = Array.isArray(themes[editorTheme]) ? themes[editorTheme] : themes[editorTheme] || themes['default'];
 
 			return [
@@ -199,7 +230,7 @@ const CodeEditor = forwardRef(
 
 				//keyboard shortcut
 				keymap.of([...defaultKeymap, foldKeymap, ...searchKeymap]),
-				generalKeymap,
+				generalKeymap(foldAll, unfoldAll),
 				...(tab === 'brewStyles' ? [cssKeymap] : [markdownKeymap]),
 
 				//multiple cursors and selections
@@ -427,29 +458,8 @@ const CodeEditor = forwardRef(
 					undone : redoDepth(view.state),
 				};
 			},
-
-			foldAll : ()=>{
-				const view = viewRef.current;
-				if(!view) return;
-
-				const doc = view.state.doc;
-				const pages = pageMap.current;
-
-				const effects = pages.map((start, i)=>{
-					const next = pages[i + 1] || doc.length;
-					const from = i ? doc.line(doc.lineAt(start).number + 1).from : 0;
-					const to = doc.line(doc.lineAt(next).number).from - 1;
-
-					return to > from ? foldEffect.of({ from, to }) : null;
-				}).filter(Boolean);
-
-				view.dispatch({ effects });
-			},
-			unfoldAll : ()=>{
-				const view = viewRef.current;
-				if(!view) return;
-				view.dispatch(unfoldAllCmd(view));
-			},
+			foldAll   : ()=>foldAll(),
+			unfoldAll : ()=>unfoldAll(),
 
 			focus : ()=>viewRef.current.focus(),
 		}));

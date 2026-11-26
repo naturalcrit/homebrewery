@@ -215,13 +215,15 @@ const newBreak = (type)=>(view)=>forEachSelection(view, (state, from, to, select
 	};
 });
 
-export const generalKeymap = Prec.high(keymap.of([
+export const generalKeymap = (foldAll, unfoldAll) => Prec.high(keymap.of([
 	{ key: 'Tab', run: insertTab },
 	{ key: 'Shift-Tab', run: indentLess },
 	{ key: 'Mod-z', run: undo }, //it may be unnecessary
 	{ key: 'Mod-Shift-z', run: redo },
 	{ key: 'Mod-y', run: redo }, //user asked, so double keybind
 	{ key: 'Mod-d', run: deleteLine }, //annoyingly overrides "selectNextOccurrence" because users asked
+	{ key: 'Mod-Shift-[', run: foldAll },
+    { key: 'Mod-Shift-]', run: unfoldAll },
 ]));
 
 export const cssKeymap = Prec.highest(keymap.of([
