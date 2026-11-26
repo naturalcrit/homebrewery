@@ -18,6 +18,7 @@ const WithRoute = ({ el: Element, ...rest })=>{
 	const params = useParams();
 	const [searchParams] = useSearchParams();
 	const queryParams = Object.fromEntries(searchParams?.entries() || []);
+	queryParams.tag = searchParams.getAll('tag');
 	return <Element {...rest} {...params} query={queryParams} />;
 };
 
