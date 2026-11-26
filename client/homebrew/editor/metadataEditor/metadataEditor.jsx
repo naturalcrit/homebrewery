@@ -141,14 +141,21 @@ const MetadataEditor = ({
 				<label>authors</label>
 				<div className='value'>
 					{authors.length > 0 && (
-						<a href={`/user/${authors[0]}`} className='author-link' target='_blank' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
-							{authors[0]}{authors.length > 1 && ', '}
-						</a>
+						<>
+							<a href={`/user/${authors[0]}`} className='author-link' target='_blank' title={`Owner - Click to open ${authors[0]}'s profile in a new tab`}>
+								{authors[0]}
+							</a>
+							{authors.length > 1 && ', '}
+						</>
 					)}
+
 					{authors.length > 1 && authors.slice(1).map((author, i)=>(
-        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
-        					{author}{i+2 < authors.length && ', '}
-        				</a>
+						<>
+	        				<a href={`/user/${author}`} className='author-link' title={`Author - Click to open ${author}'s profile in a new tab`}>
+	        					{author}
+	        				</a>
+							{i+2 < authors.length && ', '}
+						</>
         			))}
 				</div>
 			</div>
