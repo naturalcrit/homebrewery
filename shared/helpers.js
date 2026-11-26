@@ -114,6 +114,40 @@ const splitTextStyleAndMetadata = (brew)=>{
 	if(typeof brew.tags === 'string') brew.tags = brew.tags ? [brew.tags] : [];
 };
 
+const transformFrontmatter = (brew, format = 'hb')=>{
+	const markdownFormats = {
+		hb   : '```metadata',
+		cm   : '---',
+		toml : '+++',
+		json : ';;;'
+	};
+
+	let text = brew.text;
+	if((brew.style !== undefined) && (format == 'hb')) {
+		text = `\`\`\`css\n` +
+			`${brew.style || ''}\n` +
+			`\`\`\`\n\n` +
+			`${text}`;
+	}
+
+	const metadata = _.pick(brew, ['title', 'description', 'tags']);
+	if(format == 'hb') {
+		Object.assign(metadata,  _.pick(brew, ['title', 'description', 'tags', 'renderer', 'theme', 'columns', 'columnGutter', 'license', 'legalAuthors']));
+		const snippetsArray = brewSnippetsToJSON('brew_snippets', brew.snippets, null, false).snippets;
+		metadata.snippets = snippetsArray.length > 0 ? snippetsArray : undefined;
+		metadata.bleedSize = { top: brew?.bleedSize?.top, bottom: brew?.bleedSize?.bottom, inner: brew?.bleedSize?.inner, outer: brew?.bleedSize?.outer };
+		metadata.safetySpace = { top: brew?.safetySpace?.top, bottom: brew?.safetySpace?.bottom, outer: brew?.safetySpace?.outer, inner: brew?.safetySpace?.inner };
+		metadata.trimSize  = { width: brew?.trimSize?.width, height: brew?.trimSize?.height };
+	}
+
+	text = `${markdownFormats[format]}\n` +
+		`${format != 'json' ? yaml.dump(metadata) : JSON.stringify(metadata)}` +
+		`${markdownFormats[format].slice(0, 3)}\n\n` +
+		`${text}`;
+
+	return text;
+};
+
 const printCurrentBrew = async ()=>{
 	if(window.typeof !== 'undefined') {
 		// fire a custom event for the print cycle
@@ -230,5 +264,6 @@ export {
 	fetchThemeBundle,
 	brewSnippetsToJSON,
 	debugTextMismatch,
-	yamlSnippetsToText
+	yamlSnippetsToText,
+	transformFrontmatter
 };

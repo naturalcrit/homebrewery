@@ -555,7 +555,7 @@ describe('Tests for api', ()=>{
 					width  : '8.5in',
 					height : '11in',
 				},
-			});
+			}, 'hb');
 
 			expect(result).toEqual(dedent`
 				\`\`\`metadata
