@@ -2,7 +2,7 @@
 import './editor.less';
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
 import dedent from 'dedent';
-import { EditorView } from '@codemirror/view';
+import { EditorView, lineNumbers } from '@codemirror/view';
 
 import CodeEditor from '@components/codeEditor/codeEditor.jsx';
 import SnippetBar from './snippetbar/snippetbar.jsx';
@@ -55,6 +55,12 @@ const DEFAULT_SNIPPET_TEXT = dedent`
 `;
 let isJumping = false;
 let jumpSource = null;
+let softPageCalc = false;
+
+// Fake enums
+const OUTBOUNDSNOTABSOLUTE = 1;
+const INBOUNDSNOTABSOLUTE = 2;
+const ISABSOLUTE = 3;
 
 const Editor = forwardRef(
 	(
@@ -139,6 +145,7 @@ const Editor = forwardRef(
 		useEffect(()=>{ if(liveScroll) sourceJump(currentBrewRendererPageNum, false); }, [currentBrewRendererPageNum, liveScroll]);
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorViewPageNum, false); }, [currentEditorViewPageNum, liveScroll]);
 		useEffect(()=>{ if(liveScroll) brewJump(currentEditorCursorPageNum, false); }, [currentEditorCursorPageNum, liveScroll]);
+		useEffect(()=>{ if(!softPageCalc) handleSoftPages(); }, [brew.text]);
 
 		const handleFormatCode = ()=>{
 			codeEditor.current?.formatCode();
@@ -154,6 +161,101 @@ const Editor = forwardRef(
 				e.stopPropagation();
 				e.preventDefault();
 			}
+		};
+
+		const checkInBounds = (element, parentLeft, parentRight, parentTop, parentBottom)=>{
+			if(!element) return 0;
+			const childX = element.getBoundingClientRect().left;				// Get Child elements bounding box.
+			const childX2 = childX + element.getBoundingClientRect().width;
+			const childY = element.getBoundingClientRect().top;
+			const childY2 = childY + element.getBoundingClientRect().height;
+
+			const inX = ((childX >= parentLeft) && (childX2 <= parentRight));					// Test if Child X coords are inside page's X coords
+			const inY = ((childY >= parentTop) && (childY2 <= parentBottom));					// Test if Child Y coords are inside page's Y coords
+
+			if(((!inX) || (!inY)) && (getComputedStyle(element)?.position != 'absolute')) return OUTBOUNDSNOTABSOLUTE;
+			else if((inX) && (inY) && (getComputedStyle(element)?.position != 'absolute')) return INBOUNDSNOTABSOLUTE;
+			else if(getComputedStyle(element)?.position == 'absolute') return ISABSOLUTE;
+
+			return 0;
+		};
+
+		const handleSoftPages = (targetPage=(parseInt(currentEditorCursorPageNum, 10)))=>{
+			if(softPageCalc) return; 						// This can trigger mid-run. Skip out if still calculating softpage handling.
+			if(brew.renderer == 'Legacy') return; 	// Skip the legacy renderer, it doesn't understand \softpage
+
+			const testPage = window.frames['BrewRenderer'].contentDocument.getElementById(`p${targetPage}`);
+			if(!testPage) return;							// Make sure we have an actual page with content.
+
+			const columnWrapper = testPage.getElementsByClassName('columnWrapper')[0];  // Grab the page's columnWrapper
+			const preserveStyles = columnWrapper.style;									// Save the page's columnWrapper style
+
+			let child = Math.floor(columnWrapper.children.length / 2);	  // Set the starting position for testing the bounds checking in the children to the midpoint.
+			let lastChild = 0;																				// Initialize array movement variables
+			let shift;
+
+			let softInsert = false;
+
+			const parentLeft      = testPage.getBoundingClientRect().left;					// Determine page boundaries
+			const parentRight    = testPage.getBoundingClientRect().right;
+			const parentTop     = testPage.getBoundingClientRect().top;
+			const parentBottom    = testPage.getBoundingClientRect().bottom;
+
+			// If the last element is in bounds, exit.
+			// if(checkInBounds(columnWrapper[columnWrapper.children.length-1], parentX, parentX2, parentY, parentY2) == INBOUNDSNOTABSOLUTE) return false;
+			while ((child != lastChild) && (child < columnWrapper.children.length)){
+
+				// Walk the array of children, going up or down by increments of shift. Go up if current child is in bounds, down if not.
+				// Continue until no movement occurs. References to position indicate the child element's position in the columnWrapper.children list
+				shift = Math.floor(Math.abs(lastChild - child) / 2);	// Set shift to half the distance of the difference
+				// of the previous last child position and the current child position
+
+				const inBounds = checkInBounds(columnWrapper.children[child], parentLeft, parentRight, parentTop, parentBottom);
+
+				if(inBounds == OUTBOUNDSNOTABSOLUTE) {
+					// If child element has any one dimension outside of the page and it is NOT absolutely placed
+					// Shift towards the front of the children ( earlier in the document )
+					lastChild = child;
+					child -= shift;
+					softInsert = true;
+				} else if(inBounds == INBOUNDSNOTABSOLUTE) {
+					// Else If child element has all dimensions inside of the page and it is NOT absolutely placed
+					// Shift towards the back of the children ( later in the document )
+					lastChild = child;
+					child += shift;
+				} else if(inBounds == ISABSOLUTE) {
+					// Else If child absolutely placed, step one element earlier
+					child -= 1;
+					softInsert = false;
+				}
+			}
+
+			// Test to see if we're in the extraneous <div class="columnSplit"> required to fix some browsers.
+			// If so, exit
+			if(columnWrapper.children[child-1]?.className == 'columnSplit') {
+				return;
+			}
+
+			// Exit if the last element is in bounds and is not absolutely positioned and that is where we stopped walking the loop.
+			if((child==columnWrapper.children.length -1) && (getComputedStyle(columnWrapper.children[child])?.position !== 'absolute')) return;
+
+			// Walk back to the last inBounds Not Absolute with a data-linenumber - work around elements without lineNumbers for now.
+			while ((checkInBounds(columnWrapper.children[child], parentLeft, parentRight, parentTop, parentBottom) == OUTBOUNDSNOTABSOLUTE) ||
+			  (!columnWrapper.children[child]?.getAttribute('data-linenumber'))) child--;
+
+			// columnWrapper.style.overflow = 'hidden'; // Unsure if this is needed still.
+			if(softInsert && columnWrapper.children[child]) {
+				const targetLine = parseInt(columnWrapper.children[child].getAttribute('data-linenumber'), 10);
+				const whereWasI = codeEditor.current.getCursorPosition();
+				codeEditor.current.setCursorToLine(targetPage, targetLine);
+				softPageCalc = true;
+				setTimeout(async ()=>{
+					await handleInject(`\n\\page {softPageClass}\n`);
+					codeEditor.current.setCursorPosition(whereWasI);
+					softPageCalc = false;
+				}, 150);
+			}
+
 		};
 
 		const updateCurrentCursorPage = (pageNumber)=>{
