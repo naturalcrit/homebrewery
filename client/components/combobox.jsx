@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useEffectEvent, useRef } from 'react';
 import _ from 'lodash';
 import './combobox.less';
 
@@ -24,19 +24,25 @@ const Combobox = ({
 	const [inputFocused, setInputFocused] = useState(false);
 	const [value, setValue] = useState(defaultValue);
 
-	useEffect(()=>{
-		if(trigger === 'click') {
-			document.addEventListener('click', handleClickOutside);
-			return ()=>document.removeEventListener('click', handleClickOutside);
-		}
-	}, []);
-
-	const handleClickOutside = useCallback((e)=>{
+	// An Effect Event always sees the latest props and state (defaultValue in handleDropdown),
+	// so the listener is registered once rather than again whenever they change.
+	const handleClickOutside = useEffectEvent((e)=>{
 		// Close dropdown when clicked outside
-    	if(!dropdownRef.current?.contains(e.target)) {
-        	handleDropdown(false);
-    	}
-	}, []);
+		if(!dropdownRef.current?.contains(e.target)) {
+			handleDropdown(false);
+		}
+	});
+
+	useEffect(()=>{
+		if(trigger !== 'click') return;
+		const onDocumentClick = (e)=>handleClickOutside(e);
+		document.addEventListener('click', onDocumentClick);
+		return ()=>document.removeEventListener('click', onDocumentClick);
+	}, [trigger]);
+
+	useEffect(()=>{
+		if(!showDropdown && !keepValueOnClose) setValue(defaultValue);
+	}, [defaultValue]);
 
 	const handleDropdown = (show)=>{
 		if(show) {
